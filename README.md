@@ -1,15 +1,15 @@
-# KasabaAuth 1.1.1
+# KasabaAuth 1.1.2
 
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
-Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya Hoş Geldin** görünür; ardından form otomatik açılır. Başlık altın, turkuaz ve yeşil renklerle kalın yazılır. Formun üst başlığında ve üst çubukta aynı renkli yazı kullanılır. Yerleşik form başlığının yazı boyutu Minecraft tarafından sabittir; mod veya kaynak paketi olmadan büyütülemez. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında bekleme ekranı görünür; başarıda form kapanır ve oyuncu serbest bırakılır. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.
+Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya Hoş Geldin** görünür; ardından form otomatik açılır. Başlık altın, turkuaz ve yeşil renklerle kalın yazılır. Formun üst başlığında ve üst çubukta aynı renkli yazı kullanılır. Yerleşik form başlığının yazı boyutu Minecraft tarafından sabittir; mod veya kaynak paketi olmadan büyütülemez. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında form açık kalır; başarıda doğrudan kapanır ve oyuncu oyuna geçer. Arada bekleme veya “Geri dön” sayfası yoktur. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.
 
 ## Sunucuya kurulum / güncelleme
 
 1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
 2. Önceki KasabaAuth JAR dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
-3. `KasabaAuth-1.1.1.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.1` etkinleşmeli.
+3. `KasabaAuth-1.1.2.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.2` etkinleşmeli.
 5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
 Önceki KasabaAuth sürümlerindeki hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
@@ -50,14 +50,14 @@ JDK 21 ve Maven 3.9+ ile:
 mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.1.1.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
+Çıktı: `target/KasabaAuth-1.1.2.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
 Bulut komutları:
 
 ```sh
 bash /workspace/Sada/scripts/cloud-build.sh
 # Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
-cp /workspace/Sada/target/KasabaAuth-1.1.1.jar /workspace/kasaba-test-server/plugins/
+cp /workspace/Sada/target/KasabaAuth-1.1.2.jar /workspace/kasaba-test-server/plugins/
 # Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
 # Sunucu konsolunda Done görüldükten sonra:

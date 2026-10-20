@@ -1,1 +1,1 @@
-c777afdeb319897f1b23d7e3b50ee7c29e4728a59b5984ed1dc07ed2704d5dac  KasabaAuth-1.1.1.jar
+ff1a3dcb866cb2c6e4304d696cbe1947b7ffa998cb6f1b93e272ed78abf4fa27  KasabaAuth-1.1.2.jar

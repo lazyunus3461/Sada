@@ -82,6 +82,9 @@ async function expectForm(b,from,contains) {
     assert.deepEqual(b.form.inputs.map(i=>i.key),['password','confirm']);
     assert.equal(b.form.actions[0].label.text,'Kayıt Ol');
     assert.equal(b.form.can_close_with_escape,0);
+    assert.equal(b.form.after_action,'none','No native waiting/back screen may be opened');
+    assert(!text(b.form.actions).includes('Geri dön'));
+    assert(!text(b.form.actions).includes('Back'));
     assert(!b.log.some(e=>e.name==='open_window'));
     console.log('PASS direct registration page with two text fields, welcome header and no inventory');
     assert(b.log.some(e=>e.name==='boss_bar'&&e.p.title&&componentText(simplify(e.p.title)).includes('Kasaba’ya Hoş Geldin')));
@@ -123,7 +126,8 @@ async function expectForm(b,from,contains) {
     await b.wait('clear_dialog',()=>true,start);
     start=b.log.length;b.c.write('chat_command',{command:'kasaba'});
     await b.wait('system_chat',p=>text(p).includes('Zaten giriş yaptın'),start);
-    console.log('PASS correct password closes login page and authenticates');
+    assert(!b.log.slice(start).some(e=>e.name==='show_dialog'));
+    console.log('PASS correct password goes directly to gameplay with no extra form or back screen');
     await b.end();b=await connect(username);
     for(let attempt=1;attempt<=5;attempt++) {
         start=b.log.length;b.submit('Wrong-Test-123');

@@ -1,15 +1,13 @@
-KasabaAuth 1.1.1 — Doğrulama
+KasabaAuth 1.1.2 — Doğrulama
 Paper 1.21.10 build 130 / Java 21.
 Maven verify: 12 birim testi, 0 başarısız, 0 hata, 0 atlanan.
 Gerçek Paper sunucusunda: 15 protokol kontrolü başarılı.
-6 karakterle kayıt ve yeniden bağlantıda giriş başarılı; 5 karakter reddedildi.
-Başlığın kalın ve üç renkli olması, büyük ekran başlığı paketinin formdan
-önce gösterilmesi ve arada en az 1,5 saniye olması doğrulandı (hedef 2 saniye).
-Yerleşik form başlığının yazı boyutu sabittir; büyük yazı ekran başlığıdır.
-Eski ayardaki minimum 8 karakter otomatik olarak 6'ya geçirildi.
-Önceki sürümde oluşturulan hesapla yeni sürümden giriş başarılı.
-Envanter açılmadığı, form doğrulamaları, eski yanıtın reddi, hareket/komut
-engeli, doğru/yanlış şifre, kilit, yeniden bağlantıda kilit ve çıkış doğrulandı.
+Formun after_action değeri none: Minecraft'ın Waiting for Server / Geri dön ekranı açılmaz.
+Doğru şifre sonrası clear_dialog gönderildiği, oyuncunun doğrulandığı ve
+araya yeni form açılmadığı doğrulandı. Yanlış şifrelerde form içi hata devam eder.
+6 karakterle kayıt/giriş, 5 karakter reddi, renkli/kalın büyük karşılama,
+envanter açılmaması, hareket/komut engeli, eski yanıt reddi ve kilit doğrulandı.
 Testler yerel offline sunucuda sentetik oyuncularla yapıldı.
-Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle
-uyumluluk kontrolü yapılmadı. Online-mode lisans doğrulaması kapsam dışıdır.
+Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk
+kontrolü yapılmadı. Sağdaki belirsiz bildirim için değişiklik yapılmadı;
+kaynağı kullanıcıdan beklenen bildirim metnine göre belirlenecek.

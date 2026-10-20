@@ -186,7 +186,8 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         Dialog dialog = Dialog.create(builder -> builder.empty()
                 .base(DialogBase.builder(WELCOME_HEADER)
                         .canCloseWithEscape(false).pause(false)
-                        .afterAction(DialogBase.DialogAfterAction.WAIT_FOR_RESPONSE)
+                        // Form açık kalır; doğrulama başarılı olunca sunucu doğrudan kapatır.
+                        .afterAction(DialogBase.DialogAfterAction.NONE)
                         .body(body).inputs(inputs).build())
                 .type(DialogType.multiAction(List.of(
                         ActionButton.create(Component.text(register ? "Kayıt Ol" : "Giriş Yap", NamedTextColor.GREEN), null, 140, send),
