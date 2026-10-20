@@ -1,7 +1,8 @@
+config-version: 2
 # Şifreler hiçbir zaman bu dosyaya yazılmaz.
 auth-timeout-seconds: 120
 max-attempts: 5
 # Başarısız denemeler yeniden bağlanınca sıfırlanmaz.
 lockout-seconds: 300
-minimum-password-length: 8
+minimum-password-length: 6
 maximum-password-length: 64

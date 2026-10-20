@@ -1,19 +1,22 @@
-KASABAAUTH 1.1.0 — PAPER 1.21.10 / JAVA 21
+KASABAAUTH 1.1.1 — PAPER 1.21.10 / JAVA 21
 
 Bu sürüm Minecraft'ın yerleşik kayıt / giriş SAYFASINI açar.
 Envanter, sandık veya örs kullanılmaz. Oyuncuya mod veya kaynak paketi gerekmez.
 
 GÜNCELLEME / KURULUM
 1. Sunucunu durdur ve plugins/KasabaAuth klasörünü yedekle.
-2. Eski KasabaAuth-1.0.0.jar dosyasını plugins klasöründen çıkar.
+2. Eski KasabaAuth JAR dosyasını plugins klasöründen çıkar.
    plugins/KasabaAuth veri klasörünü SİLME; mevcut şifreler korunur.
-3. KasabaAuth-1.1.0.jar dosyasını plugins klasörüne koy.
+3. KasabaAuth-1.1.1.jar dosyasını plugins klasörüne koy.
 4. Sunucuyu yeniden aç. Java 21 ve Paper 1.21.10 gerekir.
 5. Minecraft Java 1.21.10 ile bağlanınca sayfa kendiliğinden açılır.
 
 Yeni oyuncu: Şifre + Şifreyi tekrar yaz + Kayıt Ol.
 Kayıtlı oyuncu: Şifre + Giriş Yap.
-Sayfanın üstünde Kasaba’ya Hoş Geldin yazar.
+Şifre en az 6 karakterdir. Eski 8 karakter ayarı ilk güncellemede otomatik 6 olur.
+Önce 2 saniye büyük, renkli ve kalın Kasaba’ya Hoş Geldin başlığı görünür.
+Ardından kayıt/giriş sayfası açılır; başlık aynı renklerle gösterilir.
+Form başlığının yazı boyutu Minecraft tarafından sabittir.
 Hatalar sayfanın içinde gösterilir. /kasaba formu tekrar açar.
 Şifreyi sohbete veya komuta yazma. Metin alanında şifre kendi ekranında görünür.
 

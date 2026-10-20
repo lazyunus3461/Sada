@@ -4,19 +4,20 @@ const nbtCodec = require('prismarine-nbt');
 const simplify = nbtCodec.simplify;
 const delay = ms => new Promise(r => setTimeout(r, ms));
 const text = p => JSON.stringify(p);
+const componentText=c=>typeof c==='string'?c:Array.isArray(c)?c.map(componentText).join(''):(c?.text||'')+(c?.extra||[]).map(componentText).join('');
 // Paper 1.21.10's ServerboundCustomClickActionPacket uses a VarInt-length-
 // prefixed optional NBT tag (ByteBufCodecs.lengthPrefixed), not a Boolean.
 // Override the outdated minecraft-data definition only in this test client.
 const customPackets = {'1.21':{types:{packet_common_custom_click_action:
     ['container',[{name:'id',type:'string'},{name:'payload',type:['buffer',{countType:'varint'}]}]]}}};
 const options = {customPackets,host:'127.0.0.1',port:Number(process.env.KASABA_TEST_PORT || 25575),version:'1.21.10',auth:'offline'};
-const PASSWORD = 'Kasaba-Test-123'; // Synthetic test accounts only.
+const PASSWORD = 'Kasaba'; // Synthetic test accounts only.
 async function connect(username) {
     const c = mc.createClient({...options, username});
     const log = [];
     let dialog, position, clientError;
     c.on('packet', (p,m) => {
-        log.push({name:m.name,p});
+        log.push({name:m.name,p,at:Date.now()});
         if (m.name === 'show_dialog') dialog = p.dialog.data;
         if (m.name === 'position') {
             position=p;
@@ -64,19 +65,26 @@ async function expectForm(b,from,contains) {
     let b=await connect(username);
     if(process.env.KASABA_LOGIN_ONLY==='1') {
         assert.deepEqual(b.form.inputs.map(i=>i.key),['password']);
-        const mark=b.log.length;b.submit(PASSWORD);
+        const mark=b.log.length;b.submit('Kasaba-Test-123');
         await b.wait('system_chat',p=>text(p).includes('keşfedebilirsin'),mark);
         await b.wait('clear_dialog',()=>true,mark);
         console.log('PASS existing 1.0.0 account logs in through new dialog after restart');
         await b.end();return;
     }
-    assert.equal(b.form.title.text,'Kasaba’ya Hoş Geldin');
+    assert.equal(componentText(b.form.title),'Kasaba’ya Hoş Geldin');
+    assert.equal(b.form.title.bold,1); // NBT Boolean is encoded as a byte.
+    assert(new Set(text(b.form.title).toLowerCase().match(/#[0-9a-f]{6}/g)).size>=3);
+    const large=b.log.find(e=>e.name==='set_title_text');
+    assert(large);assert.equal(componentText(simplify(large.p.text)),'Kasaba’ya Hoş Geldin');
+    const page=b.log.find(e=>e.name==='show_dialog');
+    assert(page.at-large.at>=1500,'Large welcome title must be visible before the form opens');
+    console.log('PASS bold multicolor welcome and large title before page');
     assert.deepEqual(b.form.inputs.map(i=>i.key),['password','confirm']);
     assert.equal(b.form.actions[0].label.text,'Kayıt Ol');
     assert.equal(b.form.can_close_with_escape,0);
     assert(!b.log.some(e=>e.name==='open_window'));
     console.log('PASS direct registration page with two text fields, welcome header and no inventory');
-    assert(b.log.some(e=>e.name==='boss_bar'&&text(e.p).includes('Kasaba’ya Hoş Geldin')));
+    assert(b.log.some(e=>e.name==='boss_bar'&&e.p.title&&componentText(simplify(e.p.title)).includes('Kasaba’ya Hoş Geldin')));
     console.log('PASS upper welcome bar');
     let start=b.log.length;
     b.c.write('chat_command',{command:'help'});
@@ -102,7 +110,7 @@ async function expectForm(b,from,contains) {
     await b.wait('system_chat',p=>text(p).includes('keşfedebilirsin'),start);
     await b.wait('clear_dialog',()=>true,start);
     assert(!b.log.some(e=>e.name==='open_window'));
-    console.log('PASS registration succeeds and closes page');
+    console.log('PASS six-character password registers and closes page');
     await b.end();b=await connect(username);
     assert.deepEqual(b.form.inputs.map(i=>i.key),['password']);
     assert.equal(b.form.actions[0].label.text,'Giriş Yap');

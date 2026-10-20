@@ -12,6 +12,8 @@ import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -32,6 +34,11 @@ import java.util.concurrent.*;
 
 public final class KasabaAuth extends JavaPlugin implements Listener {
     private static final String WELCOME = "Kasaba’ya Hoş Geldin";
+    private static final Component WELCOME_HEADER = Component.empty()
+            .append(Component.text("Kasaba’ya ", TextColor.color(0xFFB52E)))
+            .append(Component.text("Hoş ", TextColor.color(0x35D9FF)))
+            .append(Component.text("Geldin", TextColor.color(0x70F09A)))
+            .decorate(TextDecoration.BOLD);
     private final Set<UUID> authenticated = ConcurrentHashMap.newKeySet();
     private final Map<UUID, Session> sessions = new HashMap<>();
     private final Map<String, Failures> failures = new HashMap<>();
@@ -42,7 +49,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private static final class Failures { int count; long until; }
     private static final class Session {
         final long deadline;
-        final BossBar bar = BossBar.bossBar(Component.text(WELCOME, NamedTextColor.GOLD), 1,
+        final BossBar bar = BossBar.bossBar(WELCOME_HEADER, 1,
                 BossBar.Color.YELLOW, BossBar.Overlay.PROGRESS);
         long formVersion;
         boolean busy;
@@ -51,10 +58,16 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
 
     @Override public void onEnable() {
         saveDefaultConfig();
+        // Bir defalık 1.1.0 -> 1.1.1 geçişi: eski 8 karakter ayarını 6 yap.
+        if (!getConfig().contains("config-version", true)) {
+            getConfig().set("minimum-password-length", 6);
+            getConfig().set("config-version", 2);
+            saveConfig();
+        }
         timeout = Math.clamp(getConfig().getInt("auth-timeout-seconds", 120), 30, 600);
         maxAttempts = Math.clamp(getConfig().getInt("max-attempts", 5), 1, 20);
         lockout = Math.clamp(getConfig().getInt("lockout-seconds", 300), 30, 3600);
-        minLength = Math.clamp(getConfig().getInt("minimum-password-length", 8), 8, 32);
+        minLength = Math.clamp(getConfig().getInt("minimum-password-length", 6), 6, 32);
         maxLength = Math.clamp(getConfig().getInt("maximum-password-length", 64), minLength, 64);
         try { accounts = new AccountStore(getDataFolder().toPath().resolve("accounts")); }
         catch (IOException e) { throw new IllegalStateException("Hesap dizini açılamadı; eklenti başlatılamıyor", e); }
@@ -101,10 +114,10 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         Session s = new Session(timeout);
         sessions.put(p.getUniqueId(), s);
         p.showBossBar(s.bar);
-        p.showTitle(Title.title(Component.text(WELCOME, NamedTextColor.GOLD),
+        p.showTitle(Title.title(WELCOME_HEADER,
                 Component.text("Devam etmek için kayıt ol veya giriş yap", NamedTextColor.YELLOW),
-                Title.Times.times(Duration.ofMillis(300), Duration.ofSeconds(4), Duration.ofMillis(300))));
-        Bukkit.getScheduler().runTaskLater(this, () -> { if (current(p, s)) form(p, s, null); }, 2);
+                Title.Times.times(Duration.ofMillis(200), Duration.ofMillis(1400), Duration.ofMillis(300))));
+        Bukkit.getScheduler().runTaskLater(this, () -> { if (current(p, s)) form(p, s, null); }, 40);
     }
 
     private void tick() {
@@ -118,7 +131,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
                 p.kick(Component.text("Giriş süresi doldu. Yeniden bağlanabilirsin.", NamedTextColor.RED));
                 continue;
             }
-            s.bar.name(Component.text(WELCOME + " • " + remaining + " saniye", NamedTextColor.GOLD));
+            s.bar.name(WELCOME_HEADER.append(Component.text(" • " + remaining + " saniye", NamedTextColor.YELLOW).decoration(TextDecoration.BOLD, false)));
             s.bar.progress(Math.clamp((float) remaining / timeout, 0, 1));
             p.sendActionBar(Component.text(s.busy ? "Hesabın doğrulanıyor…" : "Devam etmek için kayıt / giriş formunu doldur", NamedTextColor.YELLOW));
         }
@@ -171,7 +184,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
             });
         }, options);
         Dialog dialog = Dialog.create(builder -> builder.empty()
-                .base(DialogBase.builder(Component.text(WELCOME, NamedTextColor.GOLD))
+                .base(DialogBase.builder(WELCOME_HEADER)
                         .canCloseWithEscape(false).pause(false)
                         .afterAction(DialogBase.DialogAfterAction.WAIT_FOR_RESPONSE)
                         .body(body).inputs(inputs).build())
@@ -224,7 +237,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private void complete(Player p, Session s, boolean register) {
         authenticated.add(p.getUniqueId()); sessions.remove(p.getUniqueId()); failures.remove(key(p));
         p.closeDialog(); p.hideBossBar(s.bar);
-        p.showTitle(Title.title(Component.text(WELCOME, NamedTextColor.GOLD),
+        p.showTitle(Title.title(WELCOME_HEADER,
                 Component.text(register ? "Kaydın tamamlandı!" : "Giriş başarılı!", NamedTextColor.GREEN)));
         tell(p, "Artık Kasaba’yı keşfedebilirsin!");
     }

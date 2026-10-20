@@ -1,18 +1,18 @@
-# KasabaAuth 1.1.0
+# KasabaAuth 1.1.1
 
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
-Sayfanın üst başlığı **Kasaba’ya Hoş Geldin** yazısıdır. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında bekleme ekranı görünür; başarıda form kapanır ve oyuncu serbest bırakılır. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.
+Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya Hoş Geldin** görünür; ardından form otomatik açılır. Başlık altın, turkuaz ve yeşil renklerle kalın yazılır. Formun üst başlığında ve üst çubukta aynı renkli yazı kullanılır. Yerleşik form başlığının yazı boyutu Minecraft tarafından sabittir; mod veya kaynak paketi olmadan büyütülemez. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında bekleme ekranı görünür; başarıda form kapanır ve oyuncu serbest bırakılır. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.
 
 ## Sunucuya kurulum / güncelleme
 
 1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
-2. Önceki `KasabaAuth-1.0.0.jar` dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
-3. `KasabaAuth-1.1.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.0` etkinleşmeli.
+2. Önceki KasabaAuth JAR dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
+3. `KasabaAuth-1.1.1.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.1` etkinleşmeli.
 5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
-1.0.0'daki KasabaAuth hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
+Önceki KasabaAuth sürümlerindeki hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
 
 `/kasaba` kayıt / giriş sayfasını tekrar açar. `/giris`, `/kayit`, `/login`, `/register` aynı işlemin kısayollarıdır. **Komuta veya sohbete şifre yazma.**
 
@@ -29,14 +29,14 @@ Sayfanın üst başlığı **Kasaba’ya Hoş Geldin** yazısıdır. Yeni oyuncu
 
 ## Ayarlar ve veri
 
-İlk başlangıçta `plugins/KasabaAuth/config.yml` oluşur:
+İlk başlangıçta `plugins/KasabaAuth/config.yml` oluşur. Eski sürümün ayarları ilk güncellemede bir kez 6 karaktere geçirilir; hesaplar ve şifreler korunur. Sonraki başlangıçlarda kendi ayarların korunur:
 
 | Ayar | Varsayılan |
 | --- | --- |
 | Giriş süresi | 120 saniye |
 | Hatalı şifre sınırı | 5 |
 | Kilit süresi | 300 saniye |
-| Şifre uzunluğu | 8–64 karakter |
+| Şifre uzunluğu | 6–64 karakter |
 
 Hesap dosyaları `plugins/KasabaAuth/accounts/` altında, küçük harfli oyuncu adıyla tutulur. PBKDF2-HMAC-SHA256, 600.000 iterasyon, rastgele 16 bayt tuz ve 256 bit özet kullanılır. Parola hesaplama ana sunucu iş parçacığının dışında yapılır. Form yanıtları oyuncuya ve mevcut oturuma bağlıdır; eski veya tekrar kullanılan form düğmeleriyle giriş yapılamaz. Şifreler form hata mesajlarına veya sunucu günlüğüne yazılmaz. Yedeklerine erişimi de sınırla.
 
@@ -50,14 +50,14 @@ JDK 21 ve Maven 3.9+ ile:
 mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.1.0.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
+Çıktı: `target/KasabaAuth-1.1.1.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
 Bulut komutları:
 
 ```sh
 bash /workspace/Sada/scripts/cloud-build.sh
 # Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
-cp /workspace/Sada/target/KasabaAuth-1.1.0.jar /workspace/kasaba-test-server/plugins/
+cp /workspace/Sada/target/KasabaAuth-1.1.1.jar /workspace/kasaba-test-server/plugins/
 # Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
 # Sunucu konsolunda Done görüldükten sonra:
@@ -68,7 +68,7 @@ node smoke.cjs
 
 Yerel test sunucusu Paper 1.21.10 build 130 ile yalnızca `127.0.0.1:25575` adresinde offline modda çalışır. Dışarı açma ve ayarlarını gerçek sunucuya kopyalama. İndirmelerde TLS ve SHA doğrulaması korunur. İsteğe bağlı Mojang public-key erişim hatası yerel offline test bağlantısını engellemez; lisanslı hesapların online-mode kimlik doğrulaması bu testin kapsamında değildir.
 
-Gerçek sunucuya bağlanan protokol testi 14 kontrol yapar: sürüm yanıtı, envanter açılmadan doğrudan iki alanlı kayıt formu, üst karşılama çubuğu, hareket/komut engeli, kısa şifre reddi, eşleşmeyen şifre reddi, eski form yanıtının reddi, başarılı kayıt ve formun kapanması, doğrudan giriş formu, yanlış/doğru şifre, deneme kilidi, yeniden bağlantıda kilit ve çıkış düğmesi.
+Gerçek sunucuya bağlanan protokol testi 15 kontrol yapar: renkli/kalın başlık ve formdan önce büyük karşılama, sürüm yanıtı, envanter açılmadan doğrudan iki alanlı kayıt formu, üst karşılama çubuğu, hareket/komut engeli, 5 karakterli şifre reddi ve 6 karakterle kayıt, eşleşmeyen şifre reddi, eski form yanıtının reddi, başarılı kayıt ve formun kapanması, doğrudan giriş formu, yanlış/doğru şifre, deneme kilidi, yeniden bağlantıda kilit ve çıkış düğmesi.
 
 Test istemcisinde, `minecraft-data` paketindeki eski diyalog yanıt şemasına yalnızca test kapsamında düzeltme uygulanır: 1.21.10'un gerçek `ServerboundCustomClickActionPacket` / `ByteBufCodecs.lengthPrefixed` şemasına göre VarInt uzunluklu NBT gönderilir. Sunucu veya uygulama doğrulaması gevşetilmez.
 
