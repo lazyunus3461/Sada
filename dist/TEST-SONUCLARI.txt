@@ -1,0 +1,15 @@
+KasabaAuth 1.0.0 — Doğrulama
+
+Hedef: Paper 1.21.10 build 130, Java 21.
+Maven verify: BAŞARILI — 12 test, 0 başarısız, 0 hata, 0 atlanan.
+Gerçek Paper sunucusunda protokol testi: BAŞARILI — 12 kontrol.
+Kontroller: sürüm yanıtı, menü/üst karşılama çubuğu, kapanan menünün geri açılması,
+giriş öncesi komut/hareket engeli, şifre tekrarı, uyuşmayan şifre reddi,
+kayıt, yeniden bağlantıda yanlış/doğru şifre, deneme sınırı ve yeniden bağlantıda kilit.
+Tam sunucu yeniden başlatmasından sonra kayıtlı şifreyle giriş: BAŞARILI.
+
+Testler yalnızca loopback'teki offline, sentetik oyunculu test sunucusunda yapıldı.
+Gerçek oyuncunun Minecraft istemcisindeki görsel inceleme ve başka sunucu
+eklentileriyle uyumluluk testi yapılmadı. Lisanslı hesapların online-mode
+kimlik doğrulaması bu yerel testin kapsamı dışındadır.
+Şifre oyuncunun örs yazı alanında görünür; maskeleme yoktur.

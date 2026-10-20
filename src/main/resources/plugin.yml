@@ -1,0 +1,11 @@
+name: KasabaAuth
+version: 1.0.0
+main: tr.kasaba.auth.KasabaAuth
+api-version: '1.21.10'
+description: Kasaba sunucusu için menülü bağımsız kayıt ve giriş sistemi.
+author: Kasaba
+commands:
+  kasaba:
+    description: Kayıt ve giriş menüsünü açar.
+    usage: /kasaba
+    aliases: [giris, kayit, login, register]

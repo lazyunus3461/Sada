@@ -1,0 +1,6 @@
+/target/
+/.idea/
+*.iml
+/server/
+/scripts/integration/node_modules/
+/dist/

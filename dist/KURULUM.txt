@@ -1,0 +1,17 @@
+KASABA AUTH — PAPER 1.21.10 / JAVA 21
+
+1. Minecraft sunucunu durdur.
+2. Sunucu dosyalarını yedekle. Başka bir kayıt eklentisiyle birlikte çalıştırma.
+3. KasabaAuth-1.0.0.jar dosyasını sunucunun plugins klasörüne koy.
+4. Sunucuyu yeniden aç.
+5. Oyuna girince Kayıt Ol'a tıkla.
+6. Örsün üstteki yazı alanını temizle, şifreni yaz, sağdaki Onayla kâğıdına tıkla.
+7. Şifreni ikinci ekranda tekrar yazıp Onayla'ya tıkla.
+
+Tekrar girince Giriş Yap'ı seç. /kasaba menüyü tekrar açar.
+Şifreni sohbete ya da komuta yazma.
+Şifre örs alanında kendi ekranında görünür; yıldızla gizlenmez.
+Üstte Kasaba’ya Hoş Geldin yazısı görünür.
+
+Bu dosyalar bulutta hazırlandı; bilgisayarına veya gerçek sunucuna otomatik kurulmadı.
+Ayrıntılı kullanım ve sınırlar kaynak paketteki README.md dosyasındadır.
