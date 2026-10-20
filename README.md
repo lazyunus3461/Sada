@@ -1,29 +1,31 @@
-# KasabaAuth
+# KasabaAuth 1.1.0
 
-Paper **1.21.10** / Java **21** için bağımsız, Minecraft içi menülü kayıt ve giriş eklentisi. AuthMe gerektirmez; mevcut AuthMe şifrelerini içeri aktarmaz.
+Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
-## Sunucuya kurulum
+Sayfanın üst başlığı **Kasaba’ya Hoş Geldin** yazısıdır. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında bekleme ekranı görünür; başarıda form kapanır ve oyuncu serbest bırakılır. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.
 
-1. Sunucuyu durdur ve oyuncu verileriyle `plugins` klasörünü yedekle.
-2. Başka bir kayıt eklentisi varsa birlikte çalıştırma. Mevcut kullanıcıları taşıma planını belirlemeden eski kayıt sistemini kaldırma.
-3. `KasabaAuth-1.0.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth` etkinleşmeli.
-5. Oyuna gir; otomatik açılan menüde **Kayıt Ol** seçeneğini seç. Örs ekranının üstteki yazı alanını temizle, şifreni yaz ve sağdaki **Onayla** kâğıdına tıkla. İkinci ekranda şifreni tekrar yaz.
-6. Oyundan çıkıp tekrar gir; bu kez **Giriş Yap** seçeneğini kullan.
+## Sunucuya kurulum / güncelleme
 
-Menüyü tekrar açma: `/kasaba`. `/giris`, `/kayit`, `/login`, `/register` aynı menüyü açan kısayollardır. **Komuta veya sohbete şifre yazma.**
+1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
+2. Önceki `KasabaAuth-1.0.0.jar` dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
+3. `KasabaAuth-1.1.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.0` etkinleşmeli.
+5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
-Kayıt/giriş boyunca üst çubukta **Kasaba’ya Hoş Geldin** ve kalan süre görünür. Başarıdan sonra büyük karşılama yazısı çıkar. ESC ile kapanan ekran tekrar açılır. Giriş yapılmadan hareket, sohbet, diğer komutlar, envanter işlemleri, eşya alma/atma ve oyuncu etkileşimleri engellenir. Giriş beklerken hasar ve açlık değişimleri engellenir.
+1.0.0'daki KasabaAuth hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
 
-## Bilinen sınırlar
+`/kasaba` kayıt / giriş sayfasını tekrar açar. `/giris`, `/kayit`, `/login`, `/register` aynı işlemin kısayollarıdır. **Komuta veya sohbete şifre yazma.**
 
-- Vanilla örs alanında şifreyi yıldızlarla gizlemek mümkün değildir: şifre oyuncunun **kendi ekranında** görünür. Diğer oyuncuların sohbetine gönderilmez. Mod veya kaynak paketi gerekmez.
-- Bu eklenti ayrı bir giriş lobisi veya ayrı bir sunucu oluşturmaz. Oyuncuların doğduğu yeri güvenli yap; kimlik doğrulaması öncesinde dünyanın istemciye yüklenmesini engellemez.
-- Java oyuncu adları desteklenir. Floodgate/Bedrock ad önekleri desteklenmez.
-- Şifre sıfırlama, şifre değiştirme, e-posta doğrulaması, çoklu sunucu veritabanı ve AuthMe hesap aktarımı bu sürümde yoktur.
-- Hatalı giriş sayacı aynı sunucu sürecinde yeniden bağlanmalarda korunur; sunucu yeniden başlatıldığında sıfırlanır.
-- Bir kayıt eklentisi Minecraft lisans doğrulamasının yerine geçmez. Mevcut `online-mode` ayarını yalnızca bu eklenti için değiştirme. Proxy arkasındaki sunucularda backend portunu dış erişime kapat ve güvenli oyuncu yönlendirmesini sunucu/proxy belgelerine göre yapılandır.
-- Kötü niyetli veya güvenilmeyen diğer eklentilerden koruma sağlamaz. Gerçek sunucuna geçmeden önce diğer eklentilerle birlikte test et. `/reload` yerine tam yeniden başlatma kullan.
+## Davranış ve sınırlar
+
+- Minecraft'ın yerleşik metin alanında şifre **oyuncunun kendi ekranında görünür**; yıldızla maskeleme yoktur. Şifre diğer oyuncuların sohbetine veya komut günlüğüne gönderilmez.
+- Doğrulama tamamlanana kadar hareket, ışınlanma, sohbet, diğer komutlar, blok kırma/koyma, envanter işlemleri, eşya alma/atma ve etkileşimler engellenir. Beklerken hasar ve açlık değişimleri engellenir.
+- Bu bir HTML web sayfası veya ayrı giriş lobisi değildir; Minecraft'ın kendi form sayfasıdır. Dünya istemciye yüklenir. Doğma yerini güvenli tut.
+- Yalnızca Minecraft Java 1.21.10 ile doğrulandı. Eski istemciler, ViaVersion ve Floodgate/Bedrock ad önekleri desteklenmez.
+- Şifre değiştirme/sıfırlama, e-posta, çoklu sunucu veritabanı ve AuthMe hesap aktarımı bu sürümde yoktur.
+- Hatalı giriş sayacı aynı sunucu sürecinde yeniden bağlanmalarda korunur; sunucu yeniden başlatılınca sıfırlanır.
+- Mevcut `online-mode` ayarını yalnızca bu eklenti için değiştirme. Proxy arkasında backend portunu dışarı kapat ve güvenli oyuncu yönlendirmesini sunucu/proxy belgelerine göre yapılandır.
+- Güvenilmeyen diğer eklentilerden koruma sağlamaz. Gerçek sunucunda kendi eklenti listenle kontrol et. `/reload` yerine tam yeniden başlatma kullan.
 
 ## Ayarlar ve veri
 
@@ -36,39 +38,38 @@ Kayıt/giriş boyunca üst çubukta **Kasaba’ya Hoş Geldin** ve kalan süre g
 | Kilit süresi | 300 saniye |
 | Şifre uzunluğu | 8–64 karakter |
 
-Hesap dosyaları `plugins/KasabaAuth/accounts/` altında, küçük harfli oyuncu adıyla tutulur. PBKDF2-HMAC-SHA256, 600.000 iterasyon, rastgele 16 bayt tuz ve 256 bit özet kullanılır. Şifre hesaplama ana sunucu iş parçacığının dışında yapılır. Yedeklerine erişimi de sınırla. Ayar değişiklikleri tam yeniden başlatmada uygulanır; mevcut kullanıcıları dışarıda bırakmamak için minimum şifre uzunluğunu sonradan yükseltme.
+Hesap dosyaları `plugins/KasabaAuth/accounts/` altında, küçük harfli oyuncu adıyla tutulur. PBKDF2-HMAC-SHA256, 600.000 iterasyon, rastgele 16 bayt tuz ve 256 bit özet kullanılır. Parola hesaplama ana sunucu iş parçacığının dışında yapılır. Form yanıtları oyuncuya ve mevcut oturuma bağlıdır; eski veya tekrar kullanılan form düğmeleriyle giriş yapılamaz. Şifreler form hata mesajlarına veya sunucu günlüğüne yazılmaz. Yedeklerine erişimi de sınırla.
 
-## Geliştirme
+Ayar değişiklikleri tam yeniden başlatmada uygulanır. Mevcut kullanıcıları dışarıda bırakmamak için minimum şifre uzunluğunu sonradan yükseltme.
 
-JDK 21 ve Maven 3.9+ gerekir:
+## Geliştirme ve doğrulama
+
+JDK 21 ve Maven 3.9+ ile:
 
 ```sh
-mvn -B verify
+mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.0.0.jar`. Testler parola doğrulama, yanlış/bozuk özet reddi, rastgele tuz, yeniden başlatmada veri korunması, büyük/küçük harf ile hesap atlatmanın ve mevcut hesabın üzerine yazmanın engellenmesini kapsar.
+Çıktı: `target/KasabaAuth-1.1.0.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
-Bulut geliştirmesinde mevcut `/workspace/Sada` checkout'unu kullan. Kullanıcı istemedikçe Git worktree oluşturma. Test sunucusunu gerçek sunucunun dosyalarından ayrı tut ve yalnızca loopback adresine bağla.
-
-## Oyunda kabul kontrolü
-
-Yeni test adıyla kayıt ol, iki farklı şifreyle onayın reddedildiğini gör, eşleşen şifreyle kaydı tamamla. Yeniden bağlanıp yanlış ve doğru şifreleri dene. Giriş öncesi hareket/komut/sohbet/shift-click/eşya atmayı, ESC ile menünün geri gelmesini, art arda yanlış şifreyle kilidi ve yeniden bağlantıda kilidin korunmasını kontrol et. Sunucuyu yeniden başlatıp aynı şifreyle giriş yap. Testleri kendi eklenti listenle tekrar et.
-
-## Yerel protokol testi
-
-`/workspace/kasaba-test-server` içinde hazırlanan, yalnızca `127.0.0.1:25575` adresini dinleyen Paper 1.21.10 build 130 test sunucusu kullanılabilir. Gerçek sunucunun dizinini kullanma. Test sunucusu offline modda yalnızca sentetik oyuncular içindir; dışarı açma. Sunucu çalışırken JAR değiştirme; önce durdur, yeni JAR'ı kopyala ve yeniden başlat.
+Bulut komutları:
 
 ```sh
-# Buluttaki Java/Maven araçları ve güvenli proxy güven deposu:
 bash /workspace/Sada/scripts/cloud-build.sh
-
-# Ayrı terminalde; durdurmak için konsola stop yaz veya Ctrl+C kullan:
+# Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
+cp /workspace/Sada/target/KasabaAuth-1.1.0.jar /workspace/kasaba-test-server/plugins/
+# Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
-
-# Konsolda Done yazdıktan sonra:
+# Sunucu konsolunda Done görüldükten sonra:
 cd /workspace/Sada/scripts/integration
 npm ci --cache /workspace/.npm --no-audit --no-fund
 node smoke.cjs
 ```
 
-Protokol testi gerçek Paper sunucusuna bağlanır; sürüm yanıtı, karşılama menüsü/üst çubuk, ESC sonrası tekrar açılma, giriş öncesi komut/hareket engeli, şifre tekrarı, uyuşmayan şifre reddi, kayıt, yeniden bağlantıda yanlış/doğru şifre, deneme sınırı ve yeniden bağlantıda kilidin korunmasını doğrular. Her çalıştırmada yeni sentetik kullanıcı oluşturur; gerçek oyuncuları kullanmaz. Test şifresi yalnızca sentetik hesaplar içindir. Test sunucusu başlangıcında Mojang public-key ağ hatası görülebilir; bu, yerel offline test bağlantısını engellemez. Lisanslı hesapların online-mode doğrulaması bu testin kapsamı dışındadır.
+Yerel test sunucusu Paper 1.21.10 build 130 ile yalnızca `127.0.0.1:25575` adresinde offline modda çalışır. Dışarı açma ve ayarlarını gerçek sunucuya kopyalama. İndirmelerde TLS ve SHA doğrulaması korunur. İsteğe bağlı Mojang public-key erişim hatası yerel offline test bağlantısını engellemez; lisanslı hesapların online-mode kimlik doğrulaması bu testin kapsamında değildir.
+
+Gerçek sunucuya bağlanan protokol testi 14 kontrol yapar: sürüm yanıtı, envanter açılmadan doğrudan iki alanlı kayıt formu, üst karşılama çubuğu, hareket/komut engeli, kısa şifre reddi, eşleşmeyen şifre reddi, eski form yanıtının reddi, başarılı kayıt ve formun kapanması, doğrudan giriş formu, yanlış/doğru şifre, deneme kilidi, yeniden bağlantıda kilit ve çıkış düğmesi.
+
+Test istemcisinde, `minecraft-data` paketindeki eski diyalog yanıt şemasına yalnızca test kapsamında düzeltme uygulanır: 1.21.10'un gerçek `ServerboundCustomClickActionPacket` / `ByteBufCodecs.lengthPrefixed` şemasına göre VarInt uzunluklu NBT gönderilir. Sunucu veya uygulama doğrulaması gevşetilmez.
+
+Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk kontrolü ayrıca yapılmalıdır.

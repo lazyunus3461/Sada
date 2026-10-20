@@ -1,6 +1,14 @@
 package tr.kasaba.auth;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import io.papermc.paper.dialog.Dialog;
+import io.papermc.paper.registry.data.dialog.ActionButton;
+import io.papermc.paper.registry.data.dialog.DialogBase;
+import io.papermc.paper.registry.data.dialog.action.DialogAction;
+import io.papermc.paper.registry.data.dialog.body.DialogBody;
+import io.papermc.paper.registry.data.dialog.input.DialogInput;
+import io.papermc.paper.registry.data.dialog.type.DialogType;
+import net.kyori.adventure.text.event.ClickCallback;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -15,9 +23,6 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.*;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.view.AnvilView;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.IOException;
@@ -27,7 +32,6 @@ import java.util.concurrent.*;
 
 public final class KasabaAuth extends JavaPlugin implements Listener {
     private static final String WELCOME = "Kasaba’ya Hoş Geldin";
-    private static final String PLACEHOLDER = "Şifreni yaz";
     private final Set<UUID> authenticated = ConcurrentHashMap.newKeySet();
     private final Map<UUID, Session> sessions = new HashMap<>();
     private final Map<String, Failures> failures = new HashMap<>();
@@ -35,18 +39,14 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private AccountStore accounts;
     private ThreadPoolExecutor workers;
     private int timeout, maxAttempts, lockout, minLength, maxLength;
-    private enum Step { MENU, REGISTER, CONFIRM, LOGIN }
     private static final class Failures { int count; long until; }
     private static final class Session {
         final long deadline;
         final BossBar bar = BossBar.bossBar(Component.text(WELCOME, NamedTextColor.GOLD), 1,
                 BossBar.Color.YELLOW, BossBar.Overlay.PROGRESS);
-        Inventory inventory;
-        Step step = Step.MENU;
-        char[] first;
+        long formVersion;
         boolean busy;
         Session(int timeout) { deadline = System.currentTimeMillis() + timeout * 1000L; }
-        void clear() { if (first != null) { Arrays.fill(first, '\0'); first = null; } }
     }
 
     @Override public void onEnable() {
@@ -68,7 +68,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         // Kimlik doğrulama eklentisini devre dışı bırakıp oyuncuları açıkta bırakma.
         for (Player p : Bukkit.getOnlinePlayers()) {
             Session s = sessions.get(p.getUniqueId());
-            if (s != null) { s.clear(); p.hideBossBar(s.bar); }
+            if (s != null) { p.closeDialog(); p.hideBossBar(s.bar); }
             p.kick(Component.text("Kayıt sistemi durduruldu. Lütfen yeniden bağlan.", NamedTextColor.RED));
         }
         if (workers != null) workers.shutdown();
@@ -104,7 +104,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         p.showTitle(Title.title(Component.text(WELCOME, NamedTextColor.GOLD),
                 Component.text("Devam etmek için kayıt ol veya giriş yap", NamedTextColor.YELLOW),
                 Title.Times.times(Duration.ofMillis(300), Duration.ofSeconds(4), Duration.ofMillis(300))));
-        Bukkit.getScheduler().runTaskLater(this, () -> { if (current(p, s)) menu(p, s); }, 2);
+        Bukkit.getScheduler().runTaskLater(this, () -> { if (current(p, s)) form(p, s, null); }, 2);
     }
 
     private void tick() {
@@ -120,92 +120,70 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
             }
             s.bar.name(Component.text(WELCOME + " • " + remaining + " saniye", NamedTextColor.GOLD));
             s.bar.progress(Math.clamp((float) remaining / timeout, 0, 1));
-            p.sendActionBar(Component.text(s.busy ? "Hesabın doğrulanıyor…" : "Devam etmek için menüyü kullan • /kasaba", NamedTextColor.YELLOW));
+            p.sendActionBar(Component.text(s.busy ? "Hesabın doğrulanıyor…" : "Devam etmek için kayıt / giriş formunu doldur", NamedTextColor.YELLOW));
         }
     }
 
-    private ItemStack item(Material material, String name, String... lore) {
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        meta.displayName(Component.text(name, NamedTextColor.GOLD));
-        meta.lore(Arrays.stream(lore).map(t -> Component.text(t, NamedTextColor.GRAY)).toList());
-        item.setItemMeta(meta);
-        return item;
-    }
-
-    private void menu(Player p, Session s) {
-        if (s.busy) return;
-        s.clear(); s.step = Step.MENU;
-        Inventory inv = Bukkit.createInventory(null, 27, Component.text(WELCOME));
-        for (int i = 0; i < 27; i++) inv.setItem(i, item(Material.GRAY_STAINED_GLASS_PANE, " "));
-        boolean exists = registered(p);
-        inv.setItem(11, item(exists ? Material.LIME_DYE : Material.GRAY_DYE, "Giriş Yap", exists ? "Şifreni yazmak için tıkla" : "Önce kayıt olmalısın"));
-        inv.setItem(15, item(exists ? Material.GRAY_DYE : Material.WRITABLE_BOOK, "Kayıt Ol", exists ? "Bu isim zaten kayıtlı" : "Yeni hesabını oluştur"));
-        inv.setItem(22, item(Material.BARRIER, "Sunucudan Ayrıl"));
-        s.inventory = inv;
-        p.openInventory(inv);
-    }
-
-    private void input(Player p, Session s, Step step) {
-        if (s.busy) return;
-        s.step = step;
-        // Paper'ın gerçek örs görünümü kullanılır; kaynak paketi ve istemci modu gerekmez.
-        InventoryView opened = p.openAnvil(null, true);
-        if (!(opened instanceof AnvilView view)) {
-            p.kick(Component.text("Şifre ekranı açılamadı. Yöneticiye haber ver.")); return;
-        }
-        s.inventory = view.getTopInventory();
-        view.setTitle(step == Step.LOGIN ? "Kasaba • Giriş Yap" : step == Step.CONFIRM ? "Kasaba • Şifreni Tekrarla" : "Kasaba • Kayıt Ol");
-        s.inventory.setItem(0, item(Material.PAPER, PLACEHOLDER));
-        view.setRepairCost(0);
-        view.setRepairItemCountCost(0);
-        view.setMaximumRepairCost(40);
-        tell(p, "Üstteki yazı alanını temizle, şifreni yaz ve sağdaki Onayla kâğıdına tıkla.");
-        tell(p, "Şifren kendi ekranında görünür. Sohbete yazma.");
-    }
-
-    @EventHandler public void prepare(PrepareAnvilEvent e) {
-        if (!(e.getView().getPlayer() instanceof Player p)) return;
-        Session s = sessions.get(p.getUniqueId());
-        if (s == null || !s.inventory.equals(e.getInventory()) || s.step == Step.MENU) return;
-        e.getView().setRepairCost(0);
-        e.getView().setRepairItemCountCost(0);
-        e.setResult(item(Material.PAPER, "Onayla", "Şifreni göndermek için tıkla"));
+    private void form(Player p, Session s, String error) {
+        if (!current(p, s) || s.busy) return;
+        boolean register = !registered(p);
+        if (!current(p, s)) return;
+        long version = ++s.formVersion;
+        List<DialogInput> inputs = new ArrayList<>();
+        inputs.add(DialogInput.text("password", Component.text("Şifre"))
+                .width(280).maxLength(maxLength).initial("").build());
+        if (register) inputs.add(DialogInput.text("confirm", Component.text("Şifreyi tekrar yaz"))
+                .width(280).maxLength(maxLength).initial("").build());
+        List<DialogBody> body = new ArrayList<>();
+        body.add(DialogBody.plainMessage(Component.text(register ? "HESAP OLUŞTUR" : "HESABINA GİRİŞ YAP", NamedTextColor.YELLOW), 300));
+        body.add(DialogBody.plainMessage(Component.text("Oyuncu: " + p.getName(), NamedTextColor.WHITE), 300));
+        if (error != null) body.add(DialogBody.plainMessage(Component.text(error, NamedTextColor.RED), 300));
+        body.add(DialogBody.plainMessage(Component.text(register
+                ? "Kasaba’ya katılmak için aşağıdaki alanları doldur."
+                : "Devam etmek için kayıtlı şifreni yaz.", NamedTextColor.GRAY), 300));
+        body.add(DialogBody.plainMessage(Component.text("Şifre: " + minLength + "–" + maxLength
+                + " karakter. Yazdığın şifre kendi ekranında görünür.", NamedTextColor.DARK_GRAY), 300));
+        ClickCallback.Options options = ClickCallback.Options.builder()
+                .uses(1).lifetime(Duration.ofSeconds(timeout + 5L)).build();
+        DialogAction send = DialogAction.customClick((response, audience) -> {
+            if (!(audience instanceof Player actor) || !actor.getUniqueId().equals(p.getUniqueId())) return;
+            String password = response.getText("password");
+            String confirmation = response.getText("confirm");
+            Bukkit.getScheduler().runTask(this, () -> {
+                if (!current(p, s) || s.busy || s.formVersion != version) return;
+                if (System.currentTimeMillis() >= s.deadline) {
+                    p.kick(Component.text("Giriş süresi doldu. Yeniden bağlanabilirsin.")); return;
+                }
+                if (password == null || password.length() < minLength || password.length() > maxLength || password.isBlank()) {
+                    form(p, s, "Şifren " + minLength + "–" + maxLength + " karakter olmalı."); return;
+                }
+                if (register && !password.equals(confirmation)) {
+                    form(p, s, "Şifreler eşleşmedi. İki alana da aynı şifreyi yaz."); return;
+                }
+                submit(p, s, password.toCharArray(), register);
+            });
+        }, options);
+        DialogAction leave = DialogAction.customClick((response, audience) -> {
+            if (!(audience instanceof Player actor) || !actor.getUniqueId().equals(p.getUniqueId())) return;
+            Bukkit.getScheduler().runTask(this, () -> {
+                if (current(p, s) && s.formVersion == version)
+                    p.kick(Component.text("Kasaba’da tekrar görüşmek üzere!"));
+            });
+        }, options);
+        Dialog dialog = Dialog.create(builder -> builder.empty()
+                .base(DialogBase.builder(Component.text(WELCOME, NamedTextColor.GOLD))
+                        .canCloseWithEscape(false).pause(false)
+                        .afterAction(DialogBase.DialogAfterAction.WAIT_FOR_RESPONSE)
+                        .body(body).inputs(inputs).build())
+                .type(DialogType.multiAction(List.of(
+                        ActionButton.create(Component.text(register ? "Kayıt Ol" : "Giriş Yap", NamedTextColor.GREEN), null, 140, send),
+                        ActionButton.create(Component.text("Sunucudan Ayrıl", NamedTextColor.RED), null, 140, leave)
+                )).columns(2).build()));
+        p.showDialog(dialog);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST) public void click(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player p) || !locked(p)) return;
-        e.setCancelled(true);
-        Session s = sessions.get(p.getUniqueId());
-        if (s == null || s.busy || e.getView().getTopInventory() != s.inventory) return;
-        if (s.step == Step.MENU) {
-            int slot = e.getRawSlot();
-            Bukkit.getScheduler().runTask(this, () -> {
-                if (!current(p, s) || s.busy) return;
-                if (slot == 22) p.kick(Component.text("Kasaba’da tekrar görüşmek üzere!"));
-                else if (slot == 11 && registered(p)) input(p, s, Step.LOGIN);
-                else if (slot == 15 && !registered(p)) input(p, s, Step.REGISTER);
-            });
-        } else if (e.getRawSlot() == 2 && e.getView() instanceof AnvilView view) {
-            String text = view.getRenameText();
-            if (text == null || text.equals(PLACEHOLDER) || text.length() < minLength || text.length() > maxLength || text.isBlank()) {
-                tell(p, "Şifren " + minLength + "–" + maxLength + " karakter olmalı. Yazı alanını değiştir."); return;
-            }
-            char[] password = text.toCharArray();
-            Step step = s.step;
-            if (step == Step.REGISTER) {
-                s.clear(); s.first = password;
-                Bukkit.getScheduler().runTask(this, () -> { if (current(p, s)) input(p, s, Step.CONFIRM); });
-            } else if (step == Step.CONFIRM) {
-                boolean equal = Arrays.equals(s.first, password);
-                s.clear();
-                if (!equal) {
-                    Arrays.fill(password, '\0');
-                    tell(p, "Şifreler eşleşmedi. Baştan deneyelim.");
-                    Bukkit.getScheduler().runTask(this, () -> { if (current(p, s)) input(p, s, Step.REGISTER); });
-                } else submit(p, s, password, true);
-            } else submit(p, s, password, false);
-        }
+        if (e.getWhoClicked() instanceof Player p && locked(p)) e.setCancelled(true);
     }
 
     private void submit(Player p, Session s, char[] password, boolean register) {
@@ -232,22 +210,20 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
                         if (++f.count >= maxAttempts) {
                             p.kick(Component.text("Çok fazla hatalı şifre. " + lockout + " saniye sonra tekrar dene.", NamedTextColor.RED));
                         } else {
-                            tell(p, "Şifre yanlış. Kalan deneme: " + (maxAttempts - f.count));
-                            input(p, s, Step.LOGIN);
+                            form(p, s, "Şifre yanlış. Kalan deneme: " + (maxAttempts - f.count));
                         }
                     }
                 });
             });
         } catch (RejectedExecutionException ex) {
             Arrays.fill(password, '\0'); s.busy = false;
-            tell(p, "Giriş sistemi yoğun. Biraz sonra tekrar Onayla’ya tıkla.");
+            form(p, s, "Giriş sistemi yoğun. Biraz sonra tekrar dene.");
         }
     }
 
     private void complete(Player p, Session s, boolean register) {
-        if (s.inventory != null && s.step != Step.MENU) s.inventory.clear();
         authenticated.add(p.getUniqueId()); sessions.remove(p.getUniqueId()); failures.remove(key(p));
-        s.clear(); p.hideBossBar(s.bar); p.closeInventory();
+        p.closeDialog(); p.hideBossBar(s.bar);
         p.showTitle(Title.title(Component.text(WELCOME, NamedTextColor.GOLD),
                 Component.text(register ? "Kaydın tamamlandı!" : "Giriş başarılı!", NamedTextColor.GREEN)));
         tell(p, "Artık Kasaba’yı keşfedebilirsin!");
@@ -257,7 +233,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         if (!(sender instanceof Player p)) { sender.sendMessage("Bu komut oyun içinden kullanılır."); return true; }
         if (args.length > 0) { tell(p, "Şifreyi komuta yazma. Sadece /kasaba kullan."); return true; }
         Session s = sessions.get(p.getUniqueId());
-        if (s != null) menu(p, s); else tell(p, "Zaten giriş yaptın.");
+        if (s != null) form(p, s, null); else tell(p, "Zaten giriş yaptın.");
         return true;
     }
 
@@ -265,7 +241,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     @EventHandler public void quit(PlayerQuitEvent e) {
         authenticated.remove(e.getPlayer().getUniqueId());
         Session s = sessions.remove(e.getPlayer().getUniqueId());
-        if (s != null) { s.clear(); e.getPlayer().hideBossBar(s.bar); }
+        if (s != null) { e.getPlayer().hideBossBar(s.bar); }
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void move(PlayerMoveEvent e) {
         if (locked(e.getPlayer()) && e.hasChangedPosition()) e.setCancelled(true);
@@ -278,7 +254,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         if (!locked(e.getPlayer())) return;
         String text = e.getMessage().toLowerCase(Locale.ROOT);
         if (!Set.of("/kasaba", "/giris", "/kayit", "/login", "/register", "/kasabaauth:kasaba", "/kasabaauth:giris", "/kasabaauth:kayit", "/kasabaauth:login", "/kasabaauth:register").contains(text)) {
-            e.setCancelled(true); tell(e.getPlayer(), "Önce giriş yap. Menüyü açmak için /kasaba yaz.");
+            e.setCancelled(true); tell(e.getPlayer(), "Önce giriş yap. Formu açmak için /kasaba yaz.");
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST) public void interact(PlayerInteractEvent e) { if (locked(e.getPlayer())) e.setCancelled(true); }
@@ -297,15 +273,4 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     @EventHandler(priority = EventPriority.HIGHEST) public void food(FoodLevelChangeEvent e) { if (e.getEntity() instanceof Player p && locked(p)) e.setCancelled(true); }
     @EventHandler(priority = EventPriority.HIGHEST) public void book(PlayerEditBookEvent e) { if (locked(e.getPlayer())) e.setCancelled(true); }
     @EventHandler(priority = EventPriority.HIGHEST) public void consume(PlayerItemConsumeEvent e) { if (locked(e.getPlayer())) e.setCancelled(true); }
-    @EventHandler public void close(InventoryCloseEvent e) {
-        if (!(e.getPlayer() instanceof Player p)) return;
-        Session s = sessions.get(p.getUniqueId());
-        if (s == null || !s.inventory.equals(e.getInventory())) return;
-        Inventory closed = s.inventory;
-        // Örs kâğıdı kapanışta oyuncunun envanterine dönmesin.
-        if (s.step != Step.MENU) closed.clear();
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            if (current(p, s) && s.inventory == closed && !s.busy) menu(p, s);
-        }, 2);
-    }
 }

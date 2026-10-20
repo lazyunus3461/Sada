@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "minecraft-protocol": "^1.68.0"
+    "minecraft-protocol": "^1.68.0",
+    "prismarine-nbt": "2.8.0"
   }
 }

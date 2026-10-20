@@ -1,17 +1,21 @@
-KASABA AUTH — PAPER 1.21.10 / JAVA 21
+KASABAAUTH 1.1.0 — PAPER 1.21.10 / JAVA 21
 
-1. Minecraft sunucunu durdur.
-2. Sunucu dosyalarını yedekle. Başka bir kayıt eklentisiyle birlikte çalıştırma.
-3. KasabaAuth-1.0.0.jar dosyasını sunucunun plugins klasörüne koy.
-4. Sunucuyu yeniden aç.
-5. Oyuna girince Kayıt Ol'a tıkla.
-6. Örsün üstteki yazı alanını temizle, şifreni yaz, sağdaki Onayla kâğıdına tıkla.
-7. Şifreni ikinci ekranda tekrar yazıp Onayla'ya tıkla.
+Bu sürüm Minecraft'ın yerleşik kayıt / giriş SAYFASINI açar.
+Envanter, sandık veya örs kullanılmaz. Oyuncuya mod veya kaynak paketi gerekmez.
 
-Tekrar girince Giriş Yap'ı seç. /kasaba menüyü tekrar açar.
-Şifreni sohbete ya da komuta yazma.
-Şifre örs alanında kendi ekranında görünür; yıldızla gizlenmez.
-Üstte Kasaba’ya Hoş Geldin yazısı görünür.
+GÜNCELLEME / KURULUM
+1. Sunucunu durdur ve plugins/KasabaAuth klasörünü yedekle.
+2. Eski KasabaAuth-1.0.0.jar dosyasını plugins klasöründen çıkar.
+   plugins/KasabaAuth veri klasörünü SİLME; mevcut şifreler korunur.
+3. KasabaAuth-1.1.0.jar dosyasını plugins klasörüne koy.
+4. Sunucuyu yeniden aç. Java 21 ve Paper 1.21.10 gerekir.
+5. Minecraft Java 1.21.10 ile bağlanınca sayfa kendiliğinden açılır.
 
-Bu dosyalar bulutta hazırlandı; bilgisayarına veya gerçek sunucuna otomatik kurulmadı.
-Ayrıntılı kullanım ve sınırlar kaynak paketteki README.md dosyasındadır.
+Yeni oyuncu: Şifre + Şifreyi tekrar yaz + Kayıt Ol.
+Kayıtlı oyuncu: Şifre + Giriş Yap.
+Sayfanın üstünde Kasaba’ya Hoş Geldin yazar.
+Hatalar sayfanın içinde gösterilir. /kasaba formu tekrar açar.
+Şifreyi sohbete veya komuta yazma. Metin alanında şifre kendi ekranında görünür.
+
+AuthMe gibi başka bir kayıt eklentisiyle aynı anda çalıştırma.
+Bu dosya gerçek sunucuna otomatik kurulmadı; JAR'ı yukarıdaki gibi sen yerleştireceksin.
