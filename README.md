@@ -1,4 +1,4 @@
-# KasabaAuth 1.1.2
+# KasabaAuth 1.1.3
 
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
@@ -8,8 +8,8 @@ Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya H
 
 1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
 2. Önceki KasabaAuth JAR dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
-3. `KasabaAuth-1.1.2.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.2` etkinleşmeli.
+3. `KasabaAuth-1.1.3.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.3` etkinleşmeli.
 5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
 Önceki KasabaAuth sürümlerindeki hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
@@ -22,6 +22,8 @@ Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya H
 - Doğrulama tamamlanana kadar hareket, ışınlanma, sohbet, diğer komutlar, blok kırma/koyma, envanter işlemleri, eşya alma/atma ve etkileşimler engellenir. Beklerken hasar ve açlık değişimleri engellenir.
 - Bu bir HTML web sayfası veya ayrı giriş lobisi değildir; Minecraft'ın kendi form sayfasıdır. Dünya istemciye yüklenir. Doğma yerini güvenli tut.
 - Yalnızca Minecraft Java 1.21.10 ile doğrulandı. Eski istemciler, ViaVersion ve Floodgate/Bedrock ad önekleri desteklenmez.
+- Kayıt/girişte oyuncu havada sabit kalsa da vanilla uçma kontrolünün atmasını önlemek için yalnızca bekleme sırasında geçici uçuş izni verilir. Hareket ve uçuşa geçiş engellenir. Girişte, çıkışta ve eklenti kapanırken önceki uçuş durumu geri yüklenir. Sunucunun genel `allow-flight` ayarı değiştirilmez.
+- “Sohbet iletileri doğrulanamıyor” bildirimi Minecraft istemcisinin doğrulanmamış sohbet uyarısıdır. Crack hesaplara açık sunucularda görülebilir. Bu sürüm uyarıyı gizlemez veya sohbet güvenliğini doğrulanmış gibi göstermez; standart Paper API'sinde bu istemci bildiriminin kapatma seçeneği yoktur.
 - Şifre değiştirme/sıfırlama, e-posta, çoklu sunucu veritabanı ve AuthMe hesap aktarımı bu sürümde yoktur.
 - Hatalı giriş sayacı aynı sunucu sürecinde yeniden bağlanmalarda korunur; sunucu yeniden başlatılınca sıfırlanır.
 - Mevcut `online-mode` ayarını yalnızca bu eklenti için değiştirme. Proxy arkasında backend portunu dışarı kapat ve güvenli oyuncu yönlendirmesini sunucu/proxy belgelerine göre yapılandır.
@@ -50,14 +52,14 @@ JDK 21 ve Maven 3.9+ ile:
 mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.1.2.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
+Çıktı: `target/KasabaAuth-1.1.3.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
 Bulut komutları:
 
 ```sh
 bash /workspace/Sada/scripts/cloud-build.sh
 # Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
-cp /workspace/Sada/target/KasabaAuth-1.1.2.jar /workspace/kasaba-test-server/plugins/
+cp /workspace/Sada/target/KasabaAuth-1.1.3.jar /workspace/kasaba-test-server/plugins/
 # Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
 # Sunucu konsolunda Done görüldükten sonra:
@@ -68,7 +70,7 @@ node smoke.cjs
 
 Yerel test sunucusu Paper 1.21.10 build 130 ile yalnızca `127.0.0.1:25575` adresinde offline modda çalışır. Dışarı açma ve ayarlarını gerçek sunucuya kopyalama. İndirmelerde TLS ve SHA doğrulaması korunur. İsteğe bağlı Mojang public-key erişim hatası yerel offline test bağlantısını engellemez; lisanslı hesapların online-mode kimlik doğrulaması bu testin kapsamında değildir.
 
-Gerçek sunucuya bağlanan protokol testi 15 kontrol yapar: renkli/kalın başlık ve formdan önce büyük karşılama, sürüm yanıtı, envanter açılmadan doğrudan iki alanlı kayıt formu, üst karşılama çubuğu, hareket/komut engeli, 5 karakterli şifre reddi ve 6 karakterle kayıt, eşleşmeyen şifre reddi, eski form yanıtının reddi, başarılı kayıt ve formun kapanması, doğrudan giriş formu, yanlış/doğru şifre, deneme kilidi, yeniden bağlantıda kilit ve çıkış düğmesi.
+Gerçek sunucuya bağlanan protokol testi 18 kontrol yapar: `allow-flight=false` altında 7 saniyelik havada bekleme sırasında atılmama, doğrulanmadan uçuşa geçişin engellenmesi, giriş sonrası uçuş izninin geri alınması, renkli/kalın başlık ve formdan önce büyük karşılama, sürüm yanıtı, envanter açılmadan doğrudan iki alanlı kayıt formu, üst karşılama çubuğu, hareket/komut engeli, 5 karakterli şifre reddi ve 6 karakterle kayıt, eşleşmeyen şifre reddi, eski form yanıtının reddi, başarılı kayıt ve formun kapanması, doğrudan giriş formu, yanlış/doğru şifre, deneme kilidi, yeniden bağlantıda kilit ve çıkış düğmesi.
 
 Test istemcisinde, `minecraft-data` paketindeki eski diyalog yanıt şemasına yalnızca test kapsamında düzeltme uygulanır: 1.21.10'un gerçek `ServerboundCustomClickActionPacket` / `ByteBufCodecs.lengthPrefixed` şemasına göre VarInt uzunluklu NBT gönderilir. Sunucu veya uygulama doğrulaması gevşetilmez.
 

@@ -1,13 +1,16 @@
-KasabaAuth 1.1.2 — Doğrulama
+KasabaAuth 1.1.3 — Doğrulama
 Paper 1.21.10 build 130 / Java 21.
 Maven verify: 12 birim testi, 0 başarısız, 0 hata, 0 atlanan.
-Gerçek Paper sunucusunda: 15 protokol kontrolü başarılı.
-Formun after_action değeri none: Minecraft'ın Waiting for Server / Geri dön ekranı açılmaz.
-Doğru şifre sonrası clear_dialog gönderildiği, oyuncunun doğrulandığı ve
-araya yeni form açılmadığı doğrulandı. Yanlış şifrelerde form içi hata devam eder.
-6 karakterle kayıt/giriş, 5 karakter reddi, renkli/kalın büyük karşılama,
-envanter açılmaması, hareket/komut engeli, eski yanıt reddi ve kilit doğrulandı.
-Testler yerel offline sunucuda sentetik oyuncularla yapıldı.
-Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk
-kontrolü yapılmadı. Sağdaki belirsiz bildirim için değişiklik yapılmadı;
-kaynağı kullanıcıdan beklenen bildirim metnine göre belirlenecek.
+Gerçek Paper sunucusunda: 18 protokol kontrolü başarılı.
+Global allow-flight=false iken gerçek havadaki konum kaydedilip yeniden bağlanıldı.
+Oyuncu kayıt/giriş ekranında 7 saniye havada beklerken uçma nedeniyle atılmadı.
+Doğrulanmadan uçuşa geçiş isteği reddedildi; başarıdan sonra survival oyuncusunun
+uçuş izni geri alındı. Genel allow-flight ayarı değiştirilmedi.
+Önceki kontroller de geçti: 6 karakterle kayıt/giriş, 5 karakter reddi,
+renkli/kalın büyük karşılama, envanter açılmaması, none after_action ile
+Geri dön / bekleme ekranı açılmadan doğrudan giriş, hareket/komut engeli,
+form doğrulaması, eski yanıt reddi, kilit, yeniden bağlantıda kilit ve çıkış.
+Sohbet iletileri doğrulanamıyor bildirimi istemci kaynaklıdır. Crack girişine
+izin verilen sunucularda görülebilir. Bu sürüm o bildirimi gizlemez.
+Testler yerel offline sunucuda sentetik oyuncularla yapıldı. Gerçek istemci
+görsel incelemesi, üçüncü taraf anti-cheat ve diğer eklenti uyumluluğu test edilmedi.

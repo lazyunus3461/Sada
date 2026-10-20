@@ -89,6 +89,11 @@ async function expectForm(b,from,contains) {
     console.log('PASS direct registration page with two text fields, welcome header and no inventory');
     assert(b.log.some(e=>e.name==='boss_bar'&&e.p.title&&componentText(simplify(e.p.title)).includes('Kasaba’ya Hoş Geldin')));
     console.log('PASS upper welcome bar');
+    assert(b.log.some(e=>e.name==='abilities'&&(e.p.flags&4)!==0));
+    let flightAttempt=b.log.length;b.c.write('abilities',{flags:2});
+    const noFly=await b.wait('abilities',p=>(p.flags&2)===0,flightAttempt);
+    assert((noFly.flags&4)!==0);
+    console.log('PASS actual flying cannot be toggled while unauthenticated');
     let start=b.log.length;
     b.c.write('chat_command',{command:'help'});
     await b.wait('system_chat',p=>text(p).includes('Önce giriş yap'),start);
@@ -113,8 +118,26 @@ async function expectForm(b,from,contains) {
     await b.wait('system_chat',p=>text(p).includes('keşfedebilirsin'),start);
     await b.wait('clear_dialog',()=>true,start);
     assert(!b.log.some(e=>e.name==='open_window'));
+    const restored=await b.wait('abilities',p=>(p.flags&4)===0,start);
+    assert.equal(restored.flags&2,0);
+    console.log('PASS survival flight permission restored after authentication');
     console.log('PASS six-character password registers and closes page');
+    // Persist a genuine mid-air survival position before reconnecting, so the
+    // authentication freeze is exercised above the ground, not on a solid block.
+    const ground=b.position;
+    b.c.write('position',{x:ground.x,y:ground.y+6,z:ground.z,flags:{onGround:false,hasHorizontalCollision:false}});
+    b.c.write('tick_end',{});await delay(200);
     await b.end();b=await connect(username);
+    assert(b.position.y>ground.y+3,'Airborne regression did not start above the ground');
+    const floatingStart=b.log.length;
+    const hoverUntil=Date.now()+7000;
+    while(Date.now()<hoverUntil) {
+        const pos=b.position;
+        b.c.write('position',{x:pos.x,y:pos.y,z:pos.z,flags:{onGround:false,hasHorizontalCollision:false}});
+        b.c.write('tick_end',{});await delay(50);
+        assert(!b.log.slice(floatingStart).some(e=>e.name==='kick_disconnect'),'Unauthenticated floating client was kicked');
+    }
+    console.log('PASS flight guard prevents kick during seven-second airborne auth wait');
     assert.deepEqual(b.form.inputs.map(i=>i.key),['password']);
     assert.equal(b.form.actions[0].label.text,'Giriş Yap');
     console.log('PASS reconnect opens login page directly');

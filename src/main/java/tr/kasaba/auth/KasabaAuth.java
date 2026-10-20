@@ -51,9 +51,20 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         final long deadline;
         final BossBar bar = BossBar.bossBar(WELCOME_HEADER, 1,
                 BossBar.Color.YELLOW, BossBar.Overlay.PROGRESS);
+        final boolean originalAllowFlight;
+        final boolean originalFlying;
         long formVersion;
         boolean busy;
-        Session(int timeout) { deadline = System.currentTimeMillis() + timeout * 1000L; }
+        Session(int timeout, Player player) {
+            deadline = System.currentTimeMillis() + timeout * 1000L;
+            originalAllowFlight = player.getAllowFlight();
+            originalFlying = player.isFlying();
+        }
+        void restoreFlight(Player player) {
+            if (!originalFlying) player.setFlying(false);
+            player.setAllowFlight(originalAllowFlight);
+            if (originalAllowFlight) player.setFlying(originalFlying);
+        }
     }
 
     @Override public void onEnable() {
@@ -81,7 +92,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         // Kimlik doğrulama eklentisini devre dışı bırakıp oyuncuları açıkta bırakma.
         for (Player p : Bukkit.getOnlinePlayers()) {
             Session s = sessions.get(p.getUniqueId());
-            if (s != null) { p.closeDialog(); p.hideBossBar(s.bar); }
+            if (s != null) { s.restoreFlight(p); p.closeDialog(); p.hideBossBar(s.bar); }
             p.kick(Component.text("Kayıt sistemi durduruldu. Lütfen yeniden bağlan.", NamedTextColor.RED));
         }
         if (workers != null) workers.shutdown();
@@ -111,8 +122,11 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
             p.kick(Component.text("Çok fazla hatalı giriş. Birkaç dakika sonra tekrar dene.", NamedTextColor.RED));
             return;
         }
-        Session s = new Session(timeout);
+        Session s = new Session(timeout, p);
         sessions.put(p.getUniqueId(), s);
+        // Sabit bekleyen oyuncu havadaysa vanilla uçma sayacı tetiklenmesin.
+        // Hareket hâlâ engelli; girişte/çıkışta önceki yetenekler geri yüklenir.
+        p.setAllowFlight(true);
         p.showBossBar(s.bar);
         p.showTitle(Title.title(WELCOME_HEADER,
                 Component.text("Devam etmek için kayıt ol veya giriş yap", NamedTextColor.YELLOW),
@@ -236,6 +250,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     }
 
     private void complete(Player p, Session s, boolean register) {
+        s.restoreFlight(p);
         authenticated.add(p.getUniqueId()); sessions.remove(p.getUniqueId()); failures.remove(key(p));
         p.closeDialog(); p.hideBossBar(s.bar);
         p.showTitle(Title.title(WELCOME_HEADER,
@@ -255,12 +270,15 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     @EventHandler public void quit(PlayerQuitEvent e) {
         authenticated.remove(e.getPlayer().getUniqueId());
         Session s = sessions.remove(e.getPlayer().getUniqueId());
-        if (s != null) { e.getPlayer().hideBossBar(s.bar); }
+        if (s != null) { s.restoreFlight(e.getPlayer()); e.getPlayer().hideBossBar(s.bar); }
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void move(PlayerMoveEvent e) {
         if (locked(e.getPlayer()) && e.hasChangedPosition()) e.setCancelled(true);
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void teleport(PlayerTeleportEvent e) {
+        if (locked(e.getPlayer())) e.setCancelled(true);
+    }
+    @EventHandler(priority = EventPriority.HIGHEST) public void toggleFlight(PlayerToggleFlightEvent e) {
         if (locked(e.getPlayer())) e.setCancelled(true);
     }
     @EventHandler(priority = EventPriority.HIGHEST) public void chat(AsyncChatEvent e) { if (locked(e.getPlayer())) e.setCancelled(true); }
