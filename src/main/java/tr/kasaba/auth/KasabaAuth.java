@@ -42,6 +42,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private final Set<UUID> authenticated = ConcurrentHashMap.newKeySet();
     private final Map<UUID, Session> sessions = new HashMap<>();
     private final Map<String, Failures> failures = new HashMap<>();
+    private final Map<UUID, Long> flightKickGrace = new HashMap<>();
     private final PasswordHasher hasher = new PasswordHasher();
     private AccountStore accounts;
     private ThreadPoolExecutor workers;
@@ -55,6 +56,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         final boolean originalFlying;
         long formVersion;
         boolean busy;
+        boolean flightKickLogged;
         Session(int timeout, Player player) {
             deadline = System.currentTimeMillis() + timeout * 1000L;
             originalAllowFlight = player.getAllowFlight();
@@ -96,7 +98,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
             p.kick(Component.text("Kayıt sistemi durduruldu. Lütfen yeniden bağlan.", NamedTextColor.RED));
         }
         if (workers != null) workers.shutdown();
-        sessions.clear(); authenticated.clear();
+        sessions.clear(); authenticated.clear(); flightKickGrace.clear();
     }
 
     private boolean locked(Player p) { return !authenticated.contains(p.getUniqueId()); }
@@ -113,6 +115,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     }
 
     private void begin(Player p) {
+        flightKickGrace.remove(p.getUniqueId());
         if (!p.getName().matches("[a-zA-Z0-9_]{1,16}")) {
             p.kick(Component.text("Bu oyuncu adı kayıt sistemi tarafından desteklenmiyor.")); return;
         }
@@ -137,6 +140,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private void tick() {
         long now = System.currentTimeMillis();
         failures.entrySet().removeIf(e -> e.getValue().until < now);
+        flightKickGrace.entrySet().removeIf(e -> e.getValue() <= now);
         for (Player p : Bukkit.getOnlinePlayers()) {
             Session s = sessions.get(p.getUniqueId());
             if (s == null) continue;
@@ -250,6 +254,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     }
 
     private void complete(Player p, Session s, boolean register) {
+        flightKickGrace.put(p.getUniqueId(), System.currentTimeMillis() + 5000L);
         s.restoreFlight(p);
         authenticated.add(p.getUniqueId()); sessions.remove(p.getUniqueId()); failures.remove(key(p));
         p.closeDialog(); p.hideBossBar(s.bar);
@@ -268,10 +273,28 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST) public void join(PlayerJoinEvent e) { begin(e.getPlayer()); }
     @EventHandler public void quit(PlayerQuitEvent e) {
+        flightKickGrace.remove(e.getPlayer().getUniqueId());
         authenticated.remove(e.getPlayer().getUniqueId());
         Session s = sessions.remove(e.getPlayer().getUniqueId());
         if (s != null) { s.restoreFlight(e.getPlayer()); e.getPlayer().hideBossBar(s.bar); }
     }
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void flyingKick(PlayerKickEvent e) {
+        UUID id = e.getPlayer().getUniqueId();
+        Session session = sessions.get(id);
+        boolean flying = e.getCause() == PlayerKickEvent.Cause.FLYING_PLAYER
+                || e.getCause() == PlayerKickEvent.Cause.FLYING_VEHICLE;
+        if (flying && (session != null || flightKickGrace.getOrDefault(id, 0L) > System.currentTimeMillis())) {
+            e.setCancelled(true);
+            if (session != null && !session.flightKickLogged) {
+                session.flightKickLogged = true;
+                getLogger().info("Giriş ekranındaki uçma atılması engellendi: " + id + " (" + e.getCause() + ")");
+            }
+        } else if (session != null) {
+            getLogger().info("Giriş sırasında bağlantı kapatılıyor: " + id + " (" + e.getCause() + ")");
+        }
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void move(PlayerMoveEvent e) {
         if (locked(e.getPlayer()) && e.hasChangedPosition()) e.setCancelled(true);
     }

@@ -30,6 +30,8 @@ async function connect(username) {
         const deadline=Date.now()+12000;
         while(Date.now()<deadline) {
             if(clientError) throw clientError;
+            const kicked=log.slice(from).find(e=>e.name==='kick_disconnect');
+            if(kicked&&name!=='kick_disconnect')throw new Error('Disconnected: '+text(kicked.p));
             const found=log.slice(from).find(e=>e.name===name && predicate(e.p));
             if(found) return found.p;
             await delay(25);
@@ -57,7 +59,7 @@ async function connect(username) {
 async function expectForm(b,from,contains) {
     return b.wait('show_dialog',p=>text(p).includes(contains),from);
 }
-(async()=>{
+async function run(){
     const status=await mc.ping({...options,closeTimeout:3000});
     assert(status.version.name.includes('1.21.10'));
     console.log('PASS real Paper 1.21.10 status response');
@@ -171,4 +173,6 @@ async function expectForm(b,from,contains) {
     await exit.wait('kick_disconnect',p=>text(p).includes('tekrar görüşmek'),start);
     await exit.end();
     console.log('PASS page exit button disconnects safely');
-})().then(()=>process.exit(0)).catch(e=>{console.error('FAIL',e);process.exit(1);});
+}
+module.exports={connect,options,delay,text};
+if(require.main===module)run().then(()=>process.exit(0)).catch(e=>{console.error('FAIL',e);process.exit(1);});

@@ -1,16 +1,20 @@
-KasabaAuth 1.1.3 — Doğrulama
-Paper 1.21.10 build 130 / Java 21.
-Maven verify: 12 birim testi, 0 başarısız, 0 hata, 0 atlanan.
-Gerçek Paper sunucusunda: 18 protokol kontrolü başarılı.
-Global allow-flight=false iken gerçek havadaki konum kaydedilip yeniden bağlanıldı.
-Oyuncu kayıt/giriş ekranında 7 saniye havada beklerken uçma nedeniyle atılmadı.
-Doğrulanmadan uçuşa geçiş isteği reddedildi; başarıdan sonra survival oyuncusunun
-uçuş izni geri alındı. Genel allow-flight ayarı değiştirilmedi.
-Önceki kontroller de geçti: 6 karakterle kayıt/giriş, 5 karakter reddi,
-renkli/kalın büyük karşılama, envanter açılmaması, none after_action ile
-Geri dön / bekleme ekranı açılmadan doğrudan giriş, hareket/komut engeli,
-form doğrulaması, eski yanıt reddi, kilit, yeniden bağlantıda kilit ve çıkış.
-Sohbet iletileri doğrulanamıyor bildirimi istemci kaynaklıdır. Crack girişine
-izin verilen sunucularda görülebilir. Bu sürüm o bildirimi gizlemez.
-Testler yerel offline sunucuda sentetik oyuncularla yapıldı. Gerçek istemci
-görsel incelemesi, üçüncü taraf anti-cheat ve diğer eklenti uyumluluğu test edilmedi.
+KasabaAuth 1.1.4 — Doğrulama
+Paper 1.21.10 build 130 / Java 21 / global allow-flight=false.
+Birim testleri: 12 geçti, 0 başarısız, 0 hata, 0 atlanan.
+Standart gerçek-sunucu protokol kontrolleri: 18 geçti.
+Yeni uçma regresyon kontrolleri: 7 geçti.
+
+Önce 1.1.3'te gerçek native clientIsFloating/aboveGroundTickCount durumu
+oluşturuldu; giriş ekranında multiplayer.disconnect.flying ile atılma
+tekrarlandı. Bu, eski testlerin kaçırdığı durumdur.
+1.1.4 aynı native durumu atılmadan geçti. Kayıt ekranındaki FLYING_PLAYER
+ve FLYING_VEHICLE nedenleri iptal edildi; kayıt tamamlandı. Girişten sonraki
+5 saniyelik geçiş koruması doğrulandı. Süre bitince gerçek uçma nedenli
+atma yeniden çalıştı. Kayıt sırasında PLUGIN nedenli normal atma engellenmedi.
+Yalnızca test için kullanılan loopback FlightProbe üretim JAR'ına dahil değildir.
+
+6 karakterle kayıt/giriş, 5 karakter reddi, renkli başlık, doğrudan form,
+Geri dön ekranının olmaması, hareket engeli, uçuş izninin geri yüklenmesi,
+form doğrulamaları, eski yanıt reddi ve yanlış şifre kilidi de geçti.
+Gerçek istemcide görsel inceleme ve başka anti-cheat eklentileriyle uyumluluk
+kontrolü yapılmadı. Sohbet doğrulama uyarısı bu sürümde gizlenmiyor.
