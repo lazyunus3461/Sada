@@ -3,11 +3,13 @@ from pathlib import Path
 import hashlib
 import shutil
 import zipfile
+import xml.etree.ElementTree as ET
 
 root = Path(__file__).resolve().parents[2]
 dist = root / "dist"
 dist.mkdir(exist_ok=True)
-jar_name = "KasabaRoles-1.0.0.jar"
+version = ET.parse(root / "kasaba-roles/pom.xml").getroot().findtext("{http://maven.apache.org/POM/4.0.0}version")
+jar_name = f"KasabaRoles-{version}.jar"
 shutil.copyfile(root / "kasaba-roles/target" / jar_name, dist / jar_name)
 
 source_zip = dist / "KasabaRoles-Kaynak.zip"

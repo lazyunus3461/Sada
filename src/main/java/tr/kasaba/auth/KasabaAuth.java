@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.logging.Level;
 
 public final class KasabaAuth extends JavaPlugin implements Listener {
     private static final String WELCOME = "Kasaba’ya Hoş Geldin";
@@ -45,6 +46,10 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     private final Map<UUID, Long> flightKickGrace = new HashMap<>();
     private final PasswordHasher hasher = new PasswordHasher();
     private AccountStore accounts;
+    private AuthSpawnStore spawnStore;
+    private AuthSpawnStore.Point spawn;
+    private boolean spawnStorageFailed;
+    private final Map<UUID, Location> permittedTeleports = new HashMap<>();
     private ThreadPoolExecutor workers;
     private int timeout, maxAttempts, lockout, minLength, maxLength;
     private static final class Failures { int count; long until; }
@@ -84,6 +89,12 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         maxLength = Math.clamp(getConfig().getInt("maximum-password-length", 64), minLength, 64);
         try { accounts = new AccountStore(getDataFolder().toPath().resolve("accounts")); }
         catch (IOException e) { throw new IllegalStateException("Hesap dizini açılamadı; eklenti başlatılamıyor", e); }
+        spawnStore = new AuthSpawnStore(getDataFolder().toPath().resolve("kayit-yeri.yml"));
+        try { spawn = spawnStore.load(); }
+        catch (IOException e) {
+            spawnStorageFailed = true;
+            getLogger().log(Level.SEVERE, "Kayıt yeri okunamadı. Girişler durduruldu; konsoldan kayityeri sil ile sıfırlayabilirsin.", e);
+        }
         workers = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<>(32));
         getServer().getPluginManager().registerEvents(this, this);
         Bukkit.getScheduler().runTaskTimer(this, this::tick, 20, 20);
@@ -98,7 +109,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
             p.kick(Component.text("Kayıt sistemi durduruldu. Lütfen yeniden bağlan.", NamedTextColor.RED));
         }
         if (workers != null) workers.shutdown();
-        sessions.clear(); authenticated.clear(); flightKickGrace.clear();
+        sessions.clear(); authenticated.clear(); flightKickGrace.clear(); permittedTeleports.clear();
     }
 
     private boolean locked(Player p) { return !authenticated.contains(p.getUniqueId()); }
@@ -116,6 +127,9 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
 
     private void begin(Player p) {
         flightKickGrace.remove(p.getUniqueId());
+        if (spawnStorageFailed) {
+            p.kick(Component.text("Kayıt yeri ayarına erişilemiyor. Yöneticiye haber ver.", NamedTextColor.RED)); return;
+        }
         if (!p.getName().matches("[a-zA-Z0-9_]{1,16}")) {
             p.kick(Component.text("Bu oyuncu adı kayıt sistemi tarafından desteklenmiyor.")); return;
         }
@@ -130,11 +144,36 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         // Sabit bekleyen oyuncu havadaysa vanilla uçma sayacı tetiklenmesin.
         // Hareket hâlâ engelli; girişte/çıkışta önceki yetenekler geri yüklenir.
         p.setAllowFlight(true);
+        AuthSpawnStore.Point destination = spawn;
+        if (destination != null) Bukkit.getScheduler().runTask(this, () -> {
+            if (current(p, s)) moveToSpawn(p, destination);
+        });
         p.showBossBar(s.bar);
         p.showTitle(Title.title(WELCOME_HEADER,
                 Component.text("Devam etmek için kayıt ol veya giriş yap", NamedTextColor.YELLOW),
                 Title.Times.times(Duration.ofMillis(200), Duration.ofMillis(1400), Duration.ofMillis(300))));
         Bukkit.getScheduler().runTaskLater(this, () -> { if (current(p, s)) form(p, s, null); }, 40);
+    }
+
+    private void moveToSpawn(Player p, AuthSpawnStore.Point point) {
+        World world = Bukkit.getWorld(point.world());
+        if (world == null || point.y() < world.getMinHeight() || point.y() >= world.getMaxHeight()) {
+            getLogger().warning("Kayıt yeri dünyası/konumu kullanılamıyor: " + point.worldName());
+            p.kick(Component.text("Kayıt yeri kullanılamıyor. Yöneticiye haber ver.", NamedTextColor.RED)); return;
+        }
+        Location destination = new Location(world, point.x(), point.y(), point.z(), point.yaw(), point.pitch());
+        permittedTeleports.put(p.getUniqueId(), destination.clone());
+        try {
+            if (!p.teleport(destination, PlayerTeleportEvent.TeleportCause.PLUGIN))
+                p.kick(Component.text("Kayıt yerine geçilemiyor. Yöneticiye haber ver.", NamedTextColor.RED));
+            else p.setFallDistance(0);
+        } finally { permittedTeleports.remove(p.getUniqueId()); }
+    }
+
+    private boolean permittedTeleport(PlayerMoveEvent event) {
+        return event instanceof PlayerTeleportEvent teleport
+                && teleport.getCause() == PlayerTeleportEvent.TeleportCause.PLUGIN
+                && event.getTo().equals(permittedTeleports.get(event.getPlayer().getUniqueId()));
     }
 
     private void tick() {
@@ -264,6 +303,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     }
 
     @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (command.getName().equals("kayityeri")) return spawnCommand(sender, args);
         if (!(sender instanceof Player p)) { sender.sendMessage("Bu komut oyun içinden kullanılır."); return true; }
         if (args.length > 0) { tell(p, "Şifreyi komuta yazma. Sadece /kasaba kullan."); return true; }
         Session s = sessions.get(p.getUniqueId());
@@ -271,9 +311,54 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         return true;
     }
 
+    private boolean spawnCommand(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("kasabaauth.admin") && !sender.hasPermission("kasabaroles.admin")) {
+            sender.sendMessage(Component.text("Bu komut için yetkin yok.", NamedTextColor.RED)); return true;
+        }
+        if (sender instanceof Player p && locked(p)) { tell(p, "Önce giriş yap."); return true; }
+        String action = args.length == 0 ? "bilgi" : args[0].toLowerCase(Locale.ROOT);
+        try {
+            switch (action) {
+                case "ayarla" -> {
+                    if (!(sender instanceof Player p)) {
+                        sender.sendMessage("Kayıt yerinde durup oyun içinden /kayityeri ayarla yaz."); return true;
+                    }
+                    Location location = p.getLocation();
+                    AuthSpawnStore.Point next = new AuthSpawnStore.Point(location.getWorld().getUID(), location.getWorld().getName(),
+                            location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+                    spawnStore.save(next); spawn = next; spawnStorageFailed = false;
+                    tell(p, "Kayıt/giriş yeri bulunduğun noktaya ayarlandı. Yeni bağlanan oyuncular burada giriş yapacak.");
+                }
+                case "sil" -> {
+                    spawnStore.save(null); spawn = null; spawnStorageFailed = false;
+                    sender.sendMessage(Component.text("Kayıt yeri kaldırıldı. Oyuncular bulundukları yerde giriş yapacak.", NamedTextColor.YELLOW));
+                }
+                case "bilgi" -> {
+                    String message = spawnStorageFailed ? "Kayıt yeri dosyası okunamadı; konsolu kontrol et."
+                            : spawn == null ? "Kayıt yeri ayarlı değil. Kullanım: /kayityeri ayarla"
+                            : String.format(Locale.ROOT, "Kayıt yeri: %s — X: %.2f Y: %.2f Z: %.2f", spawn.worldName(), spawn.x(), spawn.y(), spawn.z());
+                    sender.sendMessage(Component.text(message, NamedTextColor.YELLOW));
+                }
+                default -> sender.sendMessage("Kullanım: /kayityeri ayarla | bilgi | sil");
+            }
+        } catch (IOException e) {
+            getLogger().log(Level.SEVERE, "Kayıt yeri kaydedilemedi; mevcut ayar korundu.", e);
+            sender.sendMessage(Component.text("Kayıt yeri kaydedilemedi. Konsolu kontrol et.", NamedTextColor.RED));
+        }
+        return true;
+    }
+
+    @Override public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+        if (!command.getName().equals("kayityeri") || args.length != 1
+                || (!sender.hasPermission("kasabaauth.admin") && !sender.hasPermission("kasabaroles.admin"))) return List.of();
+        String prefix = args[0].toLowerCase(Locale.ROOT);
+        return List.of("ayarla", "bilgi", "sil").stream().filter(s -> s.startsWith(prefix)).toList();
+    }
+
     @EventHandler(priority = EventPriority.LOWEST) public void join(PlayerJoinEvent e) { begin(e.getPlayer()); }
     @EventHandler public void quit(PlayerQuitEvent e) {
         flightKickGrace.remove(e.getPlayer().getUniqueId());
+        permittedTeleports.remove(e.getPlayer().getUniqueId());
         authenticated.remove(e.getPlayer().getUniqueId());
         Session s = sessions.remove(e.getPlayer().getUniqueId());
         if (s != null) { s.restoreFlight(e.getPlayer()); e.getPlayer().hideBossBar(s.bar); }
@@ -296,10 +381,10 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void move(PlayerMoveEvent e) {
-        if (locked(e.getPlayer()) && e.hasChangedPosition()) e.setCancelled(true);
+        if (locked(e.getPlayer()) && e.hasChangedPosition() && !permittedTeleport(e)) e.setCancelled(true);
     }
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true) public void teleport(PlayerTeleportEvent e) {
-        if (locked(e.getPlayer())) e.setCancelled(true);
+        if (locked(e.getPlayer()) && !permittedTeleport(e)) e.setCancelled(true);
     }
     @EventHandler(priority = EventPriority.HIGHEST) public void toggleFlight(PlayerToggleFlightEvent e) {
         if (locked(e.getPlayer())) e.setCancelled(true);

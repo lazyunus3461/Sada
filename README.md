@@ -1,4 +1,4 @@
-# KasabaAuth 1.1.4
+# KasabaAuth 1.2.0
 
 Rol ve renkli TAB eklentisi: **[KasabaRoles](kasaba-roles/README.md)**. Türkçe komutlarla Kurucu, Admin, Moderatör, Rehber, VIP ve Oyuncu rolleri yönetilir.
 
@@ -10,13 +10,24 @@ Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya H
 
 1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
 2. Önceki KasabaAuth JAR dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
-3. `KasabaAuth-1.1.4.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.1.4` etkinleşmeli.
+3. `KasabaAuth-1.2.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.2.0` etkinleşmeli.
 5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
 Önceki KasabaAuth sürümlerindeki hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
 
 `/kasaba` kayıt / giriş sayfasını tekrar açar. `/giris`, `/kayit`, `/login`, `/register` aynı işlemin kısayollarıdır. **Komuta veya sohbete şifre yazma.**
+
+## Kayıt / giriş yerini ayarla
+
+Oyunda istediğin noktada dur, oyuncuların bakmasını istediğin yöne dön ve **`/kayityeri ayarla`** yaz. OP veya KasabaRoles Kurucu yetkisi (`kasabaroles.admin`) ya da `kasabaauth.admin` gerekir. Önce kendi hesabına giriş yapmalısın.
+
+Bu noktayı ayarladıktan sonra **her bağlanışta** yeni ve kayıtlı oyuncular kayıt/giriş noktasına ışınlanır. Doğrulama bitince de burada kalırlar. Son çıkış konumuna dönmezler. Konum, dünya ve bakış yönü `plugins/KasabaAuth/kayit-yeri.yml` dosyasına kaydedilir; tam yeniden başlatmada korunur.
+
+- `/kayityeri bilgi`: mevcut noktayı gösterir.
+- `/kayityeri sil`: özel noktayı kaldırır; oyuncular tekrar son bulundukları yerde giriş yapar. Konsoldan da `kayityeri sil` kullanılabilir.
+
+İlk kurulumda kayıt yeri ayarlı değildir; komutla belirleyene kadar eski davranış sürer. Dünya spawnı ve doğma yatağı değiştirilmez; bu ayar yalnızca sunucuya bağlanmayı düzenler, ölüm sonrası doğma noktasını değiştirmez. Güvenli, yerde duran bir nokta seç. Belirlenen dünya yüklenmemişse giriş reddedilir ve yöneticiye hata kaydı yazılır. Hatalı kayıt yeri dosyası da girişleri durdurur; dosyayı yedekleyip konsoldan `kayityeri sil` ile sıfırlayabilirsin. Hesap ve şifre dosyaları korunur.
 
 ## Davranış ve sınırlar
 
@@ -54,7 +65,7 @@ JDK 21 ve Maven 3.9+ ile:
 mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.1.4.jar`. Birim testleri: 12. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
+Çıktı: `target/KasabaAuth-1.2.0.jar`. Birim testleri: 17. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
 Bulut komutları:
 
@@ -62,7 +73,7 @@ Bulut komutları:
 bash /workspace/Sada/scripts/cloud-build.sh
 bash /workspace/Sada/scripts/integration/build-probe.sh
 # Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
-cp /workspace/Sada/target/KasabaAuth-1.1.4.jar /workspace/kasaba-test-server/plugins/
+cp /workspace/Sada/target/KasabaAuth-1.2.0.jar /workspace/kasaba-test-server/plugins/
 cp /workspace/Sada/target/KasabaAuthFlightProbe.jar /workspace/kasaba-test-server/plugins/
 # Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
@@ -82,3 +93,5 @@ Test istemcisinde, `minecraft-data` paketindeki eski diyalog yanıt şemasına y
 Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk kontrolü ayrıca yapılmalıdır.
 
 `flight-regression.cjs` ek olarak 7 uçma regresyon kontrolü yapar. Yalnızca loopback test sunucusunda çalışan `KasabaAuthFlightProbe` yardımcı eklentisi, Paper 1.21.10’un gerçek uçma sayacını taşmış duruma getirir ve gerçek `PlayerKickEvent` nedenlerini tetikler. Eski 1.1.3 sürümü bu senaryoda atılır; yeni sürüm kayıt/giriş ve 5 saniyelik geçişte korur. Süre dolunca uçma atılmasının ve kayıt sırasında normal PLUGIN atmasının çalıştığı da sınanır. Yardımcı eklenti üretim JAR’ına eklenmez; gerçek sunucuya yalnızca KasabaAuth JAR’ını koy.
+
+Kayıt noktası testi: repo kökünde `node scripts/integration/spawn-regression.cjs`. KasabaRoles ve yerel FlightProbe test yardımcısı bulunmalıdır. Altı grup, yetki denetimini, nokta ayarlama/bilgiyi, son çıkış yerinden farklı noktada yeniden bağlanmayı, giriş sırasında başka ışınlanmaların engellenmesini, giriş sonrası aynı yerde kalmayı ve yeni kayıt olmayı sınar. Çıktıdaki `PERSIST_USER` adını al, test sunucusunu tamamen kapatıp aç ve `KASABA_SPAWN_PERSIST=1 KASABA_SPAWN_USER=<ad> node scripts/integration/spawn-regression.cjs` çalıştır. Bu aşama kalıcılığı ve `sil` sonrası eski davranışın geri gelmesini sınar. Ardından normal kayıt ve uçma testlerini çalıştır. Yardımcının kayıt yeri test kanalı da yalnızca loopback sunucusunda bulunur; üretim JAR'ına dahil değildir.

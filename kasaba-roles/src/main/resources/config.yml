@@ -1,6 +1,10 @@
 default-role: oyuncu
 # Başka bir TAB eklentisi kullanıyorsan false yap; yetkiler çalışmaya devam eder.
 manage-tab: true
+# Sohbette [Rol] Oyuncu » mesaj biçimini kullanır. Eski ayarlarda da varsayılan true.
+manage-chat: true
+# Kafa üstündeki [Rol] etiketini mevcut scoreboard üzerindeki kendi takımlarıyla gösterir.
+manage-nametags: true
 roles:
   kurucu:
     label: Kurucu

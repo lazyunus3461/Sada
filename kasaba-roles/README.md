@@ -1,16 +1,16 @@
-# KasabaRoles 1.0.0
+# KasabaRoles 1.1.0
 
 Paper **1.21.10**, Java **21** için Kasaba'nın bağımsız rol eklentisi. LuckPerms veya TAB gerekmez. KasabaAuth ile birlikte çalışabilir. Oyuncuya verilen rol kaydedilir; yeniden bağlanınca ve sunucu yeniden başlayınca korunur.
 
-TAB listesinde renkli, kalın rol etiketi ve beyaz oyuncu adı görünür: **[Kurucu] Redkit**. Rol sırası yüksek olan üstte görünür. Sohbet biçimi ve oyuncunun kafasının üstündeki isim değiştirilmez.
+TAB listesinde ve oyuncunun kafasının üstünde renkli, kalın rol etiketi görünür: **[Kurucu] Redkit**. Sohbet biçimi **[Kurucu] Redkit » mesaj** olur. Rol sırası yüksek olan TAB'da üstte görünür. Rol verildiğinde veya adı/rengi değiştiğinde üç görünüm de güncellenir.
 
 ## İndir ve kur
 
-[KasabaRoles-1.0.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaRoles-1.0.0.jar)
+[KasabaRoles-1.1.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaRoles-1.1.0.jar)
 
 1. Sunucuyu durdur.
 2. JAR dosyasını sunucunun `plugins` klasörüne koy. KasabaAuth dosyasını kaldırma; bu ayrı bir eklentidir.
-3. Sunucuyu yeniden aç. Konsolda `KasabaRoles v1.0.0` etkinleşmeli.
+3. Sunucuyu yeniden aç. Konsolda `KasabaRoles v1.1.0` etkinleşmeli.
 4. **Sunucu konsoluna**, başına `/` koymadan, `rol ver Redkit kurucu` yaz. `Redkit` yerine kendi Minecraft adını yaz.
 5. Artık oyunda `/rol` komutlarını kullanabilirsin. İlk Kurucu ataması konsoldan veya zaten OP olan bir oyuncudan yapılır.
 
@@ -58,12 +58,16 @@ Rol yönetimi için `kasabaroles.admin` gerekir; varsayılan olarak OP oyuncular
 
 `eklenti.*` ve `*`, Bukkit'e kayıtlı yetki düğümleri için genişletilir. Kayıtlı olmayan yetkileri tam adlarıyla ekle. Tam yetki kuralı jokerden, daha uzun joker kuralı daha kısa jokerden önceliklidir. `ver`, `yasakla` ve `sil`, yetki düğümünü sağlayan diğer eklentinin izin denetimleriyle çalışır; başka bir eklentinin kendi OP kontrolünü değiştirmez.
 
-Rol etiketinin rengi `color`, oyuncu adının rengi `name-color`, sıralama değeri `priority` alanındadır. Sonradan başka bir TAB eklentisi kurarsan `manage-tab: false` yapıp `/rol yenile` kullanabilirsin; rol yetkileri devam eder. Bu sürümde birden fazla TAB yöneticisinin aynı anda etiketi değiştirmesi desteklenmez.
+Rol etiketinin rengi `color`, oyuncu adının rengi `name-color`, sıralama değeri `priority` alanındadır. `manage-tab`, `manage-chat` ve `manage-nametags` ayrı ayrı kapatılabilir; ardından `/rol yenile` kullan. Eski 1.0.0 ayarları ve rol atamaları korunur; yeni sohbet ve kafa üstü özellikleri varsayılan açık gelir.
+
+Sohbet Paper'ın chat renderer API'siyle biçimlenir; mesaj içeriği, alıcılar, iptal/filtreleme akışı korunur. Mesaj imzaları veya Minecraft'ın sohbet güvenliği durumu değiştirilmez. Eşzamanlı sohbet işlemleri, rol verisinin değişmez anlık kopyasını kullanır.
+
+Kafa üstü etiketleri mevcut scoreboard üzerinde yalnızca bu eklentinin oluşturduğu `kr...` takımlarını kullanır. Kişisel scoreboard değiştiğinde iki saniye içinde etiketler yeni tahtaya eklenir; sidebar ve objective'ler değiştirilmez. Bir oyuncu zaten başka eklentinin takımındaysa o takım devralınmaz; etiket atlanır ve konsola uyarı yazılır. Böyle bir durumda kafa üstü görünümünü tek eklentiden yönet. Minecraft'ın takım adı rengi 16 renkle sınırlıdır; özel HEX `name-color` için kafa üstündeki oyuncu adı en yakın renge çevrilir. Rol etiketi HEX rengini korur. Oyuncu kendi etiketini normal birinci şahıs görünümünde göremez; başka oyuncuyla kontrol et.
 
 Dosyaları elle düzenlemeden önce yedekle. Hatalı `/rol yenile` mevcut çalışan rol verisini değiştirmez. İlk açılışta bozuk dosya varsa konsola hata yazılır ve eklenti devre dışı kalır. Eklenti değişiminde sunucuyu tamamen yeniden başlat; Bukkit `/reload` kullanma.
 
 ## Derleme ve test
 
-JDK 21 / Maven 3.9+ ile bu klasörde `mvn -B clean verify`. Çıktı: `target/KasabaRoles-1.0.0.jar`.
+JDK 21 / Maven 3.9+ ile bu klasörde `mvn -B clean verify`. Çıktı: `target/KasabaRoles-1.1.0.jar`.
 
 Bulutta `bash /workspace/Sada/kasaba-roles/scripts/cloud-build.sh` bağımlılıkları hazırlayıp birim testlerini ve derlemeyi çalıştırır. Protokol testleri için [test yönergelerine](scripts/integration/README.md) bak. Test yardımcı eklentisini gerçek sunucuya kurma.

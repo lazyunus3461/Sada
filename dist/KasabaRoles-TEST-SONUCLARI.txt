@@ -1,11 +1,12 @@
-KasabaRoles 1.0.0 — 21 Ekim 2026
+KasabaRoles 1.1.0 — 21 Ekim 2026
 Paper 1.21.10 build 130 / Java 21
 
-BAŞARILI: 17 JUnit testi
+BAŞARILI: 19 JUnit testi
 - Devralınan yetkiler, açık ret, döngü ve eksik rol kontrolü.
 - Tam yetkinin jokerden önceliği, benzer adlara yanlış izin verilmemesi.
 - Türkçe varsayılan roller, kalıcı dosya yazma ve yeniden okuma.
 - Bozuk YAML, hatalı renk/yetki, yanlış veri biçimi ve çift oyuncu kaydı reddi.
+- Sohbetin rol/oyuncu/mesaj içeriği ve kalın etiketin mesaj stiline taşmaması.
 
 BAŞARILI: Gerçek Paper protokol testi (8 grup + tam yeniden başlatma)
 1. Varsayılan Oyuncu TAB etiketi; yetkisiz oyuncu kendine Kurucu veremez.
@@ -22,8 +23,20 @@ TAB'ın gerçek player_info paketinde etiket metni, renk ve liste sırası sına
 Yetkiler loopback test yardımcısı ile gerçek Player.hasPermission üzerinden okundu.
 Test yardımcısının sınıfları ve kanalı üretim JAR'ına dahil değildir.
 
-KasabaAuth 1.1.4 birlikte yüklüyken 12 birim testi ile mevcut 18 kayıt/giriş ve
-7 uçma regresyon kontrolü de geçti. KasabaAuth üretim kodu değiştirilmedi.
+KasabaAuth 1.2.0 birlikte yüklendi. Auth için 17 birim testi ile mevcut
+18 kayıt/giriş, 7 uçma ve 8 kayıt noktası kontrolü ayrıca geçti.
+
+1.1.0 yeni sohbet kontrolleri: 4 grup.
+- Gönderen ve izleyici aynı renkli [Kurucu] Oyuncu » mesaj biçimini alır.
+- Rol değişikliği sonraki sohbet mesajına hemen yansır.
+- Türkçe isim/renk komutları sohbet etiketini de günceller.
+- Rol kaldırılınca eski sohbet etiketi yerine Oyuncu görünür.
+
+1.1.0 kafa üstü kontrolleri: 4 grup.
+- Diğer oyuncuya gerçek teams paketinde rol etiketi iletilir; rol değişince güncellenir.
+- İzleyicinin kişisel scoreboard'una geçişte etiket eklenir, sidebar korunur.
+- Kişisel ve ortak scoreboard'lardaki rol değişiklikleri uygulanır.
+- Çıkışta sadece bu eklentinin takımları temizlenir; mevcut sidebar kalır.
 
 Test istemcisindeki iki eski minecraft-data paket tanımı, gerçek 1.21.10
 protokolüne göre yalnızca test kapsamında düzeltildi: diyalog yanıtı NBT uzunluğu

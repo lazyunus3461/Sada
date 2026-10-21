@@ -1,13 +1,13 @@
-KasabaAuth 1.1.4 — Doğrulama
+KasabaAuth 1.2.0 — Doğrulama
 Paper 1.21.10 build 130 / Java 21 / global allow-flight=false.
-Birim testleri: 12 geçti, 0 başarısız, 0 hata, 0 atlanan.
+Birim testleri: 17 geçti, 0 başarısız, 0 hata, 0 atlanan.
 Standart gerçek-sunucu protokol kontrolleri: 18 geçti.
 Yeni uçma regresyon kontrolleri: 7 geçti.
 
 Önce 1.1.3'te gerçek native clientIsFloating/aboveGroundTickCount durumu
 oluşturuldu; giriş ekranında multiplayer.disconnect.flying ile atılma
 tekrarlandı. Bu, eski testlerin kaçırdığı durumdur.
-1.1.4 aynı native durumu atılmadan geçti. Kayıt ekranındaki FLYING_PLAYER
+Yeni sürüm aynı native durumu atılmadan geçti. Kayıt ekranındaki FLYING_PLAYER
 ve FLYING_VEHICLE nedenleri iptal edildi; kayıt tamamlandı. Girişten sonraki
 5 saniyelik geçiş koruması doğrulandı. Süre bitince gerçek uçma nedenli
 atma yeniden çalıştı. Kayıt sırasında PLUGIN nedenli normal atma engellenmedi.
@@ -18,3 +18,17 @@ Geri dön ekranının olmaması, hareket engeli, uçuş izninin geri yüklenmesi
 form doğrulamaları, eski yanıt reddi ve yanlış şifre kilidi de geçti.
 Gerçek istemcide görsel inceleme ve başka anti-cheat eklentileriyle uyumluluk
 kontrolü yapılmadı. Sohbet doğrulama uyarısı bu sürümde gizlenmiyor.
+
+Yeni kayıt noktası kontrolleri: 8 geçti.
+- Kimlik doğrulanmadan veya yönetim yetkisi olmadan ayar değiştirilemiyor.
+- KasabaRoles Kurucu rolü /kayityeri ayarla ve bilgi komutlarını kullanabiliyor.
+- Konum, dünya ve bakış yönü dosyaya kaydediliyor.
+- Başka yerde çıkış yapan oyuncu yeniden bağlanınca kayıt noktasında başlıyor.
+- Sadece kendi kayıt noktası ışınlanması giriş kilidini aşabiliyor; başka plugin
+  ışınlanmaları engellenmeye devam ediyor.
+- Giriş ve yeni kayıt tamamlanınca oyuncu belirlenen noktada kalıyor.
+- Tam sunucu yeniden başlatmasından sonra nokta korunuyor.
+- Nokta silinince normal son konumdan giriş geri geliyor; mevcut hesap kaybolmuyor.
+Normal son konum kontrolünde vanilla çarpışma hareketi için 1 blok tolerans var;
+kayıt noktasına gelişte konum ve bakış yönü tam değerlerle doğrulandı.
+Testler 21 Ekim 2026 tarihinde loopback Paper 1.21.10 build 130 üzerinde yapıldı.

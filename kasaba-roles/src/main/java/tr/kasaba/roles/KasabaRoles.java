@@ -1,9 +1,10 @@
 package tr.kasaba.roles;
 
+import io.papermc.paper.chat.ChatRenderer;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.*;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -27,12 +28,16 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
     private Map<String,String> assignments=new LinkedHashMap<>();
     private final Map<UUID,Applied> applied=new HashMap<>();
     private Path configPath,playersPath;
+    private record ChatSettings(boolean enabled, Map<String,Role> players, Role defaultRole) {}
+    private volatile ChatSettings chatSettings;
+    private NameTags nameTags;
     private static final class Applied {
         final Component originalName;final int originalOrder;
         PermissionAttachment attachment;Component lastName;int lastOrder;boolean tabWritten;
         Applied(Player p){originalName=p.playerListName();originalOrder=p.getPlayerListOrder();}
     }
     @Override public void onEnable() {
+        nameTags=new NameTags(getLogger());
         saveDefaultConfig();
         configPath=getDataFolder().toPath().resolve("config.yml");
         playersPath=getDataFolder().toPath().resolve("oyuncular.yml");
@@ -46,10 +51,12 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         Objects.requireNonNull(getCommand("rol")).setTabCompleter(this);
         getServer().getPluginManager().registerEvents(this,this);
         Bukkit.getScheduler().runTask(this,this::applyAll);
+        Bukkit.getScheduler().runTaskTimer(this,this::refreshNameTags,20,40);
     }
     @Override public void onDisable() {
         for(Player p:Bukkit.getOnlinePlayers())remove(p);
         applied.clear();
+        if(nameTags!=null)nameTags.clear();
     }
     private Role role(String name) {
         String id=assignments.getOrDefault(Role.playerKey(name),configuration.catalog().defaultRole().id());
@@ -59,8 +66,19 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         var next=RoleFiles.configuration(RoleFiles.read(configPath));
         var nextAssignments=RoleFiles.assignments(RoleFiles.read(playersPath),next.catalog());
         configuration=next;assignments=nextAssignments;
+        refreshChat();
     }
-    private void applyAll(){if(configuration!=null)for(Player p:Bukkit.getOnlinePlayers())apply(p);}
+    private void refreshChat() {
+        Map<String,Role> roles=new HashMap<>();
+        assignments.forEach((name,id)->roles.put(name,configuration.catalog().get(id)));
+        chatSettings=new ChatSettings(configuration.manageChat(),Map.copyOf(roles),configuration.catalog().defaultRole());
+    }
+    private void applyAll(){if(configuration!=null){refreshChat();for(Player p:Bukkit.getOnlinePlayers())apply(p);refreshNameTags();}}
+    private void refreshNameTags() {
+        if(configuration==null)return;
+        if(configuration.manageNameTags())nameTags.refresh(Bukkit.getOnlinePlayers(),this::role);
+        else nameTags.clear();
+    }
     private void apply(Player p) {
         Applied state=applied.computeIfAbsent(p.getUniqueId(),id->new Applied(p));
         if(state.attachment!=null)p.removeAttachment(state.attachment);
@@ -70,8 +88,7 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         PermissionRules.expand(configuration.catalog().permissions(role.id()),registered)
                 .forEach(state.attachment::setPermission);
         if(configuration.manageTab()) {
-            Component tag=Component.text("["+role.label()+"] ",color(role.color())).decorate(TextDecoration.BOLD)
-                    .append(Component.text(p.getName(),color(role.nameColor())).decoration(TextDecoration.BOLD,false));
+            Component tag=RoleDisplay.tag(role,p.getName());
             p.playerListName(tag);p.setPlayerListOrder(role.priority());
             state.lastName=tag;state.lastOrder=role.priority();state.tabWritten=true;
         } else restoreTab(p,state);
@@ -86,11 +103,19 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         Applied state=applied.remove(p.getUniqueId());if(state==null)return;
         if(state.attachment!=null)p.removeAttachment(state.attachment);
         restoreTab(p,state);
+        nameTags.remove(p.getUniqueId());
     }
-    @EventHandler(priority=EventPriority.MONITOR) public void join(PlayerJoinEvent e){apply(e.getPlayer());}
+    @EventHandler(priority=EventPriority.MONITOR) public void join(PlayerJoinEvent e){apply(e.getPlayer());refreshNameTags();}
     @EventHandler public void quit(PlayerQuitEvent e){remove(e.getPlayer());}
     @EventHandler public void pluginEnabled(PluginEnableEvent e){
         if(e.getPlugin()!=this)Bukkit.getScheduler().runTask(this,this::applyAll);
+    }
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void chat(AsyncChatEvent event) {
+        ChatSettings snapshot=chatSettings;
+        if(snapshot==null||!snapshot.enabled())return;
+        String name=event.getPlayer().getName();
+        Role role=snapshot.players().getOrDefault(Role.playerKey(name),snapshot.defaultRole());
+        event.renderer(ChatRenderer.viewerUnaware((source,displayName,message)->RoleDisplay.chat(role,name,message)));
     }
     private void tell(CommandSender sender,String text){sender.sendMessage(Component.text(text,NamedTextColor.YELLOW));}
     private void changeRole(String name,String id) throws IOException {
@@ -103,7 +128,9 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
             next.put(player,id);
         }
         RoleFiles.writeAssignments(playersPath,next);assignments=next;
+        refreshChat();
         for(Player p:Bukkit.getOnlinePlayers())if(Role.playerKey(p.getName()).equals(player))apply(p);
+        refreshNameTags();
     }
     private void edit(Consumer<YamlConfiguration> change) throws IOException {
         YamlConfiguration next=new YamlConfiguration();

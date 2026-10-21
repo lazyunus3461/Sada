@@ -9,7 +9,7 @@ import java.nio.file.*;
 import java.util.*;
 
 final class RoleFiles {
-    record Configuration(RoleCatalog catalog, boolean manageTab, YamlConfiguration yaml) {}
+    record Configuration(RoleCatalog catalog, boolean manageTab, boolean manageChat, boolean manageNameTags, YamlConfiguration yaml) {}
     static YamlConfiguration read(Path path) throws IOException {
         YamlConfiguration yaml=new YamlConfiguration();
         try { yaml.load(path.toFile()); }
@@ -18,6 +18,8 @@ final class RoleFiles {
     }
     static Configuration configuration(YamlConfiguration yaml) {
         if(yaml.contains("manage-tab")&&!yaml.isBoolean("manage-tab"))throw new IllegalArgumentException("manage-tab true/false olmalı");
+        if(yaml.contains("manage-chat")&&!yaml.isBoolean("manage-chat"))throw new IllegalArgumentException("manage-chat true/false olmalı");
+        if(yaml.contains("manage-nametags")&&!yaml.isBoolean("manage-nametags"))throw new IllegalArgumentException("manage-nametags true/false olmalı");
         ConfigurationSection section=yaml.getConfigurationSection("roles");
         if(section==null || section.getKeys(false).isEmpty())throw new IllegalArgumentException("En az bir rol tanımlanmalı");
         if(section.getKeys(false).size()>100)throw new IllegalArgumentException("En fazla 100 rol tanımlanabilir");
@@ -41,7 +43,7 @@ final class RoleFiles {
                 throw new IllegalArgumentException("inherits rol kimliklerinden oluşan bir liste olmalı: "+key);
             roles.put(id,new Role(id,r.getString("label",id),color,nameColor,r.getInt("priority",1),r.getStringList("inherits"),permissions));
         }
-        return new Configuration(new RoleCatalog(roles,yaml.getString("default-role","oyuncu")),yaml.getBoolean("manage-tab",true),yaml);
+        return new Configuration(new RoleCatalog(roles,yaml.getString("default-role","oyuncu")),yaml.getBoolean("manage-tab",true),yaml.getBoolean("manage-chat",true),yaml.getBoolean("manage-nametags",true),yaml);
     }
     static Map<String,String> assignments(YamlConfiguration yaml, RoleCatalog roles) {
         Map<String,String> result=new LinkedHashMap<>();
