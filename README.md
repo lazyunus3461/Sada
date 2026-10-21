@@ -2,6 +2,8 @@
 
 Rol ve renkli TAB eklentisi: **[KasabaRoles](kasaba-roles/README.md)**. Türkçe komutlarla Kurucu, Admin, Moderatör, Rehber, VIP ve Oyuncu rolleri yönetilir.
 
+Envanter menüsü ve komutla ışınlanma: **[KasabaWarp](kasaba-warp/README.md)**. Üç saniye hazırlık, yirmi saniye kullanım arası ve role özel warp erişimi içerir.
+
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
 Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya Hoş Geldin** görünür; ardından form otomatik açılır. Başlık altın, turkuaz ve yeşil renklerle kalın yazılır. Formun üst başlığında ve üst çubukta aynı renkli yazı kullanılır. Yerleşik form başlığının yazı boyutu Minecraft tarafından sabittir; mod veya kaynak paketi olmadan büyütülemez. Yeni oyuncuda aynı sayfada **Şifre**, **Şifreyi tekrar yaz** alanları ve **Kayıt Ol** düğmesi bulunur. Kayıtlı oyuncuda doğrudan **Şifre** alanı ile **Giriş Yap** düğmesi açılır. Hatalar sayfanın içinde kırmızı yazıyla gösterilir. Doğrulama sırasında form açık kalır; başarıda doğrudan kapanır ve oyuncu oyuna geçer. Arada bekleme veya “Geri dön” sayfası yoktur. **Sunucudan Ayrıl** düğmesi bağlantıyı kapatır. ESC ile form kapatılamaz.

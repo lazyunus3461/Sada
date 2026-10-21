@@ -1,0 +1,40 @@
+KasabaWarp 1.0.0 — 21 Ekim 2026
+Paper 1.21.10 build 130 / Java 21
+KasabaAuth 1.2.0 ve KasabaRoles 1.1.0 birlikte yüklü.
+
+BAŞARILI: 9 birim testi.
+- Tam konum, dünya, bakış yönü, isim, açıklama ve özel erişim kalıcı kaydı.
+- Güncelleme/silme sonrasında eski noktaların ve geçici dosyaların kalmaması.
+- Bozuk/eksik YAML verisinin kaynağı değiştirmeden reddedilmesi.
+- Türkçe kimlik normalleştirmesi, ayrılmış komut adları ve geçersiz konumlar.
+- Gerçek 20 saniyenin tamamının dolması, oyuncuların bağımsız süreleri,
+  büyük/küçük harf değişimiyle sürenin atlanamaması ve süre temizliği.
+
+BAŞARILI: Gerçek sunucuda 9 protokol grubu + tam yeniden başlatma.
+1. Kurucu yetkisiyle Türkçe oluşturma, isim, açıklama ve özel erişim komutları.
+2. Giriş yapmadan /warp engeli; normal oyuncunun düzenleme yapamaması;
+   özel noktaların envanter ve TAB tamamlamasında gizlenmesi.
+3. Hareket, gerçek hasar ve /warp iptal sonrasında beklemeden yeniden deneme.
+4. Başka eklentinin gerçek PlayerTeleportEvent iptali: hareket ve süre başlamaz.
+5. KasabaRoles tam yetkisiyle erişim; hazırlıkta rol alınırsa son denetimde ret.
+6. Gerçek 3 saniye hazırlık; kaydedilmiş konum/yöne geliş; 20 saniye kullanım arası
+   ve /warp yenile sonrasında bu sürenin korunması.
+7. Gerçek envanter shift-click paketiyle menü eşyasının alınamaması ve 7 elmaslık
+   oyuncu eşyasının korunması; yeniden bağlanmayla sürenin atlanamaması.
+8. Gerçek 20 saniye beklendikten sonra envanter tıklamasıyla başarılı ışınlanma.
+9. 45'ten fazla görünen nokta için gerçek sonraki sayfaya geçiş penceresi.
+10. Sunucu tamamen kapatılıp açıldıktan sonra isim/konum/yön/özel erişim kalıcılığı.
+
+Test istemcisi gerçek Minecraft 1.21.10 protokolüyle bağlandı. Önceki ortak
+Auth test istemcisinin NBT ve TAB şema düzeltmeleri kullanıldı. Warp testinde
+gerçek hazırlık ve kullanım arası süreleri değiştirilmedi.
+
+Testler loopback 127.0.0.1:25575 offline sunucuda, allow-flight=false ile yapıldı.
+WarpProbe yardımcı eklentisi yalnızca bu testte kullanıldı; üretim JAR'ına
+dahil edilmedi. Gerçek sunucuya yalnızca KasabaWarp-1.0.0.jar kurulmalıdır.
+Önceden hazırlanmış FlightProbe yalnızca test dünyasında yaratıkları kapatır.
+Mojang public-key erişim uyarısı offline sentetik hesap testlerini engellemedi.
+Lisanslı hesapların online doğrulaması bu testin kapsamında değildir.
+
+Gerçek Minecraft istemcisinde görsel inceleme, Bedrock/ViaVersion, farklı
+warp/menü eklentileri ve çoklu sunucu ağı uyumluluğu test edilmedi.

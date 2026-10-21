@@ -1,0 +1,4 @@
+# Işınlanmadan önce sabit bekleme. Hareket veya hasar iptal eder.
+hazirlik-saniye: 3
+# Yalnızca başarılı ışınlanmadan sonra başlar; yeniden bağlanınca sıfırlanmaz.
+kullanim-arasi-saniye: 20

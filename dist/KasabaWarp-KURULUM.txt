@@ -1,0 +1,47 @@
+KASABAWARP 1.0.0 — PAPER 1.21.10 / JAVA 21
+
+1. Sunucuyu durdur.
+2. KasabaWarp-1.0.0.jar dosyasını plugins klasörüne koy.
+3. Sunucuyu aç. KasabaAuth ve KasabaRoles eklentilerini kaldırma.
+4. Oyunda Kurucu/OP olarak giriş yap ve istediğin güvenli noktada dur.
+5. /warp oluştur pazar yaz. Bakış yönün de kaydedilir.
+6. /warp menüyü açar; /warp pazar komutla ışınlanma başlatır.
+
+Işınlanmadan önce 3 saniye sabit beklenir. Hareket veya hasar iptal eder.
+Başarılı ışınlanmadan sonra 20 saniye kullanım arası vardır.
+İptal edilen/engellenen işlem bu süreyi başlatmaz. Yeniden bağlanmak veya
+ayarları yenilemek süreyi sıfırlamaz. Kurucu/OP için de aynı süreler geçerlidir.
+
+OYUNCU KOMUTLARI
+/warp
+/warp pazar
+/warp bilgi pazar
+/warp iptal
+/warp yardım
+
+YÖNETİM KOMUTLARI
+/warp oluştur pazar
+/warp taşı pazar
+/warp sil pazar
+/warp isim pazar Pazar Yeri
+/warp açıklama pazar Alışveriş alanı
+/warp gönder Redkit pazar
+/warp yenile
+
+ROLE ÖZEL NOKTA ÖRNEĞİ
+/warp oluştur vipalan
+/warp yetki vipalan özel
+/rol yetki vip kasabawarp.git.vipalan ver
+Herkese tekrar açmak için: /warp yetki vipalan herkes
+Yetkisiz kişi noktayı menüde ve TAB tamamlamasında görmez, komutla gidemez.
+
+Türkçe harfsiz olustur/tasi/aciklama/gonder/yardim/ozel de kullanılabilir.
+Noktalar plugins/KasabaWarp/warplar.yml dosyasına kalıcı kaydedilir.
+Süreler plugins/KasabaWarp/config.yml dosyasındadır. Değişince /warp yenile kullan.
+Yönetim yetkisi: kasabawarp.yonet veya KasabaRoles Kurucu (kasabaroles.admin).
+Warp kimliklerinde Türkçe harfler standartlaştırılır: Çarşı -> carsi.
+İsimler, açıklamalar ve envanter menüsü Türkçe harfleri gösterir.
+
+Gerçek sunucuya sadece KasabaWarp-1.0.0.jar gerekir; WarpProbe test yardımcısını kurma.
+Diğer eklentilerin veri klasörlerini silme. Dünya spawnı ve kayıt yeri değiştirilmez.
+Ayrıntılar: https://github.com/lazyunus3461/Sada/blob/main/kasaba-warp/README.md

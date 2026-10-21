@@ -1,0 +1,19 @@
+name: KasabaWarp
+version: 1.0.0
+main: tr.kasaba.warp.KasabaWarp
+api-version: '1.21.10'
+author: Kasaba
+description: Türkçe komutlar ve envanter menüsüyle kalıcı warp noktaları.
+softdepend: [KasabaAuth, KasabaRoles]
+commands:
+  warp:
+    description: Warp menüsünü açar veya bir noktaya ışınlar.
+    usage: /warp [ad] | yardım
+    aliases: [warplar]
+permissions:
+  kasabawarp.kullan:
+    description: Warp menüsü ve ışınlanma.
+    default: true
+  kasabawarp.yonet:
+    description: Warp oluşturma, düzenleme ve oyuncu gönderme.
+    default: op
