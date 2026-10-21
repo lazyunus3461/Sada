@@ -1,0 +1,15 @@
+name: KasabaSpawn
+version: 1.0.0
+main: tr.kasaba.spawn.KasabaSpawn
+api-version: '1.21.10'
+author: Kasaba
+description: 64x64 blokluk, komutla kurulan ayrıntılı kasaba meydanı.
+commands:
+  kasabaspawn:
+    description: Kasaba meydanını kurar ve yer bilgisini gösterir.
+    usage: /kasabaspawn yap | bilgi
+    permission: kasabaspawn.yonet
+permissions:
+  kasabaspawn.yonet:
+    default: op
+    description: Dümdüz ve boş bir 64x64 alana kasaba meydanı kurar.

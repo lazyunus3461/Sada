@@ -1,0 +1,3 @@
+48c7bc36d4b4133f85a87ffdecafb691646f45cafeca3492b8dee9602f60b494  KasabaSpawn-1.0.0.jar
+937680bedbf63600ec4b00c0391ba241f2ea332fdbfa016f5149440b4e84d937  KasabaSpawn-Kurulum.zip
+494a1944e7e36c298bd4489c4af283939635e100441c9cb11f96b085feb6111e  KasabaSpawn-KURULUM.txt

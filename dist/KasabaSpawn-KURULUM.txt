@@ -1,0 +1,31 @@
+KASABA SPAWN 1.0.0 • PAPER 1.21.10 / JAVA 21
+
+KURULUM
+1. Sunucu Paper 1.21.10 ve Java 21 kullanıyor olsun.
+2. Sunucuyu kapat.
+3. KasabaSpawn-1.0.0.jar dosyasını plugins klasörüne kopyala.
+4. Sunucuyu aç. Oyun içinde OP hesabıyla haritanın kurulacağı yerin tam
+   ortasında, zemin seviyesinde dur.
+5. /kasabaspawn bilgi
+6. /kasabaspawn yap
+
+ALAN ŞARTI
+Düz ve sağlam zemin, tam 64×64 blok (merkez bloğun X/Z ekseninde 32 blok bir
+yana, 31 blok diğer yana). Üstündeki 16 blok tamamen boş olmalı. Başka
+oyuncular da alandan çıkmalı. Uygun değilse eklenti nedenini yazar ve yapı
+başlamaz. Dört dünya köşesi sınır içinde olmalı. İnşa kademeli ilerler.
+
+KASABA DETAYLARI
+Ortada çeşmeli taş meydan, Kasaba Konağı, Fırın, Demirci, Han, Pazar;
+dört tenteli pazar tezgâhı; banklar, çiçeklikler ve ağaçlar; fenerli yollar,
+dört kemerli giriş kapısı ve çevre duvarı. İşlem bitince dünya doğma yeri
+çeşmenin güneyindeki meydan olarak ayarlanır; OP oraya geçer.
+
+GİRİŞ / KAYIT SPAWNI
+KasabaHub varsa meydandayken /merkez lobi ayarla yaz.
+KasabaAuth varsa aynı yerde /kayityeri ayarla yaz.
+İkisi de yoksa vanilla dünya doğma noktası hazırdır.
+
+KasabaSpawn-Kurulum.zip içinde aynı JAR ve bu talimatlar bulunur.
+Eklenti yalnızca OP yetkili oyuncuya açıktır.
+Ayrıntılı plan: https://github.com/lazyunus3461/Sada/blob/main/kasaba-spawn/README.md
