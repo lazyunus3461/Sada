@@ -2,6 +2,8 @@
 
 Paper 1.21.10 ve Java 21 için küçük, bağımsız bir dünya oluşturma eklentisi. Dümdüz zemindeki 64×64 alana kasaba meydanı kurar. KasabaHub, Auth veya WorldEdit kurulumu istemez.
 
+Hazır haritayı dünya dosyası olarak da [indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaKasabasi-1.21.10.zip). ZIP içindeki `KasabaKasabasi` klasörünü tek oyunculu kayıtlarına veya Paper sunucu klasörüne taşı; `KURULUM.txt` adımları açıklar.
+
 ## Görünüm
 
 - Ortada geometrik taş desenli meydan ve aydınlatmalı su çeşmesi.

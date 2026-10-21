@@ -1,6 +1,6 @@
 # Kasaba oyun merkezi
 
-Güzel bir kasaba meydanı kurmak için [64×64 Kasaba Spawn'ı indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaSpawn-1.0.0.jar). Paper 1.21.10'da `/kasabaspawn yap` komutuyla boş ve düz alana kurulur. [Tasarım ve kurulum adımları](kasaba-spawn/README.md).
+Güzel bir kasaba meydanı kurmak için [64×64 hazır KasabaKasabasi dünyasını indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaKasabasi-1.21.10.zip) (Java 1.21.10). ZIP içindeki `KURULUM.txt` adımları anlatır. İstersen [KasabaSpawn eklentisini](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaSpawn-1.0.0.jar) kurup `/kasabaspawn yap` komutuyla kendi düz alanına da inşa edebilirsin. [Tasarım ve kurulum adımları](kasaba-spawn/README.md).
 
 Yeni ana eklenti: **[KasabaHub](kasaba-hub/README.md)** — Minecraft içinde arkadaşlarla buluşulan lobi, yerleşik oyun sayfaları ve arkadaş grupları. Lobide menü pusulası bulunur; `/oyunlar ekle parkur Kasaba Parkur` bulunduğun konumu oyun girişine ekler. Oyun kuralları sonraki adımda ayrı eklentiler olarak bağlanacak.
 
