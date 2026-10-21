@@ -4,7 +4,7 @@ Güzel bir kasaba meydanı kurmak için [64×64 hazır KasabaKasabasi dünyasın
 
 Yeni ana eklenti: **[KasabaHub](kasaba-hub/README.md)** — Minecraft içinde arkadaşlarla buluşulan lobi, yerleşik oyun sayfaları ve arkadaş grupları. Lobide menü pusulası bulunur; `/oyunlar ekle parkur Kasaba Parkur` bulunduğun konumu oyun girişine ekler. Oyun kuralları sonraki adımda ayrı eklentiler olarak bağlanacak.
 
-**[KasabaHub kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaHub-Kurulum.zip)**. Paket Hub 1.1.0 ve uyumlu Auth 1.3.0 içerir. Mevcut [KasabaRoles](kasaba-roles/README.md) kullanılabilir. Yeni oyun merkezi modelinde önceki [warp](kasaba-warp/README.md) ve [klan/claim](kasaba-clan/README.md) çalışmaları arşiv olarak tutulur; kurulum paketine eklenmez.
+**[KasabaHub kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaHub-Kurulum.zip)**. KasabaHub'ın üzerine kurulan yeni **[KasabaArena](kasaba-arena/README.md)** eklentisi X Arena, özel kodlu 1v1 ve 2v2 maçlarını ekler. [Arena JAR'ını indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-1.0.0.jar) veya [kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-Kurulum.zip). Mevcut [KasabaRoles](kasaba-roles/README.md) kullanılabilir. Yeni oyun merkezi modelinde önceki [warp](kasaba-warp/README.md) ve [klan/claim](kasaba-clan/README.md) çalışmaları arşiv olarak tutulur; kurulum paketine eklenmez.
 
 ## KasabaAuth 1.3.0
 

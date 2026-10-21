@@ -1,0 +1,8 @@
+ayarlar:
+  skor-tahtasi-guncelleme-tik: 40
+  yeniden-dogma-koruma-saniye: 3
+spawns: {}
+regions: {}
+stats:
+  kills: {}
+  names: {}

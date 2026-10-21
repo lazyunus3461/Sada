@@ -1,0 +1,19 @@
+name: KasabaArena
+version: 1.0.0
+main: tr.kasaba.arena.KasabaArena
+api-version: '1.21.10'
+author: Kasaba
+description: Kasaba X Arena ve kodlu üç rauntluk PvP oyunları.
+depend: [KasabaHub]
+softdepend: [KasabaRoles]
+commands:
+  arena:
+    description: Arena menüsü ve yönetim komutları.
+    usage: /arena
+permissions:
+  kasabaarena.yonet:
+    default: op
+    description: Arena noktalarını, alanlarını ve kitlerini düzenleme.
+  kasabaarena.kit.vip:
+    default: false
+    description: Arena VIP kitini seçme ve kullanma.
