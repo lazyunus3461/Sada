@@ -1,42 +1,51 @@
-KasabaHub 1.0.0 / KasabaAuth 1.3.0 — 21 Ekim 2026
-Paper 1.21.10 build 130 / Java 21; Roles 1.2.0 birlikte yüklü.
+KasabaHub 1.1.0 — 21 Ekim 2026
+Paper 1.21.10 build 130 / Java 21; Auth 1.3.0 ve Roles 1.2.0 birlikte.
 
-BAŞARILI: 30 birim testi, 0 hata (17 Auth + 13 Hub).
-- Tek grup üyeliği, davet zorunluluğu/son kullanım, kapasitenin kabul anında
-  yeniden denetlenmesi, lider yetkisi, lider devriyle eski davetlerin iptali.
-- Ayrılma/çıkarma/dağıtma/son üye temizliği ve lider çıkışında otomatik devir.
-- Dünya UUID'si, tam lobi koordinat/yönünün atomik kaydı ve yeniden okunması.
-- Bozuk/eksik dosyanın sıfırlanmadan reddi, sayısal sınırlar, dünya ve koruma
-  alanı sınırları, geçersiz oyun tanımının reddi.
+BAŞARILI: Bu değişiklikte 17 Hub birim testi, 0 hata.
+8 grup, 5 lobi/ayar/oyun tanımı, 4 yeni oyun giriş dosyası testi.
+Yeni testler tam dünya/konum/yön ve ad kaydı, son girişin silinmesinin
+kalıcılığı, bozuk/eksik/NaN verinin sıfırlanmadan reddi ve güvenli kimlikleri
+kontrol eder. Auth kodu/JAR'ı bu sürümde değişmedi; önceki 17 Auth birim
+testinin sonuçları 1.0.0 Hub sürümünün doğrulamasına aittir.
 
-BAŞARILI: 5 canlı entegrasyon grubu + tam yeniden başlatma.
-1. Gerçek kayıt/giriş formu; doğrulama öncesi /oyunlar engeli; başarılı girişte
-   tam lobi konum/yönüne geliş ve native sayfa. Envanter penceresi açılmaz.
-2. Önceki sayfanın düğmesiyle grup oluşturulamaması; native oyuncu adı alanıyla
-   davet, kabul ve 2/8 üye; üyenin lider işlemini yapamaması.
-3. /lobi sonrasında yedi elmasın korunması; Bukkit olaylarıyla sınırlı lobi
-   kırma/hasar/açlık koruması, dış alanda normal kırma, açık düzenleme modu.
-4. Yalnızca liderin bütün takımı tek join çağrısıyla göndermesi; ret halinde
-   herkesin durumunun bırakılması, kabulde iki oyuncunun tek seferde alınması,
-   oyun sırasında grup değişikliği engeli, adaptör kaldırılınca herkesin lobiye
-   dönmesi ve oyun listesinin yeniden yakında durumuna gelmesi.
-5. Liderin bağlantısı kesilince sonraki üyenin lider olması ve son çıkışta
-   geçici üyeliğin temizlenmesi.
-6. Tam durdur/aç: lobi konumu/yönü ve hesaplar korunur; geçici gruplar ve test
-   oyunları geri gelmez. Auth 1.2 döneminden kalan ayrı sentetik hesap da aynı
-   şifreyle Auth 1.3 üzerinden giriş yapıp Hub lobisine ulaştı.
+BAŞARILI: Önceki 5 canlı Hub entegrasyon grubu.
+- Gerçek kayıt/giriş, öncesinde /oyunlar engeli, tam lobi ve native sayfa.
+- Eski sayfanın reddi, native metin alanından davet, grup katılımı ve yetki.
+- /lobi ile envanterin korunması ve sınırlı lobi koruması/düzenleme.
+- Liderin bütün grubu tek adaptör çağrısıyla başlatması, ret halinde durumun
+  bırakılması, kabul, grubu oyunda değiştirememe ve kaldırmada lobiye dönüş.
+- Lider çıkışında devir ve son üye çıkışında geçici grubun temizlenmesi.
+Fixture ayrıca oyun adaptörüne teslim edilen takımın envanterinde geçici
+pusula bulunmadığını denetler; ret sonrası pusula otomatik geri verilir.
 
-Paper DialogClickManager yeni callback'leri sonraki tick'te kuyruğundan
-etkinleştirir; sentetik istemci düğmeye basmadan 110 ms bekler. Native NBT
-codec varsayılan true alanları atlayabilir. Gerçek diyalog/giriş/düğme/metin
-paketleri kullanıldı. Koruma denetimleri ana iş parçacığında Bukkit olaylarıyla
-yapıldı; bütün fiziksel redstone düzenekleri elle denenmiş sayılmaz.
+BAŞARILI: 5 yeni canlı entegrasyon grubu.
+1. Gerçek use_item (sağ tık) paketiyle native ana sayfa açılır. Bukkit
+   olaylarıyla shift/numara tuşu/atma/el değiştirme engelleri doğrulanır.
+   Harici teleportta pusula kaldırılır; normal pusula ve 7 elmas korunur.
+2. Tam dolu 36 yuva (64'er elmas) üzerine yazılmaz; pusula verilmez. Bir
+   yuva açılınca tek pusula eklenir; diğer yığınlar korunur.
+3. Yönetici giriş ekler, normal oyuncu ekleyemez, kimlik üzerine yazılmaz.
+   Grup üyesi başlatamaz. Başka eklenti ikinci üyenin teleportunu iptal
+   ederse ilk üye eski konumuna döner; ikisine de lobi pusulası geri gelir.
+4. Native seçim bütün grubu kayıtlı noktaya götürür; pusulalar kaldırılır,
+   /oyunlar çalışır. Kullanılan giriş silinemez. /lobi pusulayı geri verir.
+   Geçici girişin konumu güncellenir ve silinir.
+5. Bozuk oyunlar.yml ile /merkez yenile, dosyayı ve çalışan listeyi sıfırlamaz.
+   Testte dosya yedekten geri konur; geçerli yenileme grup/eşyaları korur.
+   Beklenen bozuk YAML testi tek bir dosya hatası kaydı üretir.
 
-Yerel test sunucusu 127.0.0.1:25575 offline/allow-flight=false çalıştı.
-HubProbe yalnızca test oyun adaptörüdür, üretim JAR'ında/kurulum ZIP'inde yoktur.
-Bu sürüm oynanabilir mini oyun içermez. Üretim paketinde sadece Hub 1.0.0 ve
-Auth 1.3.0 bulunur. Hesap/şifre biçimi, rol/scoreboard ve oyun modu değişmedi.
-Mojang public-key erişim uyarısı sentetik hesap testlerini engellemedi.
-Native Minecraft görsel istemcisi, Bedrock/ViaVersion ve başka lobi eklentileriyle
-uyumluluk test edilmedi. Önceki tüm auth/flight/spawn protokol senaryoları
-tekrarlanmadı; bu sürümde Auth birim testleri ve Hub entegrasyonu çalıştırıldı.
+BAŞARILI: Tam durdur/aç ve ayrı kalıcılık senaryosu.
+Kayıtlı hesabın girişinde lobi ve pusula gelir. Kaydedilmiş girişin adı ve
+500.5,-60,500.5 konumu korunur. /oyunlar git ile gidince pusula yoktur;
+/lobi ile geri gelir. Test girişi silinir; test adaptörü restartta geri gelmez.
+
+Sunucu yalnızca 127.0.0.1:25575 / offline / allow-flight=false.
+Native protokol, gerçek form/düğme/sağ tık kullanıldı. Envanter koruma
+olayları Bukkit üzerinden sınandı. Ölüm/drag/world-change temizliği kodda
+bulunur, bu senaryoda ayrıca gerçek istemciyle sınanmadı.
+Mojang public-key erişim uyarısı sentetik testleri etkilemedi.
+Görsel Minecraft istemcisi, Bedrock/ViaVersion ve bütün diğer eklentilerle
+uyumluluk doğrulanmadı. Başka eklenti geri dönüş teleportunu da iptal
+ederse bu engel aşılmaz; oyuncu adı konsola yazılır.
+Üretim paketinde test Probe/oyun adaptörü bulunmaz. Komutla eklenen giriş
+ışınlanma noktasıdır; bu sürüm maç, skor ve mini oyun kuralları içermez.

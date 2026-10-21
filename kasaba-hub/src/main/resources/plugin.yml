@@ -1,5 +1,5 @@
 name: KasabaHub
-version: 1.0.0
+version: 1.1.0
 main: tr.kasaba.hub.KasabaHub
 api-version: '1.21.10'
 author: Kasaba
@@ -12,7 +12,7 @@ commands:
     usage: /merkez yardım
   oyunlar:
     description: Oyun seçme sayfası.
-    usage: /oyunlar
+    usage: /oyunlar yardım
   grup:
     description: Arkadaş grubunu yönet.
     usage: /grup yardım
@@ -25,4 +25,4 @@ permissions:
     description: Merkez sayfaları, lobi ve grup kullanımı.
   kasabahub.yonet:
     default: op
-    description: Lobi ayarlama ve açıkça etkinleştirilen düzenleme modu.
+    description: Oyun girişlerini yönetme, lobi ayarlama ve açıkça etkinleştirilen düzenleme modu.

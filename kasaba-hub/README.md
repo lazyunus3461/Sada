@@ -1,14 +1,14 @@
-# KasabaHub 1.0.0
+# KasabaHub 1.1.0
 
-Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merkezi için ana eklenti. Ortak lobi, Minecraft'ın **yerleşik sayfa arayüzü**, geçici arkadaş grupları ve sonraki oyun eklentileri için bağlantı sağlar. Bu sürümde mini oyun bulunmaz; oyun sayfası açıkça **Oyunlar yakında** gösterir.
+Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merkezi için ana eklenti. Ortak lobi, Minecraft'ın **yerleşik sayfa arayüzü**, geçici arkadaş grupları ve sonraki oyun eklentileri için bağlantı sağlar. Bu sürümde mini oyun kuralları bulunmaz. Yönetici oyun giriş noktalarını `/oyunlar ekle` ile kaydedebilir; boş oyun listesi **Oyunlar yakında** gösterir.
 
 ## Kurulum
 
 [KasabaHub kurulum ZIP'ini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaHub-Kurulum.zip)
 
-1. Sunucuyu durdur. Mevcut eklenti veri klasörlerini yedekle.
+1. Sunucuyu durdur. Mevcut eklenti veri klasörlerini yedekle. Güncellemede eski KasabaHub JAR'ını `plugins` dışına çıkar; `plugins/KasabaHub` klasörünü koru.
 2. Eski KasabaAuth JAR'ını `plugins` dışına taşı. Yeni modelde kullanılmayacak KasabaKlan/KasabaWarp ve başka lobi yöneticilerinin JAR'larını da dışarı taşı. **Veri klasörlerini silme.**
-3. ZIP'teki **KasabaAuth-1.3.0.jar** ve **KasabaHub-1.0.0.jar** dosyalarını `plugins` içine koy. Mevcut KasabaRoles kalabilir; roller/renkler korunur. Test Probe dosyaları kurulmaz.
+3. ZIP'teki **KasabaAuth-1.3.0.jar** ve **KasabaHub-1.1.0.jar** dosyalarını `plugins` içine koy. Mevcut KasabaRoles kalabilir; roller/renkler korunur. Test Probe dosyaları kurulmaz.
 4. Sunucuyu aç, hesabına giriş yap. Güvenli lobi platformunda Kurucu/OP olarak **`/merkez lobi ayarla`** yaz.
 5. `/lobi` ile dönüşü, `/merkez` ile ana sayfayı, `/oyunlar` ile oyun sayfasını dene.
 
@@ -19,7 +19,9 @@ KasabaAuth hesabı/şifresi aynı kalır. 1.3.0, doğrulama sonrası bir olay ve
 | Komut | İşlev |
 | --- | --- |
 | `/merkez` | Ana sayfa: oyunlar, arkadaş grubu, lobiye dönüş |
-| `/oyunlar` | Kayıtlı oyunları sayfalar; şu anda oyun yok, yakında bilgisi gösterilir |
+| `/oyunlar` | Kayıtlı oyun girişlerini ve bağlı oyun eklentilerini sayfalar |
+| `/oyunlar git parkur` | Menü açmadan parkur girişine katılır |
+| `/oyunlar yardım` | Oyun komutlarını gösterir |
 | `/lobi` | Oyun bağlantısını bırakıp kayıtlı ana lobiye döner |
 | `/grup` | Arkadaş grubu sayfası |
 | `/grup oluştur` | Geçici grup kurar; kuran lider olur |
@@ -35,6 +37,30 @@ Grup sayfasında oluşturma, oyuncu adını yazarak davet, ayrılma ve onaylı d
 
 Varsayılan grup sınırı **8**. Bir oyuncu aynı anda tek gruptadır; davetler kabul anında kapasiteyi yeniden denetler. Gruplar, davetler ve düzenleme izni çıkış/restartta temizlenir. Kalıcı arkadaş listesi, para, puan, mağaza ve mini oyun kuralları bu ilk sürüme eklenmedi. Oyun bitmeden grup değişikliği yapılmaz; `/lobi` kişinin oyundan ayrılmasını sağlar. Diğer üyeler oynuyorsa grup yönetimi onların da oyundan çıkmasını bekler.
 
+## Oyun girişlerini komutla ekleme
+
+Oyun haritasının güvenli girişinde dur ve Kurucu/OP olarak:
+
+```text
+/oyunlar ekle parkur Kasaba Parkur
+/oyunlar konum parkur
+/oyunlar sil parkur
+```
+
+`ekle` bulunduğun dünya, tam konum ve bakış yönünü kaydeder. Kimlik 1–32 küçük harf/rakam/alt çizgi/tire; görünen ad en çok 48 karakterdir ve boşluk içerebilir. Aynı kimlik üzerine yazılmaz. `konum` bulunduğun yeri yeni giriş yapar. `sil` yalnızca komutla eklenen girişi kaldırır; haritayı silmez. Kullanılan giriş değiştirilemez/silinemez; katılanlar önce `/lobi` ile ayrılır. Yetki, lobi yönetimiyle aynıdır. Normal oyuncu giriş ekleyemez.
+
+Seçim tek oyuncuyu veya liderin bütün grubunu kayıtlı noktaya götürür. Bölge asenkron hazırlanır; çevrimiçi/giriş durumu ve grup rezervasyonu yeniden denetlenir. Başka eklenti bir üyenin ışınlanmasını iptal ederse önce taşınan üyeler eski konumlarına geri gönderilir ve giriş iptal edilir. Başka eklenti geri dönüşü de iptal ederse konsola oyuncu adıyla uyarı yazılır; eklentilerin teleport iptali aşılmaz. 10 saniyede hazırlanamazsa rezervasyon bırakılır. Beklerken `/lobi` veya çıkış yapmak eski isteğin sonradan grubu taşımasını engeller.
+
+Bunlar **giriş noktalarıdır**; maç, skor, oyun kuralları ve ayrı arena örnekleri oluşturmaz. Oyun haritasını lobi korumasının dışında, tercihen ayrı bir dünyada kur. `plugins/KasabaHub/oyunlar.yml` atomik saklanır ve restartta korunur. Dünya yüklü değilse giriş **Bakımda** görünür. `/merkez yenile` dosyayı yeniden okur; bozuk veri çalışan listeyi sıfırlamaz. Gerçek bir oyun eklentisi aynı kimliği kullanacaksa önce komutla oluşturulan girişi sil, ardından oyun eklentisini başlat.
+
+## Lobide menü pusulası
+
+Girişini tamamlayan oyuncu ayarlı lobinin koruma alanındayken **Kasaba • Oyun Menüsü** pusulasını alır. Sağ tık, `/merkez` ile aynı yerleşik sayfayı açar. Öncelik hızlı çubuğun 9. yuvasıdır; doluysa başka boş envanter yuvası kullanılır. Envanter tamamen doluysa mevcut eşya değiştirilmez; oyuncu bir yuva açana kadar komut kullanabilir.
+
+Pusula sadece ayarlı lobi alanında ve oyun dışında vardır. Oyun katılımında, alan/dünya değişiminde kaldırılır; `/lobi` ile dönünce geri verilir. Oyun eklentisine takım teslim edilmeden **önce** kaldırılır; oyun envanteri yedeğine karışmaz. Oyunda `/merkez`, `/oyunlar` ve `/grup` komutları çalışmaya devam eder; başka oyuna katılmak için önce `/lobi` gerekir.
+
+Yalnızca eklentinin özel veri etiketi olan geçici pusula yönetilir; normal pusulalar ve diğer eşyalar korunur. Geçici pusula taşınamaz, atılamaz, başka ele veya sandığa aktarılamaz; ölümde düşmez ve çıkış/kapanışta temizlenir. Dışarı ışınlanma ve sınır geçişleri olaylarla, eski/kopya geçici eşyalar ayrıca saniyede bir kontrol edilir. Lobi henüz ayarlı değilse veya oyuncu giriş yapmadıysa verilmez.
+
 ## Yönetim ve lobi koruması
 
 ```text
@@ -48,7 +74,7 @@ Varsayılan grup sınırı **8**. Bir oyuncu aynı anda tek gruptadır; davetler
 
 Yönetim yetkisi `kasabahub.yonet` (varsayılan OP) veya `kasabaroles.admin` (Kurucu). Normal kullanım `kasabahub.kullan`, herkese açık. Kurucu bile lobide inşa için **düzenleme aç** kullanır; çıkışta kapanır. Türkçe harfsiz `duzenleme ac`, `olustur`, `katil`, `cikar`, `ayril`, `dagit` biçimleri kabul edilir.
 
-Lobi noktası çevresinde varsayılan X/Z **100 blok uzaklığa kadar** kare koruma vardır; bu, eski warpın 100×100 claim yasağından farklı bir lobi ayarıdır. Burada normal oyuncu inşa/kova/blok etkileşimi yapamaz, eşya atamaz/toplayamaz; hasar, açlık, patlama/yangın ve sınırdan piston/sıvı müdahalesi engellenir. Düzenleme modu inşa ve temel etkileşimleri açar. Oyuncuların envanteri, oyun modu, rolü ve scoreboard'u değiştirilmez. Oyun haritalarını ayrı dünyalarda kurmak önerilir. Lobide boşluğa düşme ve oyun dışında yeniden doğma lobiye dönüşü kullanır.
+Lobi noktası çevresinde varsayılan X/Z **100 blok uzaklığa kadar** kare koruma vardır; bu, eski warpın 100×100 claim yasağından farklı bir lobi ayarıdır. Burada normal oyuncu inşa/kova/blok etkileşimi yapamaz, eşya atamaz/toplayamaz; hasar, açlık, patlama/yangın ve sınırdan piston/sıvı müdahalesi engellenir. Düzenleme modu inşa ve temel etkileşimleri açar. Oyuncuların kendi eşyaları, oyun modu, rolü ve scoreboard'u korunur. Sadece Hub'ın etiketli geçici menü pusulası eklenir/kaldırılır. Oyun haritalarını ayrı dünyalarda kurmak önerilir. Lobide boşluğa düşme ve oyun dışında yeniden doğma lobiye dönüşü kullanır.
 
 `plugins/KasabaHub/lobi.yml` dünya UUID'si, tam koordinat ve yönü atomik saklar. Lobi dünya spawnını veya başka eklentinin dosyasını değiştirmez. Yüklü olmayan dünya, dünya sınırı dışı konum ve başka eklentinin teleport iptali aşılmaz. Bölge asenkron hazırlanır; ayrılan oyuncu veya eski konum isteği sonradan ışınlanmaz.
 
@@ -62,4 +88,4 @@ Kabulden sonra merkez oyun durumunu izler. Oyun bitiminde `api.returnToLobby(pla
 
 ## Geliştirme ve test
 
-Bulutta `bash kasaba-hub/scripts/cloud-build.sh`; Auth'ı yerel Maven'e kurar ve Hub'ı derler. Normal JDK 21/Maven ortamında repo kökünde `mvn install`, ardından `mvn -f kasaba-hub/pom.xml verify`. 17 Auth ve 13 Hub birim testi bulunur. [Yerel test](scripts/integration/README.md) kayıt, lobi, sayfa, grup ve yalnızca testte kullanılan oyun adaptörünü sınar. Native görsel istemci, Bedrock/ViaVersion ve başka lobi eklentileriyle uyumluluk doğrulanmadı.
+Bulutta `bash kasaba-hub/scripts/cloud-build.sh`; Auth'ı yerel Maven'e kurar ve Hub'ı derler. Normal JDK 21/Maven ortamında repo kökünde `mvn install`, ardından `mvn -f kasaba-hub/pom.xml verify`. 17 Auth ve 17 Hub birim testi bulunur. [Yerel test](scripts/integration/README.md) kayıt, lobi, sayfa, grup ve yalnızca testte kullanılan oyun adaptörünü sınar. Native görsel istemci, Bedrock/ViaVersion ve başka lobi eklentileriyle uyumluluk doğrulanmadı.

@@ -1,27 +1,69 @@
-KASABAHUB 1.0.0 — PAPER 1.21.10 / JAVA 21
+KASABAHUB 1.1.0 — PAPER 1.21.10 / JAVA 21
 
-BU PAKET ANA OYUN MERKEZİDİR. HENÜZ MİNİ OYUN İÇERMEZ.
-Oyunları sonraki adımda bağlayacağız. /oyunlar sayfası bunu açıkça gösterir.
+YENİ: Komutla oyun giriş noktaları ve yalnızca lobide görünen menü pusulası.
+Bu paket mini oyun kuralları, maç veya skor sistemi oluşturmaz.
 
-KURULUM
+GÜNCELLEME (Hub 1.0.0 zaten kuruluysa)
+1. Sunucuyu kapat, plugins/KasabaHub klasörünü yedekle.
+2. Eski KasabaHub JAR'ını plugins dışına taşı.
+3. KasabaHub-1.1.0.jar dosyasını plugins içine koy.
+4. Mevcut KasabaAuth-1.3.0 ve KasabaRoles kalır. Veri klasörlerini SİLME.
+5. Sunucuyu aç. Önceki lobi ve hesaplar korunur.
+
+İLK KURULUM
 1. Sunucuyu durdur, eklenti veri klasörlerini yedekle.
-2. Önceki KasabaAuth JAR dosyasını plugins dışına çıkar.
+2. Önceki KasabaAuth ve KasabaHub JAR'larını plugins dışına çıkar.
 3. Yeni modele ait olmayan KasabaKlan/KasabaWarp ve başka lobi yöneticisi
    JAR'larını da plugins dışına taşı. Veri klasörlerini SİLME.
-4. KasabaAuth-1.3.0.jar ve KasabaHub-1.0.0.jar dosyalarını plugins içine koy.
+4. KasabaAuth-1.3.0.jar ve KasabaHub-1.1.0.jar dosyalarını plugins içine koy.
 5. Mevcut KasabaRoles kalabilir. Test Probe dosyalarını kurma.
 6. Sunucuyu aç, giriş yap, güvenli lobi platformunda Kurucu/OP olarak:
    /merkez lobi ayarla
 
 Kayıtlar, şifreler ve roller korunur. Giriş formu tamamlandıktan sonra lobiye
 geçilir. Giriş bekleme yeri de aynı olsun istersen orada /kayityeri ayarla yaz.
-Hub yokken Auth'ın önceki davranışı sürer. İki Auth sürümünü birlikte bırakma.
+İki Hub veya Auth sürümünü birlikte bırakma. /reload kullanma.
+
+OYUN EKLEME — KURUCU/OP
+Oyun haritasının girişinde dur ve yaz:
+/oyunlar ekle parkur Kasaba Parkur
+
+Kimlik: parkur; görünen ad: Kasaba Parkur.
+Bulunduğun dünya, koordinatlar ve baktığın yön kaydedilir.
+/oyunlar konum parkur     Bulunduğun konumu yeni giriş yapar
+/oyunlar sil parkur       Girişi listeden kaldırır, haritayı silmez
+/oyunlar yardım           Yardım
+
+Normal oyuncu giriş ekleyemez. Kimlik 1-32 küçük harf/rakam/_/-; görünen ad
+1-48 karakter. Türkçe harfsiz komutlar da kabul edilir. Aynı kimlik üzerine
+yazılmaz. Kullanılan giriş değiştirilemez; katılanlar önce /lobi ile çıksın.
+Girişler oyunlar.yml içinde restartta korunur. Dünya yüklü değilse Bakımda.
+Bozuk yenileme çalışan listeyi korur. Gerçek oyun eklentisi aynı kimliği
+kullanacaksa önce komutla oluşturulan girişi sil, sonra o eklentiyi başlat.
 
 OYUNCU
-/merkez       Ana sayfa
-/oyunlar      Oyun sayfası (şimdilik yakında)
-/lobi         Ana lobiye dön
-/grup         Arkadaş grubu sayfası
+/merkez                 Ana sayfa
+/oyunlar                Oyun seçme sayfası
+/oyunlar git parkur      Sayfa açmadan girişe katıl
+/lobi                   Ana lobiye dön
+/grup                   Arkadaş grubu sayfası
+
+Lider seçim yapınca bütün grup kayıtlı girişe birlikte gider. Üye kendi
+başına grubu başlatamaz. Bölge asenkron hazırlanır. Teleport iptal edilirse
+ilk taşınan üyeler geri gönderilir; başka eklentinin dönüşü de iptal etmesi
+konsola yazılır. Oyun kuralları, ayrı arena, maç ve skor sonraki eklentidedir.
+Oyun haritalarını lobi korumasının dışında, tercihen ayrı dünyada kur.
+
+LOBİ PUSULASI
+Ayarlı lobinin koruma alanında girişini tamamlayan oyuncuya bir menü
+pusulası verilir. Sağ tık /merkez ile aynı yerleşik sayfayı açar.
+Önce hızlı çubuğun 9. yuvası, doluysa boş başka bir yuva kullanılır.
+Tam dolu envanterde mevcut eşyalar değişmez; bir yer açana kadar komut kullan.
+Oyun katılımında ve lobi dışına/dünya değişiminde sadece geçici pusula
+kaldırılır. /lobi ile dönünce geri verilir. Dışarıda komutlar çalışır.
+Normal pusulalar ve oyuncunun diğer eşyaları korunur. Menü pusulası
+atılamaz, taşınamaz, sandığa/diğer ele aktarılamaz; ölümde düşmez.
+Oyun eklentisi oyuncu envanterini teslim almadan önce pusula kaldırılır.
 
 GRUP
 /grup oluştur
@@ -37,7 +79,7 @@ Varsayılan 8 kişilik grup, 60 saniyelik davet. Davet ayrıca sayfadaki
 oyuncu adı alanıyla gönderilebilir. Lider ayrılırsa sıradaki üye lider olur.
 Grup/davetler geçicidir; çıkışta/restartta temizlenir. Kalıcı arkadaş listesi
 yoktur. Bir oyuncu tek gruptadır. Oyun içindeyken grup düzenlenmez; önce
-/lobi ile çıkılır. Oyunlar eklenince liderin seçimi tüm grubu birlikte götürür.
+/lobi ile çıkılır. Diğer üyeler oyundaysa onlar da çıkana kadar değişmez.
 
 YÖNETİM
 /merkez lobi bilgi
@@ -51,13 +93,13 @@ Kurucu da inşa için düzenleme modunu açmalı. Çıkışta kapanır.
 Lobi noktası çevresinde X/Z 100 blok uzaklığa kadar koruma uygulanır.
 Normal oyuncuya inşa/kova/etkileşim/eşya atma-toplama kapalı; hasar ve açlık
 engellenir. Harita oluşturulmaz; lobi platformunu yönetici hazırlar.
-Envanterler, roller, scoreboard ve oyun modu değiştirilmez.
+Oyuncunun kendi eşyaları, roller, scoreboard ve oyun modu korunur.
 
 Konum: plugins/KasabaHub/lobi.yml
+Oyun girişleri: plugins/KasabaHub/oyunlar.yml
 Ayarlar: plugins/KasabaHub/config.yml
 Ayar değişince /merkez yenile; /reload yerine tam yeniden başlatma kullan.
 Bozuk yenileme çalışan ayarı korur. İlk açılışta bozuk dosya varsa inşa/
 etkileşim koruma kilidi açılır; dosyayı düzeltip konsoldan merkez yenile yaz.
 
-Oyunlar ayrı eklenti olarak HubApi'ye bağlanır; bu paket sahte oyun/maç açmaz.
 Ayrıntılar: https://github.com/lazyunus3461/Sada/blob/main/kasaba-hub/README.md
