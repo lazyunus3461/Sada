@@ -26,6 +26,9 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.ServicePriority;
+import tr.kasaba.auth.api.AuthState;
+import tr.kasaba.auth.api.PlayerAuthenticatedEvent;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -97,6 +100,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         }
         workers = new ThreadPoolExecutor(2, 2, 0, TimeUnit.SECONDS, new ArrayBlockingQueue<>(32));
         getServer().getPluginManager().registerEvents(this, this);
+        Bukkit.getServicesManager().register(AuthState.class,authenticated::contains,this,ServicePriority.Normal);
         Bukkit.getScheduler().runTaskTimer(this, this::tick, 20, 20);
         for (Player p : Bukkit.getOnlinePlayers()) begin(p);
     }
@@ -110,6 +114,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         }
         if (workers != null) workers.shutdown();
         sessions.clear(); authenticated.clear(); flightKickGrace.clear(); permittedTeleports.clear();
+        Bukkit.getServicesManager().unregisterAll(this);
     }
 
     private boolean locked(Player p) { return !authenticated.contains(p.getUniqueId()); }
@@ -300,6 +305,7 @@ public final class KasabaAuth extends JavaPlugin implements Listener {
         p.showTitle(Title.title(WELCOME_HEADER,
                 Component.text(register ? "Kaydın tamamlandı!" : "Giriş başarılı!", NamedTextColor.GREEN)));
         tell(p, "Artık Kasaba’yı keşfedebilirsin!");
+        Bukkit.getPluginManager().callEvent(new PlayerAuthenticatedEvent(p,register));
     }
 
     @Override public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

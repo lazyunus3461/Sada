@@ -1,0 +1,63 @@
+KASABAHUB 1.0.0 — PAPER 1.21.10 / JAVA 21
+
+BU PAKET ANA OYUN MERKEZİDİR. HENÜZ MİNİ OYUN İÇERMEZ.
+Oyunları sonraki adımda bağlayacağız. /oyunlar sayfası bunu açıkça gösterir.
+
+KURULUM
+1. Sunucuyu durdur, eklenti veri klasörlerini yedekle.
+2. Önceki KasabaAuth JAR dosyasını plugins dışına çıkar.
+3. Yeni modele ait olmayan KasabaKlan/KasabaWarp ve başka lobi yöneticisi
+   JAR'larını da plugins dışına taşı. Veri klasörlerini SİLME.
+4. KasabaAuth-1.3.0.jar ve KasabaHub-1.0.0.jar dosyalarını plugins içine koy.
+5. Mevcut KasabaRoles kalabilir. Test Probe dosyalarını kurma.
+6. Sunucuyu aç, giriş yap, güvenli lobi platformunda Kurucu/OP olarak:
+   /merkez lobi ayarla
+
+Kayıtlar, şifreler ve roller korunur. Giriş formu tamamlandıktan sonra lobiye
+geçilir. Giriş bekleme yeri de aynı olsun istersen orada /kayityeri ayarla yaz.
+Hub yokken Auth'ın önceki davranışı sürer. İki Auth sürümünü birlikte bırakma.
+
+OYUNCU
+/merkez       Ana sayfa
+/oyunlar      Oyun sayfası (şimdilik yakında)
+/lobi         Ana lobiye dön
+/grup         Arkadaş grubu sayfası
+
+GRUP
+/grup oluştur
+/grup davet Redkit
+Davet alan oyuncu: /grup katıl LiderAdı
+/grup çıkar Redkit
+/grup lider Redkit
+/grup ayrıl
+/grup dağıt onayla
+/grup sohbet Merhaba
+
+Varsayılan 8 kişilik grup, 60 saniyelik davet. Davet ayrıca sayfadaki
+oyuncu adı alanıyla gönderilebilir. Lider ayrılırsa sıradaki üye lider olur.
+Grup/davetler geçicidir; çıkışta/restartta temizlenir. Kalıcı arkadaş listesi
+yoktur. Bir oyuncu tek gruptadır. Oyun içindeyken grup düzenlenmez; önce
+/lobi ile çıkılır. Oyunlar eklenince liderin seçimi tüm grubu birlikte götürür.
+
+YÖNETİM
+/merkez lobi bilgi
+/merkez düzenleme aç
+/merkez düzenleme kapat
+/merkez yenile
+/merkez yardım
+
+Yönetim: kasabahub.yonet (OP) veya kasabaroles.admin (Kurucu).
+Kurucu da inşa için düzenleme modunu açmalı. Çıkışta kapanır.
+Lobi noktası çevresinde X/Z 100 blok uzaklığa kadar koruma uygulanır.
+Normal oyuncuya inşa/kova/etkileşim/eşya atma-toplama kapalı; hasar ve açlık
+engellenir. Harita oluşturulmaz; lobi platformunu yönetici hazırlar.
+Envanterler, roller, scoreboard ve oyun modu değiştirilmez.
+
+Konum: plugins/KasabaHub/lobi.yml
+Ayarlar: plugins/KasabaHub/config.yml
+Ayar değişince /merkez yenile; /reload yerine tam yeniden başlatma kullan.
+Bozuk yenileme çalışan ayarı korur. İlk açılışta bozuk dosya varsa inşa/
+etkileşim koruma kilidi açılır; dosyayı düzeltip konsoldan merkez yenile yaz.
+
+Oyunlar ayrı eklenti olarak HubApi'ye bağlanır; bu paket sahte oyun/maç açmaz.
+Ayrıntılar: https://github.com/lazyunus3461/Sada/blob/main/kasaba-hub/README.md

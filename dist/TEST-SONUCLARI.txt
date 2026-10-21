@@ -1,3 +1,13 @@
+KasabaAuth 1.3.0 — 21 Ekim 2026
+BAŞARILI: 17 Auth birim testi; hesap/şifre ve kayıt yeri biçimi değişmedi.
+BAŞARILI: Hub ile gerçek protokolde kayıt/giriş, giriş öncesi komut engeli,
+başarıdan sonra salt okunur AuthState ve PlayerAuthenticatedEvent üzerinden
+lobiye geçiş. Hub yokken kodun eski giriş/kayıt yeri akışı korunur.
+Eski Auth 1.2 sentetik hesabı da aynı şifreyle yeni sürümde giriş yaptı.
+Önceki bütün bağımsız auth/flight/spawn protokol senaryoları bu sürümde yeniden
+çalıştırılmadı. Önceki kanıtlar aşağıda tarihi sürümüyle birlikte korunur.
+
+ÖNCEKİ SÜRÜMÜN DOĞRULAMA KAYDI
 KasabaAuth 1.2.0 — Doğrulama
 Paper 1.21.10 build 130 / Java 21 / global allow-flight=false.
 Birim testleri: 17 geçti, 0 başarısız, 0 hata, 0 atlanan.

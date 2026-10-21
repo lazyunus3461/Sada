@@ -1,10 +1,12 @@
-# KasabaAuth 1.2.0
+# Kasaba oyun merkezi
 
-Rol ve renkli TAB eklentisi: **[KasabaRoles](kasaba-roles/README.md)**. Türkçe komutlarla Kurucu, Admin, Moderatör, Rehber, VIP ve Oyuncu rolleri yönetilir.
+Yeni ana eklenti: **[KasabaHub](kasaba-hub/README.md)** — Minecraft içinde arkadaşlarla buluşulan lobi, yerleşik oyun sayfaları ve arkadaş grupları. Oyunlar sonraki adımda ayrı eklentiler olarak bağlanacak.
 
-Envanter menüsü ve komutla ışınlanma: **[KasabaWarp](kasaba-warp/README.md)**. Üç saniye hazırlık, yirmi saniye kullanım arası, role özel erişim, eldeki eşyadan simge, sabit menü kutusu ve tek warp altında kayıtlı konumlardan rastgele seçim içerir.
+**[KasabaHub kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaHub-Kurulum.zip)**. Paket Hub 1.0.0 ve uyumlu Auth 1.3.0 içerir. Mevcut [KasabaRoles](kasaba-roles/README.md) kullanılabilir. Yeni oyun merkezi modelinde önceki [warp](kasaba-warp/README.md) ve [klan/claim](kasaba-clan/README.md) çalışmaları arşiv olarak tutulur; kurulum paketine eklenmez.
 
-Ormanda iki köşeli claim ve klan yönetimi: **[KasabaKlan](kasaba-clan/README.md)**. Klan başına 10 üye/5.000 blok, tüm warp konumları çevresinde 100×100 claim yasağı ve rolün yanında klan etiketi içerir.
+## KasabaAuth 1.3.0
+
+Hub kullanıldığında doğrulama bittikten sonra Hub'ın ana lobisine geçilir. Hub olmadan aşağıdaki kayıt yeri davranışı korunur. 1.3.0 salt okunur AuthState servisi ve PlayerAuthenticatedEvent ekler; hesap/şifre dosyası biçimi değişmez.
 
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 
@@ -14,8 +16,8 @@ Bağlanınca önce 2 saniye boyunca büyük ekran başlığıyla **Kasaba’ya H
 
 1. Sunucuyu durdur ve oyuncu verileriyle `plugins/KasabaAuth` klasörünü yedekle.
 2. Önceki KasabaAuth JAR dosyasını `plugins` dışına çıkar. İki sürümü birlikte bırakma. AuthMe gibi başka bir kayıt eklentisiyle aynı anda kullanma.
-3. `KasabaAuth-1.2.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
-4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.2.0` etkinleşmeli.
+3. `KasabaAuth-1.3.0.jar` dosyasını sunucunun `plugins` klasörüne koy.
+4. Sunucuyu Java 21 ile aç. Konsolda `KasabaAuth v1.3.0` etkinleşmeli.
 5. Minecraft Java **1.21.10** ile bağlan. Kayıt / giriş sayfası otomatik açılır.
 
 Önceki KasabaAuth sürümlerindeki hesap dosyaları ve şifreleri korunur; aynı `plugins/KasabaAuth` veri klasörü kullanılır. AuthMe hesap aktarımı yoktur. Daha önce başka kayıt sistemi kullandıysan hesap geçişini planlamadan o sistemi kaldırma.
@@ -69,7 +71,7 @@ JDK 21 ve Maven 3.9+ ile:
 mvn -B clean verify
 ```
 
-Çıktı: `target/KasabaAuth-1.2.0.jar`. Birim testleri: 17. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
+Çıktı: `target/KasabaAuth-1.3.0.jar`. Birim testleri: 17. Bulutta mevcut `/workspace/Sada` checkout'unu kullan; kullanıcı istemedikçe Git worktree oluşturma.
 
 Bulut komutları:
 
@@ -77,7 +79,7 @@ Bulut komutları:
 bash /workspace/Sada/scripts/cloud-build.sh
 bash /workspace/Sada/scripts/integration/build-probe.sh
 # Test sunucusu kapalıyken yeni JAR'ı plugins içine kopyala:
-cp /workspace/Sada/target/KasabaAuth-1.2.0.jar /workspace/kasaba-test-server/plugins/
+cp /workspace/Sada/target/KasabaAuth-1.3.0.jar /workspace/kasaba-test-server/plugins/
 cp /workspace/Sada/target/KasabaAuthFlightProbe.jar /workspace/kasaba-test-server/plugins/
 # Ayrı terminalde, durdurmak için stop veya Ctrl+C:
 bash /workspace/Sada/scripts/start-test-server.sh
@@ -99,3 +101,5 @@ Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk
 `flight-regression.cjs` ek olarak 7 uçma regresyon kontrolü yapar. Yalnızca loopback test sunucusunda çalışan `KasabaAuthFlightProbe` yardımcı eklentisi, Paper 1.21.10’un gerçek uçma sayacını taşmış duruma getirir ve gerçek `PlayerKickEvent` nedenlerini tetikler. Eski 1.1.3 sürümü bu senaryoda atılır; yeni sürüm kayıt/giriş ve 5 saniyelik geçişte korur. Süre dolunca uçma atılmasının ve kayıt sırasında normal PLUGIN atmasının çalıştığı da sınanır. Yardımcı eklenti üretim JAR’ına eklenmez; gerçek sunucuya yalnızca KasabaAuth JAR’ını koy.
 
 Kayıt noktası testi: repo kökünde `node scripts/integration/spawn-regression.cjs`. KasabaRoles ve yerel FlightProbe test yardımcısı bulunmalıdır. Altı grup, yetki denetimini, nokta ayarlama/bilgiyi, son çıkış yerinden farklı noktada yeniden bağlanmayı, giriş sırasında başka ışınlanmaların engellenmesini, giriş sonrası aynı yerde kalmayı ve yeni kayıt olmayı sınar. Çıktıdaki `PERSIST_USER` adını al, test sunucusunu tamamen kapatıp aç ve `KASABA_SPAWN_PERSIST=1 KASABA_SPAWN_USER=<ad> node scripts/integration/spawn-regression.cjs` çalıştır. Bu aşama kalıcılığı ve `sil` sonrası eski davranışın geri gelmesini sınar. Ardından normal kayıt ve uçma testlerini çalıştır. Yardımcının kayıt yeri test kanalı da yalnızca loopback sunucusunda bulunur; üretim JAR'ına dahil değildir.
+
+Auth entegrasyonu: `tr.kasaba.auth.api.AuthState` yalnızca giriş durumunu sorgular; kimlik doğrulaması yapmaz. `PlayerAuthenticatedEvent`, hesap doğrulanıp form kapandıktan sonra ana iş parçacığında yayınlanır. Hub 1.0.0 bu olayı dinler.

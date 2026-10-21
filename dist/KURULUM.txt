@@ -1,4 +1,4 @@
-KASABAAUTH 1.2.0 — PAPER 1.21.10 / JAVA 21
+KASABAAUTH 1.3.0 — PAPER 1.21.10 / JAVA 21
 
 Bu sürüm Minecraft'ın yerleşik kayıt / giriş SAYFASINI açar.
 Envanter, sandık veya örs kullanılmaz. Oyuncuya mod veya kaynak paketi gerekmez.
@@ -7,7 +7,7 @@ GÜNCELLEME / KURULUM
 1. Sunucunu durdur ve plugins/KasabaAuth klasörünü yedekle.
 2. Eski KasabaAuth JAR dosyasını plugins klasöründen çıkar.
    plugins/KasabaAuth veri klasörünü SİLME; mevcut şifreler korunur.
-3. KasabaAuth-1.2.0.jar dosyasını plugins klasörüne koy.
+3. KasabaAuth-1.3.0.jar dosyasını plugins klasörüne koy.
 4. Sunucuyu yeniden aç. Java 21 ve Paper 1.21.10 gerekir.
 5. Minecraft Java 1.21.10 ile bağlanınca sayfa kendiliğinden açılır.
 
@@ -28,10 +28,10 @@ Uçma nedeniyle atılma düzeltmesi: giriş beklerken geçici koruma uygulanır;
 girişten sonra önceki uçma izni geri yüklenir. Genel allow-flight ayarına dokunulmaz.
 Sohbet iletileri doğrulanamıyor bildirimi Minecraft istemcisindendir; bu sürüm gizlemez.
 
-1.2.0: Kayıt/giriş sırasında gerçek uçma atılması da engellenir.
+1.3.0: Kayıt/giriş sırasında gerçek uçma atılması da engellenir.
 Başarılı girişten sonra koruma 5 saniye içinde biter.
-Eski KasabaAuth JAR dosyalarının tamamını plugins klasöründen çıkar; yalnızca 1.2.0 kalsın.
-Test yardımcısını gerçek sunucuna kurma; gereken tek dosya KasabaAuth-1.2.0.jar.
+Eski KasabaAuth JAR dosyalarının tamamını plugins klasöründen çıkar; yalnızca 1.3.0 kalsın.
+Test yardımcısını gerçek sunucuna kurma; gereken tek dosya KasabaAuth-1.3.0.jar.
 
 KAYIT / GİRİŞ YERİ — YENİ KOMUT
 Oyunda istediğin yerde dur ve istediğin yöne bak. Ardından şunu yaz:
@@ -47,5 +47,9 @@ Konum plugins/KasabaAuth/kayit-yeri.yml dosyasında tutulur.
 İlk kurulumda komutla yer belirleyene kadar oyuncular bulundukları yerde giriş yapar.
 Bozuk konum dosyasını sıfırlamak için sunucu konsolunda kayityeri sil kullanılabilir.
 
-Güncellemede eski KasabaAuth JAR'ını plugins dışına çıkarıp 1.2.0 dosyasını koy.
+Güncellemede eski KasabaAuth JAR'ını plugins dışına çıkarıp 1.3.0 dosyasını koy.
 plugins/KasabaAuth veri klasörünü ve KasabaRoles eklentisini silme.
+
+Auth 1.3.0: Hub için salt okunur giriş durumu ve başarılı giriş olayı eklendi.
+Hesap/şifre biçimi ve uçma korumaları korunur. Hub varsa doğrulamadan sonra
+Hub lobisine geçilir; Hub yoksa eski kayıt yeri davranışı sürer.

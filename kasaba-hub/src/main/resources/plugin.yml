@@ -1,0 +1,28 @@
+name: KasabaHub
+version: 1.0.0
+main: tr.kasaba.hub.KasabaHub
+api-version: '1.21.10'
+author: Kasaba
+description: Kasaba oyun merkezi, yerleşik sayfalar, ortak lobi ve arkadaş grupları.
+depend: [KasabaAuth]
+softdepend: [KasabaRoles]
+commands:
+  merkez:
+    description: Oyun merkezini açar ve yönetir.
+    usage: /merkez yardım
+  oyunlar:
+    description: Oyun seçme sayfası.
+    usage: /oyunlar
+  grup:
+    description: Arkadaş grubunu yönet.
+    usage: /grup yardım
+  lobi:
+    description: Ana lobiye dön.
+    usage: /lobi
+permissions:
+  kasabahub.kullan:
+    default: true
+    description: Merkez sayfaları, lobi ve grup kullanımı.
+  kasabahub.yonet:
+    default: op
+    description: Lobi ayarlama ve açıkça etkinleştirilen düzenleme modu.

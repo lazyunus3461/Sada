@@ -1,0 +1,5 @@
+grup-uye-siniri: 8
+davet-suresi-saniye: 60
+otomatik-sayfa: true
+# Yalnızca ayarlı lobi noktası çevresindeki bu yarıçap korunur.
+lobi-koruma-yaricapi: 100

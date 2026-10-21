@@ -1,0 +1,42 @@
+KasabaHub 1.0.0 / KasabaAuth 1.3.0 — 21 Ekim 2026
+Paper 1.21.10 build 130 / Java 21; Roles 1.2.0 birlikte yüklü.
+
+BAŞARILI: 30 birim testi, 0 hata (17 Auth + 13 Hub).
+- Tek grup üyeliği, davet zorunluluğu/son kullanım, kapasitenin kabul anında
+  yeniden denetlenmesi, lider yetkisi, lider devriyle eski davetlerin iptali.
+- Ayrılma/çıkarma/dağıtma/son üye temizliği ve lider çıkışında otomatik devir.
+- Dünya UUID'si, tam lobi koordinat/yönünün atomik kaydı ve yeniden okunması.
+- Bozuk/eksik dosyanın sıfırlanmadan reddi, sayısal sınırlar, dünya ve koruma
+  alanı sınırları, geçersiz oyun tanımının reddi.
+
+BAŞARILI: 5 canlı entegrasyon grubu + tam yeniden başlatma.
+1. Gerçek kayıt/giriş formu; doğrulama öncesi /oyunlar engeli; başarılı girişte
+   tam lobi konum/yönüne geliş ve native sayfa. Envanter penceresi açılmaz.
+2. Önceki sayfanın düğmesiyle grup oluşturulamaması; native oyuncu adı alanıyla
+   davet, kabul ve 2/8 üye; üyenin lider işlemini yapamaması.
+3. /lobi sonrasında yedi elmasın korunması; Bukkit olaylarıyla sınırlı lobi
+   kırma/hasar/açlık koruması, dış alanda normal kırma, açık düzenleme modu.
+4. Yalnızca liderin bütün takımı tek join çağrısıyla göndermesi; ret halinde
+   herkesin durumunun bırakılması, kabulde iki oyuncunun tek seferde alınması,
+   oyun sırasında grup değişikliği engeli, adaptör kaldırılınca herkesin lobiye
+   dönmesi ve oyun listesinin yeniden yakında durumuna gelmesi.
+5. Liderin bağlantısı kesilince sonraki üyenin lider olması ve son çıkışta
+   geçici üyeliğin temizlenmesi.
+6. Tam durdur/aç: lobi konumu/yönü ve hesaplar korunur; geçici gruplar ve test
+   oyunları geri gelmez. Auth 1.2 döneminden kalan ayrı sentetik hesap da aynı
+   şifreyle Auth 1.3 üzerinden giriş yapıp Hub lobisine ulaştı.
+
+Paper DialogClickManager yeni callback'leri sonraki tick'te kuyruğundan
+etkinleştirir; sentetik istemci düğmeye basmadan 110 ms bekler. Native NBT
+codec varsayılan true alanları atlayabilir. Gerçek diyalog/giriş/düğme/metin
+paketleri kullanıldı. Koruma denetimleri ana iş parçacığında Bukkit olaylarıyla
+yapıldı; bütün fiziksel redstone düzenekleri elle denenmiş sayılmaz.
+
+Yerel test sunucusu 127.0.0.1:25575 offline/allow-flight=false çalıştı.
+HubProbe yalnızca test oyun adaptörüdür, üretim JAR'ında/kurulum ZIP'inde yoktur.
+Bu sürüm oynanabilir mini oyun içermez. Üretim paketinde sadece Hub 1.0.0 ve
+Auth 1.3.0 bulunur. Hesap/şifre biçimi, rol/scoreboard ve oyun modu değişmedi.
+Mojang public-key erişim uyarısı sentetik hesap testlerini engellemedi.
+Native Minecraft görsel istemcisi, Bedrock/ViaVersion ve başka lobi eklentileriyle
+uyumluluk test edilmedi. Önceki tüm auth/flight/spawn protokol senaryoları
+tekrarlanmadı; bu sürümde Auth birim testleri ve Hub entegrasyonu çalıştırıldı.
