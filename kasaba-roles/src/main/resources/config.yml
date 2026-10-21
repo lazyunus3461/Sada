@@ -1,0 +1,56 @@
+default-role: oyuncu
+# Başka bir TAB eklentisi kullanıyorsan false yap; yetkiler çalışmaya devam eder.
+manage-tab: true
+roles:
+  kurucu:
+    label: Kurucu
+    color: '#FF4545'
+    name-color: white
+    priority: 1000
+    inherits: [oyuncu]
+    permissions:
+      kasabaroles.admin: true
+      bukkit.command.*: true
+      minecraft.command.*: true
+  admin:
+    label: Admin
+    color: dark_red
+    name-color: white
+    priority: 800
+    inherits: [moderator]
+    permissions:
+      minecraft.command.ban: true
+      minecraft.command.pardon: true
+      minecraft.command.time: true
+      minecraft.command.weather: true
+  moderator:
+    label: Moderatör
+    color: green
+    name-color: white
+    priority: 600
+    inherits: [rehber]
+    permissions:
+      minecraft.command.kick: true
+      minecraft.command.teleport: true
+  rehber:
+    label: Rehber
+    color: aqua
+    name-color: white
+    priority: 400
+    inherits: [oyuncu]
+    permissions: {}
+  vip:
+    label: VIP
+    color: gold
+    name-color: white
+    priority: 300
+    inherits: [oyuncu]
+    permissions: {}
+  oyuncu:
+    label: Oyuncu
+    color: gray
+    name-color: white
+    priority: 1
+    inherits: []
+    permissions:
+      kasabaroles.info: true

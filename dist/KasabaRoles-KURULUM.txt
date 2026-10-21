@@ -1,0 +1,50 @@
+KASABA ROLES 1.0.0 — PAPER 1.21.10 / JAVA 21
+
+1. Sunucunu durdur.
+2. KasabaRoles-1.0.0.jar dosyasını sunucunun plugins klasörüne koy.
+3. Sunucunu yeniden aç.
+4. Sunucu KONSOLUNA şunu yaz: rol ver Redkit kurucu
+   Redkit yerine kendi Minecraft oyuncu adını yaz. Konsolda başına / koyma.
+5. Oyunda TAB tuşuna bas: [Kurucu] OyuncuAdın görünür.
+
+KasabaAuth ayrı eklentidir; onu kaldırma. LuckPerms ve TAB gerekmez.
+Güncellemede eski KasabaRoles JAR'ını plugins dışına çıkar; veri klasörünü koru.
+
+HAZIR ROLLER
+kurucu: açık kırmızı — admin: koyu kırmızı — moderator: yeşil
+rehber: turkuaz — vip: altın — oyuncu: gri
+
+OYUN İÇİ KOMUTLAR
+/rol liste
+/rol bilgi [oyuncu]
+/rol ver Redkit rehber
+/rol al Redkit
+/rol oluştur destek turkuaz Destek Ekibi
+/rol isim destek Yardım Ekibi
+/rol renk destek kırmızı
+/rol sıra destek 450
+/rol yetki destek eklenti.yetkisi ver
+/rol yetki destek eklenti.yetkisi yasakla
+/rol yetki destek eklenti.yetkisi sil
+/rol sil destek
+/rol yenile
+
+oluştur yerine olustur, sıra yerine sira da olur.
+Renklerde #FF4545 gibi HEX kodları da kullanılabilir.
+Bir oyuncuya yeni rol verirsen önceki rolü değiştirilir. Roller kalıcı kaydedilir.
+Rol yönetimini yalnızca konsol, OP veya kasabaroles.admin yetkisi olan yapabilir.
+Kurucu rolünde bu yetki hazırdır. Eklenti oyunculara otomatik OP vermez.
+
+AYARLAR
+plugins/KasabaRoles/config.yml: roller, renkler, yetkiler ve sıralama.
+plugins/KasabaRoles/oyuncular.yml: oyuncuların kalıcı rol atamaları.
+Dosyaları elle düzenlemeden önce yedekle. Ardından /rol yenile kullan.
+İsimler TAB'da değişir; sohbet ve kafa üstündeki isimler değiştirilmez.
+Diğer eklentilerin yetkilerini tam düğüm adlarıyla role ekleyebilirsin.
+Jokerler (eklenti.*) yalnızca Bukkit'e kayıtlı yetkiler için genişletilir.
+
+Komut örnekleri ve ayrıntılar:
+https://github.com/lazyunus3461/Sada/blob/main/kasaba-roles/README.md
+
+Gerçek sunucuna gereken dosya yalnızca KasabaRoles-1.0.0.jar.
+KasabaRolesProbe test yardımcısını gerçek sunucuya kurma.

@@ -1,0 +1,19 @@
+name: KasabaRoles
+version: 1.0.0
+main: tr.kasaba.roles.KasabaRoles
+api-version: '1.21.10'
+author: Kasaba
+description: Kalıcı roller, renkli TAB etiketleri ve rol yetkileri.
+softdepend: [LuckPerms, TAB]
+commands:
+  rol:
+    description: Kasaba rollerini yönetir.
+    usage: /rol
+    aliases: [roller, kasabarol]
+permissions:
+  kasabaroles.admin:
+    description: Rol ve yetki yönetimi.
+    default: op
+  kasabaroles.info:
+    description: Rol bilgisini ve rol listesini görme.
+    default: true

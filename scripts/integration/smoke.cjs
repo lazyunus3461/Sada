@@ -10,6 +10,12 @@ const componentText=c=>typeof c==='string'?c:Array.isArray(c)?c.map(componentTex
 // Override the outdated minecraft-data definition only in this test client.
 const customPackets = {'1.21':{types:{packet_common_custom_click_action:
     ['container',[{name:'id',type:'string'},{name:'payload',type:['buffer',{countType:'varint'}]}]]}}};
+// Native 1.21.10 Action enum places UPDATE_LIST_ORDER before UPDATE_HAT.
+// minecraft-data 1.21.9 reverses those flags, misreading a rank as a Boolean.
+const playerInfo=structuredClone(require('minecraft-data')('1.21.10').protocol.play.toClient.types.packet_player_info);
+playerInfo[1][0].type[1].flags=['add_player','initialize_chat','update_game_mode','update_listed',
+    'update_latency','update_display_name','update_list_order','update_hat'];
+customPackets['1.21'].play={toClient:{types:{packet_player_info:playerInfo}}};
 const options = {customPackets,host:'127.0.0.1',port:Number(process.env.KASABA_TEST_PORT || 25575),version:'1.21.10',auth:'offline'};
 const PASSWORD = 'Kasaba'; // Synthetic test accounts only.
 async function connect(username) {

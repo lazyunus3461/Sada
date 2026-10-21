@@ -1,0 +1,36 @@
+KasabaRoles 1.0.0 — 21 Ekim 2026
+Paper 1.21.10 build 130 / Java 21
+
+BAŞARILI: 17 JUnit testi
+- Devralınan yetkiler, açık ret, döngü ve eksik rol kontrolü.
+- Tam yetkinin jokerden önceliği, benzer adlara yanlış izin verilmemesi.
+- Türkçe varsayılan roller, kalıcı dosya yazma ve yeniden okuma.
+- Bozuk YAML, hatalı renk/yetki, yanlış veri biçimi ve çift oyuncu kaydı reddi.
+
+BAŞARILI: Gerçek Paper protokol testi (8 grup + tam yeniden başlatma)
+1. Varsayılan Oyuncu TAB etiketi; yetkisiz oyuncu kendine Kurucu veremez.
+2. Konsoldan Kurucu verme: renkli/kalın yerleşik TAB etiketi, sıra ve gerçek yetki.
+3. Rol kaldırıldığında önceki yönetim yetkileri hemen temizlenir.
+4. Türkçe rol oluşturma/isim/renk/sıra/yetki komutları; jokerden daha özel ret.
+5. Kayıtlı olmayan tam yetki düğümünü verme ve kaldırma.
+6. Olmayan rol verme, atanmış rolü ve varsayılan rolü silme mevcut veriyi bozmaz.
+7. Ayar yenileme ve yeniden bağlanma sonrasında rol/yetki korunur.
+8. Çevrimdışı oyuncuya verilen VIP rolü ilk girişinde uygulanır.
+9. Sunucu tamamen kapatılıp yeniden açılınca Rehber rolü kalır.
+
+TAB'ın gerçek player_info paketinde etiket metni, renk ve liste sırası sınandı.
+Yetkiler loopback test yardımcısı ile gerçek Player.hasPermission üzerinden okundu.
+Test yardımcısının sınıfları ve kanalı üretim JAR'ına dahil değildir.
+
+KasabaAuth 1.1.4 birlikte yüklüyken 12 birim testi ile mevcut 18 kayıt/giriş ve
+7 uçma regresyon kontrolü de geçti. KasabaAuth üretim kodu değiştirilmedi.
+
+Test istemcisindeki iki eski minecraft-data paket tanımı, gerçek 1.21.10
+protokolüne göre yalnızca test kapsamında düzeltildi: diyalog yanıtı NBT uzunluğu
+ve TAB sıra/şapka bitlerinin sırası. Üretim eklentisi standart Paper API kullanır.
+
+Yerel test 127.0.0.1:25575 adresinde offline ve allow-flight=false ile yapıldı.
+İsteğe bağlı Mojang public-key erişiminde DNS hatası görüldü; offline sentetik
+testleri etkilemedi. Lisanslı hesapların online kimlik doğrulaması test edilmedi.
+Gerçek Minecraft istemcisinde görsel inceleme ve farklı eklentilerle uyumluluk
+kontrolü yapılmadı. Eski istemciler ve çoklu sunucu senaryosu doğrulanmadı.
