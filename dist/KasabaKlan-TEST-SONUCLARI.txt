@@ -1,0 +1,51 @@
+KasabaKlan 1.0.0 — 21 Ekim 2026
+Paper 1.21.10 build 130 / Java 21
+KasabaRoles 1.2.0, KasabaWarp 1.2.0, KasabaAuth 1.2.0 birlikte yüklü.
+
+BAŞARILI: 57 birim testi; 0 hata.
+- Klan: 16 test. Dünya/alan/geometri/kota, bütün warp hedefleri, tam 100x100,
+  kısmi çakışma, negatif koordinat, üyelik/liderlik, bozuk dosya ve atomik kayıt.
+- Roles: 20 test. Mevcut yetki/rol testleri ve rol+klan+özgün mesaj biçimi.
+- Warp: 21 test. Eski dosya, simge/kutu, çoklu konum ve 20 saniye süre sayacı.
+
+BAŞARILI: 9 klan entegrasyon grubu.
+1. Gerçek kayıt/giriş: auth /klan komutunu engeller; davetsiz katılım reddedilir;
+   davetli katılım TAB ve kafa üstünde rol+klan etiketini birlikte günceller.
+2. Gerçek genel sohbet doğru rol/klan ve özgün mesajı içerir. Özel klan sohbeti
+   yalnızca üyelerine ulaşır, yabancıya gitmez.
+3. Özel warpın ek konumu çevresinde kısmen çakışan claim reddedilir. Gerçek
+   sol tık/sağ tık paketleriyle 10x10=100 blok claim alınır; toplam 5000 kotası.
+4. Ana iş parçacığında gerçek Bukkit olayları: yabancıya kırma/koyma/kova/
+   sandık/varlık/yüksek-Y erişimi kapalı, üyeye açık. Aynı klan PvP olayı iptal
+   edilmez. Sıvı/piston/hopper sınırı, patlama listesi ve yanma denetlenir;
+   aynı klanın iç sıvı/hopper işlemleri açık kalır.
+5. Gerçek yaratıcı mod kazma paketleriyle yabancı claimdeki taş korunur;
+   aynı taşı üye kırabilir.
+6. Oluştur/taşı/noktaekle ile mevcut claime çakışan warp reddedilir, eski hedef
+   sayısı korunur. Yerel dosya bozulup yenileme reddedilirken aktif erişim/
+   etiketler korunur; özgün dosyanın baytları geri yüklenir.
+7. Üyeyi çıkarma claim erişimini ve TAB etiketini hemen kaldırır. Tekrar
+   davet/katılım/yardımcılık çalışır. Lider ayrılamaz, yardımcı klanı dağıtamaz.
+8. Kurucu kendiliğinden korumayı aşamaz. Yönetim geçişi aç/kapat ve yönetim
+   yetkisi geri alındığında anında ret; sıradan üye arazi yönetemez.
+9. Tam sunucu kapat/aç: orman UUID'si, üyeler, 100 blok arazi, üç yerde etiket,
+   yabancı engeli ve warp yerleştirme koruması diskten geri gelir. Özel warp
+   kimliği claim hatasında açıklanmaz.
+
+BAŞARILI: Roles eski chat (4) + nametags (4) protokol grubu yeni sürümde geçti.
+Özel scoreboard/sidebar, anlık rol/renk değişimi, quit temizliği doğrulandı.
+BAŞARILI: Warp eski icons-points kalıcılık modu yeni sürümde geçti; özel model,
+sabit kutu, üç konum, özel erişim, sayfalama/tamamlama ve eski tekli pazar.
+Auth JAR SHA256 değişmedi. Eski tüm auth/roles/warp senaryoları yeniden
+çalıştırılmadı; ilgili ortak davranışlar yukarıdaki testlerle doğrulandı.
+
+Fixture yalnızca loopback 127.0.0.1:25575 offline ve allow-flight=false
+sunucuda çalıştı. ClanProbe, FlightProbe, RolesProbe ve WarpProbe üretim
+JAR'larına veya kurulum ZIP'ine alınmadı. Test hesapları sentetiktir.
+Otomasyon olayları gerçek Bukkit listener yolunda gönderildi; bütün fiziksel
+redstone düzenekleri veya native görsel Minecraft istemcisiyle inceleme
+anlamına gelmez. Native istemci görünümü, Bedrock/ViaVersion, WorldEdit ve
+başka claim eklentileriyle uyumluluk doğrulanmadı. Mojang public-key erişim
+uyarısı offline sentetik hesap testlerini engellemedi. İlk açılışta bozuk
+veriyle küresel koruma kilidi kaynakta bulunur; ayrı bir bozuk-ilk-açılış
+protokol senaryosu çalıştırılmadı, bozuk yenileme aktif korumayla sınandı.

@@ -17,6 +17,13 @@ class RoleDisplayTest {
         assertEquals("[Kurucu] Redkit » Merhaba Kasaba!",PlainTextComponentSerializer.plainText().serialize(rendered));
         assertEquals(message,rendered.children().getLast());
     }
+    @Test void clanAppearsBesideRoleWithoutChangingMessageOrPlayerColor() {
+        Component clan=Component.text("[KSB] ",NamedTextColor.AQUA);
+        Component message=Component.text("Merhaba");
+        Component rendered=RoleDisplay.chat(role(),"Redkit",message,clan);
+        assertEquals("[Kurucu] [KSB] Redkit » Merhaba",PlainTextComponentSerializer.plainText().serialize(rendered));
+        assertEquals(message,rendered.children().getLast());
+    }
     @Test void boldRoleDoesNotMakePlayerNameOrMessageBold() {
         var rendered=RoleDisplay.chat(role(),"Redkit",Component.text("Merhaba"));
         var tag=rendered.children().getFirst();

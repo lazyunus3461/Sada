@@ -14,6 +14,9 @@ import org.bukkit.event.*;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.event.server.ServiceRegisterEvent;
+import org.bukkit.event.server.ServiceUnregisterEvent;
+import tr.kasaba.roles.api.ClanLabels;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -31,6 +34,7 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
     private record ChatSettings(boolean enabled, Map<String,Role> players, Role defaultRole) {}
     private volatile ChatSettings chatSettings;
     private NameTags nameTags;
+    private volatile ClanLabels clanLabels;
     private static final class Applied {
         final Component originalName;final int originalOrder;
         PermissionAttachment attachment;Component lastName;int lastOrder;boolean tabWritten;
@@ -73,10 +77,16 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         assignments.forEach((name,id)->roles.put(name,configuration.catalog().get(id)));
         chatSettings=new ChatSettings(configuration.manageChat(),Map.copyOf(roles),configuration.catalog().defaultRole());
     }
-    private void applyAll(){if(configuration!=null){refreshChat();for(Player p:Bukkit.getOnlinePlayers())apply(p);refreshNameTags();}}
+    private void applyAll(){if(configuration!=null){
+        var provider=Bukkit.getServicesManager().getRegistration(ClanLabels.class);clanLabels=provider==null?null:provider.getProvider();
+        refreshChat();for(Player p:Bukkit.getOnlinePlayers())apply(p);refreshNameTags();
+    }}
+    /** Called on the main thread after a clan membership/tag changes. */
+    public void refreshClanLabels(){if(Bukkit.isPrimaryThread())applyAll();else Bukkit.getScheduler().runTask(this,this::applyAll);}
+    private Component clan(String name){ClanLabels provider=clanLabels;return provider==null?Component.empty():provider.prefix(name);}
     private void refreshNameTags() {
         if(configuration==null)return;
-        if(configuration.manageNameTags())nameTags.refresh(Bukkit.getOnlinePlayers(),this::role);
+        if(configuration.manageNameTags())nameTags.refresh(Bukkit.getOnlinePlayers(),this::role,this::clan);
         else nameTags.clear();
     }
     private void apply(Player p) {
@@ -88,7 +98,7 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         PermissionRules.expand(configuration.catalog().permissions(role.id()),registered)
                 .forEach(state.attachment::setPermission);
         if(configuration.manageTab()) {
-            Component tag=RoleDisplay.tag(role,p.getName());
+            Component tag=RoleDisplay.tag(role,p.getName(),clan(p.getName()));
             p.playerListName(tag);p.setPlayerListOrder(role.priority());
             state.lastName=tag;state.lastOrder=role.priority();state.tabWritten=true;
         } else restoreTab(p,state);
@@ -110,12 +120,15 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
     @EventHandler public void pluginEnabled(PluginEnableEvent e){
         if(e.getPlugin()!=this)Bukkit.getScheduler().runTask(this,this::applyAll);
     }
+    @EventHandler public void registered(ServiceRegisterEvent e){if(e.getProvider().getService()==ClanLabels.class)Bukkit.getScheduler().runTask(this,this::applyAll);}
+    @EventHandler public void unregistered(ServiceUnregisterEvent e){if(e.getProvider().getService()==ClanLabels.class)Bukkit.getScheduler().runTask(this,this::applyAll);}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void chat(AsyncChatEvent event) {
         ChatSettings snapshot=chatSettings;
         if(snapshot==null||!snapshot.enabled())return;
         String name=event.getPlayer().getName();
         Role role=snapshot.players().getOrDefault(Role.playerKey(name),snapshot.defaultRole());
-        event.renderer(ChatRenderer.viewerUnaware((source,displayName,message)->RoleDisplay.chat(role,name,message)));
+        Component clan=clan(name);
+        event.renderer(ChatRenderer.viewerUnaware((source,displayName,message)->RoleDisplay.chat(role,name,message,clan)));
     }
     private void tell(CommandSender sender,String text){sender.sendMessage(Component.text(text,NamedTextColor.YELLOW));}
     private void changeRole(String name,String id) throws IOException {

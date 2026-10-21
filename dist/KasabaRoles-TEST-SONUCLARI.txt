@@ -1,3 +1,12 @@
+KasabaRoles 1.2.0 — 21 Ekim 2026
+BAŞARILI: 20 birim testi (rol+klan formatı dahil).
+BAŞARILI: chat.cjs 4 ve nametags.cjs 4 protokol grubu yeni sürümde tekrar geçti.
+BAŞARILI: KasabaKlan entegrasyonunda TAB/sohbet/kafa üstünde rol+klan birlikte,
+üyelikten çıkınca etiketin kalkması, tekrar katılma ve kalıcı verinin yüklenmesi.
+Özel scoreboard/sidebar, rol renkleri ve sıralaması korunur.
+Tam eski roles.cjs senaryosu bu sürümde yeniden çalıştırılmadı.
+
+ÖNCEKİ SÜRÜMÜN DOĞRULAMA KAYDI
 KasabaRoles 1.1.0 — 21 Ekim 2026
 Paper 1.21.10 build 130 / Java 21
 

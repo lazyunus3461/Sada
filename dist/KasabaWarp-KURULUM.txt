@@ -1,9 +1,9 @@
-KASABAWARP 1.1.0 — PAPER 1.21.10 / JAVA 21
+KASABAWARP 1.2.0 — PAPER 1.21.10 / JAVA 21
 
 GÜNCELLEME
 1. Sunucuyu durdur; plugins/KasabaWarp veri klasörünü yedekle.
 2. Önceki KasabaWarp JAR dosyasını plugins dışına taşı.
-3. KasabaWarp-1.1.0.jar dosyasını plugins içine koy ve sunucuyu aç.
+3. KasabaWarp-1.2.0.jar dosyasını plugins içine koy ve sunucuyu aç.
 Veri klasörünü silme. Eski warplar korunur. Auth/Roles dosyalarını kaldırma.
 
 ELDEKİ EŞYA VE MENÜ KUTUSU
@@ -57,5 +57,8 @@ Konumlar, yönler, simge, menü kutusu ve yetkiler:
 plugins/KasabaWarp/warplar.yml
 Süreler: plugins/KasabaWarp/config.yml
 Dosya değişince /warp yenile kullan. /reload yerine tam yeniden başlat.
-Yalnızca KasabaWarp-1.1.0.jar kurulmalıdır; test Probe dosyalarını kurma.
+Yalnızca KasabaWarp-1.2.0.jar kurulmalıdır; test Probe dosyalarını kurma.
 Ayrıntılar: https://github.com/lazyunus3461/Sada/blob/main/kasaba-warp/README.md
+
+1.2.0: KasabaKlan ile ana/ek/özel warp çevreleri claim yasağına katılır.
+Mevcut claimle çakışan yeni/taşınan warp reddedilir; araziler silinmez.

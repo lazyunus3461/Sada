@@ -1,4 +1,4 @@
-# KasabaRoles 1.1.0
+# KasabaRoles 1.2.0
 
 Paper **1.21.10**, Java **21** için Kasaba'nın bağımsız rol eklentisi. LuckPerms veya TAB gerekmez. KasabaAuth ile birlikte çalışabilir. Oyuncuya verilen rol kaydedilir; yeniden bağlanınca ve sunucu yeniden başlayınca korunur.
 
@@ -6,11 +6,11 @@ TAB listesinde ve oyuncunun kafasının üstünde renkli, kalın rol etiketi gö
 
 ## İndir ve kur
 
-[KasabaRoles-1.1.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaRoles-1.1.0.jar)
+[KasabaRoles-1.2.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaRoles-1.2.0.jar)
 
 1. Sunucuyu durdur.
 2. JAR dosyasını sunucunun `plugins` klasörüne koy. KasabaAuth dosyasını kaldırma; bu ayrı bir eklentidir.
-3. Sunucuyu yeniden aç. Konsolda `KasabaRoles v1.1.0` etkinleşmeli.
+3. Sunucuyu yeniden aç. Konsolda `KasabaRoles v1.2.0` etkinleşmeli.
 4. **Sunucu konsoluna**, başına `/` koymadan, `rol ver Redkit kurucu` yaz. `Redkit` yerine kendi Minecraft adını yaz.
 5. Artık oyunda `/rol` komutlarını kullanabilirsin. İlk Kurucu ataması konsoldan veya zaten OP olan bir oyuncudan yapılır.
 
@@ -68,6 +68,10 @@ Dosyaları elle düzenlemeden önce yedekle. Hatalı `/rol yenile` mevcut çalı
 
 ## Derleme ve test
 
-JDK 21 / Maven 3.9+ ile bu klasörde `mvn -B clean verify`. Çıktı: `target/KasabaRoles-1.1.0.jar`.
+JDK 21 / Maven 3.9+ ile bu klasörde `mvn -B clean verify`. Çıktı: `target/KasabaRoles-1.2.0.jar`.
 
 Bulutta `bash /workspace/Sada/kasaba-roles/scripts/cloud-build.sh` bağımlılıkları hazırlayıp birim testlerini ve derlemeyi çalıştırır. Protokol testleri için [test yönergelerine](scripts/integration/README.md) bak. Test yardımcı eklentisini gerçek sunucuya kurma.
+
+## KasabaKlan etiketi
+
+1.2.0, KasabaKlan 1.0.0 ile rol ve klan etiketini birlikte gösterir: `[Kurucu] [KSB] Redkit`. Üyelik değişimleri TAB, sohbet ve mevcut scoreboard üzerindeki kafa üstü takımlarına anında yansır. Klan eklentisi yoksa eski davranış sürer; rol atamaları ve yetkiler korunur. `ClanLabels` servisi, async sohbet için değişmez bir etiket görüntüsü sunar. Birim testi sayısı 20 oldu.

@@ -1,0 +1,75 @@
+KASABAKLAN 1.0.0 — PAPER 1.21.10 / JAVA 21
+
+KURULUM
+1. Sunucuyu durdur. Rol/warp/klan veri klasörlerini yedekle.
+2. Önceki KasabaRoles ve KasabaWarp JAR dosyalarını plugins dışına çıkar.
+3. ZIP içindeki üç JAR'ı plugins klasörüne koy:
+   KasabaKlan-1.0.0.jar
+   KasabaRoles-1.2.0.jar
+   KasabaWarp-1.2.0.jar
+4. Sunucuyu aç. Orman dünyasında Kurucu/OP olarak /klan orman ayarla yaz.
+Veri klasörlerini SİLME. KasabaAuth dosyalarına dokunma.
+
+KLAN KUR / ÜYE EKLE
+/klan oluştur KSB Kasaba
+/klan davet Redkit
+Davet edilen oyuncu: /klan katıl KSB
+/klan üyeler
+/klan bilgi
+/klan liste
+/klan sohbet Merhaba
+
+İKİ KÖŞEYLE CLAIM
+/klan alan seç
+İlk köşe bloğuna SOL tıkla. Diğer köşe bloğuna SAĞ tıkla.
+/klan alan al
+Seçimden çık: /klan alan iptal
+Alternatif: ilk köşede /klan alan birinci, diğerinde /klan alan ikinci.
+/klan alan liste
+/klan alan bilgi
+/klan alan bırak 1
+
+Klan başına 10 üye ve toplam 5.000 yatay blok arazi vardır.
+Sınır blokları dahildir: 200..209 x 200..209 = 10x10 = 100 blok.
+Yalnızca ayarlı orman dünyasında claim alınabilir. Tam yükseklik korunur.
+Ana/ek/rastgele/özel HER warp konumunun çevresindeki 100x100 alanda claim
+alınamaz. Bir kısmı bile çakışan claim reddedilir. 100x100, merkez bloktan
+-50..+49 arasıdır; yarıçap 100 değildir. Warp çevresinde sadece claim yasaktır;
+bu kural tek başına orada blok kırmayı kapatmaz.
+
+Sonradan warp koyma/taşıma/ekleme/yenileme claimle çakışırsa işlem reddedilir.
+Var olan claimler sessizce silinmez. Özel warp adı claim hatasında açıklanmaz.
+
+Üyeler klanın bütün arazilerinde inşa edebilir/sandıkları kullanabilir.
+Alan alma/bırakma lider ve yardımcıya aittir. Klandan çıkanın erişimi ve
+etiketi hemen kalkar. Yabancı oyuncuların blok/sandık/kova/varlık müdahaleleri
+ve dışarıdan piston/sıvı/hopper/patlama/yangınla zarar vermeleri engellenir.
+PvP'ye dokunulmaz; aynı klanın üyeleri mevcut sunucu kurallarını izler.
+Rol ve klan birlikte TAB, sohbet ve kafa üstünde görünür: [Kurucu] [KSB] Redkit.
+
+ÜYELİK YÖNETİMİ
+/klan çıkar Redkit
+/klan ayrıl
+/klan yetki Redkit yardımcı
+/klan yetki Redkit üye
+/klan lider Redkit
+/klan dağıt onayla
+Liderlik devredilmeden lider ayrılamaz. Dağıtma bütün arazileri bırakır.
+Davet 120 saniye geçerli; seçim 10 dakika. Çıkış/restartta seçim temizlenir.
+
+YÖNETİCİ
+/klan orman bilgi
+/klan yönetim aç
+/klan yönetim kapat
+/klan yönet alansil KSB 1
+/klan yönet sil KSB onayla
+/klan yenile
+Kurucu/OP bile yönetim geçişini açmadan başka klanın korumasını aşamaz.
+Yönetim geçişi çıkışta kapanır. Mevcut claim varken orman dünyası değişmez.
+
+Veriler: plugins/KasabaKlan/klanlar.yml
+Ayarlar: plugins/KasabaKlan/config.yml
+Bozuk yenileme çalışan veriyi korur. İlk açılışta veri okunamazsa inşa/etkileşim
+koruma kilidine girer; dosyayı düzeltip /klan yenile kullan. Veri sıfırlanmaz.
+/reload yerine tam yeniden başlatma kullan. Test Probe JAR'larını kurma.
+Ayrıntılar: https://github.com/lazyunus3461/Sada/blob/main/kasaba-clan/README.md

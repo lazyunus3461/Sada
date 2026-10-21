@@ -1,0 +1,20 @@
+name: KasabaKlan
+version: 1.0.0
+main: tr.kasaba.clan.KasabaKlan
+api-version: '1.21.10'
+author: Kasaba
+description: Türkçe klan yönetimi, ormanda iki köşeli claim ve warp çevresi claim yasağı.
+depend: [KasabaRoles, KasabaWarp]
+softdepend: [KasabaAuth]
+commands:
+  klan:
+    description: Klanını ve orman arazilerini yönet.
+    usage: /klan yardım
+    aliases: [klanlar]
+permissions:
+  kasabaklan.kullan:
+    description: Klan kurma, üyelik ve arazi kullanımı.
+    default: true
+  kasabaklan.yonet:
+    description: Orman dünyası, klan yönetimi ve açıkça etkinleştirilen koruma geçişi.
+    default: op

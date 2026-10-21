@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
+import org.bukkit.plugin.ServicePriority;
+import tr.kasaba.warp.api.*;
 
 public final class KasabaWarp extends JavaPlugin implements Listener,TabCompleter {
     private record Settings(int warmup,int cooldown) {}
@@ -34,12 +36,15 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
     private final Map<UUID,Location> permittedTeleports=new HashMap<>();
     private final Map<String,Permission> registered=new HashMap<>();
     private Map<String,Warp> warps=Map.of();
+    private volatile List<WarpDestination> regions=List.of();
     private WarpStore store;private Settings settings;private int ticks;
 
     @Override public void onEnable() {
         saveDefaultConfig();store=new WarpStore(getDataFolder().toPath().resolve("warplar.yml"));
         try {settings=readSettings();warps=store.load();validateIcons(warps);}
         catch(IOException e){getLogger().log(Level.SEVERE,"Warp ayarları okunamadı; mevcut dosyalara dokunulmadı.",e);getServer().getPluginManager().disablePlugin(this);return;}
+        regions=regions(warps);
+        Bukkit.getServicesManager().register(WarpRegions.class,()->regions,this,ServicePriority.Normal);
         synchronizePermissions();getServer().getPluginManager().registerEvents(this,this);
         Objects.requireNonNull(getCommand("warp")).setTabCompleter(this);
         Bukkit.getScheduler().runTaskTimer(this,this::tick,1,1);
@@ -49,6 +54,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
         for(Player player:Bukkit.getOnlinePlayers())if(player.getOpenInventory().getTopInventory().getHolder() instanceof WarpMenu)player.closeInventory();
         for(var entry:registered.entrySet())if(Bukkit.getPluginManager().getPermission(entry.getKey())==entry.getValue())Bukkit.getPluginManager().removePermission(entry.getValue());
         registered.clear();permittedTeleports.clear();
+        Bukkit.getServicesManager().unregisterAll(this);regions=List.of();
     }
     private Settings readSettings() throws IOException {
         YamlConfiguration yaml=new YamlConfiguration();
@@ -89,8 +95,14 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
     }
     private WarpPoint point(Location location){return new WarpPoint(location.getX(),location.getY(),location.getZ(),location.getYaw(),location.getPitch());}
     private void put(Warp warp) throws IOException {Map<String,Warp> next=new LinkedHashMap<>(warps);next.put(warp.id(),warp);save(next,warp.id());}
+    private List<WarpDestination> regions(Map<String,Warp> points){return points.values().stream().flatMap(w->w.points().stream().map(p->new WarpDestination(w.id(),w.world(),p.x(),p.z()))).toList();}
+    private void validatePlacement(Map<String,Warp> next){
+        List<WarpDestination> destinations=regions(next);
+        for(var registration:Bukkit.getServicesManager().getRegistrations(WarpPlacementGuard.class))
+            registration.getProvider().rejection(destinations).ifPresent(reason->{throw new IllegalArgumentException(reason);});
+    }
     private void save(Map<String,Warp> next,String changed) throws IOException {
-        store.save(next);warps=Collections.unmodifiableMap(new LinkedHashMap<>(next));synchronizePermissions();
+        validatePlacement(next);store.save(next);warps=Collections.unmodifiableMap(new LinkedHashMap<>(next));regions=regions(warps);synchronizePermissions();
         for(Pending travel:new ArrayList<>(pending.values()))if(travel.warp.id().equals(changed))cancel(travel.player,"Warp değiştirildi; yeniden dene.");
         refreshMenus();
     }
@@ -161,7 +173,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
                     if(request(target,find(args[2])))tell(sender,target.getName()+" için ışınlanma başlatıldı.");else if(sender!=target)tell(sender,"Işınlanma başlatılamadı; oyuncuya nedeni bildirildi.");
                 }
                 case "yenile" -> {
-                    Settings nextSettings=readSettings();Map<String,Warp> nextWarps=store.load();validateIcons(nextWarps);settings=nextSettings;warps=nextWarps;synchronizePermissions();
+                    Settings nextSettings=readSettings();Map<String,Warp> nextWarps=store.load();validateIcons(nextWarps);validatePlacement(nextWarps);settings=nextSettings;warps=nextWarps;regions=regions(warps);synchronizePermissions();
                     for(Pending travel:new ArrayList<>(pending.values()))cancel(travel.player,"Warp ayarları yenilendi; ışınlanma iptal edildi.");
                     refreshMenus();tell(sender,"Warp ayarları ve noktalar yenilendi. Kullanım arası süreler korunuyor.");
                 }

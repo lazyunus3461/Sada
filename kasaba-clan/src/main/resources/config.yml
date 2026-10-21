@@ -1,0 +1,8 @@
+# Bir klanın toplam yatay arazi bütçesi. Yükseklik bütçeye katılmaz.
+uye-siniri: 10
+toplam-alan-siniri: 5000
+arazi-sayisi-siniri: 20
+# Tek bir kenar en fazla bu kadar blok olabilir.
+kenar-siniri: 1024
+davet-suresi-saniye: 120
+etiket-rengi: aqua

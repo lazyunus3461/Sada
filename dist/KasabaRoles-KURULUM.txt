@@ -1,7 +1,7 @@
-KASABA ROLES 1.1.0 — PAPER 1.21.10 / JAVA 21
+KASABA ROLES 1.2.0 — PAPER 1.21.10 / JAVA 21
 
 1. Sunucunu durdur.
-2. KasabaRoles-1.1.0.jar dosyasını sunucunun plugins klasörüne koy.
+2. KasabaRoles-1.2.0.jar dosyasını sunucunun plugins klasörüne koy.
 3. Sunucunu yeniden aç.
 4. Sunucu KONSOLUNA şunu yaz: rol ver Redkit kurucu
    Redkit yerine kendi Minecraft oyuncu adını yaz. Konsolda başına / koyma.
@@ -51,5 +51,8 @@ Jokerler (eklenti.*) yalnızca Bukkit'e kayıtlı yetkiler için genişletilir.
 Komut örnekleri ve ayrıntılar:
 https://github.com/lazyunus3461/Sada/blob/main/kasaba-roles/README.md
 
-Gerçek sunucuna gereken dosya yalnızca KasabaRoles-1.1.0.jar.
+Gerçek sunucuna gereken dosya yalnızca KasabaRoles-1.2.0.jar.
 KasabaRolesProbe test yardımcısını gerçek sunucuya kurma.
+
+1.2.0: KasabaKlan 1.0.0 ile rol ve klan etiketi TAB/sohbet/kafa üstünde birlikte görünür.
+Mevcut rol/oyuncu dosyaları korunur. Klan yoksa eski gösterim sürer.

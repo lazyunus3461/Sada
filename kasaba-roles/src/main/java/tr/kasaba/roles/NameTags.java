@@ -22,6 +22,9 @@ final class NameTags {
     NameTags(Logger logger){this.logger=logger;}
 
     void refresh(Collection<? extends Player> players,Function<String,Role> roles) {
+        refresh(players,roles,name->Component.empty());
+    }
+    void refresh(Collection<? extends Player> players,Function<String,Role> roles,Function<String,Component> clans) {
         Set<Scoreboard> active=Collections.newSetFromMap(new IdentityHashMap<>());
         active.add(Bukkit.getScoreboardManager().getMainScoreboard());
         for(Player viewer:players)active.add(viewer.getScoreboard());
@@ -34,10 +37,10 @@ final class NameTags {
             BoardState state=boards.computeIfAbsent(board,key->new BoardState());
             for(UUID id:new HashSet<>(state.teams.keySet()))if(!online.contains(id))remove(state,id);
             state.conflicts.retainAll(online);
-            for(Player player:players)apply(board,state,player,roles.apply(player.getName()));
+            for(Player player:players)apply(board,state,player,roles.apply(player.getName()),clans.apply(player.getName()));
         }
     }
-    private void apply(Scoreboard board,BoardState state,Player player,Role role) {
+    private void apply(Scoreboard board,BoardState state,Player player,Role role,Component clan) {
         UUID id=player.getUniqueId();Team team=state.teams.get(id);
         // Another plugin may unregister a team; drop stale handles before rebuilding.
         if(team!=null&&!team.equals(board.getTeam(team.getName()))){state.teams.remove(id);team=null;}
@@ -48,7 +51,7 @@ final class NameTags {
             if(board.getTeam(name)!=null){conflict(state,id,player.getName());return;}
             team=board.registerNewTeam(name);state.teams.put(id,team);
         }
-        Component prefix=Component.text("["+role.label()+"] ",KasabaRoles.color(role.color())).decorate(TextDecoration.BOLD);
+        Component prefix=Component.empty().append(Component.text("["+role.label()+"] ",KasabaRoles.color(role.color())).decorate(TextDecoration.BOLD)).append(clan);
         if(!team.prefix().equals(prefix))team.prefix(prefix);
         NamedTextColor nameColor=NamedTextColor.nearestTo(KasabaRoles.color(role.nameColor()));
         if(!team.hasColor()||!nameColor.equals(team.color()))team.color(nameColor);

@@ -1,10 +1,10 @@
-# KasabaWarp 1.1.0
+# KasabaWarp 1.2.0
 
 Paper **1.21.10 / Java 21** için bağımsız warp eklentisi. `/warp` bir envanter menüsü açar; `/warp pazar` aynı noktaya komutla götürür. Hazırlık **3 saniye**, başarılı ışınlanmaların arası **20 saniye**dir. Hareket, hasar ve `/warp iptal` hazırlığı iptal eder. İptal edilen veya başka eklentinin engellediği ışınlanmada kullanım arası süre başlamaz.
 
 ## İndir ve kur
 
-[KasabaWarp-1.1.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaWarp-1.1.0.jar)
+[KasabaWarp-1.2.0.jar indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaWarp-1.2.0.jar)
 
 1. Sunucuyu durdur. Önceki KasabaWarp JAR'ını `plugins` dışına çıkar ve yeni JAR'ı koy. `plugins/KasabaWarp` veri klasörünü koru; eski noktalar yüklenir. KasabaAuth ve KasabaRoles dosyalarını kaldırma.
 2. Sunucuyu yeniden aç. OP veya KasabaRoles Kurucu olarak giriş yap.
@@ -85,6 +85,10 @@ KasabaRoles joker yetkileri kayıtlı düğümlere genişletir. Sonradan yeni wa
 
 ## Geliştirme
 
-Bu klasörde JDK 21 ve Maven ile `mvn -B clean verify`. Bulutta `bash /workspace/Sada/kasaba-warp/scripts/cloud-build.sh`. Çıktı: `target/KasabaWarp-1.1.0.jar`. 21 birim testi ve [yerel protokol testleri](scripts/integration/README.md) bulunur. Test yardımcı JAR'ı üretim JAR'ına eklenmez.
+Bu klasörde JDK 21 ve Maven ile `mvn -B clean verify`. Bulutta `bash /workspace/Sada/kasaba-warp/scripts/cloud-build.sh`. Çıktı: `target/KasabaWarp-1.2.0.jar`. 21 birim testi ve [yerel protokol testleri](scripts/integration/README.md) bulunur. Test yardımcı JAR'ı üretim JAR'ına eklenmez.
 
 Gerçek Minecraft istemcisinde görsel inceleme, Bedrock/ViaVersion, başka warp yöneticileri ve çoklu sunucu ağları doğrulanmadı. Para/ekonomi, kişisel ev, kaydedilmemiş rastgele koordinata ışınlanma ve sunucular arası taşıma bu sürümün kapsamı dışındadır.
+
+## KasabaKlan claim koruması
+
+1.2.0, çalışan tüm ana/ek/özel hedefleri `WarpRegions` servisiyle paylaşır. KasabaKlan varsa kayıt/taşıma/ekleme/yenileme öncesinde 100×100 warp çevresinin mevcut claimle çakışması denetlenir; çakışma dosyaya yazılmadan reddedilir. Klan eklentisi olmadan davranış değişmez. Veri dosyası ve 3/20 saniye süreleri korunur.

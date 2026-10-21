@@ -1,3 +1,13 @@
+KasabaWarp 1.2.0 — 21 Ekim 2026
+BAŞARILI: 21 birim testi.
+BAŞARILI: Eski icons-points.cjs kalıcılık modu yeni sürümde geçti: özel model,
+sabit kutu, çoklu hedef, özel erişim, sayfalama, tamamlama ve eski tekli pazar.
+BAŞARILI: KasabaKlan ile özel/ek hedef çevresinde claim yasağı ve mevcut claime
+çakışan oluştur/taşı/noktaekle işlemlerinin dosyaya yazılmadan reddedilmesi.
+3/20 saniye süre mantığı değiştirilmedi. Tam eski warp.cjs bu sürümde yeniden
+çalıştırılmadı; önceki doğrulama aşağıdadır.
+
+ÖNCEKİ SÜRÜMÜN DOĞRULAMA KAYDI
 KasabaWarp 1.1.0 — 21 Ekim 2026
 Paper 1.21.10 build 130 / Java 21
 KasabaAuth 1.2.0 ve KasabaRoles 1.1.0 birlikte yüklü.
