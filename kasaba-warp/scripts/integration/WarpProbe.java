@@ -30,6 +30,16 @@ public final class WarpProbe extends JavaPlugin implements Listener {
                 case "ADMIN" -> Bukkit.dispatchCommand(Bukkit.getConsoleSender(),"rol ver "+player.getName()+" kurucu");
                 case "A" -> player.teleport(new Location(player.getWorld(),21.5,-60,18.5,123,-12));
                 case "B" -> player.teleport(new Location(player.getWorld(),2.5,-60,2.5,10,0));
+                case "C" -> player.teleport(new Location(player.getWorld(),-8.5,-60,6.5,-45,7));
+                case "SAPLING" -> {
+                    ItemStack item=new ItemStack(Material.OAK_SAPLING,7);var meta=item.getItemMeta();
+                    meta.setCustomModelData(731);meta.displayName(Component.text("Test Fidanı"));item.setItemMeta(meta);
+                    player.getInventory().setHeldItemSlot(0);player.getInventory().setItem(0,item);
+                }
+                case "SAPLING_CHECK" -> {
+                    ItemStack item=player.getInventory().getItem(0);
+                    player.sendMessage(Component.text("warp-probe:sapling="+(item!=null&&item.getType()==Material.OAK_SAPLING&&item.getAmount()==7&&item.getItemMeta().getCustomModelData()==731)));
+                }
                 case "DAMAGE" -> {player.setHealth(20);player.damage(1);}
                 case "BLOCK" -> block.add(player.getUniqueId());
                 case "ITEM" -> player.getInventory().setItem(0,new ItemStack(Material.DIAMOND,7));

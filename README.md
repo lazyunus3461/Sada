@@ -2,7 +2,7 @@
 
 Rol ve renkli TAB eklentisi: **[KasabaRoles](kasaba-roles/README.md)**. Türkçe komutlarla Kurucu, Admin, Moderatör, Rehber, VIP ve Oyuncu rolleri yönetilir.
 
-Envanter menüsü ve komutla ışınlanma: **[KasabaWarp](kasaba-warp/README.md)**. Üç saniye hazırlık, yirmi saniye kullanım arası ve role özel warp erişimi içerir.
+Envanter menüsü ve komutla ışınlanma: **[KasabaWarp](kasaba-warp/README.md)**. Üç saniye hazırlık, yirmi saniye kullanım arası, role özel erişim, eldeki eşyadan simge, sabit menü kutusu ve tek warp altında kayıtlı konumlardan rastgele seçim içerir.
 
 Paper **1.21.10** / Java **21** için bağımsız kayıt ve giriş eklentisi. Oyuncu bağlanınca Minecraft'ın **yerleşik diyalog sayfası** otomatik açılır. Envanter, sandık ve örs ekranı kullanılmaz. İstemci modu, kaynak paketi ve tarayıcı gerekmez.
 

@@ -12,7 +12,7 @@ function click(b,m,slot,mode=0,mouseButton=0){b.c.write('window_click',{windowId
 function itemText(item){return text(item.components||[]);}
 function atA(b){assert.equal(b.position.x,21.5);assert.equal(b.position.y,-60);assert.equal(b.position.z,18.5);assert.equal(b.position.yaw,123);}
 async function success(b,from,contains='noktasına ışınlandın'){await b.wait('system_chat',p=>text(p).includes(contains),from);}
-(async()=>{
+async function run(){
     if(process.env.KASABA_WARP_PERSIST==='1') {
         const a=await login(process.env.KASABA_WARP_ADMIN);await command(a,'warp bilgi pazar','Pazar Yeri');
         const b=await login('Rest'+id);await command(b,'warp vipalan','yetkin yok');
@@ -60,4 +60,6 @@ async function success(b,from,contains='noktasına ışınlandın'){await b.wait
     mark=b.log.length;click(b,m,53);let next=await b.wait('open_window',()=>true,mark);assert(simplify(next.windowTitle).text.includes('2/2'));b.c.write('close_window',{windowId:next.windowId});
     console.log('PASS inventory pagination handles more than forty-five visible warps');
     await a.end();await b.end();console.log('PERSIST_ADMIN=WAdmin'+id);
-})().then(()=>process.exit(0)).catch(e=>{console.error('FAIL',e);process.exit(1);});
+}
+module.exports={authenticate,login,probe,command,menu,close,click,success,itemText};
+if(require.main===module)run().then(()=>process.exit(0)).catch(e=>{console.error('FAIL',e);process.exit(1);});

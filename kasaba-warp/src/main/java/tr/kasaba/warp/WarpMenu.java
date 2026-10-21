@@ -13,20 +13,27 @@ final class WarpMenu implements InventoryHolder {
     final UUID owner;
     final int page;
     final List<Warp> visible;
+    final Set<Integer> reserved;
+    final int lastPage;
     final Map<Integer,String> destinations=new HashMap<>();
     private final Inventory inventory;
 
-    WarpMenu(UUID owner,int requestedPage,List<Warp> visible,int warmup,int cooldown) {
+    WarpMenu(UUID owner,int requestedPage,List<Warp> visible,Set<Integer> reserved,int warmup,int cooldown) {
         this.owner=owner;this.visible=List.copyOf(visible);
-        int last=Math.max(0,(visible.size()-1)/PAGE_SIZE);
+        this.reserved=Set.copyOf(reserved);Map<Integer,Warp> layout=MenuLayout.plan(visible,reserved);
+        int last=layout.keySet().stream().mapToInt(slot->slot/PAGE_SIZE).max().orElse(0);lastPage=last;
         page=Math.clamp(requestedPage,0,last);
         inventory=Bukkit.createInventory(this,54,Component.text("Kasaba • Warp Noktaları "+(page+1)+"/"+(last+1),NamedTextColor.GOLD));
-        for(int slot=0,index=page*PAGE_SIZE;slot<PAGE_SIZE&&index<visible.size();slot++,index++) {
-            Warp warp=visible.get(index);List<Component> lore=new ArrayList<>();
+        for(var entry:layout.entrySet()) {
+            if(entry.getKey()/PAGE_SIZE!=page)continue;
+            int slot=entry.getKey()%PAGE_SIZE;Warp warp=entry.getValue();List<Component> lore=new ArrayList<>();
             if(!warp.description().isBlank())for(String line:wrap(warp.description()))lore.add(line(line,NamedTextColor.GRAY));
             lore.add(line("/warp "+warp.id(),NamedTextColor.DARK_GRAY));
+            if(warp.points().size()>1)lore.add(line(warp.points().size()+" kayıtlı konum • Rastgele seçim",NamedTextColor.YELLOW));
             lore.add(line("Gitmek için tıkla",NamedTextColor.GREEN));
-            inventory.setItem(slot,item(Material.ENDER_PEARL,warp.name(),NamedTextColor.AQUA,lore));destinations.put(slot,warp.id());
+            ItemStack icon=WarpIcon.decode(warp.icon());var meta=icon.getItemMeta();
+            meta.displayName(line(warp.name(),NamedTextColor.AQUA));meta.lore(lore);icon.setItemMeta(meta);
+            inventory.setItem(slot,icon);destinations.put(slot,warp.id());
         }
         if(visible.isEmpty())inventory.setItem(22,item(Material.MAP,"Gidilebilecek warp yok",NamedTextColor.YELLOW,List.of()));
         for(int slot=45;slot<54;slot++)inventory.setItem(slot,item(Material.GRAY_STAINED_GLASS_PANE," ",NamedTextColor.GRAY,List.of()));

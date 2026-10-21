@@ -19,14 +19,15 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 
 public final class KasabaWarp extends JavaPlugin implements Listener,TabCompleter {
     private record Settings(int warmup,int cooldown) {}
     private static final class Pending {
-        final Player player;final Warp warp;final Location origin;final long ready;
+        final Player player;final Warp warp;final WarpPoint point;final Location origin;final long ready;
         long loadingDeadline;boolean loading;int shown=-1;
-        Pending(Player player,Warp warp,int warmup){this.player=player;this.warp=warp;origin=player.getLocation().clone();ready=System.nanoTime()+TimeUnit.SECONDS.toNanos(warmup);}
+        Pending(Player player,Warp warp,WarpPoint point,int warmup){this.player=player;this.warp=warp;this.point=point;origin=player.getLocation().clone();ready=System.nanoTime()+TimeUnit.SECONDS.toNanos(warmup);}
     }
     private final Cooldowns cooldowns=new Cooldowns();
     private final Map<UUID,Pending> pending=new HashMap<>();
@@ -37,7 +38,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
 
     @Override public void onEnable() {
         saveDefaultConfig();store=new WarpStore(getDataFolder().toPath().resolve("warplar.yml"));
-        try {settings=readSettings();warps=store.load();}
+        try {settings=readSettings();warps=store.load();validateIcons(warps);}
         catch(IOException e){getLogger().log(Level.SEVERE,"Warp ayarları okunamadı; mevcut dosyalara dokunulmadı.",e);getServer().getPluginManager().disablePlugin(this);return;}
         synchronizePermissions();getServer().getPluginManager().registerEvents(this,this);
         Objects.requireNonNull(getCommand("warp")).setTabCompleter(this);
@@ -75,13 +76,18 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
     private boolean accessible(Player player,Warp warp){return player.hasPermission("kasabawarp.kullan")&&(!warp.restricted()||admin(player)||player.hasPermission(warp.permission()));}
     private List<Warp> visible(Player player){return warps.values().stream().filter(warp->accessible(player,warp)).sorted(Comparator.comparing(Warp::id)).toList();}
     private void tell(CommandSender sender,String text){sender.sendMessage(Component.text(text,NamedTextColor.YELLOW));}
-    private void open(Player player,int page){player.openInventory(new WarpMenu(player.getUniqueId(),page,visible(player),settings.warmup(),settings.cooldown()).getInventory());}
+    private void validateIcons(Map<String,Warp> points) throws IOException {
+        for(Warp warp:points.values())try{WarpIcon.decode(warp.icon());}
+        catch(RuntimeException e){throw new IOException("Simge okunamadı: "+warp.id()+". Dosyayı yedekleyip simge alanını kontrol et.",e);}
+    }
+    private void open(Player player,int page){player.openInventory(new WarpMenu(player.getUniqueId(),page,visible(player),MenuLayout.reserved(warps.values()),settings.warmup(),settings.cooldown()).getInventory());}
     private void need(String[] args,int size,String usage){if(args.length<size)throw new IllegalArgumentException("Kullanım: "+usage);}
     private Warp find(String name){Warp warp=warps.get(Warp.id(name));if(warp==null)throw new IllegalArgumentException("Warp bulunamadı: "+name);return warp;}
     private Player player(CommandSender sender){if(sender instanceof Player player)return player;throw new IllegalArgumentException("Bu işlem oyun içinden kullanılır.");}
-    private Warp at(String id,String name,String description,boolean restricted,Location location) {
-        return new Warp(id,name,description,restricted,location.getWorld().getUID(),location.getWorld().getName(),location.getX(),location.getY(),location.getZ(),location.getYaw(),location.getPitch());
+    private Warp at(String id,String name,String description,boolean restricted,Location location,String icon,int menuSlot) {
+        return new Warp(id,name,description,restricted,location.getWorld().getUID(),location.getWorld().getName(),location.getX(),location.getY(),location.getZ(),location.getYaw(),location.getPitch(),icon,menuSlot);
     }
+    private WarpPoint point(Location location){return new WarpPoint(location.getX(),location.getY(),location.getZ(),location.getYaw(),location.getPitch());}
     private void put(Warp warp) throws IOException {Map<String,Warp> next=new LinkedHashMap<>(warps);next.put(warp.id(),warp);save(next,warp.id());}
     private void save(Map<String,Warp> next,String changed) throws IOException {
         store.save(next);warps=Collections.unmodifiableMap(new LinkedHashMap<>(next));synchronizePermissions();
@@ -98,7 +104,10 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
             switch(action) {
                 case "yardim" -> {
                     tell(sender,"/warp | /warp <ad> | /warp bilgi <ad> | /warp iptal");
-                    if(admin(sender))tell(sender,"Yönetim: oluştur, taşı, sil, isim, açıklama, yetki, gönder, yenile. Örnek: /warp oluştur pazar");
+                    if(admin(sender)){
+                        tell(sender,"Yönetim: oluştur, taşı, sil, isim, açıklama, simge, yetki, gönder, yenile. Örnek: /warp oluştur orman 1-3");
+                        tell(sender,"Çoklu konum: /warp noktaekle orman | /warp noktalar orman | /warp noktasil orman 2");
+                    }
                 }
                 case "iptal" -> {Player player=player(sender);if(!cancel(player,"Işınlanma iptal edildi."))tell(player,"Bekleyen bir ışınlanman yok.");}
                 case "bilgi" -> {
@@ -106,12 +115,37 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
                     if(sender instanceof Player player&&!accessible(player,warp))throw new IllegalArgumentException("Bu warpa erişimin yok.");
                     tell(sender,warp.name()+" ("+warp.id()+")"+(warp.description().isBlank()?"":" — "+warp.description()));
                     if(admin(sender))tell(sender,String.format(Locale.ROOT,"%s: %.2f, %.2f, %.2f • %s",warp.worldName(),warp.x(),warp.y(),warp.z(),warp.restricted()?warp.permission():"Herkese açık"));
+                    if(admin(sender))tell(sender,"Menü yeri: "+(warp.menuSlot()<0?"Otomatik":MenuLayout.label(warp.menuSlot())));
+                    tell(sender,"Kayıtlı konum: "+warp.points().size()+(warp.points().size()>1?" • Her kullanımda rastgele biri seçilir.":""));
                 }
                 case "olustur" -> {
-                    need(args,2,"/warp oluştur <ad>");String id=Warp.id(args[1]);if(warps.containsKey(id))throw new IllegalArgumentException("Bu warp zaten var; konumunu değiştirmek için /warp taşı "+id+" kullan.");
-                    put(at(id,args[1],"",false,player(sender).getLocation()));tell(sender,"Warp oluşturuldu: "+id);
+                    need(args,2,"/warp oluştur <ad> [sıra-kutu]");String id=Warp.id(args[1]);if(warps.containsKey(id))throw new IllegalArgumentException("Bu warp zaten var. Simge/menü yeri: /warp simge "+id+" 1-3; konum: /warp taşı "+id);
+                    Player player=player(sender);int slot=args.length>2?MenuLayout.parse(args[2]):-1;
+                    put(at(id,args[1],"",false,player.getLocation(),WarpIcon.capture(player.getInventory().getItemInMainHand()),slot));
+                    tell(sender,"Warp oluşturuldu: "+id+(slot>=0?" • Menü: "+MenuLayout.label(slot):""));
                 }
-                case "tasi" -> {need(args,2,"/warp taşı <ad>");Warp old=find(args[1]);put(at(old.id(),old.name(),old.description(),old.restricted(),player(sender).getLocation()));tell(sender,"Warp bulunduğun yere taşındı: "+old.id());}
+                case "tasi" -> {need(args,2,"/warp taşı <ad>");Warp old=find(args[1]);Location location=player(sender).getLocation();put(old.moved(location.getWorld().getUID(),location.getWorld().getName(),point(location)));tell(sender,"Warpın 1. noktası bulunduğun yere taşındı; ek noktalar korundu: "+old.id());}
+                case "noktaekle" -> {
+                    need(args,2,"/warp noktaekle <ad>");Warp old=find(args[1]);Location location=player(sender).getLocation();
+                    Warp next=old.addedPoint(location.getWorld().getUID(),point(location));put(next);
+                    tell(sender,"Warp noktası eklendi: "+old.id()+" • Toplam "+next.points().size()+" konum. Her kullanımda rastgele biri seçilecek.");
+                }
+                case "noktalar" -> {
+                    need(args,2,"/warp noktalar <ad>");Warp warp=find(args[1]);tell(sender,warp.id()+" • "+warp.worldName()+" • "+warp.points().size()+" konum (rastgele seçim)");
+                    List<WarpPoint> points=warp.points();for(int i=0;i<points.size();i++){WarpPoint p=points.get(i);tell(sender,String.format(Locale.ROOT,"%d: %.2f, %.2f, %.2f • yön %.1f / %.1f",i+1,p.x(),p.y(),p.z(),p.yaw(),p.pitch()));}
+                }
+                case "noktasil" -> {
+                    need(args,3,"/warp noktasil <ad> <numara>");Warp old=find(args[1]);int number;
+                    try{number=Integer.parseInt(args[2]);}catch(NumberFormatException e){throw new IllegalArgumentException("/warp noktalar "+old.id()+" ile listedeki nokta numarasını öğren.");}
+                    Warp next=old.removedPoint(number);put(next);tell(sender,"Nokta silindi: "+old.id()+" #"+number+" • Kalan "+next.points().size()+" konum.");
+                }
+                case "simge" -> {
+                    need(args,2,"/warp simge <ad> [sıra-kutu]");Warp old=find(args[1]);Player player=player(sender);
+                    if(player.getInventory().getItemInMainHand().getType().isAir())throw new IllegalArgumentException("Simge olarak kullanacağın eşyayı ana eline al.");
+                    int slot=args.length>2?MenuLayout.parse(args[2]):old.menuSlot();
+                    put(old.displayed(WarpIcon.capture(player.getInventory().getItemInMainHand()),slot));
+                    tell(sender,"Warp simgesi güncellendi: "+old.id()+(slot>=0?" • Menü: "+MenuLayout.label(slot):""));
+                }
                 case "sil" -> {need(args,2,"/warp sil <ad>");Warp warp=find(args[1]);Map<String,Warp> next=new LinkedHashMap<>(warps);next.remove(warp.id());save(next,warp.id());tell(sender,"Warp silindi: "+warp.id());}
                 case "isim","aciklama" -> {
                     need(args,3,"/warp "+(action.equals("isim")?"isim":"açıklama")+" <ad> <metin>");Warp warp=find(args[1]);String value=String.join(" ",Arrays.copyOfRange(args,2,args.length));
@@ -127,7 +161,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
                     if(request(target,find(args[2])))tell(sender,target.getName()+" için ışınlanma başlatıldı.");else if(sender!=target)tell(sender,"Işınlanma başlatılamadı; oyuncuya nedeni bildirildi.");
                 }
                 case "yenile" -> {
-                    Settings nextSettings=readSettings();Map<String,Warp> nextWarps=store.load();settings=nextSettings;warps=nextWarps;synchronizePermissions();
+                    Settings nextSettings=readSettings();Map<String,Warp> nextWarps=store.load();validateIcons(nextWarps);settings=nextSettings;warps=nextWarps;synchronizePermissions();
                     for(Pending travel:new ArrayList<>(pending.values()))cancel(travel.player,"Warp ayarları yenilendi; ışınlanma iptal edildi.");
                     refreshMenus();tell(sender,"Warp ayarları ve noktalar yenilendi. Kullanım arası süreler korunuyor.");
                 }
@@ -136,11 +170,11 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
         catch(IOException e){getLogger().log(Level.SEVERE,"Warp dosyası işlemi başarısız; mevcut veriler korundu.",e);tell(sender,"Dosya okunamadı veya kaydedilemedi; konsolu kontrol et.");}
         return true;
     }
-    private Location destination(Warp warp) {
+    private Location destination(Warp warp,WarpPoint point) {
         World world=Bukkit.getWorld(warp.world());
         if(world==null)throw new IllegalArgumentException("Warpın dünyası yüklü değil; yöneticiye haber ver.");
-        Location location=new Location(world,warp.x(),warp.y(),warp.z(),warp.yaw(),warp.pitch());
-        if(warp.y()<world.getMinHeight()||warp.y()>=world.getMaxHeight()||!world.getWorldBorder().isInside(location))throw new IllegalArgumentException("Warp konumu dünyanın sınırları dışında.");
+        Location location=new Location(world,point.x(),point.y(),point.z(),point.yaw(),point.pitch());
+        if(point.y()<world.getMinHeight()||point.y()>=world.getMaxHeight()||!world.getWorldBorder().isInside(location))throw new IllegalArgumentException("Warp konumu dünyanın sınırları dışında.");
         return location;
     }
     private boolean request(Player player,Warp warp) {
@@ -148,8 +182,9 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
         if(player.isDead()||player.isInsideVehicle()||!player.getPassengers().isEmpty()){tell(player,"Işınlanmak için hayatta olmalı ve araçtan inmelisin.");return false;}
         if(pending.containsKey(player.getUniqueId())){tell(player,"Zaten bir ışınlanma hazırlanıyor. /warp iptal ile durdurabilirsin.");return false;}
         int remaining=cooldowns.remaining(player.getName());if(remaining>0){tell(player,"Tekrar ışınlanmak için "+remaining+" saniye bekle.");return false;}
-        try{destination(warp);}catch(IllegalArgumentException e){tell(player,e.getMessage());return false;}
-        Pending travel=new Pending(player,warp,settings.warmup());pending.put(player.getUniqueId(),travel);
+        WarpPoint point=warp.choosePoint(ThreadLocalRandom.current());
+        try{destination(warp,point);}catch(IllegalArgumentException e){tell(player,e.getMessage());return false;}
+        Pending travel=new Pending(player,warp,point,settings.warmup());pending.put(player.getUniqueId(),travel);
         tell(player,warp.name()+" için ışınlanma başlatıldı. Sabit kal; iptal: /warp iptal");return true;
     }
     private boolean current(Pending travel){return isEnabled()&&travel.player.isOnline()&&pending.get(travel.player.getUniqueId())==travel;}
@@ -171,7 +206,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
     }
     private void loadDestination(Pending travel) {
         Location target;
-        try{target=destination(travel.warp);}catch(IllegalArgumentException e){cancel(travel.player,e.getMessage());return;}
+        try{target=destination(travel.warp,travel.point);}catch(IllegalArgumentException e){cancel(travel.player,e.getMessage());return;}
         travel.loading=true;travel.loadingDeadline=System.nanoTime()+TimeUnit.SECONDS.toNanos(15);
         travel.player.sendActionBar(Component.text("Warp noktası hazırlanıyor…",NamedTextColor.AQUA));
         target.getWorld().getChunkAtAsync(target).whenComplete((chunk,error)->{
@@ -181,7 +216,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
                 Player player=travel.player;
                 if(error!=null){getLogger().log(Level.WARNING,"Warp bölgesi yüklenemedi: "+travel.warp.id(),error);cancel(player,"Warp noktası hazırlanamadı; tekrar dene.");return;}
                 if(!travel.warp.equals(warps.get(travel.warp.id()))||!accessible(player,travel.warp)||player.isDead()||player.isInsideVehicle()||!player.getPassengers().isEmpty()||moved(travel,player.getLocation())){cancel(player,"Konumun veya warp erişimi değişti; ışınlanma iptal edildi.");return;}
-                try{destination(travel.warp);}catch(IllegalArgumentException e){cancel(player,e.getMessage());return;}
+                try{destination(travel.warp,travel.point);}catch(IllegalArgumentException e){cancel(player,e.getMessage());return;}
                 permittedTeleports.put(player.getUniqueId(),target.clone());boolean success;
                 try{success=player.teleport(target,PlayerTeleportEvent.TeleportCause.PLUGIN);}
                 finally{permittedTeleports.remove(player.getUniqueId());}
@@ -191,7 +226,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
             });
         });
     }
-    private void refreshMenus(){for(Player player:Bukkit.getOnlinePlayers())if(player.getOpenInventory().getTopInventory().getHolder() instanceof WarpMenu menu&&!menu.visible.equals(visible(player)))open(player,menu.page);}
+    private void refreshMenus(){for(Player player:Bukkit.getOnlinePlayers())if(player.getOpenInventory().getTopInventory().getHolder() instanceof WarpMenu menu&&(!menu.visible.equals(visible(player))||!menu.reserved.equals(MenuLayout.reserved(warps.values()))))open(player,menu.page);}
     private void nextUi(Player player,WarpMenu menu,Runnable action){Bukkit.getScheduler().runTask(this,()->{if(player.isOnline()&&player.getOpenInventory().getTopInventory().getHolder()==menu)action.run();});}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void moved(PlayerMoveEvent event){Pending travel=pending.get(event.getPlayer().getUniqueId());if(travel!=null&&!permittedTeleports.containsKey(event.getPlayer().getUniqueId())&&event.getTo()!=null&&moved(travel,event.getTo()))cancel(event.getPlayer(),"Hareket ettiğin için ışınlanma iptal edildi.");}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void damage(EntityDamageEvent event){if(event.getEntity() instanceof Player player&&event.getFinalDamage()>0)cancel(player,"Hasar aldığın için ışınlanma iptal edildi.");}
@@ -210,7 +245,7 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
         int slot=event.getRawSlot();
         if(slot==49){nextUi(player,menu,player::closeInventory);return;}
         if(slot==45&&menu.page>0){nextUi(player,menu,()->open(player,menu.page-1));return;}
-        if(slot==53&&(menu.page+1)*WarpMenu.PAGE_SIZE<menu.visible.size()){nextUi(player,menu,()->open(player,menu.page+1));return;}
+        if(slot==53&&menu.page<menu.lastPage){nextUi(player,menu,()->open(player,menu.page+1));return;}
         String id=menu.destinations.get(slot);if(id==null)return;
         Warp warp=warps.get(id);if(warp==null){nextUi(player,menu,()->open(player,menu.page));return;}
         if(request(player,warp))nextUi(player,menu,player::closeInventory);
@@ -218,13 +253,18 @@ public final class KasabaWarp extends JavaPlugin implements Listener,TabComplete
     @EventHandler(priority=EventPriority.HIGHEST) public void drag(InventoryDragEvent event){if(event.getView().getTopInventory().getHolder() instanceof WarpMenu)event.setCancelled(true);}
     @Override public List<String> onTabComplete(CommandSender sender,Command command,String alias,String[] args){
         if(settings==null||args.length==0)return List.of();List<String> options=new ArrayList<>();boolean manager=admin(sender);
-        if(args.length==1){if(sender instanceof Player player)options.addAll(visible(player).stream().map(Warp::id).toList());options.addAll(List.of("bilgi","iptal","yardım"));if(manager)options.addAll(List.of("oluştur","taşı","sil","isim","açıklama","yetki","gönder","yenile"));}
+        if(args.length==1){if(sender instanceof Player player)options.addAll(visible(player).stream().map(Warp::id).toList());options.addAll(List.of("bilgi","iptal","yardım"));if(manager)options.addAll(List.of("oluştur","taşı","sil","isim","açıklama","simge","yetki","gönder","yenile","noktaekle","noktalar","noktasil"));}
         else{
             String action;try{action=Warp.id(args[0]);}catch(IllegalArgumentException e){return List.of();}
             if(args.length==2&&action.equals("gonder")&&manager)options.addAll(Bukkit.getOnlinePlayers().stream().map(Player::getName).toList());
-            else if((args.length==2&&Set.of("bilgi","tasi","sil","isim","aciklama","yetki").contains(action))||(args.length==3&&action.equals("gonder")&&manager)){
+            else if((args.length==2&&Set.of("bilgi","tasi","sil","isim","aciklama","simge","yetki","noktaekle","noktalar","noktasil").contains(action))||(args.length==3&&action.equals("gonder")&&manager)){
                 if(manager)options.addAll(warps.keySet());else if(action.equals("bilgi")&&sender instanceof Player player)options.addAll(visible(player).stream().map(Warp::id).toList());
             }else if(args.length==3&&action.equals("yetki")&&manager)options.addAll(List.of("özel","herkes"));
+            else if(args.length==3&&Set.of("olustur","simge").contains(action)&&manager){for(int row=1;row<=5;row++)for(int column=1;column<=9;column++)options.add(row+"-"+column);}
+            else if(args.length==3&&action.equals("noktasil")&&manager){
+                Warp warp;try{warp=warps.get(Warp.id(args[1]));}catch(IllegalArgumentException e){return List.of();}
+                if(warp!=null)for(int i=1;i<=warp.points().size();i++)options.add(Integer.toString(i));
+            }
         }
         String prefix;try{prefix=args[args.length-1].isEmpty()?"":Warp.id(args[args.length-1]);}catch(IllegalArgumentException e){return List.of();}
         return options.stream().filter(value->Warp.id(value).startsWith(prefix)).distinct().toList();

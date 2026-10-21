@@ -1,40 +1,44 @@
-KasabaWarp 1.0.0 — 21 Ekim 2026
+KasabaWarp 1.1.0 — 21 Ekim 2026
 Paper 1.21.10 build 130 / Java 21
 KasabaAuth 1.2.0 ve KasabaRoles 1.1.0 birlikte yüklü.
 
-BAŞARILI: 9 birim testi.
-- Tam konum, dünya, bakış yönü, isim, açıklama ve özel erişim kalıcı kaydı.
-- Güncelleme/silme sonrasında eski noktaların ve geçici dosyaların kalmaması.
-- Bozuk/eksik YAML verisinin kaynağı değiştirmeden reddedilmesi.
-- Türkçe kimlik normalleştirmesi, ayrılmış komut adları ve geçersiz konumlar.
-- Gerçek 20 saniyenin tamamının dolması, oyuncuların bağımsız süreleri,
-  büyük/küçük harf değişimiyle sürenin atlanamaması ve süre temizliği.
+BAŞARILI: 21 birim testi, 0 hata.
+- Eski tek konumlu YAML dosyaları; konum, dünya, yön ve yetki kalıcılığı.
+- Simge verisi ve menü kutusu kaydı; dolu kutuda mevcut dosyanın korunması.
+- Alt menü sırasının ayrılması, gizli sabit kutuların korunması ve sayfalama.
+- Kayıtlı konumlardan rastgele seçim; bütün kayıtların seçilebilir olması.
+- Ek konumlar ve görünümün yeniden yüklenmesi, ilk konum silinince terfi.
+- Çift konum, başka dünya, geçersiz numara ve son konumu silme retleri.
+- Bozuk/eksik YAML ve ek-konum listelerinin değiştirmeden reddedilmesi.
+- İsim normalleştirmesi, geçersiz sayısal konumlar ve kullanım arası sayacı.
 
-BAŞARILI: Gerçek sunucuda 9 protokol grubu + tam yeniden başlatma.
-1. Kurucu yetkisiyle Türkçe oluşturma, isim, açıklama ve özel erişim komutları.
-2. Giriş yapmadan /warp engeli; normal oyuncunun düzenleme yapamaması;
-   özel noktaların envanter ve TAB tamamlamasında gizlenmesi.
-3. Hareket, gerçek hasar ve /warp iptal sonrasında beklemeden yeniden deneme.
-4. Başka eklentinin gerçek PlayerTeleportEvent iptali: hareket ve süre başlamaz.
-5. KasabaRoles tam yetkisiyle erişim; hazırlıkta rol alınırsa son denetimde ret.
-6. Gerçek 3 saniye hazırlık; kaydedilmiş konum/yöne geliş; 20 saniye kullanım arası
-   ve /warp yenile sonrasında bu sürenin korunması.
-7. Gerçek envanter shift-click paketiyle menü eşyasının alınamaması ve 7 elmaslık
-   oyuncu eşyasının korunması; yeniden bağlanmayla sürenin atlanamaması.
-8. Gerçek 20 saniye beklendikten sonra envanter tıklamasıyla başarılı ışınlanma.
-9. 45'ten fazla görünen nokta için gerçek sonraki sayfaya geçiş penceresi.
-10. Sunucu tamamen kapatılıp açıldıktan sonra isim/konum/yön/özel erişim kalıcılığı.
+BAŞARILI: 4 yeni gerçek protokol grubu ve tam yeniden başlatma.
+1. Ana eldeki 7 özel model verili meşe fidanı korunurken menüde 1 kopyası:
+   doğru eşya türü, özel model 731, ilk sıra üçüncü kutu; sonra beşinci kutuya
+   taşıma. Dolu kutu ve alt sıraya yerleştirme reddi.
+2. Tek warp altında 3 konum, çift kaydın reddi, normal oyuncunun yönetim
+   komutunun engellenmesi, gizli özel warpın sabit kutusunun boş kalması.
+3. Gerçek menü tıklaması ve komutlarla sadece kaydedilmiş konum/yönlere gidiş.
+   Canlı denemede 3 hedef de gözlendi; rastgele seçim aynı hedefi tekrarlayabilir.
+   Varsayılan 3 saniye hazırlık/20 saniye kullanım arası değiştirilmedi.
+   Başarıdan sonra ve /warp yenile sonrasında kullanım arası engeli doğrulandı.
+4. Numaralı konum silme, ilk konumun terfisi, son konumu koruma; düzenlemede
+   simge/model ve menü kutusunun kalması. Shift-click ışınlanma başlatmaz.
+5. Sunucu tamamen kapatılıp açıldıktan sonra özel model, sabit kutu, 3 kayıtlı
+   konum ve özel erişim doğrulandı. Gerçek sayfa geçişi, nokta-numarası TAB
+   tamamlaması ve eski 1.0.0 pazar warpına tam konum/yönle ışınlanma geçti.
 
-Test istemcisi gerçek Minecraft 1.21.10 protokolüyle bağlandı. Önceki ortak
-Auth test istemcisinin NBT ve TAB şema düzeltmeleri kullanıldı. Warp testinde
-gerçek hazırlık ve kullanım arası süreleri değiştirilmedi.
+Önceki 1.0.0 sürümünde hareket/hasar/iptal, harici teleport iptali,
+KasabaRoles ile dinamik erişim, gerçek 20 saniye bekledikten sonra yeniden
+ışınlanma, envanter eşyalarının alınamaması, reconnect ve sayfalama için
+9 protokol grubu + tam yeniden başlatma ayrıca doğrulanmıştı. Bu sürümde
+bu tam eski senaryo yeniden çalıştırılmadı; yeni simge/çoklu konum kontrolleri
+ve kalıcılık yukarıdaki senaryolarla yapıldı.
 
-Testler loopback 127.0.0.1:25575 offline sunucuda, allow-flight=false ile yapıldı.
-WarpProbe yardımcı eklentisi yalnızca bu testte kullanıldı; üretim JAR'ına
-dahil edilmedi. Gerçek sunucuya yalnızca KasabaWarp-1.0.0.jar kurulmalıdır.
-Önceden hazırlanmış FlightProbe yalnızca test dünyasında yaratıkları kapatır.
-Mojang public-key erişim uyarısı offline sentetik hesap testlerini engellemedi.
-Lisanslı hesapların online doğrulaması bu testin kapsamında değildir.
-
-Gerçek Minecraft istemcisinde görsel inceleme, Bedrock/ViaVersion, farklı
-warp/menü eklentileri ve çoklu sunucu ağı uyumluluğu test edilmedi.
+Testler gerçek Minecraft 1.21.10 protokolüyle, yalnızca loopback
+127.0.0.1:25575 offline sunucuda ve allow-flight=false ile yapıldı.
+WarpProbe ve FlightProbe yalnızca yerel test yardımcılarıdır; üretim JAR'ına
+alınmaz. Gerçek sunucuya yalnızca KasabaWarp-1.1.0.jar kurulmalıdır.
+Native Minecraft görsel istemcisi, Bedrock/ViaVersion ve başka warp/menü
+sistemleriyle uyumluluk test edilmedi. Mojang public-key erişim uyarısı
+offline sentetik hesap testlerini engellemedi.
