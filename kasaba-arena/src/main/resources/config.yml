@@ -6,3 +6,10 @@ regions: {}
 stats:
   kills: {}
   names: {}
+
+# Her türde 1–5 arası oda; noktalar oyun içi komutlarla kaydedilir.
+odalar:
+  1v1: {}
+  2v2: {}
+market:
+  urunler: {}
