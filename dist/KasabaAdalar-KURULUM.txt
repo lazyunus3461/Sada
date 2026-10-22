@@ -1,8 +1,16 @@
-# KasabaAdalar 1.3.0
+# KasabaAdalar 1.3.1
 
 Paper 1.21.10, Java 21. Kullanıcının gönderdiği **KasabaAdalar 1.2.0 JAR'ı ve ada.zip** incelenerek güncellendi. `KasabaAdalar` eklenti adı, ana sınıfı, izinler ve eski sahiplik dosyası biçimi korunur. Oyun merkezi bağlantısı için KasabaHub 1.2.0 önerilir; bu sürüm bilgi kitabını da ekler.
 
-[Kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Kurulum.zip) · [Ada JAR'ı](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-1.3.0.jar) · [Dünya ZIP'i](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Dunya.zip)
+[Kurulum paketini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Kurulum.zip) · [Ada JAR'ı](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-1.3.1.jar) · [Dünya ZIP'i](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Dunya.zip)
+
+## 1.3.0 kullananlar için küçük güncelleme
+
+Sunucuyu kapat; `plugins` içindeki eski **KasabaAdalar JAR dosyasını** çıkarıp **KasabaAdalar-1.3.1.jar** koy ve sunucuyu yeniden aç. Mevcut `ada` dünyasını, `plugins/KasabaAdalar` veri klasörünü ve KasabaHub 1.2.0'ı koru. **Bu düzeltmede haritayı yeniden kurmak gerekmez.**
+
+Pusula → Oyunlar → Adanı Yap ile giriş, `/ada` ile aynı envanter/yaratıcı mod oturumunu açar. Dünya değişiminden sonra başka bir eklentinin uyguladığı survival/adventure modu ada oturumunu bozamaz. `/lobi` başlatılırken bu kontrol bırakılır; önceki mod ve normal envanter geri yüklenir. Giriş yapmamış hesaplara veya diğer oyunlara yaratıcı mod verilmez.
+
+Ada dünyası sürekli **gündüz, öğlen (6000)** ve açık havadır. Gün/gece ve hava döngüleri kapalıdır; gece, yağmur ve fırtına değişimleri yalnızca ada dünyasında engellenir. Diğer dünyaların saat/hava kuralları değiştirilmez.
 
 ## Değişenler
 
@@ -22,7 +30,7 @@ Kullanıcı mevcut adalarda henüz yapı olmadığını doğruladı. Paket bu **
 3. `plugins/KasabaAdalar` ve `plugins/KasabaHub` **veri klasörlerini koru**. Özellikle `claims.properties` ada sahiplerini, `player-data` envanterleri tutar.
 4. Sunucunun ana dizinindeki mevcut `ada` dünya klasörünün adını `ada_eski` yapıp yedekle. Dünyaları üst üste birleştirme; eski uzak adaların bölge dosyaları kalmamalı.
 5. Paketteki yeni **`ada` klasörünü** sunucunun ana dizinine koy; `plugins` içine koyma. `ada/level.dat` ve `ada/region` bulunmalı.
-6. Paketin `plugins` klasöründeki **KasabaAdalar-1.3.0.jar** ve **KasabaHub-1.2.0.jar** dosyalarını sunucunun `plugins` klasörüne koy.
+6. Paketin `plugins` klasöründeki **KasabaAdalar-1.3.1.jar** ve **KasabaHub-1.2.0.jar** dosyalarını sunucunun `plugins` klasörüne koy.
 7. KasabaAuth, mevcut KasabaArena ve KasabaAkce eklentilerini koru. Sunucuyu aç; `/ada bilgi` aralığı **100 blok** göstermeli.
 
 Dünyada `kasaba-layout.properties` yerleşim işareti vardır. İşaretsiz eski dünyalar yapıları yanlış konuma taşımamak için 200 blok düzeniyle tanınır. Sadece JAR değiştirmek eski bölge dosyalarını yeniden konumlandırmaz; yakınlaştırma ve eski boş tabanı düzeltme için paket dünyası da kurulmalıdır.
@@ -56,4 +64,4 @@ Bu güncelleme ada edinirken para kesmez ve ada marketinde ürün/fiyat belirlem
 
 Önce `mvn -f pom.xml install`, sonra `mvn -f kasaba-hub/pom.xml install` ile yerel API bağımlılıklarını kur. `mvn -f kasaba-adalar/pom.xml verify` sekiz sahiplik/yerleşim testini çalıştırır. Hub'ın 17 mevcut birim testi de korunur. `scripts/build-world.py --input <orijinal-ada> --output <yeni-boş-klasör>` NumPy ve nbtlib kullanır; yalnızca verilen boş başlangıç şablonu içindir, girdiyi değiştirmez. `scripts/validate-world.py <dünya>` tüm 11.970 parçanın alt tabanını ve 300 doğma yüzeyini bağımsız olarak doğrular.
 
-Loopback Paper testleri: `scripts/integration/build-probe.sh`, `node scripts/integration/islands.cjs`; sunucuyu tamamen durdur/aç sonrası `node scripts/integration/restart.cjs`. Test yardımcıları üretim JAR'ı veya kurulum ZIP'ine alınmaz.
+Loopback Paper testleri: `scripts/integration/build-probe.sh`, `node scripts/integration/islands.cjs`; sunucuyu tamamen durdur/aç sonrası `node scripts/integration/restart.cjs`. `node scripts/integration/creative-mode.cjs` gerçek pusula/yerleşik sayfa tıklaması, yaratıcı modu iptal eden ve gecikmeli adventure uygulayan örnek dünya yöneticisi, sürekli gündüz/açık hava, önceki moda dönüş ve Arena izolasyonunu doğrular. Eski JAR ile `EXPECT_BROKEN=1` aynı yaratıcı mod hatasını yeniden üretir. Test yardımcıları üretim JAR'ı veya kurulum ZIP'ine alınmaz.

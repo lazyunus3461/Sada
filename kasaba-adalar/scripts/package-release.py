@@ -2,7 +2,7 @@
 from pathlib import Path
 import hashlib,shutil,zipfile
 root=Path(__file__).resolve().parents[2];dist=root/'dist';dist.mkdir(exist_ok=True)
-for module,name in [('kasaba-adalar','KasabaAdalar-1.3.0.jar'),('kasaba-hub','KasabaHub-1.2.0.jar')]:
+for module,name in [('kasaba-adalar','KasabaAdalar-1.3.1.jar'),('kasaba-hub','KasabaHub-1.2.0.jar')]:
  source=root/module/'target'/name
  with zipfile.ZipFile(source) as archive:
   assert archive.testzip() is None
@@ -20,7 +20,7 @@ with zipfile.ZipFile(dist/'KasabaAdalar-Kaynak.zip','w',zipfile.ZIP_DEFLATED) as
   for path in sorted((root/folder).rglob('*')):
    relative=path.relative_to(root)
    if path.is_file() and not any(part in {'target','node_modules','.git','__pycache__'} for part in relative.parts):archive.write(path,'Sada/'+relative.as_posix())
-names=['KasabaAdalar-1.3.0.jar','KasabaHub-1.2.0.jar','KasabaAdalar-Dunya.zip','KasabaAdalar-Kaynak.zip']
+names=['KasabaAdalar-1.3.1.jar','KasabaHub-1.2.0.jar','KasabaAdalar-Dunya.zip','KasabaAdalar-Kaynak.zip']
 checksums=''.join(hashlib.sha256((dist/name).read_bytes()).hexdigest()+'  '+name+'\n' for name in names)
 (dist/'KasabaAdalar-SHA256SUMS.txt').write_text(checksums,encoding='utf-8')
 with zipfile.ZipFile(dist/'KasabaAdalar-Kurulum.zip','w',zipfile.ZIP_DEFLATED) as archive:
