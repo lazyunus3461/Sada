@@ -1,3 +1,34 @@
+KasabaAdalar 1.3.2 • ilk /ada girişini hazırlama
+Paper 1.21.10 build 130, Java 21; yalnızca 127.0.0.1:25575.
+
+Yeniden çalıştırılan Adalar birim testleri: 8/8 geçti.
+Gerçek Minecraft protokolüyle first-entry.cjs senaryoları geçti:
+- İstemcinin gerçek unsigned /ada, /ada git, /ada al ve /oyunlar git adaniyap
+  paketleri her giriş için yalnızca BİR kez gönderildi.
+- İlk dünya değiştirme (respawn) paketinde yaratıcı mod zaten hazır.
+- Son istemci modu ve sunucu modu CREATIVE; yaratıcı envanter ve uçuş
+  bayrakları da birlikte doğrulandı. İlk ada edinme aynı şekilde çalıştı.
+- İkinci komut gönderilerek düzeltme yapılmadı; her dönüşte SURVIVAL
+  istemci/sunucu modu ve orijinal DIAMOND:7 envanteri geri geldi.
+- Ada ışınlanması başka eklenti tarafından iptal edilince mod ve envanter
+  geri alındı; lobide yaratıcı oturum veya ada eşyası kalmadı.
+- Dünya geçişinde uçuş izni kapatılınca yeniden açıldı.
+- Hızlı çıkışta bekleyen görevler lobiyi yaratıcı moda çevirmedi.
+- Tek ada sahipliği değişmedi.
+
+creative-mode.cjs senaryoları da yeniden geçti: gerçek pusula > Oyunlar >
+Adanı Yap tıklamaları, yaratıcı mod iptali ve gecikmeli adventure zorlaması,
+sürekli gündüz/açık hava, önceki ADVENTURE/SURVIVAL moduna dönüş, ayrı
+ada envanteri ve Arena'ya yaratıcı eşya taşınmaması.
+
+Karşılaştırma için 1.3.1 JAR ile ilk /ada dünya paketindeki SURVIVAL
+bilgisi kaydedildi. Bu önceki testlerde yalnızca sunucu modu incelendiği
+zaman görünmeyen istemci geçişidir. 1.3.2 ile hem ilk dünya paketi hem
+son istemci durumu doğrulandı; grafik istemcide görsel inceleme iddia edilmez.
+Mevcut dünya/veriler üzerinde yalnızca JAR değiştirilerek test edildi.
+
+Önceki sürümlerin doğrulama kayıtları aşağıdadır:
+
 KasabaAdalar 1.3.1 • yaratıcı mod ve sürekli gündüz düzeltmesi
 Paper 1.21.10 build 130, Java 21; 127.0.0.1:25575.
 

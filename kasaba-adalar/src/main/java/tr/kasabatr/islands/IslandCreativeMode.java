@@ -51,9 +51,10 @@ final class IslandCreativeMode implements Listener {
     }
 
     private void enforce(Player player) {
-        if (managed(player) && player.getGameMode() != GameMode.CREATIVE) {
-            player.setGameMode(GameMode.CREATIVE);
-        }
+        if (!managed(player)) return;
+        if (player.getGameMode() != GameMode.CREATIVE) player.setGameMode(GameMode.CREATIVE);
+        // A teleport/login listener can reset flight without changing the mode.
+        if (player.getGameMode() == GameMode.CREATIVE && !player.getAllowFlight()) player.setAllowFlight(true);
     }
 
     private void later(Player player) {

@@ -101,6 +101,22 @@ public final class KasabaIslandsPlugin extends JavaPlugin implements Listener,Co
     private boolean allowed(Player p,Location at){return !islandWorld(at.getWorld())||admin(p)||claims.canAccess(layout.at(at.getBlockX(),at.getBlockZ()),p.getUniqueId());}
     private void enterIsland(Player p)throws IOException{playerStates.enter(p);creativeMode.enter(p);}
     private void leaveIsland(Player p)throws IOException{creativeMode.leave(p.getUniqueId());playerStates.leave(p);}
+    private boolean travelToIsland(Player p,World world,int id)throws IOException{
+        Location before=p.getLocation();boolean outside=!islandWorld(before.getWorld()),arrived=false;
+        try{
+            // Snapshot the ordinary inventory/mode BEFORE world managers run.
+            // Creative must already be present in the first world-entry packet.
+            enterIsland(p);
+            if(!p.teleport(layout.spawn(world,id))||!islandWorld(p.getWorld()))return false;
+            enterIsland(p);arrived=true;return true;
+        }finally{
+            if(!arrived&&outside){
+                creativeMode.leave(p.getUniqueId());
+                if(islandWorld(p.getWorld())&&!p.teleport(before))getLogger().warning("Ada geçişi geri alınamadı: "+p.getUniqueId());
+                playerStates.leave(p);
+            }
+        }
+    }
     private boolean mayEdit(Player p,Block block){return allowed(p,block.getLocation());}
     private int plot(Block block){return layout.at(block.getX(),block.getZ());}
     private void warn(Player p,String text){long now=System.currentTimeMillis();if(now-lastWarning.getOrDefault(p.getUniqueId(),0L)>=2000){tell(p,text);lastWarning.put(p.getUniqueId(),now);}}
@@ -113,14 +129,13 @@ public final class KasabaIslandsPlugin extends JavaPlugin implements Listener,Co
         public boolean available(){return Bukkit.getWorld(worldName)!=null;}
         public boolean join(List<Player> team){
             if(team.isEmpty())return false;Map<Player,Integer> targets=new java.util.LinkedHashMap<>();for(Player p:team){Integer id=requests.getOrDefault(p.getUniqueId(),claims.islandOf(p.getUniqueId()));if(id==null){needIsland(p);return false;}if(!claims.canAccess(id,p.getUniqueId())){tell(p,"Bu adaya giriş iznin yok.");return false;}targets.put(p,id);}
-            Map<Player,Location> moved=new java.util.LinkedHashMap<>();try{for(var entry:targets.entrySet()){Player p=entry.getKey();Location before=p.getLocation();sessions.add(p.getUniqueId());if(!p.teleport(layout.spawn(Bukkit.getWorld(worldName),entry.getValue()))||!islandWorld(p.getWorld()))throw new IllegalStateException("Ada geçişi engellendi.");moved.put(p,before);enterIsland(p);tell(p,"§aAda #"+entry.getValue()+" • Yaratıcı mod • Dönüş: /lobi");}return true;}catch(IOException|RuntimeException ex){for(Player p:targets.keySet()){sessions.remove(p.getUniqueId());creativeMode.leave(p.getUniqueId());}for(var entry:moved.entrySet())entry.getKey().teleport(entry.getValue());getLogger().log(java.util.logging.Level.WARNING,"Ada grubu geri alındı.",ex);return false;}
+            Map<Player,Location> moved=new java.util.LinkedHashMap<>();try{for(var entry:targets.entrySet()){Player p=entry.getKey();Location before=p.getLocation();sessions.add(p.getUniqueId());if(!travelToIsland(p,Bukkit.getWorld(worldName),entry.getValue()))throw new IllegalStateException("Ada geçişi engellendi.");moved.put(p,before);tell(p,"§aAda #"+entry.getValue()+" • Yaratıcı mod • Dönüş: /lobi");}return true;}catch(IOException|RuntimeException ex){for(Player p:targets.keySet()){sessions.remove(p.getUniqueId());creativeMode.leave(p.getUniqueId());}for(var entry:moved.entrySet())entry.getKey().teleport(entry.getValue());getLogger().log(java.util.logging.Level.WARNING,"Ada grubu geri alındı.",ex);return false;}
         }
         public void leave(UUID id){sessions.remove(id);Player p=Bukkit.getPlayer(id);if(p!=null)try{leaveIsland(p);}catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada çıkışı kaydedilemedi: "+id,ex);p.getInventory().clear();p.getInventory().setArmorContents(new ItemStack[4]);p.getInventory().setItemInOffHand(null);p.setItemOnCursor(null);p.setGameMode(GameMode.SURVIVAL);}}
     }
     private void teleportHome(Player p,World world,int id)throws IOException{
-        if(islandWorld(p.getWorld()))enterIsland(p);
         if(hub!=null&&!islandWorld(p.getWorld())){if(hub.playing(p.getUniqueId())){tell(p,"Önce /lobi ile mevcut oyundan çık, ardından /ada yaz.");return;}requests.put(p.getUniqueId(),id);try{Bukkit.dispatchCommand(p,"oyunlar git adaniyap");}finally{requests.remove(p.getUniqueId());}return;}
-        if(p.teleport(layout.spawn(world,id))){enterIsland(p);tell(p,"§aAda #"+id+" • Yaratıcı mod");}else tell(p,"Işınlanma engellendi; ada sahipliğin korundu.");
+        if(travelToIsland(p,world,id))tell(p,"§aAda #"+id+" • Yaratıcı mod");else tell(p,"Işınlanma engellendi; ada sahipliğin korundu.");
     }
     @Override public boolean onCommand(CommandSender sender,Command command,String label,String[] args){
         if(!(sender instanceof Player p)){sender.sendMessage("Bu komut oyunda kullanılır.");return true;}if(!authenticated(p)){tell(p,"Önce kayıt/giriş işlemini tamamla.");return true;}if(!p.hasPermission("kasabatr.ada.use")){tell(p,"Ada yetkin yok.");return true;}

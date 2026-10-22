@@ -108,4 +108,4 @@ Auth entegrasyonu: `tr.kasaba.auth.api.AuthState` yalnızca giriş durumunu sorg
 
 ## Yaratıcı adalar ve bilgi kitabı
 
-[KasabaAdalar 1.3.1](kasaba-adalar/README.md) oyuncu başına tek yaratıcı ada, 100 blok aralıklı dolu tabanlı 300 ada ve otomatik Adanı Yap oyun girişini sağlar. Pusuladan ada girişinde yaratıcı mod korunur; adada sürekli gündüz ve açık hava vardır. [Ada + Hub + dünya kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Kurulum.zip) yeni KasabaHub 1.2.0 bilgi kitabını da içerir.
+[KasabaAdalar 1.3.2](kasaba-adalar/README.md) oyuncu başına tek yaratıcı ada, 100 blok aralıklı dolu tabanlı 300 ada ve otomatik Adanı Yap oyun girişini sağlar. İlk `/ada` kullanımında ve pusuladan ada girişinde yaratıcı mod hazırlanır; adada sürekli gündüz ve açık hava vardır. [Ada + Hub + dünya kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Kurulum.zip) yeni KasabaHub 1.2.0 bilgi kitabını da içerir.
