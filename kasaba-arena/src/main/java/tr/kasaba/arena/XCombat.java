@@ -58,7 +58,7 @@ final class XCombat implements Listener {
         for(PotionEffect effect:p.getActivePotionEffects())p.removePotionEffect(effect.getType());
         p.setInvulnerable(false);p.setAbsorptionAmount(0);p.setFireTicks(0);p.setFallDistance(0);p.setNoDamageTicks(0);p.setGameMode(GameMode.SURVIVAL);p.setHealth(Math.min(20,maxHealth(p)));p.setFoodLevel(20);p.setSaturation(10);
         ArenaCharacter kind=character.apply(p);
-        p.getInventory().setItem(4,weapon(kind==ArenaCharacter.TANK?Material.DIAMOND_AXE:Material.DIAMOND_SWORD,kind.label));
+        p.getInventory().setItem(4,weapon(Material.DIAMOND_SWORD,kind.label));
         if(kind==ArenaCharacter.ARCHER){p.getInventory().setItem(5,weapon(Material.BOW,"Okçu • Yay"));p.getInventory().setItem(9,new ItemStack(Material.ARROW,64));}
         boolean tank=kind==ArenaCharacter.TANK;
         p.getInventory().setHelmet(armor(tank?Material.NETHERITE_HELMET:Material.DIAMOND_HELMET));p.getInventory().setChestplate(armor(tank?Material.NETHERITE_CHESTPLATE:Material.DIAMOND_CHESTPLATE));p.getInventory().setLeggings(armor(tank?Material.NETHERITE_LEGGINGS:Material.DIAMOND_LEGGINGS));p.getInventory().setBoots(armor(tank?Material.NETHERITE_BOOTS:Material.DIAMOND_BOOTS));
