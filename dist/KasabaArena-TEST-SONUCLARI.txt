@@ -1,21 +1,44 @@
-KasabaArena 1.1.0 — gerçek Paper regresyon doğrulaması
-Paper 1.21.10 build 130, Java 21, dört Minecraft protokol istemcisi.
-Yerel test: node kasaba-arena/scripts/integration/regression.cjs
+KasabaArena 1.2.0 + KasabaAkce 1.0.0 doğrulama
+Paper 1.21.10 build 130, Java 21, yalnızca 127.0.0.1:25575 test sunucusu.
 
-GEÇTİ — Market düğmesi görünür; VIP kit ve sekmesi kaldırılmış.
-GEÇTİ — Düşük yakın vuruş; Okçu güçlü oku zırh sonrası 3 kalp.
-GEÇTİ — Dört beceri sırası, Ok Yağmuru 3 kalp, Avcı Oku 4 kalp.
-GEÇTİ — Savaşçı dört beceri ve %25 Savaş Narası hasar hesabı.
-GEÇTİ — Tank dört beceri, %57,5 kalkan azaltması ve 3 kalp iyileşme.
-GEÇTİ — Suikastçı zehir/görünmezlik/infaz; X çıkışında bütün etkilerin temizliği.
-GEÇTİ — Boş odaya doğrudan yerleşim, aynı anda farklı 1v1 odaları; sadece kaydedilen normal kit.
-GEÇTİ — Dört kişiyle 2v2 oda başlangıcı; beceriler ve market eşyaları yok.
-GEÇTİ — Özel kodlu 1v1 odasına genel giriş atanmaz.
-GEÇTİ — Gerçek ölümlerle 2–1 tamamlanan üç raunt; iki oyuncu Arena lobisine döner.
-GEÇTİ — 1v1 bölgesinde dışarıdan gelen oyuncu da blok kıramaz; normal dünyada koruma yayılmaz.
-GEÇTİ — Ödeme sonrası taklit banka hatası ve tekrar işlemede ikinci kez ücret alınmaması.
-GEÇTİ — Para servisi yokken satın alma kapalı; bağlı test servisiyle tam fiyat ve gerçek zamanlı 3 gün.
-GEÇTİ — Elma 10'dan 9'a kalıcı azalır; ölümde yenilenmez. Kılıç süre sonunda silinir, ürünler Hub/maçlara geçmez.
+Derleme: Arena Maven package başarılı. Akçe Maven verify başarılı.
+Akçe birim testleri: 7 test, 0 hata, 0 başarısızlık.
+- Transferin iki tarafı ve çevrimdışı isimler kalıcıdır.
+- Market kesintisi yeniden açılma sonrasında da idempotenttir.
+- Yetersiz bakiye sonucu tekrar denemede sonradan para kesmez.
+- Geçersiz/sıfır/negatif transfer ve kendine gönderme reddedilir.
+- Disk yazma hatasında iki bakiye de korunur.
+- Bozuk veri dosyası üzerine yazılmaz.
+- Eşzamanlı çekimler eksi bakiye veya kayıp güncelleme oluşturmaz.
 
-Test bankası yalnızca loopback yerel test yardımcısındadır. Üretim JAR'ına test bankası veya para eklentisi dahil değildir.
-Gerçek oyuncularla görsel değerlendirme ve sunucunun diğer eklentileriyle canlı uyumluluk bu testlerin kapsamına girmez.
+Gerçek Paper üzerinde altı Minecraft protokol istemcisiyle geçen senaryolar:
+- Beceriler 1-4, yakın dövüş silahı 5, Okçu yayı 6. yuvada.
+- Koruma II elmas/netherit zırh teslim edilir.
+- Beceri 4 ilk kullanılabilir; beceri 1 ayrıca kullanılabilir; beklemeler bağımsızdır.
+- Gerçek ok çarpması ve zırh uygulanmış azaltılmış hasar ölçülür.
+- Savaşçı, Suikastçı, Tank, Okçu, Büyücü ve Şifacı'nın dört becerisi çalışır.
+- Büyücü güvenli sıçraması, Meteor gecikmesi; Şifacı şifa/kalkan/dalga doğrulanır.
+- Dövüş dışında kontrollü can yenilenmesi çalışır.
+- 1v1 ve 2v2 aynı fiziksel numaraya eşzamanlı atanmaz.
+- Beş alan özel kodlu odalarla doluyken 2v2 girişi lobide kalır.
+- Alan boşalınca diğer tür tarafından kullanılabilir.
+- Özel kod ve herkese açık oda girişleri birbirine karışmaz.
+- Üç rauntta 2-1 sonuç ve güvenli lobiye dönüş doğrulanır.
+- Beş ortak koruma alanı ve aynı arenaya ayrı isimli ek korumalar kaydedilir.
+- Koruma içinde dış oyuncunun blok kırma/koyması iptal; dışarıda normal yapı serbesttir.
+- Akçe gönderme, iki ondalık basamak, para korunumu ve yönetici izni kontrol edilir.
+- Tekrarlanan bekleyen market ödemesi bir kez kesilir.
+- Yerleşik onay sayfasından gerçek Akçe ile üç günlük kılıç/on elma satın alınır.
+- Market eşyaları beceri yuvalarına yazılmaz; elma adedi ölümde/yeniden girişte yenilenmez.
+- Kiralık eşya süresi dolunca kaldırılır; X eşyaları 1v1/2v2/Hub'a taşınmaz.
+
+Tam durdur/aç sonrası:
+- Gerçek Akçe bakiyeleri, beş koruma, satın alınan kalan 9 elma korunur.
+- Gerçek istemci komut paketiyle /akçe çalışır.
+- Farklı numaralı odaların kesişen bölgeleri de alanı kilitler.
+- Normal maç kitine Hub menü pusulası kaydedilmez.
+- X oyuncusu fiziksel olarak güvenli lobiye girse bile hasar veremez/alamaz.
+
+Üretim JAR/ZIP dosyalarında test yardımcıları, test dünyası, hesaplar veya sahte banka yoktur.
+Grafik Minecraft istemcisinde görsel inceleme yapıldığı iddia edilmez; gerçek Paper olayları,
+oyuncu konumları/envanterleri, hasar ve native dialog protokolü kontrol edilmiştir.

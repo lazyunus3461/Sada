@@ -6,7 +6,7 @@ mkdir -p "$arena_build"
 arena_classpath="$(python3 - <<'PY'
 from pathlib import Path
 jars=list(Path('/workspace/kasaba-test-server/libraries').rglob('*.jar'))
-jars.append(Path('/workspace/Sada/kasaba-arena/target/KasabaArena-1.1.0.jar'))
+jars.append(Path('/workspace/Sada/kasaba-arena/target/KasabaArena-1.2.0.jar'))
 print(':'.join(map(str,jars)))
 PY
 )"

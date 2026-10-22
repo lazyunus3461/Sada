@@ -1,0 +1,4 @@
+# Yalnızca ilk kez hesap açan oyunculara verilir.
+baslangic-akcesi: '0.00'
+# Etiket MiniMessage kodu değil, düz yazıdır; renk oyun içinde altın/sarıdır.
+etiket: 'Akçe'

@@ -26,9 +26,8 @@ final class XCombat implements Listener {
     private final Function<Player,Double> marketBonus;
     private final NamespacedKey abilityKey, weaponKey, arrowDamageKey, arrowLifeKey;
     private final Map<UUID,long[]> cooldowns=new HashMap<>();
-    private final Map<UUID,Integer> nextSkill=new HashMap<>();
     private final Map<UUID,Long> sharedUntil=new HashMap<>();
-    private final Map<UUID,Long> warCry=new HashMap<>(),shields=new HashMap<>(),protection=new HashMap<>(),lastMelee=new HashMap<>();
+    private final Map<UUID,Long> warCry=new HashMap<>(),shields=new HashMap<>(),protection=new HashMap<>(),lastMelee=new HashMap<>(),lastCombat=new HashMap<>();
     private final Map<UUID,Integer> lives=new HashMap<>();
     private final Map<UUID,Intent> intents=new HashMap<>();
     private final Map<UUID,Set<BukkitTask>> tasks=new HashMap<>();
@@ -41,12 +40,13 @@ final class XCombat implements Listener {
         abilityKey=new NamespacedKey(plugin,"arena-ability");weaponKey=new NamespacedKey(plugin,"x-weapon");arrowDamageKey=new NamespacedKey(plugin,"x-arrow-damage");arrowLifeKey=new NamespacedKey(plugin,"x-arrow-life");
         Bukkit.getPluginManager().registerEvents(this,plugin);
         Bukkit.getScheduler().runTaskTimer(plugin,()->{for(Player p:Bukkit.getOnlinePlayers())if(active(p))updateSkills(p);},10,10);
+        Bukkit.getScheduler().runTaskTimer(plugin,()->{long now=System.currentTimeMillis();for(Player p:Bukkit.getOnlinePlayers())if(active(p)&&lastCombat.getOrDefault(p.getUniqueId(),0L)+8000<=now&&p.getHealth()<Math.min(20,maxHealth(p)))heal(p,1);},40,40);
     }
     boolean active(Player p){return p.isOnline()&&!p.isDead()&&active.test(p);}
     boolean mayChoose(Player p){return mayChoose.contains(p.getUniqueId());}
     void lockChoice(Player p){mayChoose.remove(p.getUniqueId());}
     void clear(Player p) {
-        UUID id=p.getUniqueId();lives.merge(id,1,Integer::sum);cooldowns.remove(id);nextSkill.remove(id);sharedUntil.remove(id);warCry.remove(id);shields.remove(id);protection.remove(id);lastMelee.remove(id);intents.remove(id);mayChoose.remove(id);
+        UUID id=p.getUniqueId();lives.merge(id,1,Integer::sum);cooldowns.remove(id);lastCombat.remove(id);sharedUntil.remove(id);warCry.remove(id);shields.remove(id);protection.remove(id);lastMelee.remove(id);intents.remove(id);mayChoose.remove(id);
         for(BukkitTask task:tasks.getOrDefault(id,Set.of()))task.cancel();tasks.remove(id);
         for(Projectile projectile:projectiles.getOrDefault(id,Set.of()))projectile.remove();projectiles.remove(id);
         for(int slot=0;slot<p.getInventory().getSize();slot++)if(temporary(p.getInventory().getItem(slot)))p.getInventory().setItem(slot,null);
@@ -58,17 +58,20 @@ final class XCombat implements Listener {
         for(PotionEffect effect:p.getActivePotionEffects())p.removePotionEffect(effect.getType());
         p.setInvulnerable(false);p.setAbsorptionAmount(0);p.setFireTicks(0);p.setFallDistance(0);p.setNoDamageTicks(0);p.setGameMode(GameMode.SURVIVAL);p.setHealth(Math.min(20,maxHealth(p)));p.setFoodLevel(20);p.setSaturation(10);
         ArenaCharacter kind=character.apply(p);
-        p.getInventory().setItem(0,weapon(kind==ArenaCharacter.ARCHER?Material.BOW:kind==ArenaCharacter.TANK?Material.IRON_AXE:Material.IRON_SWORD,kind.label));
-        if(kind==ArenaCharacter.ARCHER){p.getInventory().setItem(1,weapon(Material.STONE_SWORD,"Okçu • Yakın dövüş"));p.getInventory().setItem(9,new ItemStack(Material.ARROW,64));}
-        p.getInventory().setHelmet(new ItemStack(Material.IRON_HELMET));p.getInventory().setChestplate(new ItemStack(kind==ArenaCharacter.TANK?Material.IRON_CHESTPLATE:Material.CHAINMAIL_CHESTPLATE));p.getInventory().setLeggings(new ItemStack(Material.CHAINMAIL_LEGGINGS));p.getInventory().setBoots(new ItemStack(Material.IRON_BOOTS));
+        p.getInventory().setItem(4,weapon(kind==ArenaCharacter.TANK?Material.DIAMOND_AXE:Material.DIAMOND_SWORD,kind.label));
+        if(kind==ArenaCharacter.ARCHER){p.getInventory().setItem(5,weapon(Material.BOW,"Okçu • Yay"));p.getInventory().setItem(9,new ItemStack(Material.ARROW,64));}
+        boolean tank=kind==ArenaCharacter.TANK;
+        p.getInventory().setHelmet(armor(tank?Material.NETHERITE_HELMET:Material.DIAMOND_HELMET));p.getInventory().setChestplate(armor(tank?Material.NETHERITE_CHESTPLATE:Material.DIAMOND_CHESTPLATE));p.getInventory().setLeggings(armor(tank?Material.NETHERITE_LEGGINGS:Material.DIAMOND_LEGGINGS));p.getInventory().setBoots(armor(tank?Material.NETHERITE_BOOTS:Material.DIAMOND_BOOTS));
         for(int index=0;index<4;index++) {
             final int skill=index;ArenaCharacter.Skill spec=kind.skills.get(index);ItemStack item=new ItemStack(switch(index){case 0->Material.BLAZE_POWDER;case 1->Material.AMETHYST_SHARD;case 2->Material.PRISMARINE_CRYSTALS;default->Material.NETHER_STAR;});
             item.editMeta(meta->{meta.displayName(Component.text((skill+1)+" • "+spec.name(),NamedTextColor.GOLD));meta.lore(List.of(Component.text(spec.description(),NamedTextColor.GRAY),Component.text("Bekleme: "+spec.cooldownSeconds()+" saniye",NamedTextColor.YELLOW),Component.text("Sağ tık veya /arena yetenek "+(skill+1),NamedTextColor.AQUA)));meta.getPersistentDataContainer().set(abilityKey,PersistentDataType.STRING,kind.name()+":"+(skill+1));});
-            p.getInventory().setItem(4+index,item);
+            p.getInventory().setItem(index,item);
         }
-        p.getInventory().setHeldItemSlot(0);mayChoose.add(p.getUniqueId());protect(p);updateSkills(p);
+        p.getInventory().setHeldItemSlot(4);lastCombat.put(p.getUniqueId(),System.currentTimeMillis());mayChoose.add(p.getUniqueId());protect(p);updateSkills(p);
     }
     private ItemStack weapon(Material type,String label){ItemStack item=new ItemStack(type);item.editMeta(meta->{meta.displayName(Component.text(label,NamedTextColor.WHITE));meta.setUnbreakable(true);meta.getPersistentDataContainer().set(weaponKey,PersistentDataType.BYTE,(byte)1);});return item;}
+    private ItemStack armor(Material type){ItemStack item=weapon(type,"X Arena • Koruyucu Zırh");item.addUnsafeEnchantment(org.bukkit.enchantments.Enchantment.PROTECTION,2);return item;}
+    private void heal(Player p,double amount){if(active(p))p.setHealth(Math.min(Math.min(20,maxHealth(p)),p.getHealth()+amount));}
     private double maxHealth(Player p){var attr=p.getAttribute(org.bukkit.attribute.Attribute.MAX_HEALTH);return attr==null?20:attr.getValue();}
     private void protect(Player p){long seconds=Math.max(0,plugin.getConfig().getLong("ayarlar.yeniden-dogma-koruma-saniye",3));protection.put(p.getUniqueId(),System.currentTimeMillis()+seconds*1000);}
     private boolean alive(UUID id,int life){Player p=Bukkit.getPlayer(id);return p!=null&&active(p)&&lives.getOrDefault(id,0)==life;}
@@ -81,8 +84,6 @@ final class XCombat implements Listener {
         if(!active(p))throw new IllegalArgumentException("Karakter yetenekleri sadece X Arena'da kullanılabilir.");
         if(number<1||number>4)throw new IllegalArgumentException("/arena yetenek 1, 2, 3 veya 4");
         UUID id=p.getUniqueId();int index=number-1;long now=System.currentTimeMillis();long[] ready=cooldowns.computeIfAbsent(id,k->new long[4]);ArenaCharacter kind=character.apply(p);ArenaCharacter.Skill skill=kind.skills.get(index);
-        int next=nextSkill.getOrDefault(id,0);
-        if(index!=next)throw new IllegalArgumentException("Sıradaki beceri: "+(next+1)+" • "+kind.skills.get(next).name()+". Beceriler 1 → 2 → 3 → 4 sırasıyla açılır.");
         long available=Math.max(ready[index],sharedUntil.getOrDefault(id,0L));
         if(available>now)throw new IllegalArgumentException(skill.name()+" için "+((available-now+999)/1000)+" saniye bekle.");
         switch(kind) {
@@ -90,8 +91,10 @@ final class XCombat implements Listener {
             case ASSASSIN -> assassin(p,number);
             case TANK -> tank(p,number);
             case ARCHER -> archer(p,number);
+            case MAGE -> mage(p,number);
+            case HEALER -> healer(p,number);
         }
-        ready[index]=now+skill.cooldownSeconds()*1000L;nextSkill.put(id,(index+1)%4);sharedUntil.put(id,now+skill.recoveryTicks()*50L);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • Sıradaki: "+((index+1)%4+1));
+        ready[index]=now+skill.cooldownSeconds()*1000L;sharedUntil.put(id,now+skill.recoveryTicks()*50L);lastCombat.put(id,now);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • "+skill.cooldownSeconds()+" sn bekleme");
     }
     private void warrior(Player p,int skill){switch(skill){
         case 1->{Player target=target(p,4.5);hit(p,target,6);knock(p,target,0.35);}
@@ -108,7 +111,7 @@ final class XCombat implements Listener {
     private void tank(Player p,int skill){switch(skill){
         case 1->{shields.put(p.getUniqueId(),System.currentTimeMillis()+3000);effect(p,PotionEffectType.GLOWING,60,0);}
         case 2->{Player target=target(p,4);hit(p,target,4);knock(p,target,1.1);effect(target,PotionEffectType.SLOWNESS,30,1);}
-        case 3->{p.setHealth(Math.min(Math.min(20,maxHealth(p)),p.getHealth()+6));p.getWorld().spawnParticle(Particle.HEART,p.getLocation().add(0,1.7,0),6,0.5,0.4,0.5,0);}
+        case 3->{heal(p,4);p.getWorld().spawnParticle(Particle.HEART,p.getLocation().add(0,1.7,0),6,0.5,0.4,0.5,0);}
         case 4->{List<Player> targets=around(p,p.getLocation(),5);requireTargets(targets);for(Player target:targets){hit(p,target,5);effect(target,PotionEffectType.SLOWNESS,60,1);}p.getWorld().spawnParticle(Particle.EXPLOSION,p.getLocation(),8,2,0.2,2,0);}
     }}
     private void archer(Player p,int skill){switch(skill){
@@ -117,6 +120,19 @@ final class XCombat implements Listener {
         case 3->{p.setVelocity(p.getLocation().getDirection().setY(0).normalize().multiply(-1.2).setY(0.4));effect(p,PotionEffectType.SPEED,40,1);}
         case 4->shoot(p,8,3.2);
     }}
+    private void mage(Player p,int skill){switch(skill){
+        case 1->{Player target=target(p,16);hit(p,target,4.5);p.getWorld().spawnParticle(Particle.FLAME,target.getLocation().add(0,1,0),20,0.4,0.5,0.4,0.01);}
+        case 2->{List<Player> targets=around(p,p.getLocation(),5);requireTargets(targets);for(Player target:targets){hit(p,target,3);effect(target,PotionEffectType.SLOWNESS,40,1);}p.getWorld().spawnParticle(Particle.SNOWFLAKE,p.getLocation().add(0,1,0),50,3,0.4,3,0.01);}
+        case 3->blink(p);
+        case 4->{Location center=target(p,18).getLocation().clone();p.getWorld().spawnParticle(Particle.FLAME,center.clone().add(0,3,0),30,1,1,1,0.02);later(p,16,()->{p.getWorld().spawnParticle(Particle.EXPLOSION,center.clone().add(0,1,0),6,1.5,0.5,1.5,0);for(Player target:around(p,center,3.5))hit(p,target,7);});}
+    }}
+    private void healer(Player p,int skill){switch(skill){
+        case 1->{Player target=target(p,12);hit(p,target,3.5);p.getWorld().spawnParticle(Particle.END_ROD,target.getLocation().add(0,1,0),15,0.3,0.6,0.3,0.01);}
+        case 2->{heal(p,4);p.getWorld().spawnParticle(Particle.HEART,p.getLocation().add(0,1.5,0),8,0.5,0.5,0.5,0);}
+        case 3->{shields.put(p.getUniqueId(),System.currentTimeMillis()+3000);effect(p,PotionEffectType.GLOWING,60,0);}
+        case 4->{heal(p,3);for(Player target:around(p,p.getLocation(),5))hit(p,target,4);p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER,p.getLocation().add(0,1,0),40,3,0.4,3,0.01);}
+    }}
+    private void blink(Player p){Location origin=p.getLocation(),safe=null;Vector direction=origin.getDirection().setY(0);if(direction.lengthSquared()<0.01)throw new IllegalArgumentException("İleriye bakarak kullan.");direction.normalize();for(double distance=0.5;distance<=5;distance+=0.5){Location at=origin.clone().add(direction.clone().multiply(distance));if(!at.getBlock().isPassable()||!at.clone().add(0,1,0).getBlock().isPassable()||!at.getWorld().getWorldBorder().isInside(at))break;if(at.clone().subtract(0,1,0).getBlock().getType().isSolid())safe=at;}if(safe==null||safe.distanceSquared(origin)<1)throw new IllegalArgumentException("Önünde güvenli ışınlanma noktası yok.");if(!p.teleport(safe,org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN))throw new IllegalArgumentException("Işınlanma engellendi.");p.setFallDistance(0);}
     private void requireTargets(List<Player> targets){if(targets.isEmpty())throw new IllegalArgumentException("Bu yeteneğin menzilinde rakip yok.");}
     private Player target(Player p,double range){return around(p,p.getLocation(),range).stream().filter(other->{Vector delta=other.getEyeLocation().toVector().subtract(p.getEyeLocation().toVector());return delta.lengthSquared()<0.01||delta.normalize().dot(p.getEyeLocation().getDirection())>0.45;}).findFirst().orElseThrow(()->new IllegalArgumentException("Önünde, görüş alanında bir rakip olmalı."));}
     private List<Player> around(Player p,Location center,double radius){return center.getWorld().getNearbyPlayers(center,radius).stream().filter(other->other!=p&&active(other)&&p.hasLineOfSight(other)).sorted(Comparator.comparingDouble(other->other.getLocation().distanceSquared(center))).toList();}
@@ -140,12 +156,12 @@ final class XCombat implements Listener {
         if(skill)base=intent.damage();
         else if(e.getDamager() instanceof Projectile projectile){Integer life=projectile.getPersistentDataContainer().get(arrowLifeKey,PersistentDataType.INTEGER);if(life==null||life!=lives.getOrDefault(attackerId,0)){e.setCancelled(true);return;}base=projectile.getPersistentDataContainer().getOrDefault(arrowDamageKey,PersistentDataType.DOUBLE,4.0);}
         else{if(lastMelee.getOrDefault(attackerId,0L)+900>now||temporaryAbility(attacker.getInventory().getItemInMainHand())){e.setCancelled(true);return;}lastMelee.put(attackerId,now);base=character.apply(attacker).meleeDamage+marketBonus.apply(attacker);}
-        mayChoose.remove(attackerId);mayChoose.remove(victimId);protection.remove(attackerId);
+        mayChoose.remove(attackerId);mayChoose.remove(victimId);protection.remove(attackerId);lastCombat.put(attackerId,now);lastCombat.put(victimId,now);
         double desired=ArenaCharacter.finalDamage(base,character.apply(victim),warCry.getOrDefault(attackerId,0L)>now,shields.getOrDefault(victimId,0L)>now);
         if(!skill&&!(e.getDamager() instanceof Projectile))desired=Math.min(2.0,desired);
         setFinalDamage(e,desired);
     }
     private boolean temporaryAbility(ItemStack item){return item!=null&&item.hasItemMeta()&&item.getItemMeta().getPersistentDataContainer().has(abilityKey);}
-    private void updateSkills(Player p){UUID id=p.getUniqueId();int next=nextSkill.getOrDefault(id,0);long now=System.currentTimeMillis();long ready=Math.max(cooldowns.getOrDefault(id,new long[4])[next],sharedUntil.getOrDefault(id,0L));ArenaCharacter kind=character.apply(p);for(int index=0;index<4;index++){ItemStack item=p.getInventory().getItem(4+index);if(!temporaryAbility(item))continue;boolean glow=index==next&&ready<=now;item.editMeta(meta->meta.setEnchantmentGlintOverride(glow));}tell(p,"Sıradaki: "+(next+1)+" • "+kind.skills.get(next).name()+(ready>now?" • "+((ready-now+999)/1000)+" sn":" • HAZIR"));}
+    private void updateSkills(Player p){UUID id=p.getUniqueId();long now=System.currentTimeMillis();long[] times=cooldowns.getOrDefault(id,new long[4]);List<String> status=new ArrayList<>();for(int index=0;index<4;index++){ItemStack item=p.getInventory().getItem(index);long ready=Math.max(times[index],sharedUntil.getOrDefault(id,0L));boolean available=ready<=now;if(temporaryAbility(item))item.editMeta(meta->meta.setEnchantmentGlintOverride(available));status.add((index+1)+": "+(available?"HAZIR":((ready-now+999)/1000)+" sn"));}tell(p,String.join(" • ",status));}
     @SuppressWarnings("deprecation") private void setFinalDamage(EntityDamageEvent event,double damage){event.setDamage(damage);for(EntityDamageEvent.DamageModifier modifier:EntityDamageEvent.DamageModifier.values())if(modifier!=EntityDamageEvent.DamageModifier.BASE&&modifier!=EntityDamageEvent.DamageModifier.ABSORPTION&&event.isApplicable(modifier))event.setDamage(modifier,0);if(event.isApplicable(EntityDamageEvent.DamageModifier.ABSORPTION))event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION,-Math.min(((Player)event.getEntity()).getAbsorptionAmount(),damage));}
 }

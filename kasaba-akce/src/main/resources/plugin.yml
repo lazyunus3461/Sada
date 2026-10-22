@@ -1,0 +1,19 @@
+name: KasabaAkce
+version: 1.0.0
+main: tr.kasaba.akce.KasabaAkce
+api-version: '1.21.10'
+author: Kasaba
+softdepend: [KasabaArena]
+description: Kalıcı Akçe bakiyesi, güvenli transfer ve X Arena market ödemeleri.
+commands:
+  akce:
+    aliases: ['akçe', 'para', 'bakiye']
+    description: Akçe bakiyesi, gönderme ve yönetim.
+    usage: /akçe yardım
+permissions:
+  kasabaakce.kullan:
+    default: true
+  kasabaakce.gonder:
+    default: true
+  kasabaakce.yonet:
+    default: op

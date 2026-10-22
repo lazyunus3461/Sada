@@ -1,4 +1,6 @@
 ayarlar:
+  # Aynı numaralı 1v1/2v2 odaları aynı fiziksel haritayı kullanır.
+  ortak-oda-numaralari: true
   skor-tahtasi-guncelleme-tik: 40
   yeniden-dogma-koruma-saniye: 3
 spawns: {}

@@ -3,7 +3,7 @@ package tr.kasaba.arena.api;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-/** Main-thread service implemented by the future currency plugin, registered with Bukkit ServicesManager. */
+/** Main-thread service implemented by the currency plugin, registered with Bukkit ServicesManager. */
 public interface ArenaEconomy {
     BigDecimal balance(UUID player);
 
