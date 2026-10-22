@@ -1,12 +1,23 @@
-# KasabaArena 1.2.0
+# KasabaArena 1.2.1
 
 Paper **1.21.10 / Java 21**. KasabaHub ve onun kullandığı KasabaAuth gerekir.
 
-[JAR'ı indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-1.2.0.jar) · [Kurulum ZIP'i](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-Kurulum.zip)
+[JAR'ı indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-1.2.1.jar) · [Kurulum ZIP'i](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaArena-Kurulum.zip)
 
 ## Güncelleme
 
-Sunucuyu durdur, eski KasabaArena JAR'ını `plugins` dışına çıkar ve 1.2.0 JAR'ını koy. `plugins/KasabaArena` klasörünü koru. Tam yeniden başlatma yap. Eski lobi, X Arena noktaları, kit ve öldürmeler korunur. Eski kırmızı/mavi başlangıçlar **1v1 oda 1** olarak aktarılır. Eski VIP kiti artık kullanılmaz; VIP sekmesi ve izni kaldırıldı.
+Sunucuyu durdur, eski KasabaArena JAR'ını `plugins` dışına çıkar ve 1.2.1 JAR'ını koy. `plugins/KasabaArena` klasörünü koru. Tam yeniden başlatma yap. Eski lobi, X Arena noktaları, kit ve öldürmeler korunur. Eski kırmızı/mavi başlangıçlar **1v1 oda 1** olarak aktarılır. Eski VIP kiti artık kullanılmaz; VIP sekmesi ve izni kaldırıldı.
+
+## 1.2.1: ıskalanabilen yetenekler
+
+**Hedef oyuncu olmadan da dört yeteneğin tamamı kullanılabilir.** Boşa atılan beceri de kendi bekleme süresini ve kısa ortak kullanım arasını harcar. Eşya kutuları 1–4, kılıç 5 olarak kalır; istediğin beceriyi seçebilirsin.
+
+- Ağır Darbe, Kalkan Darbesi ve İnfaz nişan alınan dar çizgide 0,3–0,4 saniye hazırlıktan sonra vurur. Rakip yana kaçarsa ıskalar. Yön, kullanım anında sabitlenir; otomatik hedef takibi yoktur.
+- Büyücünün Alev Küresi, Şifacının Işık Oku ve Zehirli Bıçak baktığın yöne ilerler. Rakip kaçabilir; duvar saldırıyı durdurur. Zehir yalnızca bıçak isabet ederse işler. Okçunun okları da fiziksel ok olarak ıskalanabilir.
+- Ok Yağmuru ve Meteor, baktığın **zemin noktasına** atılır. İstediğin yeri hedeflemek için zemine doğru nişan al. Uyarı halkası görülür; ok yağmuru 0,8 sn, meteor 1 sn sonra düşer. Hedef alan oyuncuyu takip etmez.
+- Yakın alan saldırıları 0,5–0,8 sn önce halka/ses uyarısı verir ve kullanım yerinde kalır; rakip halkadan çıkabilir. Duvar arkasına hasar geçmez.
+- Hareket ve kendine destek becerileri de oyuncu aramaz. Işın Adımı duvara/güvensiz yere atılırsa bekleme süresi harcanır; duvarın içinden geçirmez.
+- Karakter değiştirme, ölme veya X Arena'dan çıkma; bekleyen saldırıları ve uçan becerileri iptal eder. 1v1/2v2'ye yetenek taşınmaz. Hasar dengesi, güçlü zırhlar, market ve Akçe sistemi korunur.
 
 ## Önce lobi ve X Arena
 

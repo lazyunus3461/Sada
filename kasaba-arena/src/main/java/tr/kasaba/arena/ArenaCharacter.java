@@ -22,16 +22,16 @@ public enum ArenaCharacter {
         new Skill("Sarsıntı", "5 blok çevreye 1,5 kalp hasar ve yavaşlatma", 22, 6))),
     ARCHER("Okçu", 0.75, 0.0, List.of(
         new Skill("Güçlü Ok", "İsabet eden ok 1,8 kalp hasar verir", 10, 6),
-        new Skill("Ok Yağmuru", "Hedef alana üç dalgada toplam 1,8 kalp hasar", 14, 6),
+        new Skill("Ok Yağmuru", "Nişan aldığın sabit alana uyarıdan sonra üç dalga; 1,8 kalp", 14, 6),
         new Skill("Geri Sıçrayış", "Geriye sıçrama ve 2 saniye hız", 10, 6),
         new Skill("Avcı Oku", "İsabet eden ok 2,4 kalp hasar verir", 20, 6))),
     MAGE("Büyücü", 0.75, 0.0, List.of(
-        new Skill("Alev Küresi", "Görüşündeki rakibe 1,35 kalp hasar", 10, 6),
+        new Skill("Alev Küresi", "Nişan aldığın yöne ilerleyen, ıskalanabilen alev; 1,35 kalp", 10, 6),
         new Skill("Buz Çemberi", "5 blok çevreye 0,9 kalp hasar ve yavaşlatma", 12, 6),
         new Skill("Işın Adımı", "Önündeki güvenli noktaya en fazla 5 blok ışınlan", 16, 6),
-        new Skill("Meteor", "Hedef alana kısa gecikmeyle 2,1 kalp hasar", 22, 6))),
+        new Skill("Meteor", "Nişan aldığın sabit alana 1 sn sonra 2,1 kalp hasar", 22, 6))),
     HEALER("Şifacı", 0.75, 0.0, List.of(
-        new Skill("Işık Oku", "Görüşündeki rakibe 1,05 kalp hasar", 10, 6),
+        new Skill("Işık Oku", "Nişan aldığın yöne ilerleyen, ıskalanabilen ışık; 1,05 kalp", 10, 6),
         new Skill("Şifa", "Kendini 2 kalp iyileştir", 16, 6),
         new Skill("Koruyucu Işık", "3 saniye boyunca gelen hasarı yarıya indirir", 18, 6),
         new Skill("Yaşam Dalgası", "1,5 kalp iyileşme; çevredeki rakiplere 1,2 kalp hasar", 24, 6)));

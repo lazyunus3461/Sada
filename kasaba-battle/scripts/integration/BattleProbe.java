@@ -1,0 +1,48 @@
+package tr.kasaba.test;
+import com.google.gson.Gson;
+import org.bukkit.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.block.*;
+import org.bukkit.event.player.*;
+import org.bukkit.inventory.*;
+import org.bukkit.plugin.java.JavaPlugin;
+import java.lang.reflect.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+/** Loopback-only fixture; excluded from the production JAR/installation. */
+public final class BattleProbe extends JavaPlugin implements org.bukkit.event.Listener {
+ private JavaPlugin game;private final Gson gson=new Gson();
+ public void onEnable(){if(!Bukkit.getIp().equals("127.0.0.1"))throw new IllegalStateException("Loopback only");Bukkit.getPluginManager().registerEvents(this,this);game=(JavaPlugin)Bukkit.getPluginManager().getPlugin("BattleRoyalePrototype");Bukkit.getMessenger().registerIncomingPluginChannel(this,"kasaba_test:battle",(channel,p,bytes)->{if(bytes.length>1024||p.getAddress()==null||!p.getAddress().getAddress().isLoopbackAddress())return;String op=new String(bytes,StandardCharsets.UTF_8);try{String[] a=op.split("\\|");switch(a[0]){
+ case "CMD"->{String cmd=op.substring(4);if(!cmd.startsWith("br")&&!cmd.startsWith("grup")&&!cmd.startsWith("oyunlar")&&!cmd.equals("lobi"))throw new IllegalArgumentException("Forbidden command");Bukkit.dispatchCommand(p,cmd);}
+ case "ADMIN"->p.setOp(true);
+ case "USER"->p.setOp(false);
+ case "STATE"->state(p);
+ case "ITEM"->p.getInventory().setItem(0,new ItemStack(Material.valueOf(a[1]),Integer.parseInt(a[2])));
+ case "MODE"->p.setGameMode(GameMode.valueOf(a[1]));
+ case "HEALTH"->{p.setHealth(Double.parseDouble(a[1]));p.setFoodLevel(20);}
+ case "POSE"->call(game,"teleport",p,new Location(Bukkit.getWorld(a[1]),Double.parseDouble(a[2]),Double.parseDouble(a[3]),Double.parseDouble(a[4])));
+ case "BREAK"->{BlockBreakEvent e=new BlockBreakEvent(p.getLocation().clone().subtract(0,1,0).getBlock(),p);Bukkit.getPluginManager().callEvent(e);say(p,"break="+e.isCancelled());}
+ case "PLACE"->{var b=p.getLocation().getBlock();BlockPlaceEvent e=new BlockPlaceEvent(b,b.getState(),b.getRelative(0,-1,0),new ItemStack(Material.STONE),p,true,EquipmentSlot.HAND);Bukkit.getPluginManager().callEvent(e);say(p,"place="+e.isCancelled());}
+ case "HIT"->{Player target=Bukkit.getPlayerExact(a[1]);target.setNoDamageTicks(0);target.damage(Double.parseDouble(a[2]),p);}
+ case "ARROW"->{Player target=Bukkit.getPlayerExact(a[1]);Arrow arrow=p.launchProjectile(Arrow.class);target.setNoDamageTicks(0);target.damage(Double.parseDouble(a[2]),org.bukkit.damage.DamageSource.builder(org.bukkit.damage.DamageType.ARROW).withCausingEntity(p).withDirectEntity(arrow).build());arrow.remove();}
+ case "BOXES"->boxes(p);
+ case "OPEN"->{Object room=room(p);Map<?,?> chests=(Map<?,?>)field(room,"chests");Object box=chests.values().stream().filter(b->{try{return field(b,"rare").equals(Boolean.parseBoolean(a[1]));}catch(Exception e){throw new RuntimeException(e);}}).findFirst().orElseThrow();Location l=(Location)field(box,"location");Object arenas=field(game,"arenas");for(int[] v:new int[][]{{1,0},{-1,0},{0,1},{0,-1}}){Location beside=l.clone().add(v[0],0,v[1]);if((boolean)call(arenas,"safe",beside)){call(game,"teleport",p,beside);break;}}PlayerInteractEvent e=new PlayerInteractEvent(p,org.bukkit.event.block.Action.RIGHT_CLICK_BLOCK,new ItemStack(Material.AIR),l.getBlock(),org.bukkit.block.BlockFace.UP,EquipmentSlot.HAND);Bukkit.getPluginManager().callEvent(e);say(p,"open="+p.getOpenInventory().getTitle());}
+ case "TAKE"->{Inventory inv=p.getOpenInventory().getTopInventory();for(int slot=0;slot<inv.getSize();slot++)if(inv.getItem(slot)!=null){p.getInventory().setItem(0,inv.getItem(slot));inv.setItem(slot,null);break;}p.closeInventory();}
+ case "COOKIE"->{Object loot=field(game,"loot");p.getInventory().setItem(0,(ItemStack)call(loot,"healing",3));p.getInventory().setHeldItemSlot(0);((Map<?,?>)field(game,"heals")).clear();p.setFoodLevel(20);}
+ case "CFG"->{String k=a[1];if(!Set.of("geri-sayim-saniye","minimum.solo","minimum.ikili","minimum.dortlu").contains(k))throw new IllegalArgumentException("Bad key");game.getConfig().set(k,Integer.parseInt(a[2]));}
+ case "ZONE"->{Object room=room(p);set(room,"elapsed",Integer.parseInt(a[1]));}
+ case "SAMPLE"->sample(p);
+ default->throw new IllegalArgumentException("Unknown op");}say(p,"done:"+op);}catch(Throwable e){say(p,"error:"+e);getLogger().log(java.util.logging.Level.SEVERE,"Probe failed",e);}});}
+ private Object field(Object o,String name)throws Exception{Field f=o.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(o);}
+ private void set(Object o,String name,Object value)throws Exception{Field f=o.getClass().getDeclaredField(name);f.setAccessible(true);f.set(o,value);}
+ private Object call(Object o,String name,Object... args)throws Exception{Method m=Arrays.stream(o.getClass().getDeclaredMethods()).filter(x->x.getName().equals(name)&&x.getParameterCount()==args.length).findFirst().orElseThrow();m.setAccessible(true);return m.invoke(o,args);}
+ private Object room(Player p)throws Exception{return call(game,"room",p);}
+ private Map<String,Object> describe(Object r)throws Exception{Map<String,Object>d=new LinkedHashMap<>();for(String k:List.of("id","stage","mode","countdown","elapsed","epoch")){Object v=field(r,k);d.put(k,v instanceof Enum<?>||v instanceof UUID?String.valueOf(v):v);}d.put("players",((Set<?>)field(r,"players")).size());d.put("chests",((Map<?,?>)field(r,"chests")).size());d.put("teams",field(r,"teams"));long rare=0;for(Object box:((Map<?,?>)field(r,"chests")).values())if((boolean)field(box,"rare"))rare++;d.put("rare",rare);return d;}
+ private void state(Player p)throws Exception{Map<String,Object>d=new LinkedHashMap<>();d.put("uuid",p.getUniqueId().toString());d.put("world",p.getWorld().getName());d.put("mode",p.getGameMode().name());d.put("hp",p.getHealth());d.put("effects",p.getActivePotionEffects().toString());d.put("naturalHealing",game.getConfig().getBoolean("dogal-can-yenileme",false));d.put("healHearts",game.getConfig().getDouble("sifa-kalp",2));d.put("flight",p.getAllowFlight());d.put("x",p.getX());d.put("y",p.getY());d.put("z",p.getZ());d.put("title",p.getOpenInventory().getTitle());d.put("items",Arrays.stream(p.getInventory().getContents()).filter(Objects::nonNull).map(i->i.getType()+":"+i.getAmount()).toList());d.put("compass",Arrays.stream(p.getInventory().getContents()).filter(Objects::nonNull).filter(i->i.hasItemMeta()&&i.getItemMeta().getPersistentDataContainer().has(new NamespacedKey(game,"br-pusula"))).count());d.put("border",p.getWorld().getWorldBorder().getSize());d.put("session",((Map<?,?>)field(game,"sessions")).containsKey(p.getUniqueId()));Object room=room(p);if(room!=null)d.put("room",describe(room));List<Map<String,Object>> rooms=new ArrayList<>();for(Object r:((Map<?,?>)field(game,"rooms")).values())rooms.add(describe(r));d.put("rooms",rooms);say(p,"state:"+gson.toJson(d));}
+ private void boxes(Player p)throws Exception{List<Map<String,Object>> out=new ArrayList<>();for(Object box:((Map<?,?>)field(room(p),"chests")).values()){Location l=(Location)field(box,"location");Inventory inv=(Inventory)field(box,"inventory");Map<String,Object>d=new LinkedHashMap<>();d.put("pos",List.of(l.getBlockX(),l.getBlockY(),l.getBlockZ()));d.put("block",l.getBlock().getType().name());d.put("rare",field(box,"rare"));d.put("items",Arrays.stream(inv.getContents()).filter(Objects::nonNull).map(i->i.getType()+":"+i.getAmount()+":"+i.getEnchantments()).toList());out.add(d);}say(p,"boxes:"+gson.toJson(out));}
+ @SuppressWarnings("unchecked") private void sample(Player p)throws Exception{Object loot=field(game,"loot");Map<String,Integer>normal=new TreeMap<>(),rare=new TreeMap<>();int bows=0;for(boolean isRare:List.of(false,true))for(int i=0;i<2000;i++){List<ItemStack> items=(List<ItemStack>)call(loot,"roll",new Random(i),isRare,6);boolean ranged=items.stream().anyMatch(s->s.getType()==Material.BOW||s.getType()==Material.CROSSBOW);if(ranged){bows++;if(items.stream().noneMatch(s->s.getType()==Material.ARROW&&s.getAmount()>=8))throw new IllegalStateException("Missing matching arrows");}for(ItemStack item:items){if(item.getType()==Material.BLAZE_ROD||item.getType()==Material.IRON_NUGGET)throw new IllegalStateException("Old gun/ammo");(isRare?rare:normal).merge(item.getType().name(),1,Integer::sum);}}say(p,"sample:"+gson.toJson(Map.of("normal",normal,"rare",rare,"rangedBoxes",bows)));}
+ @org.bukkit.event.EventHandler(priority=org.bukkit.event.EventPriority.MONITOR) public void regain(org.bukkit.event.entity.EntityRegainHealthEvent e){if(e.getEntity() instanceof Player p)getLogger().info("REGAIN "+p.getName()+" hp="+p.getHealth()+" amount="+e.getAmount()+" reason="+e.getRegainReason()+" cancelled="+e.isCancelled());}
+ @org.bukkit.event.EventHandler(priority=org.bukkit.event.EventPriority.MONITOR) public void consume(PlayerItemConsumeEvent e){getLogger().info("CONSUME "+e.getPlayer().getName()+" hp="+e.getPlayer().getHealth()+" item="+e.getItem().getType()+" cancelled="+e.isCancelled());}
+ private void say(Player p,String text){p.sendMessage(net.kyori.adventure.text.Component.text("battle-probe:"+text));}
+}

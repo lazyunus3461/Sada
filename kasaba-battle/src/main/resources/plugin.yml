@@ -1,0 +1,17 @@
+name: BattleRoyalePrototype
+version: 1.0.0
+main: tr.kasaba.battle.KasabaBattleRoyale
+api-version: '1.21.10'
+softdepend: [KasabaAuth, KasabaHub, Multiverse-Core]
+author: Kasaba
+description: Üç bağımsız maç, büyülü ganimet ve korunan Battle Royale lobisi.
+commands:
+  br:
+    description: Battle Royale menüsü ve Türkçe yönetim komutları.
+    aliases: [battle, battleroyale]
+    usage: /br yardım
+permissions:
+  br.admin:
+    default: op
+  br.kullan:
+    default: true

@@ -1,0 +1,23 @@
+# Dünya/alan/iniş/sandık konumları arenalar.yml içinde korunur.
+# Eski 0.3.1 config.yml korunur; yeni anahtarlar yoksa bu varsayılanlar kullanılır.
+oyuncu-siniri: 20
+geri-sayim-saniye: 20
+minimum:
+  solo: 10
+  ikili: 10
+  dortlu: 10
+inis-yuksekligi: 60
+alan-bekleme-saniye: 180
+alan-daralma-saniye: 600
+son-yaricap: 8
+alan-hasari: 2.0
+azami-mac-saniye: 1200
+sifa-kalp: 2.0
+sifa-bekleme-saniye: 10
+sandik-esya-alt-siniri: 4
+sandik-esya-ust-siniri: 7
+asgari-sandik: 12
+oyuncu-basina-sandik: 1.5
+nadir-sandik-orani: 0.15
+# Şifa ve altın elma stratejik kalsın; yalnızca BR maçındaki doğal tokluk/barışçıl yenilemesi.
+dogal-can-yenileme: false

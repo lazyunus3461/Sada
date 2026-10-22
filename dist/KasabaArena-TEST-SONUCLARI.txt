@@ -1,44 +1,37 @@
-KasabaArena 1.2.0 + KasabaAkce 1.0.0 doğrulama
-Paper 1.21.10 build 130, Java 21, yalnızca 127.0.0.1:25575 test sunucusu.
+Kasaba Arena 1.2.1
+23 Ekim 2026 — Paper 1.21.10 build 130 / Java 21
+Yerel, yalnızca 127.0.0.1 test sunucusu. Auth 1.3.0, Hub 1.2.0, Roles 1.2.0, Arena 1.2.1 ve Akçe 1.0.0 birlikte kullanıldı. Probe JAR dosyaları dağıtımda yoktur.
 
-Derleme: Arena Maven package başarılı. Akçe Maven verify başarılı.
-Akçe birim testleri: 7 test, 0 hata, 0 başarısızlık.
-- Transferin iki tarafı ve çevrimdışı isimler kalıcıdır.
-- Market kesintisi yeniden açılma sonrasında da idempotenttir.
-- Yetersiz bakiye sonucu tekrar denemede sonradan para kesmez.
-- Geçersiz/sıfır/negatif transfer ve kendine gönderme reddedilir.
-- Disk yazma hatasında iki bakiye de korunur.
-- Bozuk veri dosyası üzerine yazılmaz.
-- Eşzamanlı çekimler eksi bakiye veya kayıp güncelleme oluşturmaz.
+PASS independent skill hotbar 1-4, sword 5, archer bow 6 and stronger enchanted armor
+PASS skill 4 works before 1, independent cooldowns, reduced real projectile and melee damage
+PASS archer four skills and armor-adjusted rain damage
+PASS warrior four-skill combo leaves 4.375 hearts instead of an immediate kill
+PASS tank four skills, netherite mitigation, shield and two-heart heal
+PASS assassin four skills and no buffs or skills escaping X Arena
+PASS mage flame, frost, delayed meteor and safe blink
+PASS healer damage/heal/shield/wave and gradual out-of-combat recovery
+PASS simultaneous 1v1 and 2v2 automatically use different shared physical maps
+PASS all five shared maps lock across modes and private rooms, full lobby rejection and release on leave
+PASS private code joins reserved 1v1 and public admission skips it
+PASS three rounds end 2-1 and return both players to safe Arena lobby
+PASS five shared protection regions, multiple named regions per arena, listing/deletion and outside-world building
+PASS real Akce Turkish commands, decimal transfer, conservation, self/negative/overdraft rejection and admin permissions
+PASS interrupted pending purchase retries exactly once and restores the real Akce provider
+PASS native purchase confirmation debits real Akce for a three-day sword and ten apples
+PASS market stock never overlaps skill slots, apples deplete, rentals expire and no X inventory enters duels or Hub
+PASS ALL ARENA 1.2.1 AND AKCE REGRESSIONS
 
-Gerçek Paper üzerinde altı Minecraft protokol istemcisiyle geçen senaryolar:
-- Beceriler 1-4, yakın dövüş silahı 5, Okçu yayı 6. yuvada.
-- Koruma II elmas/netherit zırh teslim edilir.
-- Beceri 4 ilk kullanılabilir; beceri 1 ayrıca kullanılabilir; beklemeler bağımsızdır.
-- Gerçek ok çarpması ve zırh uygulanmış azaltılmış hasar ölçülür.
-- Savaşçı, Suikastçı, Tank, Okçu, Büyücü ve Şifacı'nın dört becerisi çalışır.
-- Büyücü güvenli sıçraması, Meteor gecikmesi; Şifacı şifa/kalkan/dalga doğrulanır.
-- Dövüş dışında kontrollü can yenilenmesi çalışır.
-- 1v1 ve 2v2 aynı fiziksel numaraya eşzamanlı atanmaz.
-- Beş alan özel kodlu odalarla doluyken 2v2 girişi lobide kalır.
-- Alan boşalınca diğer tür tarafından kullanılabilir.
-- Özel kod ve herkese açık oda girişleri birbirine karışmaz.
-- Üç rauntta 2-1 sonuç ve güvenli lobiye dönüş doğrulanır.
-- Beş ortak koruma alanı ve aynı arenaya ayrı isimli ek korumalar kaydedilir.
-- Koruma içinde dış oyuncunun blok kırma/koyması iptal; dışarıda normal yapı serbesttir.
-- Akçe gönderme, iki ondalık basamak, para korunumu ve yönetici izni kontrol edilir.
-- Tekrarlanan bekleyen market ödemesi bir kez kesilir.
-- Yerleşik onay sayfasından gerçek Akçe ile üç günlük kılıç/on elma satın alınır.
-- Market eşyaları beceri yuvalarına yazılmaz; elma adedi ölümde/yeniden girişte yenilenmez.
-- Kiralık eşya süresi dolunca kaldırılır; X eşyaları 1v1/2v2/Hub'a taşınmaz.
-
-Tam durdur/aç sonrası:
-- Gerçek Akçe bakiyeleri, beş koruma, satın alınan kalan 9 elma korunur.
-- Gerçek istemci komut paketiyle /akçe çalışır.
-- Farklı numaralı odaların kesişen bölgeleri de alanı kilitler.
-- Normal maç kitine Hub menü pusulası kaydedilmez.
-- X oyuncusu fiziksel olarak güvenli lobiye girse bile hasar veremez/alamaz.
-
-Üretim JAR/ZIP dosyalarında test yardımcıları, test dünyası, hesaplar veya sahte banka yoktur.
-Grafik Minecraft istemcisinde görsel inceleme yapıldığı iddia edilmez; gerçek Paper olayları,
-oyuncu konumları/envanterleri, hasar ve native dialog protokolü kontrol edilmiştir.
+PASS savaşçı: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS suikastçı: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS tank: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS okçu: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS büyücü: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS şifacı: all four skills cast into empty space, spend cooldown and cannot be recast immediately
+PASS travelling fireball can be dodged after casting; no homing or guaranteed damage
+PASS telegraphed meteor lands at the fixed aimed ground point; leaving its circle avoids damage
+PASS an accurately aimed travelling fireball still deals balanced 1.35-heart damage
+PASS leaving X Arena cancels a pending projectile before impact
+PASS narrow delayed melee strike can be sidestepped
+PASS solid walls stop travelling spells
+PASS warning circle matches the damage radius; diagonal players outside it are safe
+PASS ALL X ARENA MISS / COOLDOWN / DODGE REGRESSIONS

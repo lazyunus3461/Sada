@@ -16,6 +16,7 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Consumer;
 
 /** Owns only X Arena combat. No modifiers, effects, projectiles or skill items enter duels. */
 final class XCombat implements Listener {
@@ -86,6 +87,8 @@ final class XCombat implements Listener {
         UUID id=p.getUniqueId();int index=number-1;long now=System.currentTimeMillis();long[] ready=cooldowns.computeIfAbsent(id,k->new long[4]);ArenaCharacter kind=character.apply(p);ArenaCharacter.Skill skill=kind.skills.get(index);
         long available=Math.max(ready[index],sharedUntil.getOrDefault(id,0L));
         if(available>now)throw new IllegalArgumentException(skill.name()+" için "+((available-now+999)/1000)+" saniye bekle.");
+        // Every accepted cast spends its cooldown, including a miss or blocked movement.
+        ready[index]=now+skill.cooldownSeconds()*1000L;sharedUntil.put(id,now+skill.recoveryTicks()*50L);lastCombat.put(id,now);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • "+skill.cooldownSeconds()+" sn bekleme");
         switch(kind) {
             case WARRIOR -> warrior(p,number);
             case ASSASSIN -> assassin(p,number);
@@ -94,48 +97,53 @@ final class XCombat implements Listener {
             case MAGE -> mage(p,number);
             case HEALER -> healer(p,number);
         }
-        ready[index]=now+skill.cooldownSeconds()*1000L;sharedUntil.put(id,now+skill.recoveryTicks()*50L);lastCombat.put(id,now);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • "+skill.cooldownSeconds()+" sn bekleme");
     }
     private void warrior(Player p,int skill){switch(skill){
-        case 1->{Player target=target(p,4.5);hit(p,target,6);knock(p,target,0.35);}
-        case 2->{List<Player> targets=around(p,p.getLocation(),4);requireTargets(targets);for(Player target:targets)hit(p,target,4);p.getWorld().spawnParticle(Particle.SWEEP_ATTACK,p.getLocation().add(0,1,0),12,2,0.4,2,0);}
+        case 1->strike(p,4.5,6,target->{hit(p,target,6);knock(p,target,0.35);});
+        case 2->{Location center=p.getLocation().clone();warning(center,4,Particle.SWEEP_ATTACK);later(p,10,()->{for(Player target:around(p,center,4))hit(p,target,4);burst(center,Particle.SWEEP_ATTACK);});}
         case 3->{warCry.put(p.getUniqueId(),System.currentTimeMillis()+5000);effect(p,PotionEffectType.GLOWING,100,0);}
-        case 4->{List<Player> targets=around(p,p.getLocation(),5);requireTargets(targets);for(Player target:targets){hit(p,target,7);effect(target,PotionEffectType.SLOWNESS,40,1);knock(p,target,0.55);}p.getWorld().spawnParticle(Particle.EXPLOSION,p.getLocation().add(0,0.5,0),8,2,0,2,0);}
+        case 4->{Location center=p.getLocation().clone();warning(center,5,Particle.FLAME);later(p,16,()->{for(Player target:around(p,center,5)){hit(p,target,7);effect(target,PotionEffectType.SLOWNESS,40,1);knock(p,target,0.55);}burst(center,Particle.EXPLOSION);});}
     }}
     private void assassin(Player p,int skill){switch(skill){
-        case 1->{Vector direction=p.getLocation().getDirection().setY(0).normalize();p.setVelocity(direction.multiply(1.35).setY(0.2));effect(p,PotionEffectType.SPEED,35,1);later(p,4,()->{List<Player> targets=around(p,p.getLocation(),3);if(!targets.isEmpty())hit(p,targets.getFirst(),4);});}
-        case 2->{Player target=target(p,8);UUID victim=target.getUniqueId();int life=lives.getOrDefault(victim,0);hit(p,target,2);for(int pulse=1;pulse<=3;pulse++)later(p,pulse*20L,()->{if(alive(victim,life))hit(p,target,1);});}
-        case 3->{effect(p,PotionEffectType.INVISIBILITY,60,0);effect(p,PotionEffectType.SPEED,60,1);p.getWorld().spawnParticle(Particle.CAMPFIRE_COSY_SMOKE,p.getLocation().add(0,1,0),18,0.7,0.6,0.7,0.01);}
-        case 4->{Player target=target(p,4);hit(p,target,target.getHealth()<8?8:6);}
+        case 1->{Vector direction=p.getLocation().getDirection().setY(0);if(direction.lengthSquared()>0.01)p.setVelocity(direction.normalize().multiply(1.35).setY(0.2));effect(p,PotionEffectType.SPEED,35,1);strike(p,4.5,4,target->hit(p,target,4));}
+        case 2->bolt(p,8,0.8,Particle.CRIT,target->{UUID victim=target.getUniqueId();int life=lives.getOrDefault(victim,0);hit(p,target,2);for(int pulse=1;pulse<=3;pulse++)later(p,pulse*20L,()->{if(alive(victim,life))hit(p,target,1);});});
+        case 3->{effect(p,PotionEffectType.INVISIBILITY,60,0);effect(p,PotionEffectType.SPEED,60,1);burst(p.getLocation(),Particle.CAMPFIRE_COSY_SMOKE);}
+        case 4->strike(p,4,8,target->hit(p,target,target.getHealth()<8?8:6));
     }}
     private void tank(Player p,int skill){switch(skill){
         case 1->{shields.put(p.getUniqueId(),System.currentTimeMillis()+3000);effect(p,PotionEffectType.GLOWING,60,0);}
-        case 2->{Player target=target(p,4);hit(p,target,4);knock(p,target,1.1);effect(target,PotionEffectType.SLOWNESS,30,1);}
-        case 3->{heal(p,4);p.getWorld().spawnParticle(Particle.HEART,p.getLocation().add(0,1.7,0),6,0.5,0.4,0.5,0);}
-        case 4->{List<Player> targets=around(p,p.getLocation(),5);requireTargets(targets);for(Player target:targets){hit(p,target,5);effect(target,PotionEffectType.SLOWNESS,60,1);}p.getWorld().spawnParticle(Particle.EXPLOSION,p.getLocation(),8,2,0.2,2,0);}
+        case 2->strike(p,4,8,target->{hit(p,target,4);knock(p,target,1.1);effect(target,PotionEffectType.SLOWNESS,30,1);});
+        case 3->{heal(p,4);burst(p.getLocation(),Particle.HEART);}
+        case 4->{Location center=p.getLocation().clone();warning(center,5,Particle.CRIT);later(p,16,()->{for(Player target:around(p,center,5)){hit(p,target,5);effect(target,PotionEffectType.SLOWNESS,60,1);}burst(center,Particle.EXPLOSION);});}
     }}
     private void archer(Player p,int skill){switch(skill){
         case 1->shoot(p,6,2.6);
-        case 2->{Player target=target(p,18);Location center=target.getLocation().clone();for(int pulse=0;pulse<3;pulse++)later(p,pulse*12L,()->{p.getWorld().spawnParticle(Particle.CRIT,center.clone().add(0,2,0),30,2.5,1,2.5,0.15);for(Player victim:around(p,center,3))hit(p,victim,2);});}
-        case 3->{p.setVelocity(p.getLocation().getDirection().setY(0).normalize().multiply(-1.2).setY(0.4));effect(p,PotionEffectType.SPEED,40,1);}
+        case 2->{Location center=aim(p,18);warning(center,3,Particle.CRIT);for(int pulse=0;pulse<3;pulse++)later(p,16+pulse*12L,()->{burst(center,Particle.CRIT);for(Player victim:around(p,center,3))hit(p,victim,2);});}
+        case 3->{Vector direction=p.getLocation().getDirection().setY(0);if(direction.lengthSquared()>0.01)p.setVelocity(direction.normalize().multiply(-1.2).setY(0.4));effect(p,PotionEffectType.SPEED,40,1);}
         case 4->shoot(p,8,3.2);
     }}
     private void mage(Player p,int skill){switch(skill){
-        case 1->{Player target=target(p,16);hit(p,target,4.5);p.getWorld().spawnParticle(Particle.FLAME,target.getLocation().add(0,1,0),20,0.4,0.5,0.4,0.01);}
-        case 2->{List<Player> targets=around(p,p.getLocation(),5);requireTargets(targets);for(Player target:targets){hit(p,target,3);effect(target,PotionEffectType.SLOWNESS,40,1);}p.getWorld().spawnParticle(Particle.SNOWFLAKE,p.getLocation().add(0,1,0),50,3,0.4,3,0.01);}
+        case 1->bolt(p,16,0.8,Particle.FLAME,target->hit(p,target,4.5));
+        case 2->{Location center=p.getLocation().clone();warning(center,5,Particle.SNOWFLAKE);later(p,12,()->{for(Player target:around(p,center,5)){hit(p,target,3);effect(target,PotionEffectType.SLOWNESS,40,1);}burst(center,Particle.SNOWFLAKE);});}
         case 3->blink(p);
-        case 4->{Location center=target(p,18).getLocation().clone();p.getWorld().spawnParticle(Particle.FLAME,center.clone().add(0,3,0),30,1,1,1,0.02);later(p,16,()->{p.getWorld().spawnParticle(Particle.EXPLOSION,center.clone().add(0,1,0),6,1.5,0.5,1.5,0);for(Player target:around(p,center,3.5))hit(p,target,7);});}
+        case 4->{Location center=aim(p,18);warning(center,3.5,Particle.FLAME);later(p,20,()->{burst(center,Particle.EXPLOSION);for(Player target:around(p,center,3.5))hit(p,target,7);});}
     }}
     private void healer(Player p,int skill){switch(skill){
-        case 1->{Player target=target(p,12);hit(p,target,3.5);p.getWorld().spawnParticle(Particle.END_ROD,target.getLocation().add(0,1,0),15,0.3,0.6,0.3,0.01);}
-        case 2->{heal(p,4);p.getWorld().spawnParticle(Particle.HEART,p.getLocation().add(0,1.5,0),8,0.5,0.5,0.5,0);}
+        case 1->bolt(p,12,0.8,Particle.END_ROD,target->hit(p,target,3.5));
+        case 2->{heal(p,4);burst(p.getLocation(),Particle.HEART);}
         case 3->{shields.put(p.getUniqueId(),System.currentTimeMillis()+3000);effect(p,PotionEffectType.GLOWING,60,0);}
-        case 4->{heal(p,3);for(Player target:around(p,p.getLocation(),5))hit(p,target,4);p.getWorld().spawnParticle(Particle.HAPPY_VILLAGER,p.getLocation().add(0,1,0),40,3,0.4,3,0.01);}
+        case 4->{Location center=p.getLocation().clone();heal(p,3);warning(center,5,Particle.HAPPY_VILLAGER);later(p,12,()->{for(Player target:around(p,center,5))hit(p,target,4);burst(center,Particle.HAPPY_VILLAGER);});}
     }}
-    private void blink(Player p){Location origin=p.getLocation(),safe=null;Vector direction=origin.getDirection().setY(0);if(direction.lengthSquared()<0.01)throw new IllegalArgumentException("İleriye bakarak kullan.");direction.normalize();for(double distance=0.5;distance<=5;distance+=0.5){Location at=origin.clone().add(direction.clone().multiply(distance));if(!at.getBlock().isPassable()||!at.clone().add(0,1,0).getBlock().isPassable()||!at.getWorld().getWorldBorder().isInside(at))break;if(at.clone().subtract(0,1,0).getBlock().getType().isSolid())safe=at;}if(safe==null||safe.distanceSquared(origin)<1)throw new IllegalArgumentException("Önünde güvenli ışınlanma noktası yok.");if(!p.teleport(safe,org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN))throw new IllegalArgumentException("Işınlanma engellendi.");p.setFallDistance(0);}
-    private void requireTargets(List<Player> targets){if(targets.isEmpty())throw new IllegalArgumentException("Bu yeteneğin menzilinde rakip yok.");}
-    private Player target(Player p,double range){return around(p,p.getLocation(),range).stream().filter(other->{Vector delta=other.getEyeLocation().toVector().subtract(p.getEyeLocation().toVector());return delta.lengthSquared()<0.01||delta.normalize().dot(p.getEyeLocation().getDirection())>0.45;}).findFirst().orElseThrow(()->new IllegalArgumentException("Önünde, görüş alanında bir rakip olmalı."));}
-    private List<Player> around(Player p,Location center,double radius){return center.getWorld().getNearbyPlayers(center,radius).stream().filter(other->other!=p&&active(other)&&p.hasLineOfSight(other)).sorted(Comparator.comparingDouble(other->other.getLocation().distanceSquared(center))).toList();}
+    /** Fixed aim, narrow collision and a visible wind-up; no player is locked as a target. */
+    private void strike(Player p,double range,int windup,Consumer<Player> impact){Location origin=p.getEyeLocation().clone();Vector direction=origin.getDirection().normalize();for(double d=0.5;d<=range;d+=0.5)origin.getWorld().spawnParticle(Particle.CRIT,origin.clone().add(direction.clone().multiply(d)),1,0,0,0,0);later(p,windup,()->{var ray=origin.getWorld().rayTrace(origin,direction,range,FluidCollisionMode.NEVER,true,0.35,entity->entity instanceof Player other&&other!=p&&active(other));if(ray!=null&&ray.getHitEntity() instanceof Player target)impact.accept(target);});}
+    /** Travelling, non-homing spell. Blocks stop it and opponents can sidestep it. */
+    private void bolt(Player p,double range,double speed,Particle particle,Consumer<Player> impact){Location origin=p.getEyeLocation().clone();Vector direction=origin.getDirection().normalize();boolean[] done={false};origin.getWorld().spawnParticle(particle,origin,8,0.15,0.15,0.15,0);for(int step=0;step<Math.ceil(range/speed);step++){double distance=step*speed,length=Math.min(speed,range-distance);later(p,6+step,()->{if(done[0])return;Location from=origin.clone().add(direction.clone().multiply(distance));var ray=from.getWorld().rayTrace(from,direction,length,FluidCollisionMode.NEVER,true,0.3,entity->entity instanceof Player other&&other!=p&&active(other));Location visual=ray==null?from.clone().add(direction.clone().multiply(length)):ray.getHitPosition().toLocation(from.getWorld());from.getWorld().spawnParticle(particle,visual,4,0.08,0.08,0.08,0);if(ray!=null){done[0]=true;if(ray.getHitEntity() instanceof Player target)impact.accept(target);}});}}
+    private Location aim(Player p,double range){Location eye=p.getEyeLocation();Vector direction=eye.getDirection().normalize();var hit=eye.getWorld().rayTraceBlocks(eye,direction,range,FluidCollisionMode.NEVER,true);Location center=hit==null?eye.clone().add(direction.multiply(range)):hit.getHitPosition().toLocation(eye.getWorld()).subtract(direction.multiply(0.25));int y=center.getBlockY();for(int dy=2;dy>=-8;dy--){Location floor=new Location(center.getWorld(),center.getX(),y+dy,center.getZ());if(floor.getBlock().getType().isSolid()&&floor.clone().add(0,1,0).getBlock().isPassable()){center.setY(y+dy+1);break;}}return center;}
+    private void warning(Location center,double radius,Particle particle){for(int i=0;i<32;i++){double a=2*Math.PI*i/32;center.getWorld().spawnParticle(particle,center.clone().add(Math.cos(a)*radius,0.2,Math.sin(a)*radius),1,0,0,0,0);}center.getWorld().playSound(center,Sound.BLOCK_NOTE_BLOCK_PLING,0.7f,0.7f);}
+    private void burst(Location center,Particle particle){center.getWorld().spawnParticle(particle,center.clone().add(0,1,0),12,1,0.5,1,0);}
+    private void blink(Player p){Location origin=p.getLocation(),safe=null;Vector direction=origin.getDirection().setY(0);if(direction.lengthSquared()<0.01){tell(p,"Işın Adımı boşa gitti; ileriye bakarak kullan.");return;}direction.normalize();for(double distance=0.5;distance<=5;distance+=0.5){Location at=origin.clone().add(direction.clone().multiply(distance));if(!at.getBlock().isPassable()||!at.clone().add(0,1,0).getBlock().isPassable()||!at.getWorld().getWorldBorder().isInside(at))break;if(at.clone().subtract(0,1,0).getBlock().getType().isSolid())safe=at;}if(safe==null||safe.distanceSquared(origin)<1){tell(p,"Işın Adımı boşa gitti; önünde güvenli nokta yok.");return;}if(!p.teleport(safe,org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN)){tell(p,"Işın Adımı engellendi; bekleme süresi başladı.");return;}p.setFallDistance(0);}
+    private List<Player> around(Player p,Location center,double radius){return center.getWorld().getNearbyPlayers(center,radius).stream().filter(other->other!=p&&active(other)&&other.getLocation().distanceSquared(center)<=radius*radius&&clearSight(center.clone().add(0,1,0),other.getEyeLocation())).sorted(Comparator.comparingDouble(other->other.getLocation().distanceSquared(center))).toList();}
+    private boolean clearSight(Location from,Location to){Vector delta=to.toVector().subtract(from.toVector());double distance=delta.length();return distance<0.01||from.getWorld().rayTraceBlocks(from,delta.normalize(),distance,FluidCollisionMode.NEVER,true)==null;}
     private void knock(Player p,Player target,double amount){if(!active(target))return;Vector delta=target.getLocation().toVector().subtract(p.getLocation().toVector()).setY(0);if(delta.lengthSquared()<0.01)delta=p.getLocation().getDirection().setY(0);target.setVelocity(delta.normalize().multiply(amount).setY(0.25));}
     private void hit(Player source,Player target,double damage){if(!active(source)||!active(target)||source==target)return;UUID id=target.getUniqueId();Intent previous=intents.put(id,new Intent(source.getUniqueId(),damage));try{target.damage(damage,source);}finally{if(previous==null)intents.remove(id);else intents.put(id,previous);}}
     private void shoot(Player p,double damage,double speed){Arrow arrow=p.launchProjectile(Arrow.class,p.getEyeLocation().getDirection().multiply(speed));arrow.setCritical(true);arrow.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);arrow.getPersistentDataContainer().set(arrowDamageKey,PersistentDataType.DOUBLE,damage);track(p,arrow);}

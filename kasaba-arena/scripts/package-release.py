@@ -7,7 +7,7 @@ import zipfile
 root = Path(__file__).resolve().parents[2]
 dist = root / 'dist'
 dist.mkdir(exist_ok=True)
-jars = [('kasaba-arena', 'KasabaArena-1.2.0.jar', '1.2.0'), ('kasaba-akce', 'KasabaAkce-1.0.0.jar', '1.0.0')]
+jars = [('kasaba-arena', 'KasabaArena-1.2.1.jar', '1.2.1'), ('kasaba-akce', 'KasabaAkce-1.0.0.jar', '1.0.0')]
 for module, name, version in jars:
     source = root / module / 'target' / name
     with zipfile.ZipFile(source) as archive:
@@ -27,10 +27,10 @@ with zipfile.ZipFile(dist / 'KasabaArena-Kaynak.zip', 'w', zipfile.ZIP_DEFLATED)
     for path in sorted(source_files):
         archive.write(path, 'Sada/' + path.relative_to(root).as_posix())
 checksums = []
-for name in ('KasabaArena-1.2.0.jar', 'KasabaAkce-1.0.0.jar', 'KasabaArena-Kaynak.zip'):
+for name in ('KasabaArena-1.2.1.jar', 'KasabaAkce-1.0.0.jar', 'KasabaArena-Kaynak.zip'):
     checksums.append(hashlib.sha256((dist / name).read_bytes()).hexdigest() + '  ' + name)
 (dist / 'KasabaArena-SHA256SUMS.txt').write_text('\n'.join(checksums) + '\n', encoding='utf-8')
-contents = ['KasabaArena-1.2.0.jar', 'KasabaAkce-1.0.0.jar', 'KasabaArena-KURULUM.txt', 'KasabaAkce-KURULUM.txt', 'KasabaArena-TEST-SONUCLARI.txt', 'KasabaArena-SHA256SUMS.txt']
+contents = ['KasabaArena-1.2.1.jar', 'KasabaAkce-1.0.0.jar', 'KasabaArena-KURULUM.txt', 'KasabaAkce-KURULUM.txt', 'KasabaArena-TEST-SONUCLARI.txt', 'KasabaArena-SHA256SUMS.txt']
 for name in ('KasabaArena-Kurulum.zip', 'KasabaArena-Akce-Kurulum.zip'):
     with zipfile.ZipFile(dist / name, 'w', zipfile.ZIP_DEFLATED) as archive:
         for filename in contents:

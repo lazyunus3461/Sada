@@ -1,0 +1,28 @@
+Kasaba Battle Royale 1.0.0
+23 Ekim 2026 — Paper 1.21.10 build 130 / Java 21
+Yerel, yalnızca 127.0.0.1 test sunucusu. Auth 1.3.0, Hub 1.2.0, Roles 1.2.0, Arena 1.2.1 ve Akçe 1.0.0 birlikte kullanıldı. Probe JAR dosyaları dağıtımda yoktur.
+
+-------------------------------------------------------------------------------
+Test set: tr.kasaba.battle.BattleRulesTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s -- in tr.kasaba.battle.BattleRulesTest
+
+PASS 540 safe gameplay locations, 3048 preserved upper sections across three islands, filled underside, safe lobby, expanded global border and no player/test data
+
+Connected 4/20 real protocol clients
+Connected 8/20 real protocol clients
+Connected 12/20 real protocol clients
+Connected 16/20 real protocol clients
+Connected 20/20 real protocol clients
+PASS automatic map import, same-world BR lobby, original inventory isolation, protection and actual compass native-page selection
+PASS nine players wait; ten start; 15 ordinary chest blocks include rare loot; nonparticipants stay safe in the lobby
+PASS rare chest opens its virtual loot inventory; actual eating with full hunger consumes one item, heals exactly two hearts, respects cooldown and caps at max health
+PASS twenty-player match, scaled 30-chest supply, rare chests and completely changed chest positions from the previous match
+PASS all three matches run together, room capacity routes new players, cross-room melee/arrows are blocked and stopping one match preserves the others
+PASS 4,000 chest rolls: iron/diamond/netherite rarity differs, food is selected, ranged weapons always include matching arrows and no old PUBG guns/ammo exist
+PASS existing Hub friend groups stay on the same duo teams; melee/projectile friendly fire is blocked and team elimination returns everyone to the BR lobby
+PASS original Adventure mode and diamonds restore; no BR compass, enchanted loot or healing item escapes to the main lobby
+PASS ALL BATTLE ROYALE REGRESSIONS
+
+PASS restart/auth recovery restores the durable outside inventory and Adventure mode instead of the interrupted BR items
+PASS persisted interrupted chest removed at startup; journal empty; pending inventory restored exactly once

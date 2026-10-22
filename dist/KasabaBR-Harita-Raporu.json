@@ -1,0 +1,25 @@
+{
+  "original_chunks": 1024,
+  "prepared_chunks": 3088,
+  "regions": 10,
+  "islands": 3,
+  "offsets": [
+    0,
+    768,
+    1536
+  ],
+  "chest_candidates_per_island": 160,
+  "candidates_by_kind": {
+    "interior": 112,
+    "roof": 16,
+    "outdoors": 32
+  },
+  "team_landing_points_per_island": 20,
+  "lobby": [
+    768.5,
+    73,
+    -440.5
+  ],
+  "global_border_size": 4096,
+  "gameplay_chests": "spawned and removed by plugin per match; selected locations rotate"
+}
