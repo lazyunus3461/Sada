@@ -1,0 +1,44 @@
+KasabaAdalar 1.3.0 + KasabaHub 1.2.0
+Paper 1.21.10 build 130, Java 21; yalnızca 127.0.0.1:25575 test sunucusu.
+
+İncelenen girdiler: kullanıcı tarafından yüklenen ada.zip ve KasabaAdalar-1.2.0.jar.
+Kullanıcı mevcut adalarda henüz yapı olmadığını doğruladı. Dünya, boş başlangıç
+şablonunun yüzeylerini koruyarak 200 -> 100 blok merkez aralığına dönüştürüldü.
+
+Birim testleri: Adalar 8/8, Hub 17/17 geçti.
+- Tek oyuncuya tekrarlanan taleplerde tek ada; kalıcı kayıt ve eski dosya uyumu.
+- Arkadaş izni sahiplik vermez; kaldırılabilir.
+- Bozuk/çift sahiplik dosyası üzerine yazılmaz; yazma hatası ada ayırmaz.
+- 300 adalık sınır ve 100/200 blok yerleşim çözümlemesi.
+- Hub grup, lobi ve kayıtlı oyun girişleri testleri.
+
+Dünya dosyası: 11.970 Anvil parçası ve 300 ada merkezi bağımsız okundu.
+Tüm alt taban katmanları dolu; 300 merkezde özgün çimen yüzeyi Y=65 ve
+oyuncu doğma boşluğu Y=66 korunur. Yeni düz dünya ayarında 121 blok hava
+katmanı taşla değiştirilmiştir. Sıfır oyuncu veya sahiplik verisi paketlenir.
+
+Gerçek Minecraft protokol istemcileriyle geçen sunucu senaryoları:
+- Lobide pusula + tek korunan bilgi kitabı, 10 sayfa ve beklenen komut metinleri.
+- Gerçek sağ tık paketi ve /rehber komutu kitabı açar.
+- Kitap açıkken gecikmiş otomatik lobi sayfası araya girmez.
+- Yerleşik Oyunlar sayfasında Adanı Yap görünür.
+- Adasız tıklama /ada al uyarısı gösterir; ada otomatik verilmez.
+- /ada al yaratıcı moda ve ayrı envantere geçirir; tekrar ikinci ada vermez.
+- Ada, ada kenarı, iki ada arası, son ada ve yeni üretilen uzak okyanus
+  sütunlarında taban kayasına kadar hava boşluğu yoktur.
+- İki ada merkezi arası 100 blok; davetsiz ziyaret engellenir.
+- Arkadaş eklenince ziyaret ve yapı serbest; çıkarılınca kendi adasına döner.
+- /lobi normal envanteri ve survival modunu geri yükler.
+- Ada girişi ayrı yaratıcı envanterini geri açar.
+- KasabaArena 1.2.0 ile birlikte giriş/çıkış çalışır; yaratıcı eşyalar taşınmaz.
+- Hub'ın önceki gerçek sunucu regresyonları da geçti: pusula koruması,
+  dolu 36 yuvayı koruma, boş yuva kullanımı, grup liderliği, ışınlanma
+  engelinde geri alma, giriş düzenleme/silme, bozuk dosyada çalışan listeyi koruma.
+  Bozuk YAML senaryosu beklendiği üzere hata kaydı üretir ve dosya geri yüklenir.
+
+Tam durdur/aç sonrası aynı hesaplarda tek ada sahipliği, 100 blok koordinatları,
+yaratıcı ada eşyaları, normal envanter ve lobi kitabı korundu.
+
+Üretim JAR/ZIP içinde Probe, taklit banka, test hesabı veya test dünyası yoktur.
+Grafik Minecraft istemcisinde görsel inceleme iddia edilmez; gerçek Paper,
+Bukkit olayları, bloklar, envanterler, native dialog ve kitap paketleri test edildi.

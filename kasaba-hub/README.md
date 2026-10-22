@@ -1,4 +1,4 @@
-# KasabaHub 1.1.0
+# KasabaHub 1.2.0
 
 Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merkezi için ana eklenti. Ortak lobi, Minecraft'ın **yerleşik sayfa arayüzü**, geçici arkadaş grupları ve sonraki oyun eklentileri için bağlantı sağlar. Bu sürümde mini oyun kuralları bulunmaz. Yönetici oyun giriş noktalarını `/oyunlar ekle` ile kaydedebilir; boş oyun listesi **Oyunlar yakında** gösterir.
 
@@ -8,7 +8,7 @@ Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merke
 
 1. Sunucuyu durdur. Mevcut eklenti veri klasörlerini yedekle. Güncellemede eski KasabaHub JAR'ını `plugins` dışına çıkar; `plugins/KasabaHub` klasörünü koru.
 2. Eski KasabaAuth JAR'ını `plugins` dışına taşı. Yeni modelde kullanılmayacak KasabaKlan/KasabaWarp ve başka lobi yöneticilerinin JAR'larını da dışarı taşı. **Veri klasörlerini silme.**
-3. ZIP'teki **KasabaAuth-1.3.0.jar** ve **KasabaHub-1.1.0.jar** dosyalarını `plugins` içine koy. Mevcut KasabaRoles kalabilir; roller/renkler korunur. Test Probe dosyaları kurulmaz.
+3. ZIP'teki **KasabaAuth-1.3.0.jar** ve **KasabaHub-1.2.0.jar** dosyalarını `plugins` içine koy. Mevcut KasabaRoles kalabilir; roller/renkler korunur. Test Probe dosyaları kurulmaz.
 4. Sunucuyu aç, hesabına giriş yap. Güvenli lobi platformunda Kurucu/OP olarak **`/merkez lobi ayarla`** yaz.
 5. `/lobi` ile dönüşü, `/merkez` ile ana sayfayı, `/oyunlar` ile oyun sayfasını dene.
 
@@ -89,3 +89,9 @@ Kabulden sonra merkez oyun durumunu izler. Oyun bitiminde `api.returnToLobby(pla
 ## Geliştirme ve test
 
 Bulutta `bash kasaba-hub/scripts/cloud-build.sh`; Auth'ı yerel Maven'e kurar ve Hub'ı derler. Normal JDK 21/Maven ortamında repo kökünde `mvn install`, ardından `mvn -f kasaba-hub/pom.xml verify`. 17 Auth ve 17 Hub birim testi bulunur. [Yerel test](scripts/integration/README.md) kayıt, lobi, sayfa, grup ve yalnızca testte kullanılan oyun adaptörünü sınar. Native görsel istemci, Bedrock/ViaVersion ve başka lobi eklentileriyle uyumluluk doğrulanmadı.
+
+## 1.2.0 bilgi kitabı
+
+Ana lobide oyun pusulasının yanında geçici yazılı kitap verilir. Sağ tık veya `/rehber` (`/bilgi`) on sayfalık rehberi açar: arena girişi, 1v1/2v2, özel oda kodu, X Arena, bağımsız beceriler, altı karakter, adalar, arkadaş izinleri ve Akçe. `/rehber` oyun içindeyken envantere eşya eklemeden sanal kitabı açar. Oyunlara geçişte iki geçici eşya da kaldırılır; dolu envanterde gerçek eşyalar değiştirilmez. Varsayılan yuvalar pusula için 9, kitap için 8'dir; doluysa boş yuva kullanılır.
+
+[KasabaAdalar](../kasaba-adalar/README.md) kuruluysa Oyunlar sayfasındaki Adanı Yap girişi eklenti tarafından otomatik kaydedilir. İlk tıklama ada edinmez; adası olmayan oyuncu `/ada al` uyarısı görür.

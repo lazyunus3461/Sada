@@ -49,3 +49,9 @@ uyumluluk doğrulanmadı. Başka eklenti geri dönüş teleportunu da iptal
 ederse bu engel aşılmaz; oyuncu adı konsola yazılır.
 Üretim paketinde test Probe/oyun adaptörü bulunmaz. Komutla eklenen giriş
 ışınlanma noktasıdır; bu sürüm maç, skor ve mini oyun kuralları içermez.
+
+1.2.0 ek doğrulama: 17/17 Hub birim testi ve önceki additions.cjs sunucu
+regresyonları geçti. Yeni bilgi kitabı sağ tık ve /rehber ile gerçek protokol
+üzerinden açıldı; 10 sayfa içerik, koruma, oyunlarda kaldırılma ve dolu envanteri
+koruma kontrol edildi. Adalar 1.3.0 + Arena 1.2.0 ile uyum ve tam sunucu
+restartı doğrulandı. Ayrıntı: KasabaAdalar-TEST-SONUCLARI.txt.

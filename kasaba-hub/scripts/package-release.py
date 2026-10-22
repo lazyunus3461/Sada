@@ -2,8 +2,8 @@
 from pathlib import Path
 import hashlib,shutil,zipfile
 root=Path(__file__).resolve().parents[2];dist=root/'dist';dist.mkdir(exist_ok=True)
-files=['KasabaHub-1.1.0.jar','KasabaAuth-1.3.0.jar','KasabaHub-KURULUM.txt','KasabaHub-TEST-SONUCLARI.txt']
-for source,name in [(root/'kasaba-hub/target','KasabaHub-1.1.0.jar'),(root/'target','KasabaAuth-1.3.0.jar')]:
+files=['KasabaHub-1.2.0.jar','KasabaAuth-1.3.0.jar','KasabaHub-KURULUM.txt','KasabaHub-TEST-SONUCLARI.txt']
+for source,name in [(root/'kasaba-hub/target','KasabaHub-1.2.0.jar'),(root/'target','KasabaAuth-1.3.0.jar')]:
  shutil.copyfile(source/name,dist/name)
  with zipfile.ZipFile(dist/name) as z:
   assert z.testzip() is None

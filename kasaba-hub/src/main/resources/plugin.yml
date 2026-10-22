@@ -1,5 +1,5 @@
 name: KasabaHub
-version: 1.1.0
+version: 1.2.0
 main: tr.kasaba.hub.KasabaHub
 api-version: '1.21.10'
 author: Kasaba
@@ -7,6 +7,10 @@ description: Kasaba oyun merkezi, yerleşik sayfalar, ortak lobi ve arkadaş gru
 depend: [KasabaAuth]
 softdepend: [KasabaRoles]
 commands:
+  rehber:
+    aliases: [bilgi]
+    description: Kasaba oyunlarının bilgi kitabını aç.
+    usage: /rehber
   merkez:
     description: Oyun merkezini açar ve yönetir.
     usage: /merkez yardım

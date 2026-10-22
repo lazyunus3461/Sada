@@ -20,6 +20,8 @@ final class LobbyItems implements Listener {
     private final Set<UUID> warned = new HashSet<>();
     LobbyItems(KasabaHub hub) { this.hub = hub; key = new NamespacedKey(hub, "lobi-menusu"); }
     boolean marked(ItemStack item) { return item != null && item.hasItemMeta() && item.getItemMeta().getPersistentDataContainer().has(key); }
+    private boolean guide(ItemStack item){return marked(item)&&Byte.valueOf((byte)2).equals(item.getItemMeta().getPersistentDataContainer().get(key,PersistentDataType.BYTE));}
+    void openGuide(Player p){ServerGuide.open(p,key);}
     private ItemStack create() {
         ItemStack item = new ItemStack(Material.COMPASS);
         item.editMeta(meta -> {
@@ -36,19 +38,20 @@ final class LobbyItems implements Listener {
     }
     void refresh(Player p) {
         if (!hub.menuItemAllowed(p)) { remove(p); warned.remove(p.getUniqueId()); return; }
-        int found = -1;
-        var inventory = p.getInventory();
-        for (int i = 0; i < inventory.getSize(); i++) {
-            ItemStack item = inventory.getItem(i);
-            if (!marked(item)) continue;
-            if (i < 36 && found < 0) { found = i; if (item.getAmount() != 1) item.setAmount(1); }
-            else inventory.setItem(i, null);
+        boolean[] found={false,false};
+        var inventory=p.getInventory();
+        for(int slot=0;slot<inventory.getSize();slot++){
+            ItemStack item=inventory.getItem(slot);if(!marked(item))continue;int kind=guide(item)?1:0;
+            if(slot<36&&!found[kind]){found[kind]=true;if(item.getAmount()!=1)item.setAmount(1);}
+            else inventory.setItem(slot,null);
         }
-        if (marked(p.getItemOnCursor())) p.setItemOnCursor(null);
-        if (found >= 0) { warned.remove(p.getUniqueId()); return; }
-        int slot = inventory.getItem(8) == null || inventory.getItem(8).getType().isAir() ? 8 : inventory.firstEmpty();
-        if (slot >= 0 && slot < 36) { inventory.setItem(slot, create()); warned.remove(p.getUniqueId()); }
-        else if (warned.add(p.getUniqueId())) hub.tell(p, "Menü pusulası için envanterinde bir yer aç. Şimdilik /merkez kullanabilirsin.");
+        if(marked(p.getItemOnCursor()))p.setItemOnCursor(null);
+        for(int kind=0;kind<2;kind++)if(!found[kind]){
+            int preferred=kind==0?8:7;ItemStack current=inventory.getItem(preferred);int slot=current==null||current.getType().isAir()?preferred:inventory.firstEmpty();
+            if(slot>=0&&slot<36){inventory.setItem(slot,kind==0?create():ServerGuide.create(key));found[kind]=true;}
+        }
+        if(found[0]&&found[1])warned.remove(p.getUniqueId());
+        else if(warned.add(p.getUniqueId()))hub.tell(p,"Menü pusulası ve bilgi kitabı için envanterinde yer aç. /merkez ve /rehber komutlarını da kullanabilirsin.");
     }
     void forget(Player p) { remove(p); warned.remove(p.getUniqueId()); }
     private void later(Player p) { Bukkit.getScheduler().runTask(hub, () -> { if (p.isOnline()) refresh(p); }); }
@@ -57,7 +60,8 @@ final class LobbyItems implements Listener {
         if (!marked(e.getItem())) return;
         e.setCancelled(true);
         if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if (hub.menuItemAllowed(e.getPlayer())) hub.openItemMenu(e.getPlayer());
+        if(e.getHand()!=org.bukkit.inventory.EquipmentSlot.HAND)return;
+        if (hub.menuItemAllowed(e.getPlayer())) {if(guide(e.getItem()))hub.openGuide(e.getPlayer());else hub.openItemMenu(e.getPlayer());}
         else refresh(e.getPlayer());
     }
     @EventHandler(priority = EventPriority.HIGHEST) public void click(InventoryClickEvent e) {

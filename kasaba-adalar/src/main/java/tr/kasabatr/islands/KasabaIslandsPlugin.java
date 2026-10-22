@@ -1,0 +1,352 @@
+package tr.kasabatr.islands;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Directional;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockFertilizeEvent;
+import org.bukkit.event.block.BlockFromToEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockMultiPlaceEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.generator.BiomeProvider;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
+import tr.kasabatr.islands.ClaimStore;
+import tr.kasabatr.islands.IslandLayout;
+import tr.kasabatr.islands.OceanBiomeProvider;
+import tr.kasabatr.islands.OceanChunkGenerator;
+import tr.kasabatr.islands.PlayerStateStore;
+
+public final class KasabaIslandsPlugin extends JavaPlugin implements Listener,CommandExecutor,TabCompleter {
+    private static final String PREFIX="§b[Adalar] §r";
+    private final Map<UUID,Long> lastWarning=new HashMap<>();
+    private final Set<UUID> relocating=new HashSet<>(),sessions=new HashSet<>();
+    private final Map<UUID,Integer> requests=new HashMap<>();
+    private ClaimStore claims;private PlayerStateStore playerStates;private String worldName;private IslandLayout layout;
+    private tr.kasaba.hub.api.HubApi hub;
+    @Override public void onEnable(){
+        saveDefaultConfig();worldName=getConfig().getString("world-name","ada");if("KasabaTR-Adalar-300".equals(worldName)){worldName="ada";getConfig().set("world-name",worldName);saveConfig();}if(worldName==null||!worldName.matches("[A-Za-z0-9_-]{1,64}")){getLogger().severe("world-name geçersiz.");Bukkit.getPluginManager().disablePlugin(this);return;}
+        try{claims=new ClaimStore(this);claims.load();playerStates=new PlayerStateStore(this);java.util.Properties marker=new java.util.Properties();java.nio.file.Path file=Bukkit.getWorldContainer().toPath().resolve(worldName).resolve("kasaba-layout.properties");if(java.nio.file.Files.exists(file))try(var input=java.nio.file.Files.newInputStream(file)){marker.load(input);}layout=new IslandLayout(Integer.parseInt(marker.getProperty("spacing","200")));}
+        catch(Exception ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada verileri okunamadı; dosyalar korundu.",ex);Bukkit.getPluginManager().disablePlugin(this);return;}
+        Objects.requireNonNull(getCommand("ada")).setExecutor(this);getCommand("ada").setTabCompleter(this);Bukkit.getPluginManager().registerEvents(this,this);if(Bukkit.getPluginManager().isPluginEnabled("KasabaAuth"))Bukkit.getPluginManager().registerEvents(new IslandAuthBridge(this),this);ensureWorld();
+        if(Bukkit.getPluginManager().isPluginEnabled("KasabaHub"))try{hub=Bukkit.getServicesManager().load(tr.kasaba.hub.api.HubApi.class);if(hub!=null)hub.register(this,new IslandGame());}catch(RuntimeException ex){getLogger().log(java.util.logging.Level.SEVERE,"Adanı Yap kaydedilemedi. Aynı kimlikle komutla eklenmiş giriş varsa /oyunlar sil adaniyap kullanıp yeniden başlat.",ex);}
+        getLogger().info(claims.size()+"/300 ada • oyuncu başına 1 ada • aralık "+layout.spacing()+" blok.");
+    }
+    @Override public void onDisable(){if(hub!=null)try{hub.unregister(this,"adaniyap");}catch(RuntimeException ex){getLogger().warning(ex.getMessage());}if(playerStates==null)return;for(Player p:Bukkit.getOnlinePlayers())if(islandWorld(p.getWorld()))try{playerStates.saveIsland(p);}catch(IOException ex){getLogger().severe(ex.getMessage());}}
+    private World ensureWorld(){World loaded=Bukkit.getWorld(worldName);if(loaded!=null){loaded.setPVP(false);return loaded;}File folder=new File(Bukkit.getWorldContainer(),worldName);if(!new File(folder,"level.dat").isFile())return null;try{World world=Bukkit.createWorld(new WorldCreator(worldName).type(WorldType.FLAT).generator(new OceanChunkGenerator()).biomeProvider(new OceanBiomeProvider()));if(world!=null)world.setPVP(false);return world;}catch(RuntimeException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada dünyası açılamadı.",ex);return null;}}
+    private boolean islandWorld(World world){return world!=null&&world.getName().equals(worldName);}
+    private boolean admin(Player p){return p.hasPermission("kasabatr.ada.admin");}
+    private boolean authenticated(Player p){if(!Bukkit.getPluginManager().isPluginEnabled("KasabaAuth"))return true;var state=Bukkit.getServicesManager().load(tr.kasaba.auth.api.AuthState.class);return state!=null&&state.authenticated(p.getUniqueId());}
+    private boolean allowed(Player p,Location at){return !islandWorld(at.getWorld())||admin(p)||claims.canAccess(layout.at(at.getBlockX(),at.getBlockZ()),p.getUniqueId());}
+    private boolean mayEdit(Player p,Block block){return allowed(p,block.getLocation());}
+    private int plot(Block block){return layout.at(block.getX(),block.getZ());}
+    private void warn(Player p,String text){long now=System.currentTimeMillis();if(now-lastWarning.getOrDefault(p.getUniqueId(),0L)>=2000){tell(p,text);lastWarning.put(p.getUniqueId(),now);}}
+    private void tell(Player p,String text){p.sendMessage(PREFIX+text);}
+    private String normalize(String text){return text.toLowerCase(Locale.ROOT).replace('ı','i').replace('ş','s').replace('ç','c').replace('ğ','g').replace('ü','u').replace('ö','o');}
+    private UUID knownPlayer(String name){Player p=Bukkit.getPlayerExact(name);if(p!=null)return p.getUniqueId();UUID id=claims.playerByName(name);if(id!=null)return id;OfflinePlayer offline=Bukkit.getOfflinePlayerIfCached(name);return offline!=null&&offline.hasPlayedBefore()?offline.getUniqueId():null;}
+    private void needIsland(Player p){tell(p,"§eHenüz adan yok. Önce §6/ada al §eyaz. Sonra Adanı Yap düğmesi seni kendi adana götürür.");p.showDialog(io.papermc.paper.dialog.Dialog.create(builder->builder.empty().base(io.papermc.paper.registry.data.dialog.DialogBase.builder(net.kyori.adventure.text.Component.text("Önce adanı al")).canCloseWithEscape(true).pause(false).body(List.of(io.papermc.paper.registry.data.dialog.body.DialogBody.plainMessage(net.kyori.adventure.text.Component.text("Önce /ada al yazarak tek adanı edin. Daha sonra Oyunlar → Adanı Yap üzerinden adana dönebilirsin."),300))).build()).type(io.papermc.paper.registry.data.dialog.type.DialogType.notice())));}
+    private final class IslandGame implements tr.kasaba.hub.api.HubGame {
+        public tr.kasaba.hub.api.GameInfo info(){return new tr.kasaba.hub.api.GameInfo("adaniyap","Adanı Yap","Yaratıcı adan • ilk kullanımda /ada al • herkesin tek adası vardır.",1,20);}
+        public boolean available(){return Bukkit.getWorld(worldName)!=null;}
+        public boolean join(List<Player> team){
+            if(team.isEmpty())return false;Map<Player,Integer> targets=new java.util.LinkedHashMap<>();for(Player p:team){Integer id=requests.getOrDefault(p.getUniqueId(),claims.islandOf(p.getUniqueId()));if(id==null){needIsland(p);return false;}if(!claims.canAccess(id,p.getUniqueId())){tell(p,"Bu adaya giriş iznin yok.");return false;}targets.put(p,id);}
+            Map<Player,Location> moved=new java.util.LinkedHashMap<>();try{for(var entry:targets.entrySet()){Player p=entry.getKey();Location before=p.getLocation();sessions.add(p.getUniqueId());if(!p.teleport(layout.spawn(Bukkit.getWorld(worldName),entry.getValue()))||!islandWorld(p.getWorld())||p.getGameMode()!=GameMode.CREATIVE)throw new IllegalStateException("Ada geçişi engellendi.");moved.put(p,before);tell(p,"§aAda #"+entry.getValue()+" • Yaratıcı mod • Dönüş: /lobi");}return true;}catch(RuntimeException ex){for(Player p:targets.keySet())sessions.remove(p.getUniqueId());for(var entry:moved.entrySet())entry.getKey().teleport(entry.getValue());getLogger().log(java.util.logging.Level.WARNING,"Ada grubu geri alındı.",ex);return false;}
+        }
+        public void leave(UUID id){sessions.remove(id);Player p=Bukkit.getPlayer(id);if(p!=null)try{playerStates.leave(p);}catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada çıkışı kaydedilemedi: "+id,ex);p.getInventory().clear();p.getInventory().setArmorContents(new ItemStack[4]);p.getInventory().setItemInOffHand(null);p.setItemOnCursor(null);p.setGameMode(GameMode.SURVIVAL);}}
+    }
+    private void teleportHome(Player p,World world,int id)throws IOException{
+        if(islandWorld(p.getWorld()))playerStates.enter(p);
+        if(hub!=null&&!islandWorld(p.getWorld())){if(hub.playing(p.getUniqueId())){tell(p,"Önce /lobi ile mevcut oyundan çık, ardından /ada yaz.");return;}requests.put(p.getUniqueId(),id);try{Bukkit.dispatchCommand(p,"oyunlar git adaniyap");}finally{requests.remove(p.getUniqueId());}return;}
+        if(p.teleport(layout.spawn(world,id))){p.setGameMode(GameMode.CREATIVE);tell(p,"§aAda #"+id+" • Yaratıcı mod");}else tell(p,"Işınlanma engellendi; ada sahipliğin korundu.");
+    }
+    @Override public boolean onCommand(CommandSender sender,Command command,String label,String[] args){
+        if(!(sender instanceof Player p)){sender.sendMessage("Bu komut oyunda kullanılır.");return true;}if(!authenticated(p)){tell(p,"Önce kayıt/giriş işlemini tamamla.");return true;}if(!p.hasPermission("kasabatr.ada.use")){tell(p,"Ada yetkin yok.");return true;}
+        try{claims.remember(p.getUniqueId(),p.getName());World world=ensureWorld();if(world==null){tell(p,"Ada dünyası bulunamadı. Paket içindeki ada klasörü sunucunun ana dizinine kurulmalı.");return true;}Integer own=claims.islandOf(p.getUniqueId());String action=args.length==0?"git":normalize(args[0]);
+            if(action.equals("yardim")){tell(p,"/ada al • /ada • /ada <sahip> • /ada ekle <oyuncu> • /ada çıkar <oyuncu> • /ada bilgi • /lobi");return true;}
+            if(action.equals("bilgi")){tell(p,"Adan: "+(own==null?"Yok; /ada al":"#"+own)+" • Sınır: 1 ada • Merkez aralığı: "+layout.spacing()+" blok • Yaratıcı mod");return true;}
+            if(action.equals("al")){boolean exists=own!=null;int id=claims.claim(p.getUniqueId());if(id==0){tell(p,"300 adanın tamamı alınmış.");return true;}tell(p,exists?"§eZaten bir adan var: #"+id+". İkinci ada alamazsın.":"§aAda #"+id+" senin oldu. Her oyuncu yalnızca bir ada alabilir.");teleportHome(p,world,id);return true;}
+            if(action.equals("git")&&args.length<=1){if(own==null)needIsland(p);else teleportHome(p,world,own);return true;}
+            if(Set.of("ekle","cikar").contains(action)){if(args.length!=2)throw new IllegalArgumentException("/ada "+action+" <oyuncu>");if(own==null){needIsland(p);return true;}UUID friend=knownPlayer(args[1]);if(friend==null)throw new IllegalArgumentException("Oyuncu daha önce sunucuya girmiş olmalı.");if(friend.equals(p.getUniqueId()))throw new IllegalArgumentException("Kendini ekleyemezsin.");boolean added=action.equals("ekle");boolean changed=added?claims.addMember(own,friend):claims.removeMember(own,friend);tell(p,changed?args[1]+(added?" adana eklendi.":" adandan çıkarıldı."):"Arkadaş kaydı değişmedi.");Player other=Bukkit.getPlayer(friend);if(changed&&other!=null){tell(other,p.getName()+(added?" seni adasına ekledi. /ada "+p.getName()+" ile gidebilirsin.":" seni adasından çıkardı."));if(!added&&islandWorld(other.getWorld())&&layout.contains(own,other.getLocation().getBlockX(),other.getLocation().getBlockZ()))relocate(other);}return true;}
+            if(args.length==1){UUID owner=knownPlayer(args[0]);Integer id=owner==null?null:claims.islandOf(owner);if(id==null||!claims.canAccess(id,p.getUniqueId()))throw new IllegalArgumentException("Bu adaya giriş iznin yok. Sahibi /ada ekle "+p.getName()+" yazmalı.");teleportHome(p,world,id);return true;}throw new IllegalArgumentException("/ada yardım");
+        }catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada kaydı başarısız; dosya korundu.",ex);tell(p,"Ada kaydı tamamlanamadı. Yönetici kayıtları kontrol etmeli.");}catch(IllegalArgumentException ex){tell(p,ex.getMessage());}return true;
+    }
+    @Override public List<String> onTabComplete(CommandSender sender,Command command,String alias,String[] args){if(args.length==1)return List.of("al","git","ekle","çıkar","bilgi","yardım").stream().filter(s->normalize(s).startsWith(normalize(args[0]))).toList();if(args.length==2&&Set.of("ekle","cikar").contains(normalize(args[0])))return Bukkit.getOnlinePlayers().stream().map(Player::getName).filter(s->s.toLowerCase(Locale.ROOT).startsWith(args[1].toLowerCase(Locale.ROOT))).toList();return List.of();}
+    private void relocate(Player p){if(!relocating.add(p.getUniqueId()))return;Bukkit.getScheduler().runTask(this,()->{relocating.remove(p.getUniqueId());if(!p.isOnline()||!islandWorld(p.getWorld())||allowed(p,p.getLocation()))return;Integer own=claims.islandOf(p.getUniqueId());if(own!=null)p.teleport(layout.spawn(p.getWorld(),own));else if(hub!=null)hub.returnToLobby(p.getUniqueId());else for(World world:Bukkit.getWorlds())if(!islandWorld(world)){p.teleport(world.getSpawnLocation());break;}});}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void onMove(PlayerMoveEvent e){if(!e.hasChangedBlock()||!islandWorld(e.getTo().getWorld())||allowed(e.getPlayer(),e.getTo()))return;e.setTo(e.getFrom());warn(e.getPlayer(),"Kendi veya eklendiğin adanın sınırlarında kalmalısın.");if(!allowed(e.getPlayer(),e.getFrom()))relocate(e.getPlayer());}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void onTeleport(PlayerTeleportEvent e){if(!islandWorld(e.getTo().getWorld()))return;if(!allowed(e.getPlayer(),e.getTo())){e.setCancelled(true);warn(e.getPlayer(),"Başkasının adasına veya sahipsiz alana ışınlanamazsın.");}else if(hub!=null&&hub.playing(e.getPlayer().getUniqueId())&&!islandWorld(e.getFrom().getWorld())&&!sessions.contains(e.getPlayer().getUniqueId())){e.setCancelled(true);warn(e.getPlayer(),"Önce /lobi ile mevcut oyundan çık.");}}
+    @EventHandler public void onJoin(PlayerJoinEvent e){Bukkit.getScheduler().runTaskLater(this,()->{Player p=e.getPlayer();if(!p.isOnline())return;try{claims.remember(p.getUniqueId(),p.getName());if(!authenticated(p))return;if(islandWorld(p.getWorld())){playerStates.enter(p);if(!allowed(p,p.getLocation()))relocate(p);}else playerStates.recoverOutside(p);}catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada oyuncu kaydı açılamadı.",ex);warn(p,"Ada envanteri okunamadı; yöneticiye bildir.");}},20);}
+    void verifiedPlayer(Player p){if(!p.isOnline()||!authenticated(p))return;try{if(islandWorld(p.getWorld())){playerStates.enter(p);if(!allowed(p,p.getLocation()))relocate(p);}else playerStates.recoverOutside(p);}catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Doğrulama sonrası ada yedeği açılamadı.",ex);warn(p,"Ada yedeği okunamadı; yöneticiye bildir.");}}
+    @EventHandler(priority=EventPriority.HIGHEST) public void onWorldChange(PlayerChangedWorldEvent e){Player p=e.getPlayer();if(!authenticated(p))return;try{if(islandWorld(p.getWorld())){playerStates.enter(p);if(!allowed(p,p.getLocation()))relocate(p);}else if(islandWorld(e.getFrom()))playerStates.leave(p);}catch(IOException ex){getLogger().log(java.util.logging.Level.SEVERE,"Ada envanteri değiştirilemedi.",ex);warn(p,"Ada envanteri değiştirilemedi; yöneticiye bildir.");if(islandWorld(p.getWorld()))p.teleport(e.getFrom().getSpawnLocation());else{p.getInventory().clear();p.getInventory().setArmorContents(new ItemStack[4]);p.getInventory().setItemInOffHand(null);p.setItemOnCursor(null);p.setGameMode(GameMode.SURVIVAL);}}}
+    @EventHandler public void onQuit(PlayerQuitEvent e){lastWarning.remove(e.getPlayer().getUniqueId());sessions.remove(e.getPlayer().getUniqueId());if(islandWorld(e.getPlayer().getWorld()))try{playerStates.saveIsland(e.getPlayer());}catch(IOException ex){getLogger().severe(ex.getMessage());}}
+    @EventHandler(ignoreCancelled=true) public void onInventoryOpen(InventoryOpenEvent e){if(e.getPlayer() instanceof Player p&&islandWorld(p.getWorld())&&e.getInventory().getType()==InventoryType.ENDER_CHEST){e.setCancelled(true);warn(p,"Yaratıcı ada eşyalarını dışarı taşımamak için ender sandığı kapalı.");}}
+    @EventHandler public void onRespawn(PlayerRespawnEvent e){Player p=e.getPlayer();if(!islandWorld(p.getWorld()))return;Integer own=claims.islandOf(p.getUniqueId());int current=layout.at(p.getLocation().getBlockX(),p.getLocation().getBlockZ());if(claims.canAccess(current,p.getUniqueId()))own=current;if(own!=null)e.setRespawnLocation(layout.spawn(p.getWorld(),own));Bukkit.getScheduler().runTask(this,()->{if(islandWorld(p.getWorld()))p.setGameMode(GameMode.CREATIVE);});}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void onDrop(org.bukkit.event.player.PlayerDropItemEvent e){if(islandWorld(e.getPlayer().getWorld()))e.setCancelled(true);}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void onPortal(org.bukkit.event.player.PlayerPortalEvent e){if(islandWorld(e.getFrom().getWorld())||islandWorld(e.getTo().getWorld())){e.setCancelled(true);warn(e.getPlayer(),"Adadan çıkmak için /lobi kullan.");}}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void onDamage(org.bukkit.event.entity.EntityDamageEvent e){if(e.getEntity() instanceof Player p&&islandWorld(p.getWorld()))e.setCancelled(true);}
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onVehicleMove(VehicleMoveEvent vehicleMoveEvent) {
+        if (!this.islandWorld(vehicleMoveEvent.getTo().getWorld())) {
+            return;
+        }
+        for (Entity entity : vehicleMoveEvent.getVehicle().getPassengers()) {
+            Player player;
+            if (!(entity instanceof Player) || this.allowed(player = (Player)entity, vehicleMoveEvent.getTo())) continue;
+            vehicleMoveEvent.getVehicle().teleport(vehicleMoveEvent.getFrom());
+            vehicleMoveEvent.getVehicle().setVelocity(new Vector());
+            this.warn(player, "Ada sinirinin disina cikamazsin.");
+            return;
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onBreak(BlockBreakEvent blockBreakEvent) {
+        if (!this.mayEdit(blockBreakEvent.getPlayer(), blockBreakEvent.getBlock())) {
+            blockBreakEvent.setCancelled(true);
+            this.warn(blockBreakEvent.getPlayer(), "Yalnizca kendi adanda blok kirabilirsin.");
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onPlace(BlockPlaceEvent blockPlaceEvent) {
+        if (!this.islandWorld(blockPlaceEvent.getBlockPlaced().getWorld())) {
+            return;
+        }
+        boolean bl = this.mayEdit(blockPlaceEvent.getPlayer(), blockPlaceEvent.getBlockPlaced());
+        if (blockPlaceEvent instanceof BlockMultiPlaceEvent) {
+            BlockMultiPlaceEvent blockMultiPlaceEvent = (BlockMultiPlaceEvent)blockPlaceEvent;
+            for (BlockState blockState : blockMultiPlaceEvent.getReplacedBlockStates()) {
+                bl &= this.mayEdit(blockPlaceEvent.getPlayer(), blockState.getBlock());
+            }
+        }
+        if (!bl) {
+            blockPlaceEvent.setCancelled(true);
+            this.warn(blockPlaceEvent.getPlayer(), "Yalnizca kendi adanda blok koyabilirsin.");
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onInteract(PlayerInteractEvent playerInteractEvent) {
+        Block block = playerInteractEvent.getClickedBlock();
+        if (block != null && !this.mayEdit(playerInteractEvent.getPlayer(), block)) {
+            playerInteractEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onEntityInteract(PlayerInteractEntityEvent playerInteractEntityEvent) {
+        if (!this.allowed(playerInteractEntityEvent.getPlayer(), playerInteractEntityEvent.getRightClicked().getLocation())) {
+            playerInteractEntityEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onBucketEmpty(PlayerBucketEmptyEvent playerBucketEmptyEvent) {
+        Block block = playerBucketEmptyEvent.getBlockClicked().getRelative(playerBucketEmptyEvent.getBlockFace());
+        if (!this.mayEdit(playerBucketEmptyEvent.getPlayer(), block)) {
+            playerBucketEmptyEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onBucketFill(PlayerBucketFillEvent playerBucketFillEvent) {
+        if (!this.mayEdit(playerBucketFillEvent.getPlayer(), playerBucketFillEvent.getBlockClicked())) {
+            playerBucketFillEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onHangingPlace(HangingPlaceEvent hangingPlaceEvent) {
+        if (!this.islandWorld(hangingPlaceEvent.getEntity().getWorld())) {
+            return;
+        }
+        if (hangingPlaceEvent.getPlayer() == null || !this.allowed(hangingPlaceEvent.getPlayer(), hangingPlaceEvent.getEntity().getLocation())) {
+            hangingPlaceEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onLiquid(BlockFromToEvent blockFromToEvent) {
+        if (!this.islandWorld(blockFromToEvent.getBlock().getWorld())) {
+            return;
+        }
+        int n = this.plot(blockFromToEvent.getBlock());
+        if (n == 0 || !this.claims.isClaimed(n) || this.plot(blockFromToEvent.getToBlock()) != n) {
+            blockFromToEvent.setCancelled(true);
+        }
+    }
+
+    private boolean safePiston(Block block, List<Block> list) {
+        int n = this.plot(block);
+        if (n == 0 || !this.claims.isClaimed(n)) {
+            return false;
+        }
+        BlockData blockData = block.getBlockData();
+        if (!(blockData instanceof Directional)) {
+            return false;
+        }
+        Directional directional = (Directional)blockData;
+        for (Block block2 : list) {
+            if (this.plot(block2) == n && this.plot(block2.getRelative(directional.getFacing())) == n && this.plot(block2.getRelative(directional.getFacing().getOppositeFace())) == n) continue;
+            return false;
+        }
+        return true;
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onPistonExtend(BlockPistonExtendEvent blockPistonExtendEvent) {
+        if (this.islandWorld(blockPistonExtendEvent.getBlock().getWorld()) && !this.safePiston(blockPistonExtendEvent.getBlock(), blockPistonExtendEvent.getBlocks())) {
+            blockPistonExtendEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onPistonRetract(BlockPistonRetractEvent blockPistonRetractEvent) {
+        if (this.islandWorld(blockPistonRetractEvent.getBlock().getWorld()) && !this.safePiston(blockPistonRetractEvent.getBlock(), blockPistonRetractEvent.getBlocks())) {
+            blockPistonRetractEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onDispense(BlockDispenseEvent blockDispenseEvent) {
+        Directional directional;
+        if (!this.islandWorld(blockDispenseEvent.getBlock().getWorld())) {
+            return;
+        }
+        Block block = blockDispenseEvent.getBlock();
+        int n = this.plot(block);
+        if (n == 0 || !this.claims.isClaimed(n)) {
+            blockDispenseEvent.setCancelled(true);
+            return;
+        }
+        BlockData blockData = block.getBlockData();
+        if (blockData instanceof Directional && this.plot(block.getRelative((directional = (Directional)blockData).getFacing())) != n) {
+            blockDispenseEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onFertilize(BlockFertilizeEvent blockFertilizeEvent) {
+        if (!this.islandWorld(blockFertilizeEvent.getBlock().getWorld())) {
+            return;
+        }
+        Player player = blockFertilizeEvent.getPlayer();
+        if (player == null || !this.allowed(player, blockFertilizeEvent.getBlock().getLocation())) {
+            blockFertilizeEvent.setCancelled(true);
+            return;
+        }
+        for (BlockState blockState : blockFertilizeEvent.getBlocks()) {
+            if (this.allowed(player, blockState.getLocation())) continue;
+            blockFertilizeEvent.setCancelled(true);
+            return;
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onSpread(BlockSpreadEvent blockSpreadEvent) {
+        if (!this.islandWorld(blockSpreadEvent.getBlock().getWorld())) {
+            return;
+        }
+        int n = this.plot(blockSpreadEvent.getSource());
+        if (n == 0 || !this.claims.isClaimed(n) || this.plot(blockSpreadEvent.getBlock()) != n) {
+            blockSpreadEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onIgnite(BlockIgniteEvent blockIgniteEvent) {
+        if (!this.islandWorld(blockIgniteEvent.getBlock().getWorld())) {
+            return;
+        }
+        int n = this.plot(blockIgniteEvent.getBlock());
+        if (n == 0 || !this.claims.isClaimed(n) || blockIgniteEvent.getPlayer() != null && !this.allowed(blockIgniteEvent.getPlayer(), blockIgniteEvent.getBlock().getLocation())) {
+            blockIgniteEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onBurn(BlockBurnEvent blockBurnEvent) {
+        if (this.islandWorld(blockBurnEvent.getBlock().getWorld()) && !this.claims.isClaimed(this.plot(blockBurnEvent.getBlock()))) {
+            blockBurnEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onEntityChangeBlock(EntityChangeBlockEvent entityChangeBlockEvent) {
+        if (!this.islandWorld(entityChangeBlockEvent.getBlock().getWorld())) {
+            return;
+        }
+        if (entityChangeBlockEvent.getEntityType() == EntityType.ENDERMAN || !this.claims.isClaimed(this.plot(entityChangeBlockEvent.getBlock()))) {
+            entityChangeBlockEvent.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onEntityExplode(EntityExplodeEvent entityExplodeEvent) {
+        if (this.islandWorld(entityExplodeEvent.getLocation().getWorld())) {
+            entityExplodeEvent.blockList().clear();
+        }
+    }
+
+    @EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled=true)
+    public void onBlockExplode(BlockExplodeEvent blockExplodeEvent) {
+        if (this.islandWorld(blockExplodeEvent.getBlock().getWorld())) {
+            blockExplodeEvent.blockList().clear();
+        }
+    }
+}

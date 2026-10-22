@@ -49,8 +49,13 @@ public final class HubProbe extends JavaPlugin implements Listener {
                     case "ITEM" -> p.getInventory().setItem(0,new org.bukkit.inventory.ItemStack(Material.DIAMOND,7));
                     case "ITEM_CHECK" -> {var item=p.getInventory().getItem(0);say(p,"item="+(item!=null&&item.getType()==Material.DIAMOND&&item.getAmount()==7));}
                     case "MENU" -> {
-                        int count=0,slot=-1;for(int i=0;i<p.getInventory().getSize();i++)if(menu(p.getInventory().getItem(i))){count+=p.getInventory().getItem(i).getAmount();slot=i;}
+                        int count=0,slot=-1;for(int i=0;i<p.getInventory().getSize();i++)if(menu(p.getInventory().getItem(i))&&p.getInventory().getItem(i).getType()==Material.COMPASS){count+=p.getInventory().getItem(i).getAmount();slot=i;}
                         say(p,"menu:count="+count+",slot="+slot+",normal="+(p.getInventory().getItem(1)!=null&&p.getInventory().getItem(1).getType()==Material.COMPASS&&!menu(p.getInventory().getItem(1))));
+                    }
+                    case "GUIDE" -> {
+                        int count=0;ItemStack book=null;for(ItemStack item:p.getInventory().getContents())if(menu(item)&&item.getType()==Material.WRITTEN_BOOK){count++;book=item;}
+                        String pages=book!=null?((org.bukkit.inventory.meta.BookMeta)book.getItemMeta()).pages().toString():"";
+                        say(p,"guide:count="+count+",pages="+(book==null?0:((org.bukkit.inventory.meta.BookMeta)book.getItemMeta()).getPageCount())+",arena="+pages.contains("/arena 1v1")+",xarena="+pages.contains("/arena xarena")+",ada="+pages.contains("/ada al")+",akce="+pages.contains("/akçe"));
                     }
                     case "NORMAL_COMPASS" -> p.getInventory().setItem(1,new ItemStack(Material.COMPASS));
                     case "FULL" -> {for(int i=0;i<36;i++)p.getInventory().setItem(i,new ItemStack(Material.DIAMOND,64));}

@@ -46,7 +46,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
         try{settings=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));lobby=store.load();replaceDestinations(destinations.load());}
         catch(IOException e){storageFailed=true;getLogger().log(Level.SEVERE,"Hub ayarları okunamadı; dosyalar korundu. Düzeltip /merkez yenile kullan.",e);}
         items=new LobbyItems(this);Bukkit.getPluginManager().registerEvents(this,this);Bukkit.getPluginManager().registerEvents(new LobbyProtection(this),this);Bukkit.getPluginManager().registerEvents(items,this);
-        for(String name:List.of("merkez","oyunlar","grup","lobi"))Objects.requireNonNull(getCommand(name)).setTabCompleter(this);
+        for(String name:List.of("merkez","oyunlar","grup","lobi","rehber"))Objects.requireNonNull(getCommand(name)).setTabCompleter(this);
         Bukkit.getServicesManager().register(HubApi.class,this,this,ServicePriority.Normal);
         Bukkit.getScheduler().runTaskTimer(this,parties::prune,100,100);
         Bukkit.getScheduler().runTaskTimer(this,()->Bukkit.getOnlinePlayers().forEach(items::refresh),1,20);
@@ -66,6 +66,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     boolean inLobby(Location l){return storageFailed||(settings!=null&&lobby!=null&&l!=null&&l.getWorld()!=null&&lobby.contains(l.getWorld().getUID(),l.getX(),l.getZ(),settings.radius()));}
     boolean protectedPlayer(Player p){return !playing(p.getUniqueId())&&inLobby(p.getLocation());}
     boolean menuItemAllowed(Player p){return !storageFailed&&settings!=null&&lobby!=null&&p.isOnline()&&!p.isDead()&&authenticated(p)&&p.hasPermission("kasabahub.kullan")&&protectedPlayer(p);}
+    void openGuide(Player p){try{ready(p);pages.remove(p.getUniqueId());navigation.put(p.getUniqueId(),++sequence);p.closeDialog();items.openGuide(p);}catch(IllegalArgumentException ex){tell(p,ex.getMessage());}}
     void openItemMenu(Player p){try{showMain(p);}catch(IllegalArgumentException e){tell(p,e.getMessage());}}
     private Player player(CommandSender s){if(s instanceof Player p)return p;throw new IllegalArgumentException("Bu komutu oyunda kullan.");}
     private Player online(String name){Player p=Bukkit.getPlayerExact(name);if(p==null||!authenticated(p))throw new IllegalArgumentException("Oyuncu çevrimiçi ve giriş yapmış olmalı.");return p;}
@@ -84,6 +85,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
             Player p=player(s);ready(p);
             switch(cmd.getName()){
                 case "oyunlar" -> gameCommand(p,a);
+                case "rehber" -> openGuide(p);
                 case "lobi" -> returnLobby(p,false);
                 case "grup" -> groupCommand(p,a);
                 case "merkez" -> {

