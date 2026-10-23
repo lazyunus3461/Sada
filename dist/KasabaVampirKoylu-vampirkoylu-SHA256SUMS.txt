@@ -1,0 +1,2 @@
+bfa27b1dd9fbc200713dad1230dc5b03e7df4fc028c46c868b099a4cedaece10  KasabaVampirKoylu-vampirkoylu-config.yml
+f3dd79fe1314098dcb8c4278d33c34e74560e215978a6f85c3bd2cb38165b455  KasabaVampirKoylu-vampirkoylu-Ayar.zip
