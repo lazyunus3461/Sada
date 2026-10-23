@@ -1,13 +1,21 @@
-Kasaba Battle Royale 1.0.0
-23 Ekim 2026 — Paper 1.21.10 build 130 / Java 21
-Yerel, yalnızca 127.0.0.1 test sunucusu. Auth 1.3.0, Hub 1.2.0, Roles 1.2.0, Arena 1.2.1 ve Akçe 1.0.0 birlikte kullanıldı. Probe JAR dosyaları dağıtımda yoktur.
+Kasaba Battle Royale 1.0.1 — 23 Ekim 2026
+Paper 1.21.10 build 130 / Java 21. Auth 1.3.0, Hub 1.2.0 ve Roles 1.2.0 ile loopback test sunucusu.
+Mevcut 1.0.0 dünyası ve arena dosyasıyla yükseltme test edildi. arenalar.yml birebir korunuyor.
+Test probe eklentileri dağıtımda yoktur.
 
 -------------------------------------------------------------------------------
 Test set: tr.kasaba.battle.BattleRulesTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s -- in tr.kasaba.battle.BattleRulesTest
+Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.119 s -- in tr.kasaba.battle.BattleRulesTest
 
-PASS 540 safe gameplay locations, 3048 preserved upper sections across three islands, filled underside, safe lobby, expanded global border and no player/test data
+PASS three private visible borders, no global border/rule changes, no locator transmission/reception, hidden nametags survive Roles refresh and native client packets are sent
+PASS two-player test creates at least six outdoor ground chests as well as house chests
+PASS a real empty-hand block click opens normal loot and a real shift-click transfers an item
+PASS rare chest opens with a held weapon; item-use-denied empty-hand interactions still open owned loot
+PASS shrinking border sends red-wall interpolation; square corner inside the visible wall is safe and outside it takes damage; other matches stay unchanged
+PASS finish restores the previous scoreboard, locator ranges and custom border while other matches remain hidden
+PASS both players leaving during the victory countdown removes every old chest; immediate next match has 12 fresh usable chests
+PASS ALL 1.0.1 CHEST / VISIBILITY / ZONE REGRESSIONS
 
 Connected 4/20 real protocol clients
 Connected 8/20 real protocol clients
@@ -23,6 +31,3 @@ PASS 4,000 chest rolls: iron/diamond/netherite rarity differs, food is selected,
 PASS existing Hub friend groups stay on the same duo teams; melee/projectile friendly fire is blocked and team elimination returns everyone to the BR lobby
 PASS original Adventure mode and diamonds restore; no BR compass, enchanted loot or healing item escapes to the main lobby
 PASS ALL BATTLE ROYALE REGRESSIONS
-
-PASS restart/auth recovery restores the durable outside inventory and Adventure mode instead of the interrupted BR items
-PASS persisted interrupted chest removed at startup; journal empty; pending inventory restored exactly once

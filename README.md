@@ -1,6 +1,6 @@
 # Kasaba oyun merkezi
 
-**Yeni: [KasabaBattleRoyale](kasaba-battle/README.md)** — aynı dünyada üç savaş adası, ortak lobi, Solo/İkili/Dörtlü, 10–20 oyuncu, her maç yer değiştiren normal/nadir sandıklar ve büyülü ganimet. [Dünya + BR kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaBattleRoyale-Kurulum.zip). X Arena 1.2.1 yetenekleri hedef olmadan da kullanılır; ıskalanabilir ve boşa atılınca bekleme süresi harcanır.
+**Yeni: [KasabaBattleRoyale](kasaba-battle/README.md)** — aynı dünyada üç savaş adası, ortak lobi, Solo/İkili/Dörtlü, 10–20 oyuncu, evlerde ve dışarıda yer değiştiren normal/nadir sandıklar ve büyülü ganimet. BR 1.0.1 maçta konum göstergesini ve kafa üstü isimlerini gizler; daralan alanı sınır duvarıyla gösterir. [Dünya + BR kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaBattleRoyale-Kurulum.zip). X Arena 1.2.1 yetenekleri hedef olmadan da kullanılır; ıskalanabilir ve boşa atılınca bekleme süresi harcanır.
 
 Güzel bir kasaba meydanı kurmak için [64×64 hazır KasabaKasabasi dünyasını indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaKasabasi-1.21.10.zip) (Java 1.21.10). ZIP içindeki `KURULUM.txt` adımları anlatır. İstersen [KasabaSpawn eklentisini](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaSpawn-1.0.0.jar) kurup `/kasabaspawn yap` komutuyla kendi düz alanına da inşa edebilirsin. [Tasarım ve kurulum adımları](kasaba-spawn/README.md).
 

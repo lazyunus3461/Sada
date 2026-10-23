@@ -1,13 +1,24 @@
-# Kasaba Battle Royale 1.0.0
+# Kasaba Battle Royale 1.0.1
 
 Paper **1.21.10**, Java **21**. Gönderilen Batı Kasabası adasından hazırlanmış, **aynı dünyada üç ayrı savaş adası ve ortak BR lobisi**. Solo, İkili ve Dörtlü seçenekleri Minecraft'ın yerleşik sayfasında açılır. PUBG silahları kaldırıldı.
+
+## 1.0.0 kuruluysa yalnızca güncelle
+
+Sunucuyu durdur. `plugins` içindeki **KasabaBattleRoyale-1.0.0.jar** dosyasını dışarı çıkar, **KasabaBattleRoyale-1.0.1.jar** dosyasını koy ve sunucuyu yeniden başlat. `KasabaBR` dünyasını ve `plugins/BattleRoyalePrototype` klasörünü koru. Dünya indirmek, bölge/iniş/sandık konumu yeniden ayarlamak gerekmez.
+
+1.0.1 değişiklikleri:
+
+- Maçta alttaki oyuncu konum göstergesi kapalıdır; rakip ve takım arkadaşlarının kafa üstü isimleri gizlenir. BR lobisine dönünce eski görünüm geri gelir. Rol etiketi ve TAB ayarları korunur.
+- Boş elle veya elde eşya varken maç sandığı açılır. Oyun dışındaki oyuncu aynı sandığı kullanamaz. Son oyuncu çıkınca geçici sandıklar hemen temizlenir; sonraki maçta eski sandık birikmez. Sandık içeriği bütün maç oyuncuları için ortak ve tek kullanımlı paylaşılan ganimettir.
+- Hazır haritada her maç sandıkların yarısı açık havadaki doğal zeminde, diğer yarısı ev/çatı adaylarındadır. 10 oyuncuda 8, 20 oyuncuda 15 dış alan sandığı; iki kişilik yönetici testinde en az 6 dış alan sandığı. Önceki maçla konum çakışması engellenir. Kendi özel aday havuzunda uygun açık alan yetersizse kalan boş adaylar kullanılır.
+- Güvenli alan **kare sınır duvarıyla** görünür: beklerken mavi, daralırken kırmızı. Üstte alan büyüklüğü ve daralma sayacı vardır. Hasar sınırı görünen duvarla aynıdır; her maçın kendi sınırı vardır. Lobi ve diğer maçların dünya sınırı değiştirilmez.
 
 ## Kurulum
 
 1. Sunucuyu **durdur**. Mevcut dünya ve `plugins/BattleRoyalePrototype` klasörünü yedekle.
 2. Eski `BattleRoyale-BatiKasabasi-TEST-v0.3.1.jar` dosyasını `plugins` dışına çıkar. Aynı eklentinin iki sürümünü bırakma.
 3. Paketteki `KasabaBR` klasörünü sunucunun ana klasörüne, `server.properties` ile **yan yana** koy. `plugins` içine koyma. Bu yeni dünya; gönderdiğin orijinal dünya dosyasına dokunulmaz. Mevcut bir `KasabaBR` dünyasının üzerine yazma.
-4. `plugins` içindeki `KasabaBattleRoyale-1.0.0.jar` ve `KasabaHub-1.2.0.jar` dosyalarını sunucunun `plugins` klasörüne koy. Eski Hub JAR'ını çıkar; `plugins/KasabaHub` veri klasörünü koru. Auth, Roles, Adalar ve diğer oyunları silme.
+4. `plugins` içindeki `KasabaBattleRoyale-1.0.1.jar` ve `KasabaHub-1.2.0.jar` dosyalarını sunucunun `plugins` klasörüne koy. Eski Hub JAR'ını çıkar; `plugins/KasabaHub` veri klasörünü koru. Auth, Roles, Adalar ve diğer oyunları silme.
 5. Sunucuyu aç. Yeni dünya otomatik yüklenir; lobi, üç arena, 60 iniş noktası ve 480 sandık adayı otomatik tanınır. Yeni dünya için Multiverse komutu gerekmez.
 6. Oyunda `/br` veya `/oyunlar git battle` yaz. `/oyunlar` sayfasına **Battle Royale** otomatik eklenir. `battle` adıyla daha önce elle bir giriş eklediysen onu `/oyunlar sil battle` ile kaldırıp sunucuyu yeniden başlat.
 
@@ -33,12 +44,12 @@ BR lobisinde vurma, kırma, blok koyma ve konteyner kullanma kapalıdır. Maça 
 - **En az 10, en fazla 20 oyuncu.** 10 kişi olunca 20 saniyelik geri sayım başlar. Sayı 10'un altına inerse durur; 20 kişi dolarsa kalan süre en fazla 5 saniyeye iner. Yönetici iki rakip takım varken test için elle başlatabilir.
 - Üç arena bağımsız çalışır. Bekleyen uygun mod doldurulur; oynanan maça sonradan oyuncu sokulmaz. Aynı dünyanın genel sınırı maç için daraltılmaz: daralan alan hasarı yalnızca ilgili maçtakilere uygulanır.
 - 10 oyuncuda **15**, 20 oyuncuda **30 sandık**; yaklaşık %15'i nadir ganimet. Bütün bloklar normal **sandık**tır. Ender sandığının kişisel deposu kullanılmaz.
-- Her adada 160 güvenli aday var: 112 iç mekân, 16 çatı, 32 dış mekân. Bir önceki maçın konumları tekrar seçilmez. Nadir sandıklar mor parçacık ve açıldığında mor başlıkla ayırt edilir.
+- Her adada 160 güvenli aday var: 112 iç mekân, 16 çatı, 32 dış mekân. Seçimde açık alan kotası uygulanır; dışarıdaki sandıklar şansa bırakılmaz. Bir önceki maçın konumları tekrar seçilmez. Nadir sandıklar mor parçacık ve açıldığında mor başlıkla ayırt edilir.
 - Yaygın: zincir/demir zırh, Koruma I–II, taş/demir kılıç, demir balta, Savurma I altın kılıç. Nadir: Keskinlik II demir kılıç, Alev I yay, Hızlı Şarj I arbalet, kalkan, şifa. Epik: Keskinlik III elmas kılıç, Koruma IV elmas zırh, Güç III yay, özel oklar. **Netherit ve Koruma V göğüslük çok ender.** Nadir sandık daha güçlü eşyalara ağırlık verir; bütün eşyalar aynı olasılıkla çıkmaz.
 - Yay/arbalet çıkan sandıkta ayrıca **8–16 normal ok garanti**. Normal ok 8–20, parlayan ok 3–6; zehir/yavaşlık/zayıflık okları 1–3 adet. Roket, mermi ve PUBG silahı yok. Zehir I 4 sn, yavaşlık/zayıflık I 6 sn; güçlü uzun süreli etkiler yok.
 - Her sandıkta işe yarayan yiyecek var: pişmiş et, ekmek veya fırın patates. Altın havuç ve altın elma daha az. Çiğ et, çürük et ve gereksiz bütün yiyecek çeşitleri eklenmedi.
 - **Şifa Lokması** kurabiye simgelidir: açlık doluyken de yenir, anında **2 kalp** doldurur, maksimum canı artırmaz, can sınırını aşmaz. İki kullanım arasında **10 saniye** vardır; dolu canda/erken kullanımda harcanmaz. Varsayılan olarak maçta doğal tokluk ve barışçıl mod yenilemesi kapalı; altın elmanın etkileri çalışır. Ana dünyayı etkilemez.
-- Alan önce 180 sn bekler; sonra 600 sn'de 8 blok yarıçapa iner. Dışarıda saniyede 2 can puanı hasar. Maç üst sınırı 20 dakika. Ayarlar `config.yml` içinden değişir; yeniden başlat.
+- Alan önce 180 sn bekler; sonra 600 sn'de 16×16 blokluk kare alana iner (merkezden kenara 8 blok). Dışarıda saniyede 2 can puanı hasar. Maç üst sınırı 20 dakika. Ayarlar `config.yml` içinden değişir; yeniden başlat.
 
 ## Kendi lobini yap
 

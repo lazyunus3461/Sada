@@ -5,7 +5,7 @@ root=Path(__file__).resolve().parents[2];module=root/'kasaba-battle';dist=root/'
 world=module/'target/KasabaBR'
 assert (world/'kasaba-br-map.yml').is_file()
 assert not any((world/x).exists() for x in ('uid.dat','session.lock','playerdata','stats','advancements'))
-jars={'kasaba-battle':'KasabaBattleRoyale-1.0.0.jar','kasaba-hub':'KasabaHub-1.2.0.jar','kasaba-arena':'KasabaArena-1.2.1.jar','kasaba-akce':'KasabaAkce-1.0.0.jar'}
+jars={'kasaba-battle':'KasabaBattleRoyale-1.0.1.jar','kasaba-hub':'KasabaHub-1.2.0.jar','kasaba-arena':'KasabaArena-1.2.1.jar','kasaba-akce':'KasabaAkce-1.0.0.jar'}
 for folder,name in jars.items():
  source=root/folder/'target'/name
  with zipfile.ZipFile(source) as z:
@@ -28,7 +28,7 @@ with zipfile.ZipFile(dist/'KasabaBattleRoyale-Kurulum.zip','w',zipfile.ZIP_DEFLA
 combined='''KASABA BR + X ARENA GÜNCELLEMESİ — Paper 1.21.10 / Java 21
 
 1. Sunucuyu durdur. Dünya ve plugins veri klasörlerini yedekle.
-2. Eski BattleRoyale ... v0.3.1, KasabaArena ve KasabaHub JAR dosyalarını plugins dışına çıkar. Aynı eklentinin iki sürümünü bırakma. Veri klasörlerini silme.
+2. Eski BattleRoyale ... v0.3.1 veya KasabaBattleRoyale-1.0.0, KasabaArena ve KasabaHub JAR dosyalarını plugins dışına çıkar. Aynı eklentinin iki sürümünü bırakma. Veri klasörlerini silme.
 3. ZIP içindeki plugins klasörünün JAR dosyalarını sunucunun plugins klasörüne koy.
    KasabaAkce-1.0.0 zaten varsa aynı sürüm; ikinci kopya koyma.
 4. ZIP içindeki KasabaBR dünya klasörünü sunucunun ana klasörüne koy.
@@ -42,7 +42,8 @@ Yetenekler hedef yokken de atılır. Iskalanınca bekleme süresi harcanır.
 Alan saldırısının uyarısından çıkabilirsin; büyüler otomatik hedef izlemez.
 
 BR: 10 kişiyle geri sayım, en fazla 20 kişi. Üç eşzamanlı maç.
-Normal ve nadir ganimetli sandıklar her maç farklı yerlerde.
+Normal ve nadir ganimetli sandıklar her maç farklı yerlerde; sandıkların yarısı dış alanda.
+Maçta konum göstergesi ve kafa üstü isimleri kapalı; daralan alan mavi/kırmızı sınır duvarıdır.
 Şifa Lokması anında 2 kalp, 10 sn kullanım arası.
 
 Ayrıntılar: KasabaBattleRoyale-KURULUM.txt ve KasabaArena-KURULUM.txt.
@@ -52,6 +53,27 @@ with zipfile.ZipFile(dist/'Kasaba-BR-XArena-Guncelleme.zip','w',zipfile.ZIP_DEFL
  for p in world_files:z.write(p,p.relative_to(world.parent).as_posix())
  for name in jars.values():z.write(dist/name,'plugins/'+name)
  for name in ('KasabaBattleRoyale-KURULUM.txt','KasabaBattleRoyale-TEST-SONUCLARI.txt','KasabaArena-KURULUM.txt','KasabaArena-TEST-SONUCLARI.txt','KasabaBR-Sandik-Adaylari.png'):z.write(dist/name,name)
-artifacts=[jars['kasaba-battle'],'KasabaBattleRoyale-Dunya.zip','KasabaBattleRoyale-Kaynak.zip','KasabaBattleRoyale-Kurulum.zip','Kasaba-BR-XArena-Guncelleme.zip']
+update="""KASABA BATTLE ROYALE 1.0.1 GÜNCELLEMESİ
+
+1. Sunucuyu durdur.
+2. plugins içindeki KasabaBattleRoyale-1.0.0.jar dosyasını dışarı çıkar.
+3. Bu paketteki plugins/KasabaBattleRoyale-1.0.1.jar dosyasını plugins içine koy.
+4. Sunucuyu yeniden başlat.
+
+KasabaBR dünya klasörünü ve plugins/BattleRoyalePrototype veri klasörünü silme.
+Harita değiştirme, lobi veya sandık noktası yeniden ayarlama gerekmez.
+Diğer Kasaba eklentilerini yeniden kurma.
+
+Maç sırasında oyuncu konum çubuğu ve kafa üstü isimler gizlenir.
+Boş elle/elde eşya varken sandık açılır; dışarıda da düzenli sandık çıkar.
+Daralan alan mavi/kırmızı sınır duvarı ve üstte sayaç olarak görünür.
+
+Deneme: iki oyuncu /br solo yazar; OP oyuncu /br başlat 1 yazar.
+"""
+with zipfile.ZipFile(dist/'KasabaBattleRoyale-Guncelleme.zip','w',zipfile.ZIP_DEFLATED) as z:
+ z.writestr('ILK-BUNU-OKU.txt',update)
+ z.write(dist/jars['kasaba-battle'],'plugins/'+jars['kasaba-battle'])
+ z.write(dist/'KasabaBattleRoyale-KURULUM.txt','KasabaBattleRoyale-KURULUM.txt')
+artifacts=['KasabaBattleRoyale-Guncelleme.zip',jars['kasaba-battle'],'KasabaBattleRoyale-Dunya.zip','KasabaBattleRoyale-Kaynak.zip','KasabaBattleRoyale-Kurulum.zip','Kasaba-BR-XArena-Guncelleme.zip']
 (dist/'KasabaBattleRoyale-SHA256SUMS.txt').write_text(''.join(hashlib.sha256((dist/name).read_bytes()).hexdigest()+'  '+name+'\n' for name in artifacts))
 for name in artifacts:print(f'{name}: {(dist/name).stat().st_size:,} bytes')
