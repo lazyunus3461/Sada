@@ -1,11 +1,20 @@
 {
-  "version": "1.0.3",
-  "jarSha256": "adc062d7d06bfddf9ecbf75f53708c67e398c206ff3cb9ecb8103b02ef69300c",
+  "version": "1.0.4",
+  "jarSha256": "e939382c2889947745f881e6e2d242f04c33e1679ac3241edbab9fcd5d7b52e9",
   "paper": "1.21.10-130",
-  "unitTests": 17,
-  "liveChecks": 27,
-  "maxSimultaneousRealClients": 18,
+  "unitTests": 22,
+  "liveChecks": 34,
+  "maxSimultaneousRealClients": 7,
   "suites": {
+    "dayHunts": [
+      "A vampire fake task and a real task give identical public boss-bar increments; the hidden real count is not disclosed",
+      "Stationary held-map frames pulse around pending tasks and the selected destination without showing other players",
+      "A successful hunt starts a private forty-second countdown; immediate extra attacks are denied",
+      "An attack just before forty seconds is blocked; after forty seconds a second kill succeeds during the same day",
+      "The visible fake contribution survives voting/night; meetings and a new day do not reset the hunt cooldown",
+      "Vampires can also do fake common maintenance after the first night, with the same thirty-second repeat limit",
+      "Fake work caps the visible bar at 99% without ending the game; only the final genuine task awards the villager victory"
+    ],
     "core": [
       "Six authenticated real clients enter native Hub/room pages; all five roles assigned in a separate world",
       "All 20 spawn/meeting seats are safe; break/place/damage/hunger blocked and locator bar disabled",
@@ -34,8 +43,8 @@
       "Three simultaneous two-player rooms use separate copies and a shared lobby; a fourth room is refused and cross-room damage is blocked",
       "All three room copies are deleted after their games stop"
     ],
-    "threeRooms": [
-      "18 real clients: three simultaneous six-player normal games, shared lobby, separate void copies, private roles and complete cleanup"
+    "nameVisibility": [
+      "Player names survive 80 near/far checks, cross-chunk teleports and ten simulated visibility resets"
     ],
     "cleanup": [
       "Cancelled room teleport cleans the map, actor equipment mask and role state",
@@ -45,7 +54,14 @@
   "voidScan": {
     "originalMapChunks": 120,
     "preservedMapChunks": 120,
-    "verifiedEmptyOutsideChunks": 1456,
+    "verifiedEmptyOutsideChunks": 1488,
     "naturalTerrainOutsideMap": false
+  },
+  "settingsUpgrade": {
+    "fromVersion1": true,
+    "fromUnversionedWithJarDefaults": true,
+    "cooldownSeconds": 40,
+    "legacyDailyLimitRemoved": true,
+    "lobbyPreserved": true
   }
 }

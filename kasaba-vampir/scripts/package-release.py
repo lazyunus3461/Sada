@@ -3,7 +3,7 @@
 from pathlib import Path
 import hashlib,json,shutil,zipfile
 root=Path(__file__).resolve().parents[1];dist=root.parent/'dist';dist.mkdir(exist_ok=True)
-version='1.0.3';stem=f'KasabaVampirKoylu-{version}';jar=root/'target'/f'{stem}.jar'
+version='1.0.4';stem=f'KasabaVampirKoylu-{version}';jar=root/'target'/f'{stem}.jar'
 with zipfile.ZipFile(jar) as z:
  assert 'plugin.yml' in z.namelist()
  assert not any('Probe' in n or n.startswith('tr/kasaba/auth/') or n.startswith('tr/kasaba/hub/') for n in z.namelist())

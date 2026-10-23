@@ -39,7 +39,6 @@ final class GameRoom {
     final Map<UUID, UUID> nightTargets = new HashMap<UUID, UUID>();
     final Map<UUID, Location> returnPositions = new HashMap<UUID, Location>();
     final Map<UUID, Corpse> corpses = new HashMap<UUID, Corpse>();
-    final Map<UUID, Integer> dayKills = new HashMap<UUID, Integer>();
     final Map<UUID, Long> lastDayKill = new HashMap<UUID, Long>();
     final Map<UUID, Integer> hunterShots = new HashMap<UUID, Integer>();
     final Map<UUID, Long> publicTaskCooldown = new HashMap<UUID, Long>();
@@ -59,6 +58,7 @@ final class GameRoom {
     int dayRemaining;
     int speakerIndex;
     int taskDone;
+    int fakeTaskDone;
     int taskGoal;
     int startingPlayers;
     boolean firstNightDone;
@@ -443,7 +443,6 @@ final class GameRoom {
     private void startDay() {
         this.phase = Phase.DAY;
         this.dayRemaining = Math.max(20, this.plugin.getConfig().getInt("game.day-seconds", 180));
-        this.dayKills.clear();
         this.world.setTime(1000L);
         int n = 0;
         for (UUID uUID : this.members) {
@@ -473,17 +472,22 @@ final class GameRoom {
         if (this.phase != Phase.DAY || !this.alive.contains(uUID) || !this.alive.contains(uUID2) || this.roles.get(uUID) != Role.VAMPIRE || this.roles.get(uUID2) == Role.VAMPIRE || player.getLocation().distanceSquared(player2.getLocation()) > 12.25) {
             return false;
         }
-        int n = Math.max(1, this.plugin.getConfig().getInt("game.day-vampire-kills-per-player", 1));
-        long l = 1000L * (long)Math.max(0, this.plugin.getConfig().getInt("game.day-vampire-cooldown-seconds", 45));
-        if (this.dayKills.getOrDefault(uUID, 0) >= n || System.currentTimeMillis() - this.lastDayKill.getOrDefault(uUID, 0L) < l) {
-            this.plugin.tell(player, "Gündüz av hakkın veya bekleme süren doldu.");
+        long remaining = dayKillRemainingMillis(uUID);
+        if (remaining > 0) {
+            this.plugin.tell(player, "Yeniden avlanmak için " + (remaining + 999) / 1000 + " saniye bekle.");
             return false;
         }
-        this.dayKills.merge(uUID, 1, Integer::sum);
         this.lastDayKill.put(uUID, System.currentTimeMillis());
         this.eliminate(uUID2, player2.getLocation().clone(), false);
-        this.plugin.tell(player, "Av başarılı. Ceset bildirilene kadar kimliğin gizli.");
+        this.plugin.tell(player, "Av başarılı. Yeni avın " + (dayKillRemainingMillis(uUID) + 999) / 1000 + " saniye sonra hazır.");
         return true;
+    }
+
+    long dayKillRemainingMillis(UUID player) {
+        Long last = this.lastDayKill.get(player);
+        if (last == null) return 0;
+        long cooldown = 1000L * Math.max(0, this.plugin.getConfig().getInt("game.day-vampire-cooldown-seconds", 40));
+        return Math.max(0, cooldown - (System.currentTimeMillis() - last));
     }
 
     boolean hunterShot(Player player, Player player2) {
@@ -600,7 +604,7 @@ final class GameRoom {
         if(n<0||n>=MapLayout.STATIONS.size()||player.getWorld()!=world||player.getLocation().distanceSquared(MapLayout.STATIONS.get(n).location(world))>25)return;
         Task task = this.taskAt(player.getUniqueId(), n);
         if (task == null) {
-            if (this.firstNightDone && this.roles.get(player.getUniqueId()) != Role.VAMPIRE && this.taskDone < this.taskGoal) {
+            if (this.firstNightDone && this.taskDone < this.taskGoal) {
                 long l = this.publicTaskCooldown.getOrDefault(player.getUniqueId(), 0L);
                 if (System.currentTimeMillis() - l >= 30000L) {
                     this.plugin.openTaskMenu(player, this, n, null);
@@ -631,14 +635,9 @@ final class GameRoom {
             return;
         }
         if (task == null) {
-            if (n2 == 13 && this.firstNightDone && this.roles.get(player.getUniqueId()) != Role.VAMPIRE && System.currentTimeMillis() - this.publicTaskCooldown.getOrDefault(player.getUniqueId(), 0L) >= 30000L) {
+            if (n2 == 13 && this.firstNightDone && this.taskDone < this.taskGoal && System.currentTimeMillis() - this.publicTaskCooldown.getOrDefault(player.getUniqueId(), 0L) >= 30000L) {
                 this.publicTaskCooldown.put(player.getUniqueId(), System.currentTimeMillis());
-                ++this.taskDone;
-                this.plugin.tell(player, "Ortak bakım görevi tamamlandı.");
-                this.refreshBar();
-                if (this.taskDone >= this.taskGoal) {
-                    this.finish(false, "Köylüler bütün görevleri tamamladı!");
-                }
+                this.recordTaskCompletion(player, "Ortak bakım görevi tamamlandı.");
             }
             this.plugin.closePage(player);
             return;
@@ -680,15 +679,16 @@ final class GameRoom {
         task.completed = true;
         task.carrying = false;
         this.plugin.closePage(player);
-        if (this.roles.get(player.getUniqueId()) == Role.VAMPIRE) {
-            this.plugin.tell(player, "Sahte görev tamamlandı. Gerçek ilerleme değişmedi.");
-        } else {
-            ++this.taskDone;
-            this.plugin.tell(player, "Görev tamamlandı! Takım ilerlemesi: " + this.taskDone + "/" + this.taskGoal);
-            this.refreshBar();
-            if (this.firstNightDone && this.taskDone >= this.taskGoal) {
-                this.finish(false, "Köylüler bütün görevleri tamamladı!");
-            }
+        this.recordTaskCompletion(player, "Görev tamamlandı!");
+    }
+
+    private void recordTaskCompletion(Player player, String message) {
+        if (this.roles.get(player.getUniqueId()) == Role.VAMPIRE) ++this.fakeTaskDone;
+        else ++this.taskDone;
+        this.plugin.tell(player, message);
+        this.refreshBar();
+        if (this.firstNightDone && this.taskDone >= this.taskGoal) {
+            this.finish(false, "Köylüler bütün görevleri tamamladı!");
         }
     }
 
@@ -702,7 +702,7 @@ final class GameRoom {
             String string = task.kind == 2 ? " → " + MapLayout.STATIONS.get(task.destination()).name() : "";
             this.plugin.tell(player, (task.completed ? "§a✓ " : "§e• ") + MapLayout.STATIONS.get(task.station).name() + string);
         }
-        if (this.firstNightDone && this.roles.get(player.getUniqueId()) != Role.VAMPIRE) {
+        if (this.firstNightDone) {
             this.plugin.tell(player, "Ek ortak bakım işleri istasyonlarda yapılabilir.");
         }
     }
@@ -720,7 +720,7 @@ final class GameRoom {
 
     void refreshBar() {
         if (phase == Phase.FINISHED) return;
-        double progress = taskGoal == 0 ? 0 : Math.min(1, (double)taskDone / taskGoal);
+        double progress = TaskProgress.visible(this.taskDone, this.fakeTaskDone, this.taskGoal);
         String title;
         switch (phase) {
             case SPEECH -> {

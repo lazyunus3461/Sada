@@ -14,11 +14,10 @@ game:
   speaking-seconds-per-player: 20
   vote-seconds: 30
   night-choice-seconds: 40
-  day-vampire-kills-per-player: 1
-  day-vampire-cooldown-seconds: 45
+  day-vampire-cooldown-seconds: 40
   low-player-night-team-kills: 1
   high-player-night-kills-per-vampire: 1
   high-player-threshold: 15
   emergency-bell-cooldown-seconds: 45
   hunter-arrows: 1
-guide-settings-version: 1
+guide-settings-version: 2

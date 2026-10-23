@@ -1,29 +1,31 @@
-# Kasaba Vampir Köylü 1.0.3
+# Kasaba Vampir Köylü 1.0.4
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
 
 ## Kurulum ve güncelleme
 
-Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.0.3.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
+Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.0.4.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
 
 Bu sürüm köyü, köprüyü ve ortak lobiyi **vampirkoylu_bos** isimli boş dünyaya alır. Önceki hazır haritadan kullanılan chunk'lar kopyalanır; bu bölgedeki düzenlemeler korunur. Çevrede sonradan oluşmuş doğal arazi yeni dünyaya alınmaz ve yeni chunk'lar boş üretilir. **Eski dünya klasörü silinmez.** Özel isimli başka bir harita/lobi ayarladıysan o isimler otomatik değiştirilmez. Başka haritalardaki görev yerleri ayrıca uyarlanmalıdır.
 
 Önceki ayarın yedeği `plugins/KasabaVampirKoylu/config-before-world-rename.yml` dosyasında tutulur. Mevcut lobi koordinatların korunur. Varsayılan hazır lobi **144.5 / 69 / 0.5**, köy merkezi **0 / 69 / 0** konumundadır. Ana lobi hiç ayarlanmamışsa orada `/merkez lobi ayarla` kullan.
 
-İlk 1.0.3 açılışında gündüz en az **180 saniye**, gece rol seçimi en az **40 saniye** yapılır. Daha uzun özel süreler korunur; bu geçiş yalnız bir kez uygulanır. Sonrasında süreleri ayarlardan değiştirebilirsin.
+Önceki rehber güncellemesini henüz almayan kurulumlarda gündüz en az **180 saniye**, gece rol seçimi en az **40 saniye** yapılır. Daha uzun özel süreler korunur. 1.0.4 güncellemesi gündüz av aralığını bir defaya mahsus **40 saniye** yapar ve eski günlük av sınırı ayarını kaldırır. Mevcut lobi, oda ve diğer süre ayarları korunur; ayrıca dosya değiştirmen gerekmez. Sonrasında süreleri ayarlardan değiştirebilirsin.
 
 ## Ekranlar, görev haritası ve gizlilik
 
 - Her oyuncunun üstte sürekli görünen **ROLÜN** çubuğu vardır. Bu çubuk yalnız o oyuncuya gönderilir. Başkalarının rolü bu göstergeden görülemez.
 - Toplantıda ortak üst çubuk **ŞU AN KONUŞUYOR: Oyuncu • 20 sn** yazar. Süre ve çubuk azalır; kişi değişince anında güncellenir.
 - **Çanı çalan veya cesedi bildiren oyuncu ilk konuşur.** Otomatik gece toplantısı katılım sırasını kullanır; elenenler atlanır.
-- 7. kutuda köyün gerçek görünümünü içeren **Görev Haritası** bulunur. Sarı 1–4 kendi görevlerin, yeşil bitenler, mavi taşıma işinin teslimat noktasıdır. Beyaz ok yalnız seni; kırmızı X seçtiğin hedefi gösterir. Diğer oyuncuların konumu haritada yer almaz.
+- 7. kutuda köyün gerçek görünümünü içeren **Görev Haritası** bulunur. Parlayan sarı 1–4 kendi görevlerin, yeşil bitenler, mavi taşıma işinin teslimat noktasıdır. Beyaz ok yalnız seni; kırmızı X seçtiğin hedefi gösterir. Diğer oyuncuların konumu haritada yer almaz.
 - Haritaya/deftere sağ tıkla veya `/vk görevler` yaz. Bir görev seçince yön ve mesafe ekranın altında gösterilir. `/vk harita` haritayı eline alır; `/vk görev 1` birinci görevi takip eder.
-- 17 istasyonda **GÖREV NOKTASI**, işin adı ve sağ tıklama yönergesi görünür. Yakındaki kendi aktif işlerin ayrıca parçacıklarla işaretlenir. Taşıma işinde paketi alınca hedef teslimat yerine döner.
+- 17 istasyonda **GÖREV NOKTASI**, işin adı ve sağ tıklama yönergesi görünür. Yakındaki kendi aktif işlerin ayrıca yalnız sana görünen sarı ışık/parıltı parçacıklarıyla işaretlenir. Haritadaki bekleyen işler ve seçilen hedef beyaz/sarı çerçeveyle yanıp söner. Taşıma işinde paketi alınca hedef teslimat yerine döner.
 - Vampirin kılıcı, avcının yayı ve diğer el eşyaları kendi ekranında görünür; diğer oyunculara el ekipmanı boş gönderilir. Bu maskeleme oyuncunun ilk görünme paketlerini de kapsar. Normal görünüm oyun çıkışında geri yüklenir.
-- Kafa üstü oyuncu isimleri **10 blok içinde**, ceset isimleri **5 blok içinde** görünür. Görünürlük her izleyen oyuncu için ayrı hesaplanır.
+- Kafa üstü oyuncu isimleri **10 blok içinde**, ceset isimleri **5 blok içinde** görünür. Görünürlük her izleyen oyuncu için ayrı hesaplanır. Işınlanma veya varlık görünürlüğünün sıfırlanması sonrasında gerçek görünürlük yeniden denetlenir; geçersiz isim etiketleri yenilenir.
 - `/vk rehber` oyunun amacı, roller, görevler, konuşma, oylama ve gece seçimlerini açıklar. Oylama sayfası toplantının nedenini, kimi neden seçtiğini, yanlış kararın etkisini ve Pas seçeneğini anlatır.
 - Gece kahin/doktor/vampir seçim sayfaları otomatik açılır. Kahin `/vk gör`, doktor `/vk koru`, vampir `/vk seçim` ile yeniden açabilir. Kahin ve doktora ayrıca yalnız kendilerinin göreceği gece yeteneği eşyası verilir. Bu yetenekler gece rol seçimi aşamasında kullanılabilir.
+
+Mevcut köy düzeni ve elde tutulan harita korunmuştur. Sağ üstte sabit mini harita eklenmemiştir; oyuncuların mod kurması gerekmez.
 
 ## Üç oda
 
@@ -90,12 +92,12 @@ Yetkiler: `kasabatr.vampir.kullan` herkes için açık; `kasabatr.vampir.admin` 
 
 ## Maç nasıl işler?
 
-- **Gündüz 180 saniye:** Köylüler görev yapar. Vampirin görevleri sahtedir, takım yüzdesine eklenmez. Yaşayanların normal sohbetini yalnız aynı odada 10 blok yakındakiler duyar.
-- **Vampir:** Gündüz 3.5 blok yakınındaki hedefe vurunca eleyebilir. Varsayılan gündüz başına 1 av, avlar arasında 45 saniye. Vampir diğer vampiri avlayamaz. Gece hedefini sayfadan seçer. 15 kişinin altındaki maçta vampir takımına toplam 1 gece avı; 15–20 kişide her vampire en fazla 1 hedef.
+- **Gündüz 180 saniye:** Köylüler görev yapar. Vampirin sahte görevleri de üstteki yüzdeyi gerçek görevlerle aynı miktarda artırır. Yüzdeyi izleyerek bir oyuncunun rolünü kesinleştiremezsin. Yaşayanların normal sohbetini yalnız aynı odada 10 blok yakındakiler duyar.
+- **Vampir:** Gündüz 3.5 blok yakınındaki hedefe vurunca eleyebilir. Günlük av sayısı sınırı yoktur; başarılı her avdan sonra **40 saniye** bekler. Kalan süre yalnız kendi ROLÜN çubuğunda görünür. Iskalamak, uzaktaki hedefe vurmak veya bekleme sırasında denemek süreyi yeniden başlatmaz. Toplantı ve yeni gündüz de beklemeyi sıfırlamaz. Vampir diğer vampiri avlayamaz. Gece hedefini sayfadan seçer. 15 kişinin altındaki maçta vampir takımına toplam 1 gece avı; 15–20 kişide her vampire en fazla 1 hedef.
 - **Avcı:** Varsayılan 1 ok. İsabet eden oyuncu elenir ve rolü açıklanır. Iskalama da ok hakkını tüketir; düşen ok geri alınamaz.
 - **Kahin:** Gece başka bir yaşayan oyuncunun rolüne gizlice bakar.
 - **Doktor:** Gece bir yaşayan oyuncuyu korur; kendisini seçebilir. Kahin/doktor seçim yapmazsa geçerli hedef rastgele seçilir. Vampir seçmezse otomatik av yapılmaz.
-- **Görevler:** Defter yerlerini/ilerlemeyi gösterir. İstasyondaki bloğa sağ tıkla. Sıralı işlerde sayfadaki sırayı uygula; taşıma işlerinde paketi alıp belirtilen başka istasyona götür. İlk geceden sonra ortak bakım görevleri de açılır; oyuncu başına 30 saniye aralıklıdır. Köylü görev hedefi vampir olmayan başlangıç oyuncusu başına 3 iştir. Ölenin görevini tamamlamak zorunlu değildir; ortak bakımla ilerlenebilir.
+- **Görevler:** Defter yerlerini/ilerlemeyi gösterir. İstasyondaki bloğa sağ tıkla. Sıralı işlerde sayfadaki sırayı uygula; taşıma işlerinde paketi alıp belirtilen başka istasyona götür. İlk geceden sonra herkes için ortak bakım görevleri de açılır; oyuncu başına 30 saniye aralıklıdır. Vampirin bakım işleri de görünür ilerleme verir. Köylü görev hedefi vampir olmayan başlangıç oyuncusu başına 3 iştir. Ölenin görevini tamamlamak zorunlu değildir; ortak bakımla ilerlenebilir. Görünür ilerleme gerçek+sahte işlerden hesaplanır, maç bitene kadar en fazla **%99** gösterilir. Köylü zaferi yalnız gerçek görev sayısından hesaplanır; sahte işler köylüleri kazandırmaz ve gerçek sayaç oyunculara açıklanmaz.
 - **Toplantı:** Cesede 4 blok yakınken bildirim çanına sağ tıkla veya meydandaki sabit çana bas. Acil çan kişi başına maçta 1 kez, genel bekleme 45 saniye. Gündüz süresi dolunca da otomatik toplanılır.
 - **Konuşma:** Yaşayanlara sırayla 20 saniye. Yalnız sırası gelen konuşur; `/vk bitir` erken geçirir. Oyuncular toplantıda yürüyemez.
 - **Oylama:** 30 saniye içinde oyuncu seç veya pas geç. Eşitlikte/pasta kimse elenmez. Oylamada elenenin rolü açıklanır. Gece toplantısının ardından 40 saniyelik rol seçimi açılır; acil/ceset toplantısından sonra kalan gündüz devam eder.
