@@ -33,4 +33,5 @@ class AkceLedgerTest {
     @Test void simultaneousWithdrawalsNeverOverdrawOrLoseUpdates()throws Exception{
         AkceLedger bank=new AkceLedger(dir.resolve("ledger"));bank.deposit(a,money("10"));try(ExecutorService executor=Executors.newVirtualThreadPerTaskExecutor()){List<Future<Boolean>> results=new ArrayList<>();for(int i=0;i<30;i++){int id=i;results.add(executor.submit(()->bank.withdraw(a,money("1"),"parallel:"+id)));}int paid=0;for(Future<Boolean> result:results)if(result.get())paid++;assertEquals(10,paid);assertEquals(money("0"),bank.balance(a));}assertEquals(money("0"),new AkceLedger(dir.resolve("ledger")).balance(a));
     }
+ @Test void fishingAndActivityCreditsAreIdempotentAcrossRestart()throws Exception{Path file=dir.resolve("rewards");AkceLedger bank=new AkceLedger(file);bank.credit(a,money("0.20"),"activity:1");bank.credit(a,money("0.75"),"fish:1");bank=new AkceLedger(file);bank.credit(a,money("0.20"),"activity:1");bank.credit(a,money("0.75"),"fish:1");assertEquals(money("0.95"),bank.balance(a));AkceLedger restarted=bank;assertThrows(IllegalArgumentException.class,()->restarted.credit(b,money("0.20"),"activity:1"));}
 }

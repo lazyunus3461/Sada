@@ -1,0 +1,48 @@
+KasabaTR Sunucu Paketi 1.0.0 — doğrulama kaydı
+
+Ortam: Paper 1.21.10 build 130, Java 21; yalnız 127.0.0.1 üzerinde ayrı test sunucusu.
+9 üretim JAR'ı birlikte yüklenerek denendi; test yardımcıları dağıtımda yoktur.
+
+121 birim testi: başarılı, hata/atlama yok.
+14 entegrasyon kontrol grubu: 9 ana grup, 3 yeniden başlatma grubu,
+1 ek BR envanter grubu ve 1 gerçek yaratıcı envanter paketleri grubu.
+Aynı anda en fazla 6 kimliği doğrulanmış Minecraft protokol istemcisi kullanıldı.
+
+Doğrulananlar:
+- Arkadaş kabulü, çevrimiçi/çevrimdışı liste, gizle/göster, lobi mesajı ve grup geçişi.
+- /vip sayfası, onaylı fiyatlar, 7 günlük 75 Akçe alışverişi ve eski düğmenin tekrar ödeme yapamaması.
+- Normal arsa 50 Akçe/en fazla 1; VIP 2 ücretsiz arsa, yaratıcı giriş ve uyarılar.
+- 15 kayıtlı balık için toplam 0,75 Akçe, başkasının balığı ve kopya reddi,
+  15. satışta 24 saat kilidi, ayrı 1 saatlik olta süresi ve yeniden giriş sınırları.
+- X Arena, 1v1 ve 2v2 VIP netherit Korunma III; beceri süresinde 2 saniye indirim.
+- Arena pusulasındaki Lobi, oyun sırasında görünürlüğün dönmesi, eski sosyal/market işleminin reddi.
+- Kimlik ile VIP fısıltısı, aktif oyunda 0,20 Akçe; lobide ve hareketsizlikte ödül yok.
+- Rehber uçuşu ve rol kaldırılınca verilen uçuş izninin geri alınması.
+- 6 oyunculu Vampir Köylü'de rol sayıları ve aynı Kahin tercihini yapan VIP'lerin kurası.
+- BR'de VIP 3 yedek kalp, havada elitra ve gerçek zemine inişte zırhın geri verilmesi.
+- Gerçek eşya toplama, sandık shift aktarımı; normal oyuncuda yalnız 9 yuva,
+  üst envanter sürükleme/alt el engeli, VIP'de tam envanter.
+- 2+3 yedek kalp, katkı bitince yeniden yeme ve son PvP hasarından sonra 3 saniye kilidi.
+- Haritada 221 sandık, yatay en az 12 blok mesafe, iç/dış mekân dağılımı;
+  8.000 örnek ganimette yaklaşık %24 lokma olasılığı.
+- Gerçek sunucu yeniden başlatmasında VIP süresi, para, arkadaşlık ve balık süresinin korunması.
+- Yarım ödeme/ödül kayıtları tekrar işlendiğinde para ve VIP süresinin ikinci kez eklenmemesi.
+- İki arsanın kesintiye uğrayan fiziksel temizliğinin yeniden başlatmada tamamlanması:
+  yapılar ve dolu sandık silinir, derin zemin dolar; komşu arsa değişmez;
+  ancak işlem bitince arsa 50 Akçeye yeniden alınabilir.
+- Gerçek set_creative_slot paketleriyle 83 çağırma yumurtası ve 42 mekanizma reddedildi;
+  taş, beyaz yün, normal sandık ve ahşap kapı kabul edildi.
+  Önceden alınmış yasak eşya yalnız ada dünyasında temizlenir.
+
+15 günlük yokluk, uzun ödül/balık sayaçları ve kesintili ödeme senaryolarında
+zaman/kayıt ayarlayan yalnız yerel test yardımcıları kullanıldı; harita temizliği,
+Paper yeniden başlatması, üretim dinleyicileri, GUI işlemleri ve eşya paketleri gerçektir.
+İnsan tarafından görsel oyun onayı veya kapasite/performans ölçümü yapılmadı.
+Bu sürüm için 3 odada 18 istemcili Vampir Köylü maçı oynatıldığı iddia edilmez;
+önceki 3 harita alanı değiştirilmedi ve JAR içindeki kaynaklarla birebir denetlendi.
+Test makinesindeki Mojang publickeys DNS hatası eklenti hatası değildir.
+
+Dağıtımdaki JAR'lar test sunucusundaki dosyalarla byte düzeyinde karşılaştırılır.
+Eski dünyalar ve eklenti veri klasörleri silinmez. 15 gün yokluk sıfırlaması
+bu sürümün istenen davranışıdır; eski son-giriş kaydı olmayan sahiplere ilk açılışta
+15 gün başlangıç süresi tanınır. Ayrıntılı komut ve kurulum kılavuzu pakettedir.

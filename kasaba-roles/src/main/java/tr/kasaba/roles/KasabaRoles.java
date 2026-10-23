@@ -26,8 +26,9 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-public final class KasabaRoles extends JavaPlugin implements Listener, TabCompleter {
+public final class KasabaRoles extends JavaPlugin implements Listener, TabCompleter, tr.kasaba.roles.api.RoleAccess {
     private RoleFiles.Configuration configuration;
+    private VipTerms vipTerms;
     private Map<String,String> assignments=new LinkedHashMap<>();
     private final Map<UUID,Applied> applied=new HashMap<>();
     private Path configPath,playersPath;
@@ -47,34 +48,43 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         playersPath=getDataFolder().toPath().resolve("oyuncular.yml");
         try {
             if(!Files.exists(playersPath))RoleFiles.writeAssignments(playersPath,Map.of());
-            load();
+            load();vipTerms=new VipTerms(getDataFolder().toPath().resolve("vip-sureleri.yml"));
         } catch(IOException|IllegalArgumentException e){
             getLogger().log(Level.SEVERE,"Rol verileri yüklenemedi; eklenti etkinleşmedi.",e);
             getServer().getPluginManager().disablePlugin(this);return;
         }
         Objects.requireNonNull(getCommand("rol")).setTabCompleter(this);
         getServer().getPluginManager().registerEvents(this,this);
-        Bukkit.getScheduler().runTask(this,this::applyAll);
+        Bukkit.getServicesManager().register(tr.kasaba.roles.api.RoleAccess.class,this,this,org.bukkit.plugin.ServicePriority.Normal);
+        Bukkit.getScheduler().runTaskTimer(this,this::applyAll,20,200);
         Bukkit.getScheduler().runTaskTimer(this,this::refreshNameTags,20,40);
     }
     @Override public void onDisable() {
+        Bukkit.getServicesManager().unregisterAll(this);
         for(Player p:Bukkit.getOnlinePlayers())remove(p);
         applied.clear();
         if(nameTags!=null)nameTags.clear();
     }
-    private Role role(String name) {
-        String id=assignments.getOrDefault(Role.playerKey(name),configuration.catalog().defaultRole().id());
-        return configuration.catalog().get(id);
-    }
+    private Role assigned(String name){return configuration.catalog().get(assignments.getOrDefault(Role.playerKey(name),configuration.catalog().defaultRole().id()));}
+    private Role role(String name){Role current=assigned(name);Player player=Bukkit.getPlayerExact(name);Role vip=configuration.catalog().get("vip");return player!=null&&vip!=null&&vipTerms!=null&&vipTerms.until(player.getUniqueId())>System.currentTimeMillis()&&current.priority()<vip.priority()?vip:current;}
+    @Override public boolean vip(Player p){Role role=assigned(p.getName());return role.id().equals("vip")||Boolean.TRUE.equals(configuration.catalog().permissions(role.id()).get("kasaba.vip"))||vipUntil(p.getUniqueId())>System.currentTimeMillis();}
+    @Override public boolean guide(Player p){return Boolean.TRUE.equals(configuration.catalog().permissions(assigned(p.getName()).id()).get("kasaba.fly"));}
+    @Override public long vipUntil(UUID id){return vipTerms==null?0:vipTerms.until(id);}
+    @Override public void grantVip(UUID id,long until){try{vipTerms.grant(id,until);applyAll();}catch(IOException e){throw new IllegalStateException("VIP süresi kaydedilemedi.",e);}}
     private void load() throws IOException {
-        var next=RoleFiles.configuration(RoleFiles.read(configPath));
+        var yaml=RoleFiles.read(configPath);
+        boolean migrated=yaml.getInt("network-perks-version",0)<1;
+        if(migrated){for(String id:List.of("kurucu","admin","moderator","rehber","vip")){String key="roles."+id;if(yaml.isConfigurationSection(key)&&"white".equals(yaml.getString(key+".name-color","white")))yaml.set(key+".name-color",yaml.getString(key+".color","white"));}if(yaml.isConfigurationSection("roles.vip"))yaml.set("roles.vip.permissions.kasaba.vip",true);if(yaml.isConfigurationSection("roles.kurucu"))yaml.set("roles.kurucu.permissions.kasaba.fly",true);if(yaml.isConfigurationSection("roles.rehber"))yaml.set("roles.rehber.permissions.kasaba.fly",true);yaml.set("network-perks-version",1);}
+        var next=RoleFiles.configuration(yaml);
         var nextAssignments=RoleFiles.assignments(RoleFiles.read(playersPath),next.catalog());
+        if(migrated){Path backup=configPath.resolveSibling("config-before-vip-1.3.0.yml");if(!Files.exists(backup))Files.copy(configPath,backup);RoleFiles.write(configPath,yaml.saveToString());}
         configuration=next;assignments=nextAssignments;
         refreshChat();
     }
     private void refreshChat() {
         Map<String,Role> roles=new HashMap<>();
         assignments.forEach((name,id)->roles.put(name,configuration.catalog().get(id)));
+        for(Player player:Bukkit.getOnlinePlayers())roles.put(Role.playerKey(player.getName()),role(player.getName()));
         chatSettings=new ChatSettings(configuration.manageChat(),Map.copyOf(roles),configuration.catalog().defaultRole());
     }
     private void applyAll(){if(configuration!=null){

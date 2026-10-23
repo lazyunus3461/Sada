@@ -1,8 +1,9 @@
 name: BattleRoyalePrototype
-version: 1.0.3
+version: 1.1.0
 main: tr.kasaba.battle.KasabaBattleRoyale
 api-version: '1.21.10'
-softdepend: [KasabaAuth, KasabaHub, Multiverse-Core]
+depend: [KasabaHub, KasabaAuth]
+softdepend: [Multiverse-Core]
 author: Kasaba
 description: Üç bağımsız maç, büyülü ganimet ve korunan Battle Royale lobisi.
 commands:

@@ -49,5 +49,13 @@ final class BattleRules {
         while(!order.isEmpty()){for(var iterator=order.iterator();iterator.hasNext();){var group=iterator.next();result.add(group.removeFirst());if(group.isEmpty())iterator.remove();}}
         return result;
     }
+    record Point(int x,int z){}
+    static List<Integer> spacedChests(List<Point> points,int wanted,Set<Integer> previous,Set<Integer> outdoors,int minimum,Random random){
+        List<Integer> fresh=new ArrayList<>(),old=new ArrayList<>();for(int i=0;i<points.size();i++)(previous.contains(i)?old:fresh).add(i);
+        java.util.function.IntUnaryOperator sector=i->(Math.floorDiv(points.get(i).x(),32)<<16)^(Math.floorDiv(points.get(i).z(),32)&65535);
+        List<Integer> inside=spread(fresh.stream().filter(i->!outdoors.contains(i)).collect(java.util.stream.Collectors.toCollection(ArrayList::new)),sector,random),outside=spread(fresh.stream().filter(outdoors::contains).collect(java.util.stream.Collectors.toCollection(ArrayList::new)),sector,random);fresh=new ArrayList<>();for(int n=0;n<Math.max(inside.size(),outside.size());n++){if(n<outside.size())fresh.add(outside.get(n));if(n<inside.size())fresh.add(inside.get(n));}old=spread(old,sector,random);fresh.addAll(old);List<Integer> chosen=new ArrayList<>();int limit=Math.min(wanted,Math.max(1,points.size()/2));
+        for(int i:fresh){Point at=points.get(i);boolean close=false;for(int j:chosen){Point b=points.get(j);long dx=at.x()-b.x(),dz=at.z()-b.z();if(dx*dx+dz*dz<(long)minimum*minimum){close=true;break;}}if(!close)chosen.add(i);if(chosen.size()>=limit)break;}
+        return List.copyOf(chosen);
+    }
     static String normalize(String s){return s.toLowerCase(Locale.ROOT).replace("\u0307", "").replace('ı','i').replace('ş','s').replace('ç','c').replace('ğ','g').replace('ü','u').replace('ö','o');}
 }

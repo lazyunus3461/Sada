@@ -1,0 +1,27 @@
+name: KasabaSosyal
+version: 1.0.0
+main: tr.kasaba.social.KasabaSocial
+api-version: '1.21.10'
+depend: [KasabaHub, KasabaAuth, KasabaAkce, KasabaRoles]
+commands:
+  vip:
+    description: VIP ayrıcalıkları, kalan süre ve satın alma sayfası.
+  market:
+    description: Akçe ile VIP satın al.
+  arkadas:
+    aliases: ['arkadaş', 'arkadaşlar', 'arkadaslar']
+    description: Arkadaş listesi, istekler ve mesajlar.
+  mesaj:
+    description: Arkadaşına mesaj gönder.
+  fisla:
+    aliases: ['fısla', 'fısılda', 'fisilda']
+    description: VIP özel mesajı; oyuncu adı veya çevrimiçi kimlik.
+  gorunurluk:
+    aliases: ['görünürlük', 'gizle']
+    description: Spawn ve lobilerde oyuncuları gizle veya göster.
+  fly:
+    description: Rehber uçuşunu aç veya kapat.
+  olta:
+    description: Saatte bir ücretsiz spawn oltası.
+  sat:
+    description: Kendi tuttuğun günlük 15 balığı sat.

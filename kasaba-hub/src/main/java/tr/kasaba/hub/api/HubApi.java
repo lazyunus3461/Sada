@@ -8,5 +8,8 @@ public interface HubApi {
     void register(Plugin owner,HubGame game);
     void unregister(Plugin owner,String id);
     boolean playing(UUID player);
+    default boolean mainLobby(UUID player){return false;}
+    default boolean socialArea(UUID player){return mainLobby(player);}
+    default boolean gameplay(UUID player){return playing(player)&&!socialArea(player);}
     void returnToLobby(UUID player);
 }

@@ -7,6 +7,8 @@ import java.util.UUID;
 public interface AkceApi {
     BigDecimal balance(UUID player);
     void deposit(UUID player, BigDecimal amount);
+    /** Idempotent credit for fishing sales and activity rewards. */
+    void credit(UUID player, BigDecimal amount, String transactionId);
     boolean transfer(UUID from, UUID to, BigDecimal amount);
     /** The same transaction id, player and amount always return the saved result, including after restart. */
     boolean withdraw(UUID player, BigDecimal amount, String transactionId);

@@ -25,7 +25,7 @@ final class LootTable {
         if(hearts!=2&&hearts!=3)throw new IllegalArgumentException("Yedek kalp 2 veya 3 olmalı.");
         ItemStack item=new ItemStack(hearts==2?Material.DRIED_KELP:Material.SWEET_BERRIES,amount);ItemMeta meta=item.getItemMeta();
         meta.setDisplayName(hearts==2?"§eKoruma Lokması §7(+2 sarı kalp)":"§6Güçlü Koruma Lokması §7(+3 sarı kalp)");
-        meta.setLore(List.of("§7Yedek can verir; süreyle kaybolmaz.","§7Darbe aldıkça tükenir. Üst üste birikmez.","§7Yalnızca aktif Battle Royale maçında."));
+        meta.setLore(List.of("§7Yedek can verir; süreyle kaybolmaz.","§7Bir normal + bir güçlü: en fazla 5 sarı kalp.","§7Darbe bittikten 3 sn sonra; kendi etkisi tükenince tekrar."));
         meta.getPersistentDataContainer().set(reserve,PersistentDataType.INTEGER,hearts);var food=meta.getFood();food.setNutrition(0);food.setSaturation(0);food.setCanAlwaysEat(true);meta.setFood(food);item.setItemMeta(meta);return item;
     }
     int reserveHearts(ItemStack item){if(item==null||!item.hasItemMeta())return 0;int value=item.getItemMeta().getPersistentDataContainer().getOrDefault(reserve,PersistentDataType.INTEGER,0);return value==2||value==3?value:0;}
@@ -47,8 +47,8 @@ final class LootTable {
             if(!weapons.isEmpty()){ItemStack weapon=weapons.get(random.nextInt(weapons.size())).item.clone();weapon.setAmount(1);result.add(weapon);}
         }
         if(result.stream().anyMatch(i->i.getType()==Material.BOW||i.getType()==Material.CROSSBOW))result.add(new ItemStack(Material.ARROW,4+random.nextInt(5)));
-        // One shared roll: 30% TOTAL, at most one reserve food per chest.
-        if(random.nextDouble()<0.30)result.add(reserve(random.nextBoolean()?2:3,1));return result;
+        // One shared roll: 24% TOTAL, at most one reserve food per chest.
+        if(random.nextDouble()<0.24)result.add(reserve(random.nextBoolean()?2:3,1));return result;
     }
     static boolean isWeapon(ItemStack item){if(item==null)return false;Material type=item.getType();return type.name().endsWith("_SWORD")||type.name().endsWith("_AXE")||Set.of(Material.BOW,Material.CROSSBOW,Material.TRIDENT,Material.MACE).contains(type);}
     private double weighted(Entry e,boolean rare){return e.weight*switch(e.tier){case YAYGIN->rare?0.25:1;case NADIR->rare?1.5:0.18;case EPIK->rare?1:0.012;case EFSANE->rare?0.15:0.0005;};}

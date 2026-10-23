@@ -7,8 +7,8 @@ minimum:
   ikili: 10
   dortlu: 10
 inis-yuksekligi: 60
-alan-bekleme-saniye: 180
-alan-daralma-saniye: 600
+alan-bekleme-saniye: 120
+alan-daralma-saniye: 480
 son-yaricap: 8
 alan-hasari: 2.0
 azami-mac-saniye: 1200
@@ -33,3 +33,6 @@ yogun-ganimet:
 
 # Sandıklar arena merkezinde bu genişlikte kare alanda çıkar.
 sandik-dagitim-boyutu: 250
+
+sandik-asgari-mesafe: 12
+network-rules-version: 1

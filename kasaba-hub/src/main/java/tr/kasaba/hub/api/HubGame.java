@@ -10,4 +10,6 @@ public interface HubGame {
     boolean available();
     boolean join(List<Player> team);
     void leave(UUID player);
+    /** True only in this game's safe lobby/waiting phase, never during play. */
+    default boolean lobby(UUID player){return false;}
 }

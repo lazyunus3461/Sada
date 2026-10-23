@@ -53,6 +53,13 @@ public final class AkceLedger implements AkceApi {
     @Override public synchronized BigDecimal balance(UUID player){return BigDecimal.valueOf(balances.getOrDefault(Objects.requireNonNull(player),0L),2);}
     @Override public synchronized void deposit(UUID player,BigDecimal amount){long value=cents(amount);long result=Math.addExact(balances.getOrDefault(Objects.requireNonNull(player),0L),value);checkRange(result);Map<UUID,Long> money=new HashMap<>(balances);money.put(player,result);commit(money,names,receipts);}
     public synchronized void set(UUID player,BigDecimal amount){long value=cents(amount);Map<UUID,Long> money=new HashMap<>(balances);money.put(Objects.requireNonNull(player),value);commit(money,names,receipts);}
+    @Override public synchronized void credit(UUID player,BigDecimal amount,String transactionId){
+        Objects.requireNonNull(player);if(transactionId==null||transactionId.isBlank()||transactionId.length()>480)throw new IllegalArgumentException("Geçersiz işlem kimliği.");
+        String key="credit:"+transactionId;long value=cents(amount);Receipt old=receipts.get(key);
+        if(old!=null){if(!old.player().equals(player)||old.cents()!=value)throw new IllegalArgumentException("İşlem kimliği başka bir ödülde kullanılmış.");return;}
+        long result=Math.addExact(balances.getOrDefault(player,0L),value);checkRange(result);Map<UUID,Long> money=new HashMap<>(balances);money.put(player,result);
+        Map<String,Receipt> saved=new HashMap<>(receipts);saved.put(key,new Receipt(player,value,true));commit(money,names,saved);
+    }
     @Override public synchronized boolean transfer(UUID from,UUID to,BigDecimal amount){
         Objects.requireNonNull(from);Objects.requireNonNull(to);if(from.equals(to))throw new IllegalArgumentException("Kendine Akçe gönderemezsin.");long value=cents(amount);if(value==0)throw new IllegalArgumentException("Gönderilecek miktar sıfırdan büyük olmalı.");long source=balances.getOrDefault(from,0L),target=balances.getOrDefault(to,0L);if(source<value)return false;checkRange(Math.addExact(target,value));Map<UUID,Long> money=new HashMap<>(balances);money.put(from,source-value);money.put(to,target+value);commit(money,names,receipts);return true;
     }

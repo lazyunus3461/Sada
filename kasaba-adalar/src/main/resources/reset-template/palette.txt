@@ -1,0 +1,13 @@
+minecraft:air
+minecraft:water
+minecraft:stone
+minecraft:gravel
+minecraft:water[level=0]
+minecraft:sand
+minecraft:andesite
+minecraft:dirt
+minecraft:grass_block
+minecraft:short_grass
+minecraft:oak_log[axis=y]
+minecraft:dandelion
+minecraft:oak_leaves[distance=7,persistent=true,waterlogged=false]

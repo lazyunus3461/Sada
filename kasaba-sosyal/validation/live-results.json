@@ -1,0 +1,116 @@
+{
+  "names": [
+    "NWba2fA",
+    "NWba2fB",
+    "NWba2fC",
+    "NWba2fD",
+    "NWba2fE",
+    "NWba2fF"
+  ],
+  "vip": {
+    "name": "NWba2fA",
+    "balance": "925.20",
+    "until": 1793392200094
+  },
+  "fish": {
+    "name": "NWba2fB",
+    "balance": "50.75",
+    "until": 1792873804556
+  },
+  "plots": [
+    14,
+    15
+  ],
+  "neighbor": 13,
+  "room": 101,
+  "checks": [
+    "Persistent mutual friends, online/offline native list, lobby friend message and one-click hide/show item work with real authenticated clients",
+    "Native /vip lists every benefit and approved price; confirmed 7-day purchase debits 75 Akce once and duplicate callback cannot charge again",
+    "Normal island purchase charges 50 once and stops at one; VIP receives exactly two free creative plots; native warning explains 15-day reset and lag/portal tools are denied",
+    "Only server-recorded own catches sell; fifteen fish pay 0.75 Akce, start a rolling 24h lock and delete received fish; the separate one-hour rod timer survives quota changes",
+    "Arena compass has Lobi instead of Market; gameplay restores visibility and rejects stale shop/friend actions; VIP X armor III and 18s skill cooldown work, whisper accepts numeric ID; only active gameplay earns 0.20 Akce",
+    "VIP armor III applies in both duel modes without X abilities; parties can form/re-enter from safe game lobbies; guide flight works in gameplay and is revoked when the role is removed",
+    "Six-player Vampire game preserves all role quotas, grants one contested Seer slot to a requesting VIP, removes lobby tools during play and permits private VIP whisper/info",
+    "BR VIP starts with exactly three reserve hearts and a locked landing elytra that restores armor on landing; real item pickups fill only nine normal slots while VIP storage/clicks remain open",
+    "Normal+strong reserve food reaches five hearts in either policy branch, cannot refresh its live contribution or eat within three seconds of damage; BR chests are at least 12 horizontal blocks apart indoors/outdoors and 8,000 rolls show about 24% reserve-food chance"
+  ],
+  "boxes": 221,
+  "version": "1.0.0",
+  "restartChecks": 3,
+  "physicalReset": true,
+  "neighborPreserved": true,
+  "creditAndVipReplayIdempotent": true,
+  "productionArtifacts": [
+    "KasabaAdalar-1.4.0.jar",
+    "KasabaAkce-1.1.0.jar",
+    "KasabaArena-1.3.0.jar",
+    "KasabaAuth-1.3.0.jar",
+    "KasabaBattleRoyale-1.1.0.jar",
+    "KasabaHub-1.3.0.jar",
+    "KasabaRoles-1.3.0.jar",
+    "KasabaSosyal-1.0.0.jar",
+    "KasabaVampirKoylu-1.3.0.jar"
+  ],
+  "inventoryShiftDragOffhand": true,
+  "islandCreativeRestrictions": {
+    "actualCreativePackets": true,
+    "spawnEggs": 83,
+    "redstoneItems": 42,
+    "ordinaryBuildingAllowed": true,
+    "outsideIslandUnaffected": true
+  },
+  "runtime": "Paper 1.21.10 build 130 / Java 21 / isolated loopback server",
+  "maximumConcurrentProtocolClients": 6,
+  "integrationGroups": 14,
+  "unitTests": {
+    "kasaba-hub": {
+      "tests": 17,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-roles": {
+      "tests": 20,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-akce": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-sosyal": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-arena": {
+      "tests": 0,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-adalar": {
+      "tests": 10,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-battle": {
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-vampir": {
+      "tests": 44,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "unitTotal": 121
+}

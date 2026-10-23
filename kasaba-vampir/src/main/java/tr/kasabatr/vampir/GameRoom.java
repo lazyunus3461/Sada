@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.EnumMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -137,26 +138,9 @@ final class GameRoom {
         this.world = this.plugin.instances().create(this.id);
         try {
             this.startingPlayers = this.members.size();
-            ArrayList<UUID> arrayList = new ArrayList<UUID>(this.members);
-            Collections.shuffle(arrayList, this.random);
-            int n = 0;
-            for (int i = 0; i < this.vampireCount; ++i) {
-                this.roles.put(arrayList.get(n++), Role.VAMPIRE);
-            }
-            if (this.hunter) {
-                this.roles.put(arrayList.get(n++), Role.HUNTER);
-            }
-            if (this.seer) {
-                this.roles.put(arrayList.get(n++), Role.SEER);
-            }
-            if (this.doctor) {
-                this.roles.put(arrayList.get(n++), Role.DOCTOR);
-            }
-            Iterator<UUID> iterator = arrayList.iterator();
-            while (iterator.hasNext()) {
-                UUID object = iterator.next();
-                this.roles.putIfAbsent(object, Role.VILLAGER);
-            }
+            Map<Role,Integer> quotas=new EnumMap<>(Role.class);quotas.put(Role.VAMPIRE,this.vampireCount);quotas.put(Role.HUNTER,this.hunter?1:0);quotas.put(Role.SEER,this.seer?1:0);quotas.put(Role.DOCTOR,this.doctor?1:0);quotas.put(Role.VILLAGER,this.members.size()-this.vampireCount-(this.hunter?1:0)-(this.seer?1:0)-(this.doctor?1:0));
+            Map<UUID,Role> preferences=new HashMap<>();for(UUID id:this.members){Player p=Bukkit.getPlayer(id);if(p!=null&&tr.kasaba.hub.api.NetworkFeatures.isVip(p)){String name=this.plugin.getConfig().getString("vip-rol-tercihleri."+id,"");try{preferences.put(id,Role.valueOf(name));}catch(IllegalArgumentException ignored){}}}
+            this.roles.putAll(RoleLottery.assign(new ArrayList<>(this.members),quotas,preferences,this.random));
             this.alive.addAll(this.members);
             this.taskGoal = (this.startingPlayers - this.vampireCount) * 3;
             for (UUID uUID : this.members) {

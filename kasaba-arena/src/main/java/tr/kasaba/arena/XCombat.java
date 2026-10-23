@@ -61,11 +61,12 @@ final class XCombat implements Listener {
         ArenaCharacter kind=character.apply(p);
         p.getInventory().setItem(4,weapon(Material.DIAMOND_SWORD,kind.label));
         if(kind==ArenaCharacter.ARCHER){p.getInventory().setItem(5,weapon(Material.BOW,"Okçu • Yay"));p.getInventory().setItem(9,new ItemStack(Material.ARROW,64));}
-        boolean tank=kind==ArenaCharacter.TANK;
+        boolean tank=kind==ArenaCharacter.TANK||tr.kasaba.hub.api.NetworkFeatures.isVip(p);
         p.getInventory().setHelmet(armor(tank?Material.NETHERITE_HELMET:Material.DIAMOND_HELMET));p.getInventory().setChestplate(armor(tank?Material.NETHERITE_CHESTPLATE:Material.DIAMOND_CHESTPLATE));p.getInventory().setLeggings(armor(tank?Material.NETHERITE_LEGGINGS:Material.DIAMOND_LEGGINGS));p.getInventory().setBoots(armor(tank?Material.NETHERITE_BOOTS:Material.DIAMOND_BOOTS));
+        if(tr.kasaba.hub.api.NetworkFeatures.isVip(p)){ItemStack[] pieces=p.getInventory().getArmorContents();for(ItemStack piece:pieces)if(piece!=null)piece.addUnsafeEnchantment(org.bukkit.enchantments.Enchantment.PROTECTION,3);p.getInventory().setArmorContents(pieces);}
         for(int index=0;index<4;index++) {
             final int skill=index;ArenaCharacter.Skill spec=kind.skills.get(index);ItemStack item=new ItemStack(switch(index){case 0->Material.BLAZE_POWDER;case 1->Material.AMETHYST_SHARD;case 2->Material.PRISMARINE_CRYSTALS;default->Material.NETHER_STAR;});
-            item.editMeta(meta->{meta.displayName(Component.text((skill+1)+" • "+spec.name(),NamedTextColor.GOLD));meta.lore(List.of(Component.text(spec.description(),NamedTextColor.GRAY),Component.text("Bekleme: "+spec.cooldownSeconds()+" saniye",NamedTextColor.YELLOW),Component.text("Sağ tık veya /arena yetenek "+(skill+1),NamedTextColor.AQUA)));meta.getPersistentDataContainer().set(abilityKey,PersistentDataType.STRING,kind.name()+":"+(skill+1));});
+            item.editMeta(meta->{meta.displayName(Component.text((skill+1)+" • "+spec.name(),NamedTextColor.GOLD));meta.lore(List.of(Component.text(spec.description(),NamedTextColor.GRAY),Component.text("Bekleme: "+tr.kasaba.hub.api.NetworkFeatures.cooldown(p,spec.cooldownSeconds())+" saniye",NamedTextColor.YELLOW),Component.text("Sağ tık veya /arena yetenek "+(skill+1),NamedTextColor.AQUA)));meta.getPersistentDataContainer().set(abilityKey,PersistentDataType.STRING,kind.name()+":"+(skill+1));});
             p.getInventory().setItem(index,item);
         }
         p.getInventory().setHeldItemSlot(4);lastCombat.put(p.getUniqueId(),System.currentTimeMillis());mayChoose.add(p.getUniqueId());protect(p);updateSkills(p);
@@ -88,7 +89,7 @@ final class XCombat implements Listener {
         long available=Math.max(ready[index],sharedUntil.getOrDefault(id,0L));
         if(available>now)throw new IllegalArgumentException(skill.name()+" için "+((available-now+999)/1000)+" saniye bekle.");
         // Every accepted cast spends its cooldown, including a miss or blocked movement.
-        ready[index]=now+skill.cooldownSeconds()*1000L;sharedUntil.put(id,now+skill.recoveryTicks()*50L);lastCombat.put(id,now);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • "+skill.cooldownSeconds()+" sn bekleme");
+        int seconds=tr.kasaba.hub.api.NetworkFeatures.cooldown(p,skill.cooldownSeconds());ready[index]=now+seconds*1000L;sharedUntil.put(id,now+skill.recoveryTicks()*50L);lastCombat.put(id,now);mayChoose.remove(id);protection.remove(id);updateSkills(p);tell(p,skill.name()+" kullanıldı • "+seconds+" sn bekleme");
         switch(kind) {
             case WARRIOR -> warrior(p,number);
             case ASSASSIN -> assassin(p,number);
@@ -167,6 +168,7 @@ final class XCombat implements Listener {
         mayChoose.remove(attackerId);mayChoose.remove(victimId);protection.remove(attackerId);lastCombat.put(attackerId,now);lastCombat.put(victimId,now);
         double desired=ArenaCharacter.finalDamage(base,character.apply(victim),warCry.getOrDefault(attackerId,0L)>now,shields.getOrDefault(victimId,0L)>now);
         if(!skill&&!(e.getDamager() instanceof Projectile))desired=Math.min(2.0,desired);
+        if(tr.kasaba.hub.api.NetworkFeatures.isVip(victim))desired*=0.8;
         setFinalDamage(e,desired);
     }
     private boolean temporaryAbility(ItemStack item){return item!=null&&item.hasItemMeta()&&item.getItemMeta().getPersistentDataContainer().has(abilityKey);}
