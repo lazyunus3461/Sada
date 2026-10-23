@@ -1,0 +1,47 @@
+KasabaTR Sunucu Paketi 1.1.0 — yapılanlar
+
+Bu ZIP önceki 1.0.0 paketinin tamamını ve iki yeni oyunu içerir: toplam 11 eklenti.
+Paper 1.21.10 / Java 21. Sunucuya yüklemeyi sen yapacaksın.
+
+1. Sunucuyu durdur; plugins ve dünyalarının yedeğini al.
+2. Aynı eklentilerin eski JAR'larını kaldır, ZIP'teki plugins klasörünü mevcut
+   plugins ile birleştir. Veri klasörlerini ve dünyalarını silme.
+3. Başlat. /oyunlar üzerinden İspanya Adası veya Renk Kaçışı'nı seç.
+
+Önceki 1.0.0 güncellemesi kuruluysa yalnız KasabaIspanya-0.4.0.jar ve
+KasabaRenk-1.0.0.jar eklemen yeterli. Eski İspanya JAR'ı kalmasın.
+İki oyunun haritası otomatik kurulur; .mca taşıma veya /mv import gerekmez.
+
+İSPANYA ADASI
+- Ortak lobi, kendi pusulası, 2–4 kişilik odalar, 3 eşzamanlı maç.
+- Gönderdiğin 135 kareli harita, renk etkileri ve üç köprü korunur.
+- Sıra, otomatik zar, sıralama, eşya iadesi ve yeniden giriş kurtarması.
+- /ispanya → odalar; /ispanya oluştur; /ispanya katıl 101; /ispanya başlat.
+- /ispanya lobi oyun lobisine, /lobi ana spawna döner.
+
+YENİ OYUN: RENK KAÇIŞI
+- Ekrandaki renge koş; diğer zeminler kaybolur. İki hata hakkın vardır.
+- İlk hatada sonraki tur geri dönersin; ikinci hatada seyirci olursun.
+- Son kalan kazanır; süreler tur tur kısalır. 3 oda, 2–8 kişi.
+- /renk → odalar; /renk oda 1; /renk başlat.
+- Tek yönetici testi: odayı seçip /renk deneme. Çıkış: /lobi.
+
+ÖNCEKİ İSTEKLER DE PAKETTE
+- Arena pusulasında Market yerine Lobi; /vip bilgi ve ana pusulada VIP marketi.
+- VIP: 3/7/15/30 gün = 40/75/145/250 Akçe; Arena netherit Korunma III,
+  X becerileri -2 saniye, BR 3 yedek kalp/tam envanter/iniş eltrası,
+  Vampir Köylü rol tercihi (rol sayıları korunur, talepte kura), VIP fısıltısı.
+- Spawn/lobilerde oyuncu gizleme, arkadaşlar, gruplar ve mesajlar.
+- Normal arsa 50 Akçe ve en fazla 1; VIP en fazla 2 ücretsiz.
+- 15 gün giriş yapmayanın adası fiziksel temizlenip satışa çıkar.
+  Eski son-giriş kaydı olmayan sahiplere ilk açılıştan itibaren 15 gün verilir.
+- Adalarda redstone makineleri, çağırma yumurtaları ve portal gibi araçlar kapalı.
+  Minecraft sekmeleri görünür; yasaklı eşyalar alınamaz/kullanılamaz.
+- Aktif oyunda 15 dakikaya 0,20 Akçe; lobide/AFK/seyircide sayılmaz.
+- /olta ücretsiz, saatte bir; /sat balık kendi balığını 0,05 Akçeye satar.
+  Günlük 15. satışta 24 saat kilidi başlar, bu sürede gelen balık kaldırılır.
+- BR: normal oyuncu 9 yuva, VIP tam envanter; aralıklı sandıklar,
+  2+3 birleşen yedek kalp, son hasardan 3 saniye sonra tekrar yeme ve hızlı daralma.
+- Roller renkli; Rehber uçuş komutu /fly.
+
+Ayrıntılı kılavuzlar ve test kayıtları BELGELER klasöründe.

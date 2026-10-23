@@ -1,0 +1,68 @@
+{
+  "KasabaAuth": {
+    "version": "1.3.0",
+    "jar": "KasabaAuth-1.3.0.jar",
+    "sha256": "eaf45882c40c67c085bf459b02128a380630af379a1023d5d819a348ab11fdcb",
+    "bytes": 29695
+  },
+  "KasabaHub": {
+    "version": "1.3.0",
+    "jar": "KasabaHub-1.3.0.jar",
+    "sha256": "944cd728d9928eb1969fc2bfae8a6a0fd5ff4b8e4b1261b743752e4f736a0c76",
+    "bytes": 62154
+  },
+  "KasabaRoles": {
+    "version": "1.3.0",
+    "jar": "KasabaRoles-1.3.0.jar",
+    "sha256": "dca2346a7b6e3eadfa99643e25dbc6a3d4f50026e2ecc4eac03b176beec69c39",
+    "bytes": 38918
+  },
+  "KasabaAkce": {
+    "version": "1.1.0",
+    "jar": "KasabaAkce-1.1.0.jar",
+    "sha256": "c092c779b42d63d9af85f55a202b4bdb8cc958a73b1f53154822e44303a69108",
+    "bytes": 18733
+  },
+  "KasabaSosyal": {
+    "version": "1.0.0",
+    "jar": "KasabaSosyal-1.0.0.jar",
+    "sha256": "e4ae2d6145b60e128bc99902f2896c092338884a8754011f5a7fcbcea9ba7af6",
+    "bytes": 35273
+  },
+  "KasabaArena": {
+    "version": "1.3.0",
+    "jar": "KasabaArena-1.3.0.jar",
+    "sha256": "0b3732e4f2ac82588b4bb4a3990d001caeaf621cac5b634aefbbd387c7cf3898",
+    "bytes": 81714
+  },
+  "KasabaAdalar": {
+    "version": "1.4.0",
+    "jar": "KasabaAdalar-1.4.0.jar",
+    "sha256": "32d09f38df94e233284e04094a7e4ba8a06e8333464fbde120db31e3ec21a06e",
+    "bytes": 965096
+  },
+  "BattleRoyalePrototype": {
+    "version": "1.1.0",
+    "jar": "KasabaBattleRoyale-1.1.0.jar",
+    "sha256": "33f6e8a9c6f32c7b4fc3d95ee3f8027709df4d5ea7f8b55518872c3ff6761943",
+    "bytes": 95954
+  },
+  "KasabaVampirKoylu": {
+    "version": "1.3.0",
+    "jar": "KasabaVampirKoylu-1.3.0.jar",
+    "sha256": "875d3a7bcd1feb41cc5342e796d83c63806e10b84e67b7a4a454f45354acfb16",
+    "bytes": 485240
+  },
+  "KasabaIspanya": {
+    "version": "0.4.0",
+    "jar": "KasabaIspanya-0.4.0.jar",
+    "sha256": "6b7b96ec2f5d6af0cf396126f7d9241caf2ac4e3b1ecfdc1d70e3b4f575a6987",
+    "bytes": 112604
+  },
+  "KasabaRenk": {
+    "version": "1.0.0",
+    "jar": "KasabaRenk-1.0.0.jar",
+    "sha256": "e5c90761596f13f5735cc8bddb02f26dc73321e9d1a08ee49da0c4ea26e39fcc",
+    "bytes": 40860
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "version": "1.0.0",
+  "names": [
+    "RClwh4aA",
+    "RClwh4aB",
+    "RClwh4aC",
+    "RClwh4aD",
+    "RClwh4aE",
+    "RClwh4aF"
+  ],
+  "recoveryName": "RClwh4aC",
+  "uuid": "c7c0a535-bd67-3d7f-8a6f-4c3760a2fd8f",
+  "checks": [
+    "Native Hub/compass room selection, three simultaneous two-player games, exact color removal, two lives, winners, protected maps and lobby return work",
+    "A complete four-player match counts successful rounds, gives the first failure a retry, eliminates on the second, supports spectators and coexists with an active Spain match",
+    "Solo practice requires admin permission and ends cleanly after two misses; ordinary users cannot start a one-person competitive game",
+    "Leaving restores every original inventory and mode/gravity, removes temporary items and preserves the shared Hub state"
+  ],
+  "maximumClients": 6,
+  "simultaneousRooms": 3,
+  "fourPlayerGame": true,
+  "restartPending": false,
+  "restartRecovery": true,
+  "restartWorldAndMultiverse": true,
+  "unitTests": {
+    "tests": 3,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "runtime": "Paper 1.21.10 build 130 / Java 21 / Multiverse-Core 5.3.2 / isolated loopback server",
+  "multiversePersistentRegistration": true,
+  "testedJarSha256": "e5c90761596f13f5735cc8bddb02f26dc73321e9d1a08ee49da0c4ea26e39fcc",
+  "persistedVoidGeneration": true
+}

@@ -1,0 +1,12 @@
+name: KasabaRenk
+version: 1.0.0
+main: tr.kasabatr.renk.KasabaRenkPlugin
+api-version: '1.21.10'
+depend: [KasabaHub, KasabaAuth]
+loadbefore: [Multiverse-Core]
+commands:
+  renk:
+    description: Renk Kaçışı oda menüsü ve oyun komutları.
+permissions:
+  kasaba.renk.admin:
+    default: op

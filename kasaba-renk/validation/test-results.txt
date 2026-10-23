@@ -1,0 +1,25 @@
+KasabaRenk 1.0.0 — doğrulama
+
+3 birim testi başarılı: 100 tohumda her rengin eşit alanı/her satırda bulunması,
+artan zorlukta süre sınırı ve platform dışı konumun renk sayılmaması.
+4 canlı kontrol grubu + yeniden başlatma kontrolü başarılı.
+Paper 1.21.10 build 130, Java 21, Multiverse-Core 5.3.2; 11 üretim eklentisi birlikte.
+En fazla 6 doğrulanmış Minecraft protokol istemcisi.
+
+- Gerçek /oyunlar sayfası ve oda düğmesi; üç eşzamanlı 2 kişilik maç.
+- Her tur tam 896 yanlış renk bloğu kalkar, 128 doğru renk bloğu kalır.
+- İlk hatada 1 hak/sonraki tura dönüş, ikinci hatada seyirci, kazanan ilanı.
+- 4 kişilik tam maç, başarılı tur sayımı, elenmiş kişinin seyirciliği;
+  aynı anda aktif İspanya maçıyla bağımsız çalışma.
+- Tek kişilik deneme yalnız yöneticiye açık; iki hatada temiz bitiş.
+- /lobi ile asıl envanter, mod ve yerçekiminin geri verilmesi.
+- Gerçek çıkışta bırakılan yedek, sunucu yeniden başlatıldıktan sonra hesap
+  doğrulamasıyla kurtarıldı: 13 ametist, 9 seviye, iksir ve tam 6 HP yedek can.
+- Oluşturulan dünya boş flat katmanlarını kalıcı saklar; oyunlar pusulası ve
+  Multiverse kaydı yeniden başlatmada korunur.
+
+Oyuncu konumları ve tur saatleri yerel test yardımcısıyla ayarlandı; gerçek
+üretim tur/zemin/elenme kodu ve Paper eklenti olayları çalıştırıldı. Bu test
+elle oynanan hareket/zıplama ve görsel kabulün yerine geçmez. Sekiz oyunculu
+maç veya kapasite/performans ölçümü yapıldığı iddia edilmez. Yardımcı JAR'lar
+üretim dağıtımında yoktur. Test edilen üretim JAR'ının SHA256 değeri dağıtımla aynıdır.

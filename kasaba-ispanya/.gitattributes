@@ -1,0 +1,3 @@
+# Preserve the supplied Windows assets byte for byte, including CRLF line endings.
+src/main/resources/map-template/arena.json -text whitespace=cr-at-eol
+src/main/resources/track.yml -text whitespace=cr-at-eol

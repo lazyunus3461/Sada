@@ -1,0 +1,32 @@
+template-world: ispanya
+max-rooms: 3
+countdown-seconds: 15
+lobby:
+  x: 0.5
+  y: 65
+  z: 34.5
+  yaw: 180
+  pitch: 0
+min-players: 2
+max-players: 4
+turn-seconds: 25
+finish-on-exact-roll: false
+match-max-minutes: 25
+auto-join-open-room: true
+color-effects-version: 3
+# Kırmızı bir tur bekletir veya geri atar; yeşil ileri götürür.
+# Sarı işaretli köprü kestirmesi; mor rastgele ileri/geri götürür.
+# Bunlar Sanalika'nın doğrulanmış özgün adım sayıları değildir.
+tile-effects:
+  red: bad_luck
+  black: none
+  yellow: shortcut
+  green: advance:3
+  purple: random
+# Kırmızının geri atma sonucundaki mesafe.
+red-back-steps: 3
+# Mor kare hem yönü hem 1 ile bu sayı arasındaki adımı rastgele seçer.
+purple-random-max-steps: 6
+# Desteklenen taslak etkiler: none, score:50, score:-50, advance:3, back:3.
+# Ekonomi ödülü için isteğe bağlı konsol komutu. Boşken gerçek para verilmez.
+reward-commands: []

@@ -1,0 +1,69 @@
+{
+  "version": "0.4.0",
+  "names": [
+    "ISlund2A",
+    "ISlund2B",
+    "ISlund2C",
+    "ISlund2D",
+    "ISlund2E",
+    "ISlund2F",
+    "ISlund2G"
+  ],
+  "uuid": "4653ed2c-8dd2-3de0-8fb3-0f8388819b11",
+  "recoveryName": "ISlund2C",
+  "checks": [
+    "Cancelled second-player lobby teleport rolls back the entire Hub party, inventories and game membership",
+    "Native game compass, party room, stale-button rejection, turn guards, natural movement, automatic dice, all three bridges and red/green/purple/black effects work",
+    "Three independent two-player matches coexist; fourth room is denied, failed match teleport returns both players safely, and new chunks remain void",
+    "Three complete two-player races finish every racer, announce ordered results, return to the shared lobby and unload/delete all match worlds (116 throws)",
+    "A full four-player race preserves turn/finish order, rejects a fifth entrant and coexists with the existing 1v1 Arena (77 throws)",
+    "Original inventory/mode/gravity return on /lobi; BR and Vampire lobbies plus /vip remain usable with the Spain plugin loaded",
+    "Disconnect during movement hands the turn to the remaining racer; leaving the final seat removes the world"
+  ],
+  "maximumClients": 7,
+  "twoPlayerGames": 3,
+  "twoPlayerThrows": 116,
+  "fourPlayerGames": 1,
+  "fourPlayerThrows": 77,
+  "sourceMapPreserved": true,
+  "restartPending": false,
+  "restartRecovery": true,
+  "restartWorldAndMultiverse": true,
+  "unitTests": {
+    "tests": 5,
+    "errors": 0,
+    "failures": 0,
+    "skipped": 0
+  },
+  "runtime": "Paper 1.21.10 build 130 / Java 21 / Multiverse-Core 5.3.2 / isolated loopback server",
+  "multiversePersistentRegistration": true,
+  "testedJarSha256": "6b7b96ec2f5d6af0cf396126f7d9241caf2ac4e3b1ecfdc1d70e3b4f575a6987",
+  "mapValidation": {
+    "chunks": 58,
+    "tiles": 135,
+    "shortcuts": [
+      {
+        "from": 9,
+        "to": 32
+      },
+      {
+        "from": 54,
+        "to": 79
+      },
+      {
+        "from": 108,
+        "to": 117
+      }
+    ],
+    "emptyNewChunkSettings": true,
+    "sourceAssetHashes": {
+      "arena.json": "cad6a29b0f16d1c615bc173dafda7dc49dcccc820866ee529c14792e2bb6b0d4",
+      "level.dat": "2d9c750d2f2e5fb5cd685032c24005b01e549dfd185efaed68e95555c0cf4314",
+      "region/r.-1.-1.mca": "205ebb578e6d98ce228d4c5a709506c706114afbc76564ae92a2ce28073d13e1",
+      "region/r.-1.0.mca": "4a2f08fc785d28f54f274fc282f86999abe16c90895af775a120b03c798eb062",
+      "region/r.0.-1.mca": "a8a539e37e7c6bdb119371a2346b18efbab30f665bb2005d89c90bece9333799",
+      "region/r.0.0.mca": "fc6312c204eb5cadf870ffde5a2a12c056382a2d70fceaaf5d33b98230fac6ae"
+    },
+    "embeddedMapMatches": true
+  }
+}
