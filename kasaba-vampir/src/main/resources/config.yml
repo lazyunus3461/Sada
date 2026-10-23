@@ -1,6 +1,6 @@
-template-world: vampirkoylu_sokaklar
+template-world: vampirkoylu_uc_oda
 lobby:
-  world: vampirkoylu_sokaklar
+  world: vampirkoylu_uc_oda
   x: 144.5
   y: 69.0
   z: 0.5

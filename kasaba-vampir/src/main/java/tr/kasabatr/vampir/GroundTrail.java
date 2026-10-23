@@ -16,12 +16,12 @@ final class GroundTrail {
 
     GroundTrail(World world) {
         this.world=world;
-        GroundRoute grid=new GroundRoute(-68,-68,137,137,(x,z)->{
+        GroundRoute grid=new GroundRoute(MapLayout.originX(world)-68,-68,137,137,(x,z)->{
             Block feet=world.getBlockAt(x,FLOOR_Y,z),head=world.getBlockAt(x,FLOOR_Y+1,z);
             return world.getBlockAt(x,FLOOR_Y-1,z).getType().isSolid()
                 &&openable(feet)&&openable(head)&&!feet.isLiquid()&&!head.isLiquid();
         });
-        fields=MapLayout.STATIONS.stream().map(s->grid.toward(s.x(),s.z())).toList();
+        fields=MapLayout.STATIONS.stream().map(s->grid.toward(MapLayout.originX(world)+s.x(),s.z())).toList();
     }
 
     private static boolean openable(Block block) {
@@ -59,7 +59,7 @@ final class GroundTrail {
             // A closed door is a valid route, but show the trail up to it until the player opens it.
             if(!clearNow(feet)||!clearNow(world.getBlockAt(cell.x(),FLOOR_Y+1,cell.z())))break;
             GroundRoute.Cell next=i+1<route.size()?route.get(i+1):null;
-            if(next==null&&distance(player,station)==i){var s=MapLayout.STATIONS.get(station);next=new GroundRoute.Cell(s.x(),s.z());}
+            if(next==null&&distance(player,station)==i){var s=MapLayout.STATIONS.get(station);next=new GroundRoute.Cell(MapLayout.originX(world)+s.x(),s.z());}
             if(next==null)break;
             int dx=next.x()-cell.x(),dz=next.z()-cell.z();
             for(double[] dot:ARROW)player.spawnParticle(Particle.DUST,

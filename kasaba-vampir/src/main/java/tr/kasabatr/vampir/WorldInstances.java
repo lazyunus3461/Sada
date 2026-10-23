@@ -70,7 +70,7 @@ final class WorldInstances {
                 }
             });
             Files.writeString(path2.resolve(MARKER), (CharSequence)("KasabaVampirKoylu " + n), new OpenOption[0]);
-            World world = Bukkit.createWorld(new WorldCreator(string).generator(new EmptyWorldGenerator()));
+            World world = Bukkit.createWorld(new WorldCreator(string).generator(new EmptyWorldGenerator()).generateStructures(false));
             if (world == null) {
                 throw new IOException("Paper dünya kopyasını açamadı: " + string);
             }
@@ -83,7 +83,7 @@ final class WorldInstances {
             world.setGameRule(GameRule.LOCATOR_BAR,false);
             world.setStorm(false);world.setThundering(false);
             world.setTime(1000L);
-            world.getWorldBorder().setCenter(0.5, 0.5);
+            world.getWorldBorder().setCenter(MapLayout.originX(world)+0.5, 0.5);
             world.getWorldBorder().setSize(137.0);
             world.setSpawnLocation(MapLayout.seat(world, 0));
             return world;

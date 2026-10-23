@@ -7,26 +7,31 @@ import zipfile
 
 
 root = Path(__file__).resolve().parents[1]
-world = root / 'world-template' / 'vampirkoylu_sokaklar'
+world = root / 'world-template' / 'vampirkoylu_uc_oda'
 dist = root.parent / 'dist'
 dist.mkdir(exist_ok=True)
-archive = dist / 'KasabaVampirKoylu-1.1.0-DUNYA.zip'
+archive = dist / 'KasabaVampirKoylu-1.2.0-3-ODA-DUNYA.zip'
 files = [world / 'level.dat', world / 'data/world_border.dat']
 files.extend(sorted((world / 'region').glob('r.*.*.mca')))
 assert all(path.is_file() for path in files)
-assert len(files) == 6, 'Expected level.dat, world border and four tested regions.'
+assert len(files) == 8, 'Expected level.dat, world border and six tested regions.'
 
 instructions = '''KASABA VAMPİR KÖYLÜ — DÜNYA HARİTASI (Minecraft Java 1.21.10)
 
-Harita klasörü: vampirkoylu_sokaklar
+Harita klasörü: vampirkoylu_uc_oda
 
 1. Sunucuyu kapat.
-2. vampirkoylu_sokaklar klasörünü server.properties dosyasının yanına çıkar.
+2. vampirkoylu_uc_oda klasörünü server.properties dosyasının yanına çıkar.
    Aynı adlı klasör varsa önce mevcut klasörün yedeğini al; üzerine birleştirme.
-3. KasabaVampirKoylu 1.1.0 eklentisi kuruluysa sunucuyu açınca dünyayı yükler.
+3. KasabaVampirKoylu-1.2.0.jar dosyasını plugins içine koy; eski Vampir Köylü JAR’ını kaldır.
+4. Sunucuyu aç. Eklenti yeni dünyayı yükleyip üç odayı ona bağlar.
 
 Bu ZIP yalnızca dünya dosyalarıdır. Oyun kuralları ve görevler için eklenti de gerekir.
-Köy merkezi: 0 / 69 / 0. Ortak lobi: 144.5 / 69 / 0.5.
+Oda 101 merkezi: 0 / 69 / 0.
+Oda 102 merkezi: 320 / 69 / 0.
+Oda 103 merkezi: 640 / 69 / 0.
+Ortak lobi: 144.5 / 69 / 0.5.
+Üç köy tek dünya içindedir. Bu yapıların çevresinde yalnız boşluk vardır.
 '''
 
 with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as output:

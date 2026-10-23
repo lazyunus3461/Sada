@@ -74,7 +74,7 @@ final class GameRoom {
         this.id = n;
         this.owner = uUID;
         this.members.add(uUID);
-        this.bar = Bukkit.createBossBar("§5Vampir Köylü §7• §fOda " + n, BarColor.PURPLE, BarStyle.SOLID, new BarFlag[0]);
+        this.bar = Bukkit.createBossBar("§dVampir Köylü §8• §bOda " + n, BarColor.PURPLE, BarStyle.SOLID, new BarFlag[0]);
     }
 
     String ownerName() {
@@ -702,13 +702,13 @@ final class GameRoom {
         switch (phase) {
             case SPEECH -> {
                 String speaker = speakerIndex >= 0 && speakerIndex < speakingOrder.size() ? name(speakingOrder.get(speakerIndex)) : "Sıra değişiyor";
-                title = "§eŞU AN KONUŞUYOR: §f" + speaker + " §7• §e" + Math.max(0, seconds) + " sn";
+                title = "§eŞU AN KONUŞUYOR: §b" + speaker + " §8• §6" + Math.max(0, seconds) + " sn";
                 progress = (double)Math.max(0, seconds) / Math.max(5, plugin.getConfig().getInt("game.speaking-seconds-per-player",20));
                 bar.setColor(BarColor.YELLOW);
             }
-            case VOTE -> { title="§cVAMPİRİ BUL §7• §fOylama " + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.RED); }
-            case ROLE -> { title="§9GECE SEÇİMİ §7• §f" + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.BLUE); }
-            default -> { title="§5Vampir Köylü §7• §fGündüz " + dayRemaining + " sn §7• §aGörev %" + (int)(progress*100); bar.setColor(BarColor.PURPLE); }
+            case VOTE -> { title="§cVAMPİRİ BUL §8• §eOylama §6" + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.RED); }
+            case ROLE -> { title="§bGECE SEÇİMİ §8• §6" + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.BLUE); }
+            default -> { title="§dVampir Köylü §8• §bGündüz §6" + dayRemaining + " sn §8• §aGörev %" + (int)(progress*100); bar.setColor(BarColor.PURPLE); }
         }
         bar.setTitle(title); bar.setProgress(Math.clamp(progress,0,1));
     }

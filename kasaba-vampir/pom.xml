@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion><groupId>tr.kasaba</groupId><artifactId>kasaba-vampir</artifactId><version>1.1.1</version>
+  <modelVersion>4.0.0</modelVersion><groupId>tr.kasaba</groupId><artifactId>kasaba-vampir</artifactId><version>1.2.0</version>
   <properties><maven.compiler.release>21</maven.compiler.release><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
   <repositories><repository><id>papermc</id><url>https://repo.papermc.io/repository/maven-public/</url></repository></repositories>
   <dependencies>
@@ -12,7 +12,7 @@
     <dependency><groupId>tr.kasaba</groupId><artifactId>kasaba-hub</artifactId><version>1.2.0</version><scope>provided</scope></dependency>
     <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter</artifactId><version>5.11.4</version><scope>test</scope></dependency>
   </dependencies>
-  <build><finalName>KasabaVampirKoylu-1.1.1</finalName><resources><resource><directory>src/main/resources</directory></resource><resource><directory>world-template/vampirkoylu_sokaklar</directory><targetPath>map-template</targetPath><includes><include>level.dat</include><include>data/world_border.dat</include><include>region/*.mca</include></includes></resource></resources><plugins>
+  <build><finalName>KasabaVampirKoylu-1.2.0</finalName><resources><resource><directory>src/main/resources</directory></resource><resource><directory>world-template/vampirkoylu_uc_oda</directory><targetPath>map-template</targetPath><includes><include>level.dat</include><include>data/world_border.dat</include><include>region/*.mca</include></includes></resource></resources><plugins>
     <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><version>3.14.1</version></plugin>
     <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-surefire-plugin</artifactId><version>3.5.2</version></plugin>
   </plugins></build>

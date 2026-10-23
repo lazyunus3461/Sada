@@ -20,10 +20,10 @@ final class TaskWork {
     private int[] pattern() {
         if(kind==1){List<Integer> order=new ArrayList<>(List.of(0,1,2,3));Collections.shuffle(order,random);return order.stream().mapToInt(Integer::intValue).toArray();}
         if(kind==2)return new int[]{0,1,2};
-        int count=kind==3?(round==0?3:4):4,choices=kind==3?4:3;
+        int count=kind==3?3:4,choices=kind==3?4:3;
         int[] values=new int[count];for(int i=0;i<count;i++)values[i]=random.nextInt(choices);return values;
     }
-    void begin(long now){if(startedAt<0){startedAt=now;nextInputAt=now+800;}}
+    void begin(long now){if(startedAt<0){startedAt=now;nextInputAt=now+700;}}
     void interrupt(){if(done)return;startedAt=-1;nextInputAt=0;step=0;preview=true;}
     long remaining(int action,long now){
         if(kind==3&&preview)return Math.max(0,startedAt+4000-now);
@@ -31,20 +31,20 @@ final class TaskWork {
         if(step==sequence.length-1)input=Math.max(input,startedAt+minimumMillis()-now);
         return Math.max(0,input);
     }
-    long minimumMillis(){return switch(kind){case 0->6000;case 1->8000;case 2->4000;default->0;};}
+    long minimumMillis(){return switch(kind){case 0->5000;case 1->7000;case 2->4000;default->0;};}
     Result select(int action,long now){
         if(done||startedAt<0)return Result.IGNORED;
-        if(kind==3&&action==HINT){step=0;preview=true;startedAt=now;nextInputAt=now+800;return Result.ROUND;}
+        if(kind==3&&action==HINT){step=0;preview=true;startedAt=now;nextInputAt=now+700;return Result.ROUND;}
         if(kind==3&&preview){
             if(action!=READY)return Result.IGNORED;
             if(remaining(action,now)>0)return Result.WAIT;
-            preview=false;nextInputAt=now+800;return Result.HIDDEN;
+            preview=false;nextInputAt=now+700;return Result.HIDDEN;
         }
         if(action<0||action>=(kind==0?3:kind==2?3:4))return Result.IGNORED;
         if(now<nextInputAt)return Result.WAIT;
-        if(action!=sequence[step]){step=0;preview=kind==3;startedAt=now;nextInputAt=now+800;return Result.WRONG;}
+        if(action!=sequence[step]){step=0;preview=kind==3;startedAt=now;nextInputAt=now+700;return Result.WRONG;}
         if(step==sequence.length-1&&remaining(action,now)>0)return Result.WAIT;
-        step++;nextInputAt=now+800;
+        step++;nextInputAt=now+700;
         if(step<sequence.length)return Result.STEP;
         if(kind==3&&round==0){round=1;step=0;preview=true;startedAt=now;sequence=pattern();return Result.ROUND;}
         done=true;return Result.DONE;

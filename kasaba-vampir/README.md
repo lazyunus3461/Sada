@@ -1,18 +1,18 @@
-# Kasaba Vampir Köylü 1.1.1
+# Kasaba Vampir Köylü 1.2.0
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
 
 ## Kurulum ve güncelleme
 
-Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.1.1.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
+Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.2.0.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
 
-Bu sürüm **vampirkoylu_sokaklar** adlı yeni bir dünya hazırlar. Küçük toplantı meydanı, 24 çift çıkışlı ev, 17 kapalı görev odası, avlular, fenerler ve S biçimli kısa sokaklar vardır. Önceki açık harita otomatik olarak bu yerleşime geçer. Hazır harita JAR'ın içindedir; ayrıca dünya indirip kurman gerekmez. Yeni chunk'lar boş üretilir.
+Bu sürüm **vampirkoylu_uc_oda** adlı tek boş dünya içinde **üç fiziksel köy alanı ve bir ortak lobi** içerir. Oda 101 merkezi **0 / 69 / 0**, oda 102 **320 / 69 / 0**, oda 103 **640 / 69 / 0**; ortak lobi **144.5 / 69 / 0.5** konumundadır. Her köyde aynı 24 çift çıkışlı ev, 17 kapalı görev odası, avlular ve S biçimli dar sokaklar bulunur.
 
-Haritayı ayrıca indirmek için [KasabaVampirKoylu-1.1.0-DUNYA.zip](../dist/KasabaVampirKoylu-1.1.0-DUNYA.zip) dosyası vardır. ZIP içindeki `vampirkoylu_sokaklar` klasörü doğrudan Minecraft dünya dosyalarıdır; JAR içermez. Paketi yeniden üretmek için `python3 scripts/package-world.py` kullanılır.
+[Üç alanlı dünya ZIP’ini indir](../dist/KasabaVampirKoylu-1.2.0-3-ODA-DUNYA.zip). Sunucu kapalıyken ZIP’teki `vampirkoylu_uc_oda` klasörünü **server.properties dosyasının yanına**, JAR’ı `plugins` içine koy. ZIP dünya dosyalarıdır; oyun ve görevler için aynı sürüm JAR da gerekir. JAR ilk kurulumda dünya klasörü yoksa kendisi de hazırlar.
 
-**Eski dünya klasörleri silinmez ve üzerlerine yazılmaz.** Eski lobi oyun alanının dışındaysa lobi çevresindeki chunk'lar yeni dünyaya kopyalanır; bu bölgedeki düzenlemelerin ve lobi koordinatların korunur. Oyun alanı yeni köyle değiştirilir. Özel isimli başka bir harita/lobi kullanıyorsan o isimler korunur. Eski lobi doğrudan eski oyun alanının içindeyse lobi o eski dünyada kalır, maçlar yeni köyde açılır.
+**Yapıların ve kendi zeminlerinin dışı tamamen boşluktur.** Doğal arazi, dağ, köy veya başka yapı yoktur; yeni alanlarda da oluşmaz. Eski dünya dosyaları yeni haritaya aktarılmaz. Önceki dünya klasörleri silinmez. Önceki hazır haritayı kullanan sunucu yeni dünyaya ve hazırlanmış tek ortak lobiye otomatik geçer; özel adla ayarlanmış başka dünyalar korunur. Ayarın geçiş öncesi kopyası `plugins/KasabaVampirKoylu/config-before-three-villages-1.2.yml` dosyasındadır.
 
-Geçiş öncesi ayarın yedeği `plugins/KasabaVampirKoylu/config-before-village-1.1.yml` dosyasındadır. Varsayılan ortak lobi **144.5 / 69 / 0.5**, köy merkezi **0 / 69 / 0** konumundadır. Ana lobi hiç ayarlanmamışsa orada `/merkez lobi ayarla` kullan. 1.0.4'teki 40 saniyelik gündüz avı, özel sürelerin ve üç oda sistemi korunur.
+Her oda maça başlarken bu dünyanın ayrı bir geçici kopyasını açar ve **kendi köyünün koordinatlarını** kullanır. Böylece 101, 102 ve 103 aynı anda oynanabilir; roller, görevler ve gece/gündüz süreleri ayrıdır. Maç sınırı yalnız ilgili köyü kapsar; o odanın oyuncusu diğer iki köye gidemez. Maç bitince yalnız geçici kopya kaldırılır; üç alanın bulunduğu ana dünya ve ortak lobi kalır. Yönetici düzenlemeyi ana dünyada `/vk düzenleme aç` ile yapar; sonraki maçlar bu düzenlenmiş şablondan açılır.
 
 ## Kolay ve orta görevler
 
@@ -20,14 +20,18 @@ Her oyuncuya ve vampire aynı dağılımla **2 kolay + 2 orta** kişisel görev 
 
 | Seviye | İş | Nasıl yapılır? |
 |---|---|---|
-| Kolay | Düzeneği Ayarla | Sayfada yazan dört kontrolü sırayla uygula; en az 6 saniye hazırlık gerekir. |
-| Kolay | Malzemeleri Sırala | Odun, demir, erzak ve kumaşı o maç için gösterilen sırayla ayır; en az 8 saniye. |
+| Kolay | Düzeneği Ayarla | Sayfada yazan dört kontrolü sırayla uygula; en az 5 saniye hazırlık gerekir. |
+| Kolay | Malzemeleri Sırala | Odun, demir, erzak ve kumaşı o maç için gösterilen sırayla ayır; en az 7 saniye. |
 | Orta | İki Duraklı Teslimat | Kutuyu kontrol et, erzağı yerleştir, mühürle; en az 4 saniyelik hazırlıktan sonra paketi yakın iki ayrı istasyona sırayla teslim et. Harita hedefi her durakta yenilenir. |
-| Orta | Hafıza Kontrolü | İlk turda 3, ikinci turda 4 rengi hatırla. Her diziyi en az 4 saniye incele, **Diziyi Gizle ve Başla** düğmesine bas, sonra sırayı uygula. |
+| Orta | Hafıza Kontrolü | İki turda da 3 rengi hatırla. Her diziyi en az 4 saniye incele, **Diziyi Gizle ve Başla** düğmesine bas, sonra sırayı uygula. |
 
 İşlemler arasında kısa hazırlık aralığı vardır; hızlıca art arda basmak bu süreyi aşmaz. Yanlış sıralamada o aşama yeniden başlar. Hafızada **Diziyi Tekrar Göster** mevcut turu yeniden hazırlamana izin verir; tamamlanmış ilk tur korunur. Görev noktasından 5 bloktan fazla uzaklaşınca veya toplantı başlayınca yarım aşama yeniden hazırlanır. Taşınan paket kaybolmaz. Teslimat ve hafıza işi yalnız tamamen bitince görev sayılır.
 
 İlk geceden sonra ortak bakım işleri de açılır. Bunlar da kısa bir sıralama/hazırlık işidir; başarıyla bitirdikten sonra tekrar almak için 30 saniye beklersin. Vampir aynı bakımı sahte ilerleme olarak yapabilir.
+
+## Renkli ve daha anlaşılır ekranlar
+
+Görev başlığı altın sarısı, yapılacak işlemin başlığı açık mavi, adım/kolaylık bilgisi yeşil ve açıklama gri görünür. Hafızada her rengin adı kendi rengindedir; seçim düğmeleri de aynı renkleri kullanır. Üstte gündüz bilgisi mavi, süre altın sarısı, görev yüzdesi yeşildir. Kişisel rol adı rol rengiyle kalın yazılır; açıklaması gri kalır. Konuşanın adı açık mavi, oylama uyarısı kırmızı olur. Ekranlar yalnız renkle anlatmaz; başlık ve açıklama metinleri de korunur.
 
 ## Kişiye özel yerde görev okları
 
@@ -35,7 +39,7 @@ Maçta **7. kutuda Görev Yolu pusulası** bulunur. Sağ tıkla ve görevini se�
 
 Yerde yalnız sana gönderilen **mavi parçacık okları** görünür. Yol duvarı kestirmez; baş boşluğu ve sağlam zemini olan blokları, dört ana yönde takip eder. Önündeki en fazla 10 blok işaretlenir, her yarım saniyede bulunduğun bloğa göre yenilenir. Kapalı ahşap kapının önünde durur; kapıyı sağ tıklayıp açınca içeride devam eder. İstasyona bitişik zeminde işaretli görev bloğuna sağ tıklaman istenir. Mod veya kaynak paketi gerekmez; istemcide parçacıkların açık olması gerekir.
 
-Paket hazırlanınca oklar ilk teslim yerine, ilk teslimattan sonra ikinci durağa döner. Görev bitince sıradaki bitmemiş işe geçer. Vampirin sahte işleri de aynı yol gösterimini kullanır. Toplantı, gece, elenme ve oyun çıkışında yeni ok gönderilmez; eski parçacıklar kısa sürede söner. Harita artık otomatik ele verilmez; isteyen `/vk harita` ile mevcut kişisel haritayı açabilir. Köy dünya dosyaları 1.1.0 ile aynıdır; yalnız JAR güncellenir.
+Paket hazırlanınca oklar ilk teslim yerine, ilk teslimattan sonra ikinci durağa döner. Görev bitince sıradaki bitmemiş işe geçer. Vampirin sahte işleri de aynı yol gösterimini kullanır. Toplantı, gece, elenme ve oyun çıkışında yeni ok gönderilmez; eski parçacıklar kısa sürede söner. Harita artık otomatik ele verilmez; isteyen `/vk harita` ile mevcut kişisel haritayı açabilir. 1.2.0 üç fiziksel alan içeren yeni dünyayı kullanır; önceki tek alanlı dünya ZIP’i yerine bu sürümün ZIP’ini kullan.
 
 ## Ekranlar, isteğe bağlı harita ve gizlilik
 
@@ -142,4 +146,4 @@ Süreler ve oyuncu sayıları `plugins/KasabaVampirKoylu/config.yml` içindedir.
 
 Depo kökünde önce `mvn install`, ardından `mvn -f kasaba-hub/pom.xml install`, son olarak `mvn -f kasaba-vampir/pom.xml verify` kullan. Java 21 gerekir. Kaynak ZIP tek başına derlenecekse önce KasabaAuth 1.3.0 ve KasabaHub 1.2.0 API JAR dosyalarını Maven yerel deposuna karşılık gelen `tr.kasaba:kasaba-auth:1.3.0` ve `tr.kasaba:kasaba-hub:1.2.0` koordinatlarıyla yükle. Paper API, KasabaHub ve KasabaAuth `provided` bağımlılıktır; JAR içine gömülmez. Netty taşıma sınıfları sunucudan sağlanır; ek bir protokol eklentisi kurmak gerekmez. Ekipman maskelemesi Paper 1.21.10 paketleriyle doğrulanır. Test adaptörü `scripts/integration` altındadır, yalnız 127.0.0.1 sunucuda açılır ve dağıtım paketine konmaz. Gerçek Paper/istemci test sonuçları dağıtımdaki `KasabaVampirKoylu-TEST-SONUCLARI.txt` dosyasındadır.
 
-Yeni haritayı kaynaklardan yeniden üretmek için `pip install nbtlib numpy Pillow` ve `python scripts/build-village.py` kullanılır. Hazır dosyalar pakette olduğundan normal JAR derlemesinde Python gerekmez. Protokol testleri tam deponun `kasaba-arena/scripts/integration` ortak istemcisini kullanır.
+Haritayı kaynaklardan yeniden üretmek için `pip install nbtlib numpy Pillow`, `python scripts/build-village.py`, `python scripts/build-three-villages.py` ve `python scripts/validate-three-villages.py` kullanılır. Dünya ZIP’i `python scripts/package-world.py` ile hazırlanır. Hazır dosyalar pakette olduğundan normal JAR derlemesinde Python gerekmez. Protokol testleri tam deponun `kasaba-arena/scripts/integration` ortak istemcisini kullanır.

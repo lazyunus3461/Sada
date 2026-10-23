@@ -1,0 +1,15 @@
+{
+  "world": "vampirkoylu_uc_oda",
+  "chunks": 320,
+  "identicalVillageCopies": 3,
+  "centers": [
+    0,
+    320,
+    640
+  ],
+  "blocksOutsideBuildFootprints": 0,
+  "builtBlocks": 392041,
+  "emptyGenerator": true,
+  "naturalStructures": false,
+  "normalizedVillageSha256": "bd10f05eccd1b2aa15695825b4b7d80af4ead5d3d4be52e4eac5274a42bbd848"
+}

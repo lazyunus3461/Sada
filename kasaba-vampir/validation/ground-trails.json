@@ -1,9 +1,9 @@
 {
-  "version": "1.1.1",
+  "version": "1.2.0",
   "realClients": 6,
-  "steps": 28894,
-  "routes": 340,
   "doorCrossings": 340,
+  "routes": 340,
+  "steps": 28894,
   "checks": [
     "All six roles start with the task compass instead of a held map",
     "All 20 start seats reach all 17 stations on real Paper terrain: 340 cardinal routes, solid floors, usable doors, no wall or diagonal shortcuts",

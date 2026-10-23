@@ -1,0 +1,15 @@
+{
+  "world": "vampirkoylu_uc_oda",
+  "rooms": 3,
+  "centers": [
+    0,
+    320,
+    640
+  ],
+  "lobbies": 1,
+  "chunks": 320,
+  "regions": 6,
+  "nonemptyColumns": 60613,
+  "onlyAllowedBuildFootprints": true,
+  "naturalStructures": false
+}

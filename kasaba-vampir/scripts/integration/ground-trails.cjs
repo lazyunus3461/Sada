@@ -65,7 +65,7 @@ async function run(){
  await owner.command('vk durdur');for(const bot of bots)await bot.command('lobi');
  const exitMark=owner.log.length;await delay(700);assert.equal(owner.log.slice(exitMark).filter(floorDust).length,0);
  assert.equal((await owner.state()).roomCount,0);
- const report={version:'1.1.1',realClients:6,...routes,checks};
+ const report={version:'1.2.0',realClients:6,...routes,checks};
  fs.writeFileSync(require('node:path').resolve(__dirname,'../../validation/ground-trails.json'),JSON.stringify(report,null,2)+'\n');
  console.log(JSON.stringify(report,null,2));
 }

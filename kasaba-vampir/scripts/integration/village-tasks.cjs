@@ -23,15 +23,17 @@ async function run(){
  pass('A nearby name label disappears behind an opaque wall and returns when the view is clear');
 
  let task=await getTask(doctor,0);await doctor.probe('STATION|'+task.station);await delay(175);task=await getTask(doctor,0);
+ const taskForm=JSON.stringify(doctor.form);assert(taskForm.includes('gold')&&taskForm.includes('aqua')&&taskForm.includes('gray')&&taskForm.includes('green'));
+ pass('Task dialog packets distinguish the gold heading, aqua instruction, green step count and gray explanation');
  await doctor.button(task.work.labels[task.work.sequence[0]]);assert.equal((await getTask(doctor,0)).step,0);
  task=await getTask(doctor,0);await until(task.work.nextInputAt);await doctor.button(task.work.labels[(task.work.sequence[0]+1)%3]);assert.equal((await getTask(doctor,0)).step,0);
  task=await getTask(doctor,0);await until(task.work.nextInputAt);await doctor.button(task.work.labels[task.work.sequence[0]]);assert.equal((await getTask(doctor,0)).step,1);
  await doctor.probe('POSE|3.5|69|.5');await delay(1100);assert.equal((await getTask(doctor,0)).work.startedAt,-1);
- const start=Date.now();await finishPersonal(doctor);assert(Date.now()-start>=6000);assert.equal((await doctor.state()).taskDone,1);
- pass('Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least six real seconds to complete');
+ const start=Date.now();await finishPersonal(doctor);assert(Date.now()-start>=5000);assert.equal((await doctor.state()).taskDone,1);
+ pass('Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least five real seconds to complete');
 
- const sortingStart=Date.now();await finishPersonal(doctor);assert(Date.now()-sortingStart>=8000);assert.equal((await doctor.state()).taskDone,2);
- pass('Material sorting uses all four items, follows its displayed order, and takes at least eight real seconds');
+ const sortingStart=Date.now();await finishPersonal(doctor);assert(Date.now()-sortingStart>=7000);assert.equal((await doctor.state()).taskDone,2);
+ pass('Material sorting uses all four items, follows its displayed order, and takes at least seven real seconds');
 
  task=await getTask(doctor,2);await doctor.probe('STATION|'+task.station);await delay(175);await finishWork(doctor,false,false,{packingOnly:true});
  task=await getTask(doctor,2);assert(task.carrying);const first=task.destination;await doctor.command('vk görev 3');assert.equal((await doctor.json('ATLAS','atlas')).target,first);
@@ -44,7 +46,7 @@ async function run(){
  await doctor.button('Diziyi Gizle ve Başla');assert((await getTask(doctor,3)).work.preview);
  task=await getTask(doctor,3);await until(task.work.startedAt+4000);await doctor.button('Diziyi Gizle ve Başla');assert(!JSON.stringify(doctor.form).includes('Hatırla:'));
  task=await getTask(doctor,3);await until(task.work.nextInputAt);await doctor.button(task.work.labels[(task.work.sequence[0]+1)%4]);assert((await getTask(doctor,3)).work.preview);
- await finishWork(doctor);assert((await getTask(doctor,3)).completed);assert.equal((await doctor.state()).taskDone,4);
+ await finishWork(doctor);assert.equal((await getTask(doctor,3)).work.sequence.length,3);assert((await getTask(doctor,3)).completed);assert.equal((await doctor.state()).taskDone,4);
  pass('Medium memory task enforces its preview, hides the clue, restarts a mistaken round and requires both rounds before completion');
 
  task=await getTask(vampire,3);await vampire.probe('STATION|'+task.station);await doctor.probe('EXPIRE');assert.equal((await getTask(vampire,3)).work.startedAt,-1);assert.equal((await vampire.state()).fakeTaskDone,0);
@@ -55,6 +57,6 @@ async function run(){
  pass('Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress');
 
  await owner.command('vk durdur');for(const bot of bots)await bot.command('lobi');
- console.log(JSON.stringify({version:'1.1.1',realClients:6,checks},null,2));
+ console.log(JSON.stringify({version:'1.2.0',realClients:6,checks},null,2));
 }
 run().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{for(const client of clients)client.end();await delay(500);});

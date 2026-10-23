@@ -11,10 +11,17 @@ final class MapLayout {
     MapLayout() {
     }
 
+    static int originX(String name) {
+        if(name.startsWith("vk_room_102_"))return 320;
+        if(name.startsWith("vk_room_103_"))return 640;
+        return 0;
+    }
+    static int originX(World world){return world==null?0:originX(world.getName());}
+
     static Location seat(World world, int n) {
         double[] dArray = SEATS[Math.floorMod(n, SEATS.length)];
         float f = (float)Math.toDegrees(Math.atan2(-dArray[0], dArray[1]));
-        return new Location(world, dArray[0], 69.0, dArray[1], f, 0.0f);
+        return new Location(world, originX(world)+dArray[0], 69.0, dArray[1], f, 0.0f);
     }
 
     static String zone(Location location) {
@@ -22,7 +29,7 @@ final class MapLayout {
         double d = Double.MAX_VALUE;
         for (Station station2 : STATIONS) {
             double d2;
-            double d3 = location.getX() - (double)station2.x - 0.5;
+            double d3 = location.getX() - originX(location.getWorld()) - (double)station2.x - 0.5;
             double d4 = d3 * d3 + (d2 = location.getZ() - (double)station2.z - 0.5) * d2;
             if (!(d4 < d)) continue;
             d = d4;
@@ -36,12 +43,13 @@ final class MapLayout {
     }
 
     static boolean inside(Location location) {
-        return location.getWorld() != null && location.getX() >= -68 && location.getX() < 69 && location.getZ() >= -68 && location.getZ() < 69 && location.getY() >= 60.0 && location.getY() <= 105.0;
+        double x=location.getX()-originX(location.getWorld());
+        return location.getWorld() != null && x >= -68 && x < 69 && location.getZ() >= -68 && location.getZ() < 69 && location.getY() >= 60.0 && location.getY() <= 105.0;
     }
 
     record Station(String id, String name, String zone, int x, int y, int z) {
         Location location(World world) {
-            return new Location(world, (double)this.x + 0.5, this.y, (double)this.z + 0.5);
+            return new Location(world, originX(world)+(double)this.x + 0.5, this.y, (double)this.z + 0.5);
         }
     }
 }
