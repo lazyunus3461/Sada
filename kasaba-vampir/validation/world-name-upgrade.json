@@ -1,12 +1,11 @@
 {
-  "version": "1.0.2",
-  "oldTemplate": "KasabaTR-VampirKoylu-TamDunya",
-  "template": "vampirkoylu",
-  "lobby": "vampirkoylu",
-  "oldConfigBackupExact": true,
-  "customDaySecondsPreserved": 137,
+  "version": "1.0.3",
+  "before": "vampirkoylu",
+  "after": "vampirkoylu_bos",
+  "oldWorldFilesUnchanged": true,
+  "preservedMapChunks": 120,
   "customLobbyYawPreserved": 123,
-  "unitTests": 8,
-  "liveChecks": 13,
-  "jarSha256": "23c64297b80da257cdff09c4e50d6cfd41f69a32bed85a6ee2ca6369c7674cfc"
+  "daySeconds": 180,
+  "nightSeconds": 40,
+  "jarSha256": "adc062d7d06bfddf9ecbf75f53708c67e398c206ff3cb9ecb8103b02ef69300c"
 }

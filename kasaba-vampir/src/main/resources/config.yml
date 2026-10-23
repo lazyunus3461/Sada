@@ -1,6 +1,6 @@
-template-world: vampirkoylu
+template-world: vampirkoylu_bos
 lobby:
-  world: vampirkoylu
+  world: vampirkoylu_bos
   x: 144.5
   y: 69.0
   z: 0.5
@@ -10,10 +10,10 @@ lobby:
 game:
   minimum-players: 6
   maximum-players: 20
-  day-seconds: 120
+  day-seconds: 180
   speaking-seconds-per-player: 20
   vote-seconds: 30
-  night-choice-seconds: 20
+  night-choice-seconds: 40
   day-vampire-kills-per-player: 1
   day-vampire-cooldown-seconds: 45
   low-player-night-team-kills: 1
@@ -21,3 +21,4 @@ game:
   high-player-threshold: 15
   emergency-bell-cooldown-seconds: 45
   hunter-arrows: 1
+guide-settings-version: 1

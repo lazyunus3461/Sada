@@ -1,0 +1,13 @@
+package tr.kasabatr.vampir;
+import java.util.*;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
+class GuideLogicTest {
+    @Test void reporterIsFirstWithoutDuplicatingOrRevivingPlayers(){UUID a=UUID.randomUUID(),b=UUID.randomUUID(),dead=UUID.randomUUID();assertEquals(List.of(b,a),MeetingOrder.create(List.of(a,dead,b),Set.of(a,b),b));assertEquals(List.of(a,b),MeetingOrder.create(List.of(a,dead,b),Set.of(a,b),null));assertEquals(List.of(a,b),MeetingOrder.create(List.of(a,dead,b),Set.of(a,b),dead));}
+    @Test void carryTaskSwitchesToDestination(){var t=new GameRoom.Task(2);assertEquals(2,TaskNavigation.station(t));t.carrying=true;assertEquals(7,TaskNavigation.station(t));t.completed=true;assertEquals(2,TaskNavigation.station(t));}
+    @Test void atlasCoordinatesStayWithinImage(){assertEquals(0,TaskNavigation.pixel(-80));assertEquals(64,TaskNavigation.pixel(0));assertEquals(127,TaskNavigation.pixel(80));for(int p=0;p<128;p++)assertTrue(Math.abs(TaskNavigation.pixel(TaskNavigation.world(p))-p)<=1);}
+    @Test void directionsAreRelativeToPlayer(){assertEquals("↑",TaskNavigation.arrow(0,0,10));assertEquals("→",TaskNavigation.arrow(0,-10,0));assertEquals("←",TaskNavigation.arrow(0,10,0));assertEquals("↑",TaskNavigation.arrow(-90,10,0));}
+    @Test void durationsUpgradeOnceAndPreserveLargerCustomValues(){var c=new YamlConfiguration();c.set("game.day-seconds",120);c.set("game.night-choice-seconds",20);assertTrue(GuideSettings.migrate(c));assertEquals(180,c.getInt("game.day-seconds"));assertEquals(40,c.getInt("game.night-choice-seconds"));c.set("game.day-seconds",200);assertFalse(GuideSettings.migrate(c));assertEquals(200,c.getInt("game.day-seconds"));var custom=new YamlConfiguration();custom.set("game.day-seconds",300);custom.set("game.night-choice-seconds",60);GuideSettings.migrate(custom);assertEquals(300,custom.getInt("game.day-seconds"));assertEquals(60,custom.getInt("game.night-choice-seconds"));}
+    @Test void cleanWorldMigrationKeepsSeparateLobby(){var c=new YamlConfiguration();c.set("template-world",WorldNames.CURRENT);c.set("lobby.world","ozel-lobi");c.set("lobby.x",144.5);assertTrue(WorldNames.toClean(c));assertEquals(WorldNames.CLEAN,c.getString("template-world"));assertEquals("ozel-lobi",c.getString("lobby.world"));assertEquals(144.5,c.getDouble("lobby.x"));assertFalse(WorldNames.toClean(c));}
+}

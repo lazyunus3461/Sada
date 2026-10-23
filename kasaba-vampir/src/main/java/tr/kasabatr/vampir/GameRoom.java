@@ -48,6 +48,8 @@ final class GameRoom {
     private final BossBar bar;
     Phase phase = Phase.WAITING;
     World world;
+    RoomGuide guide;
+    String meetingReason = "Henüz toplantı yapılmadı.";
     int vampireCount = 1;
     boolean demo;
     boolean hunter = true;
@@ -95,6 +97,7 @@ final class GameRoom {
     }
 
     void leave(UUID uUID) {
+        boolean wasSpeaker = isSpeaker(uUID);
         if (!this.members.remove(uUID)) {
             return;
         }
@@ -103,12 +106,14 @@ final class GameRoom {
         if (player != null) {
             this.bar.removePlayer(player);
         }
+        if (guide != null) guide.forget(uUID);
         if (this.phase != Phase.WAITING && this.phase != Phase.FINISHED) {
             boolean bl = this.alive.remove(uUID);
             if (bl) {
                 this.announce(this.name(uUID) + " oyundan ayrıldı.");
             }
             this.checkWinner();
+            if (wasSpeaker && phase == Phase.SPEECH) nextSpeaker();
         } else if (this.phase == Phase.WAITING) {
             if (uUID.equals(this.owner) && !this.members.isEmpty()) {
                 this.owner = this.members.iterator().next();
@@ -161,20 +166,25 @@ final class GameRoom {
                 Collections.shuffle(arrayList2, this.random);
                 this.tasks.put(uUID, arrayList2.subList(0, 4).stream().map(Task::new).toList());
             }
+            this.guide = new RoomGuide(this);
             int n2 = 0;
             for (UUID uUID : this.members) {
                 Player player = Bukkit.getPlayer(uUID);
                 this.plugin.prepareMatchPlayer(player, this, MapLayout.seat(this.world, n2++));
                 this.bar.addPlayer(player);
+                this.guide.attach(player);
                 this.plugin.tell(player, "Rolün: §d" + this.roles.get((Object)uUID).label + "§f. Başkalarına söylemek zorunda değilsin.");
+                this.plugin.tell(player, GameText.purpose(this.roles.get(uUID)));
+                this.plugin.tell(player, "7. kutudaki harita görevlerini gösterir. Haritaya/deftere sağ tıklayıp hedef seç. /vk rehber ile kuralları oku.");
                 if (this.roles.get(uUID) != Role.VAMPIRE) continue;
                 this.plugin.tell(player, "Gündüz yakın dövüşle avlan; gece menüden hedef seç. /v gizli sohbet.");
             }
             this.phase = Phase.DAY;
-            this.dayRemaining = Math.max(20, this.plugin.getConfig().getInt("game.day-seconds", 120));
+            this.dayRemaining = Math.max(20, this.plugin.getConfig().getInt("game.day-seconds", 180));
             this.world.setTime(1000L);
             this.announce("Gündüz başladı: " + this.dayRemaining + " saniye. Görevleri yapın, ipuçlarını izleyin.");
             this.refreshBar();
+            this.guide.tick();
         }
         catch (RuntimeException runtimeException) {
             this.finish(null, "Maç başlatılamadı.");
@@ -207,15 +217,23 @@ final class GameRoom {
             }
         }
         this.refreshBar();
+        if (this.guide != null && phase != Phase.FINISHED) this.guide.tick();
     }
 
     void beginMeeting(boolean bl, Corpse corpse) {
+        beginMeeting(bl, corpse, null);
+    }
+
+    void beginMeeting(boolean bl, Corpse corpse, UUID firstSpeaker) {
         if (this.phase != Phase.DAY) {
             return;
         }
         this.nightMeeting = bl;
+        this.meetingReason = bl ? "Gündüz bitti; gece öncesi şüphelileri konuşmak için toplandınız."
+            : corpse != null ? this.name(corpse.victim) + " oyuncusunun cesedi " + corpse.zone + " bölgesinde bulundu."
+            : "Acil toplantı çanı çalındı; şüpheli davranışları değerlendireceksiniz.";
         this.phase = Phase.SPEECH;
-        this.speakingOrder = this.members.stream().filter(this.alive::contains).toList();
+        this.speakingOrder = MeetingOrder.create(this.members, this.alive, firstSpeaker);
         this.speakerIndex = -1;
         this.returnPositions.clear();
         int n = 0;
@@ -234,6 +252,7 @@ final class GameRoom {
         } else {
             this.announce("§eMeydan çanı çaldı. Herkes toplantıya çağrıldı.");
         }
+        this.announce("Amaç: aranızdaki vampiri bulmak. Sıran gelince kimi, nerede gördüğünü anlat; ardından şüpheli kişiye oy vereceksin.");
         this.nextSpeaker();
     }
 
@@ -250,10 +269,11 @@ final class GameRoom {
         }
         this.seconds = Math.max(5, this.plugin.getConfig().getInt("game.speaking-seconds-per-player", 20));
         this.announce("Söz sırası: §a" + this.name(this.speakingOrder.get(this.speakerIndex)) + "§f (" + this.seconds + " sn). /vk bitir ile geçebilir.");
+        this.refreshBar();
     }
 
     boolean isSpeaker(UUID uUID) {
-        return this.phase == Phase.SPEECH && this.speakerIndex < this.speakingOrder.size() && this.speakingOrder.get(this.speakerIndex).equals(uUID);
+        return this.phase == Phase.SPEECH && this.speakerIndex >= 0 && this.speakerIndex < this.speakingOrder.size() && this.speakingOrder.get(this.speakerIndex).equals(uUID);
     }
 
     private void beginVote() {
@@ -261,11 +281,13 @@ final class GameRoom {
         this.votes.clear();
         this.seconds = Math.max(10, this.plugin.getConfig().getInt("game.vote-seconds", 30));
         this.announce("§eOylama başladı. Menünden bir oyuncu seç veya pas geç. Eşitlikte kimse elenmez.");
+        this.announce("Vampir olduğundan şüphelendiğin kişiyi seç. En çok oyu tek başına alan elenir; yanlış bir köylüyü elemek takımını zayıflatır. Emin değilsen Pas.");
         for (UUID uUID : this.alive) {
             Player player = Bukkit.getPlayer(uUID);
             if (player == null) continue;
             this.plugin.openTargetMenu(player, this, "vote");
         }
+        this.refreshBar();
     }
 
     void vote(UUID uUID, UUID uUID2) {
@@ -295,6 +317,7 @@ final class GameRoom {
         List<UUID> list = hashMap.entrySet().stream().filter(entry -> entry.getValue() == n).map(Map.Entry::getKey).toList();
         if (n > 0 && list.size() == 1 && list.get(0) != null) {
             UUID uUID = list.get(0);
+            this.announce("Karar: " + this.name(uUID) + " — " + n + " oy. Açıklanan rol: §d" + this.roles.get(uUID).label);
             this.eliminate(uUID, null, false);
             if (this.phase != Phase.FINISHED) {
                 this.announce("Oylama sonucu " + this.name(uUID) + " elendi. Rol: " + this.roles.get((Object)uUID).label);
@@ -314,7 +337,7 @@ final class GameRoom {
 
     private void beginNightRoles() {
         this.phase = Phase.ROLE;
-        this.seconds = Math.max(5, this.plugin.getConfig().getInt("game.night-choice-seconds", 20));
+        this.seconds = Math.max(5, this.plugin.getConfig().getInt("game.night-choice-seconds", 40));
         this.nightTargets.clear();
         this.protectedPlayer = null;
         this.seerTarget = null;
@@ -322,7 +345,7 @@ final class GameRoom {
         for (UUID uUID : this.alive) {
             Player player = Bukkit.getPlayer(uUID);
             if (player == null || this.roles.get(uUID) != Role.VAMPIRE && this.roles.get(uUID) != Role.SEER && this.roles.get(uUID) != Role.DOCTOR) continue;
-            this.plugin.openTargetMenu(player, this, "role");
+            Bukkit.getScheduler().runTaskLater(plugin,()->{if(phase==Phase.ROLE&&alive.contains(player.getUniqueId())&&player.isOnline()&&!plugin.hasPage(player))plugin.openTargetMenu(player,this,"role");},2);
         }
     }
 
@@ -419,7 +442,7 @@ final class GameRoom {
 
     private void startDay() {
         this.phase = Phase.DAY;
-        this.dayRemaining = Math.max(20, this.plugin.getConfig().getInt("game.day-seconds", 120));
+        this.dayRemaining = Math.max(20, this.plugin.getConfig().getInt("game.day-seconds", 180));
         this.dayKills.clear();
         this.world.setTime(1000L);
         int n = 0;
@@ -485,7 +508,7 @@ final class GameRoom {
                 armorStand.setGravity(false);
                 armorStand.setMarker(true);
                 armorStand.setCustomName("§c☠ " + this.name(uUID) + " cesedi");
-                armorStand.setCustomNameVisible(true);
+                armorStand.setCustomNameVisible(false);
                 armorStand.getEquipment().setHelmet(new ItemStack(Material.PLAYER_HEAD));
             });
             this.corpses.put(armorStand2.getUniqueId(), new Corpse(uUID, armorStand2, System.currentTimeMillis(), MapLayout.zone(location)));
@@ -537,7 +560,7 @@ final class GameRoom {
         }
         this.corpses.remove(corpse.stand.getUniqueId());
         corpse.stand.remove();
-        this.beginMeeting(false, corpse);
+        this.beginMeeting(false, corpse, player.getUniqueId());
     }
 
     void ringEmergency(Player player) {
@@ -555,7 +578,7 @@ final class GameRoom {
         }
         this.emergencyUsed.add(player.getUniqueId());
         this.lastEmergency = System.currentTimeMillis();
-        this.beginMeeting(false, null);
+        this.beginMeeting(false, null, player.getUniqueId());
     }
 
     Task taskAt(UUID uUID, int n) {
@@ -696,18 +719,21 @@ final class GameRoom {
     }
 
     void refreshBar() {
-        if (this.phase == Phase.FINISHED) {
-            return;
+        if (phase == Phase.FINISHED) return;
+        double progress = taskGoal == 0 ? 0 : Math.min(1, (double)taskDone / taskGoal);
+        String title;
+        switch (phase) {
+            case SPEECH -> {
+                String speaker = speakerIndex >= 0 && speakerIndex < speakingOrder.size() ? name(speakingOrder.get(speakerIndex)) : "Sıra değişiyor";
+                title = "§eŞU AN KONUŞUYOR: §f" + speaker + " §7• §e" + Math.max(0, seconds) + " sn";
+                progress = (double)Math.max(0, seconds) / Math.max(5, plugin.getConfig().getInt("game.speaking-seconds-per-player",20));
+                bar.setColor(BarColor.YELLOW);
+            }
+            case VOTE -> { title="§cVAMPİRİ BUL §7• §fOylama " + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.RED); }
+            case ROLE -> { title="§9GECE SEÇİMİ §7• §f" + Math.max(0,seconds) + " sn"; bar.setColor(BarColor.BLUE); }
+            default -> { title="§5Vampir Köylü §7• §fGündüz " + dayRemaining + " sn §7• §aGörev %" + (int)(progress*100); bar.setColor(BarColor.PURPLE); }
         }
-        String string = switch (this.phase.ordinal()) {
-            case 1 -> "Gündüz " + this.dayRemaining + "sn";
-            case 2 -> "Konuşma " + this.seconds + "sn";
-            case 3 -> "Oylama " + this.seconds + "sn";
-            case 4 -> "Gece seçimi " + this.seconds + "sn";
-            default -> "Bekleme";
-        };
-        this.bar.setTitle("§5Vampir Köylü §7• §f" + string + " §7• §aGörev %" + (this.taskGoal == 0 ? 0 : Math.min(100, this.taskDone * 100 / this.taskGoal)));
-        this.bar.setProgress(this.taskGoal == 0 ? 0.0 : Math.min(1.0, (double)this.taskDone / (double)this.taskGoal));
+        bar.setTitle(title); bar.setProgress(Math.clamp(progress,0,1));
     }
 
     void announce(String string) {
@@ -738,6 +764,7 @@ final class GameRoom {
         this.corpses.clear();
         for(UUID id:members){Player p=Bukkit.getPlayer(id);if(p!=null)plugin.closePage(p);}
         this.bar.removeAll();
+        if (guide != null) guide.close();
         this.plugin.roomFinished(this);
     }
 

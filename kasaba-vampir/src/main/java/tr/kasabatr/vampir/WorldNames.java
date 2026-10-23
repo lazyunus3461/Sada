@@ -7,6 +7,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 /** Migrate only the distributed world names; preserve custom worlds and positions. */
 final class WorldNames {
     static final String CURRENT = "vampirkoylu";
+    static final String CLEAN = "vampirkoylu_bos";
+    static boolean managed(String name){return CURRENT.equals(name)||LEGACY.equals(name)||CLEAN.equals(name);}
+    static boolean toClean(FileConfiguration config){boolean changed=false;if(managed(config.getString("template-world"))&&!CLEAN.equals(config.getString("template-world"))){config.set("template-world",CLEAN);changed=true;}if(managed(config.getString("lobby.world"))&&!CLEAN.equals(config.getString("lobby.world"))){config.set("lobby.world",CLEAN);changed=true;}return changed;}
     static final String LEGACY = "KasabaTR-VampirKoylu-TamDunya";
 
     private WorldNames() {}

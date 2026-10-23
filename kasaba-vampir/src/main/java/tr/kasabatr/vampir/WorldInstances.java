@@ -70,7 +70,7 @@ final class WorldInstances {
                 }
             });
             Files.writeString(path2.resolve(MARKER), (CharSequence)("KasabaVampirKoylu " + n), new OpenOption[0]);
-            World world = Bukkit.createWorld(new WorldCreator(string));
+            World world = Bukkit.createWorld(new WorldCreator(string).generator(new EmptyWorldGenerator()));
             if (world == null) {
                 throw new IOException("Paper dünya kopyasını açamadı: " + string);
             }

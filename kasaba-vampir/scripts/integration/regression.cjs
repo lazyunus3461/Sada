@@ -22,6 +22,7 @@ async function run(){
  const quitName=e.name;e.c.end();await delay(800);assert(!(await d.state()).room);assert(!require('node:fs').existsSync('/workspace/kasaba-test-server/'+secondWorld));await d.command('lobi');const afterQuit=await fixture(quitName);s=await afterQuit.state();assert.equal(s.backup,false);assert(s.items.includes('DIAMOND:7'));assert(s.items.includes('EMERALD:3')||s.cursor==='EMERALD:3');pass('Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance');
  // Leave recovery pending while offline, then authenticate again: recovery must not run during Auth admission.
  const recoveryName=f.name;await f.probe('SEED');await f.probe('RECOVERY');assert.equal((await f.state()).backup,true);f.c.end();await delay(700);const recovered=await fixture(recoveryName);s=await recovered.state();assert.equal(s.backup,false);assert(s.items.includes('DIAMOND:7'));assert(s.items.includes('EMERALD:3')||s.cursor==='EMERALD:3');pass('Pending inventory recovery is applied after authentication, preserving the original items');
- console.log(JSON.stringify({version:'1.0.2',paper:'1.21.10-130',realClients:6,checks},null,2));
+ console.log(JSON.stringify({version:'1.0.3',paper:'1.21.10-130',realClients:6,checks},null,2));
 }
-run().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{for(const c of clients)c.end();await delay(500);});
+module.exports={fixture,speech,pas,run};
+if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{for(const c of clients)c.end();await delay(500);});
