@@ -1,16 +1,22 @@
-# Kasaba Vampir Köylü 1.0.1
+# Kasaba Vampir Köylü 1.0.2
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
+
+## Yalnızca JAR değiştirerek güncelleme
+
+Sunucuyu durdur; eski Vampir Köylü JAR dosyasını kaldırıp `KasabaVampirKoylu-1.0.2.jar` dosyasını `plugins` içine koy ve yeniden başlat. `vampirkoylu/level.dat` bulunuyorsa önceki sürümün `KasabaTR-VampirKoylu-TamDunya` ayarları açılışta otomatik olarak `vampirkoylu` adına geçirilir. Yeni JAR varsayılan olarak bu adı kullanır. Ayrı ayar dosyası değiştirmen gerekmez.
+
+Eski ayarın bir kopyası `plugins/KasabaVampirKoylu/config-before-world-rename.yml` dosyasına alınır. Lobi koordinatların ve oyun ayarların korunur. Farklı bir özel harita veya ayrı lobi dünyası belirlediysen onun adı değiştirilmez. Yalnız eski isimli hazır harita varsa o kurulum da çalışmaya devam eder. Harita klasörü bulunmadan boş bir dünya üretilmez.
 
 ## İlk kurulum
 
 1. Sunucuyu **durdur**.
-2. Kurulum ZIP'ini aç. `plugins/KasabaVampirKoylu-1.0.1.jar` dosyasını sunucunun `plugins` klasörüne koy. Önceki Vampir Köylü JAR'ını kaldır; aynı eklentinin iki sürümü bulunmasın.
-3. `KasabaTR-VampirKoylu-TamDunya` klasörünü sunucunun **ana klasörüne** koy: `server.properties` ile yan yana, `plugins` içine değil. Aynı isimli mevcut dünyan varsa önce yedekle; üzerine yazma.
+2. Kurulum ZIP'ini aç. `plugins/KasabaVampirKoylu-1.0.2.jar` dosyasını sunucunun `plugins` klasörüne koy. Önceki Vampir Köylü JAR'ını kaldır; aynı eklentinin iki sürümü bulunmasın.
+3. `vampirkoylu` klasörünü sunucunun **ana klasörüne** koy: `server.properties` ile yan yana, `plugins` içine değil. Aynı isimli mevcut dünyan varsa önce yedekle; üzerine yazma.
 4. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 kurulu olsun. Sunucuyu aç. `/oyunlar` menüsüne Vampir Köylü kendisi eklenir; `/oyunlar ekle` gerekmez.
 5. Ana lobi hiç ayarlanmadıysa ana lobide `/merkez lobi ayarla` kullan. Bu komut KasabaHub'a aittir. Vampir Köylü'nün kendi lobi noktası hazır gelir.
 
-Lobi: `KasabaTR-VampirKoylu-TamDunya`, **144.5 / 69 / 0.5**. Lobi alanı x=112..175, z=-32..31. Köy merkezde x=0, z=0 konumundadır. Her maç bu dünyadan ayrı, geçici bir kopya oluşturur. Aynı anda açık odalar birbirine karışmaz; şablon dünya maç yüzünden değişmez.
+Lobi: `vampirkoylu`, **144.5 / 69 / 0.5**. Lobi alanı x=112..175, z=-32..31. Köy merkezde x=0, z=0 konumundadır. Her maç bu dünyadan ayrı, geçici bir kopya oluşturur. Aynı anda açık odalar birbirine karışmaz; şablon dünya maç yüzünden değişmez.
 
 ## İki kişiyle ilk deneme
 

@@ -1,0 +1,12 @@
+{
+  "version": "1.0.2",
+  "oldTemplate": "KasabaTR-VampirKoylu-TamDunya",
+  "template": "vampirkoylu",
+  "lobby": "vampirkoylu",
+  "oldConfigBackupExact": true,
+  "customDaySecondsPreserved": 137,
+  "customLobbyYawPreserved": 123,
+  "unitTests": 8,
+  "liveChecks": 13,
+  "jarSha256": "23c64297b80da257cdff09c4e50d6cfd41f69a32bed85a6ee2ca6369c7674cfc"
+}

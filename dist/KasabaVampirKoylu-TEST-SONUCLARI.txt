@@ -1,8 +1,8 @@
-Kasaba Vampir Köylü 1.0.1 — test sonuçları
+Kasaba Vampir Köylü 1.0.2 — test sonuçları
 Tarih: 23.10.2026
 Ortam: Java 21, Paper 1.21.10 build 130, KasabaAuth 1.3.0, KasabaHub 1.2.0, KasabaRoles 1.2.0.
 Yalnızca 127.0.0.1 üzerinde, offline/crack hesaplarla doğrulandı.
-Maven clean verify: başarılı.
+Maven verify: başarılı. Dünya adı geçişi için 8 birim testi: 8 başarılı, 0 hata.
 Aynı anda 6 gerçek Minecraft protokol istemcisi; normal maç, iki kişilik yönetici denemesi ve eşzamanlı iki oda.
 Kontroller Minecraft istemci bağlantıları/native sayfa tıklamaları ile yapıldı; etkileşim/hasar ve süre geçişleri ayrıca yerel Bukkit test adaptörüyle tetiklendi. Bu, insanlarla görsel/oynanış kabul testinin yerini almaz.
 
@@ -25,4 +25,11 @@ Harita: Kullanıcının gönderdiği şablon dosyaları değiştirilmedi. 120 ch
 Test adaptörleri üretim JAR'ına ve kurulum paketine dahil edilmedi.
 Sınır: İnsanlarla tam 20 oyunculu oturum ve görsel sunum kabulü yapılmadı.
 
-Üretim JAR SHA-256: 326c945ab9cc51175177c679ad976a1384cc65884034b1d45adf50dc1ae7afd2
+1.0.2 dünya adı güncellemesi:
+- Sadece yeni JAR yüklenerek, 1.0.1 ayar dosyası değiştirilmeden ve harita klasörü vampirkoylu olarak kullanılarak başlatıldı.
+- İki eski dünya adı açılışta otomatik olarak vampirkoylu yapıldı; oyun merkezi oyuna katılımı kabul etti.
+- Eski ayar dosyasının yedeği birebir doğrulandı; özel gündüz süresi 137 ve lobi bakış açısı 123 korundu.
+- Aynı kurulum üzerinde yukarıdaki 13 canlı kontrol tekrar geçti; 6 oyunculu maç, iki kişilik deneme ve eşzamanlı iki oda doğrulandı.
+- Eski harita klasörüyle uyumluluk, özel harita/lobi adlarının korunması, tekrar açılış ve boş klasörün kabul edilmemesi birim testlerinde geçti.
+
+Üretim JAR SHA-256: 23c64297b80da257cdff09c4e50d6cfd41f69a32bed85a6ee2ca6369c7674cfc

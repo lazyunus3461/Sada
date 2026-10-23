@@ -3,7 +3,7 @@
 from pathlib import Path
 import hashlib,json,shutil,zipfile
 root=Path(__file__).resolve().parents[1];dist=root.parent/'dist';dist.mkdir(exist_ok=True)
-version='1.0.1';stem=f'KasabaVampirKoylu-{version}';jar=root/'target'/f'{stem}.jar'
+version='1.0.2';stem=f'KasabaVampirKoylu-{version}';jar=root/'target'/f'{stem}.jar'
 with zipfile.ZipFile(jar) as z:
  assert 'plugin.yml' in z.namelist()
  assert not any('Probe' in n or n.startswith('tr/kasaba/auth/') or n.startswith('tr/kasaba/hub/') for n in z.namelist())
@@ -18,7 +18,9 @@ with zipfile.ZipFile(dist/f'{stem}-Kurulum.zip','w',zipfile.ZIP_DEFLATED) as z:
   if p.is_file():
    assert p.name not in {'uid.dat','session.lock'}
    assert not {'playerdata','stats','advancements'}.intersection(p.parts)
-   z.write(p,str(p.relative_to(root/'world-template')))
+   relative=p.relative_to(root/'world-template')
+   if relative.parts[0]=='KasabaTR-VampirKoylu-TamDunya':relative=Path('vampirkoylu',*relative.parts[1:])
+   z.write(p,str(relative))
 with zipfile.ZipFile(dist/f'{stem}-Kaynak.zip','w',zipfile.ZIP_DEFLATED) as z:
  for p in sorted(root.rglob('*')):
   if p.is_file() and not {'target','.git','__pycache__'}.intersection(p.relative_to(root).parts):z.write(p,str(p.relative_to(root)))

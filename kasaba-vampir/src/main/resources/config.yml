@@ -1,6 +1,6 @@
-template-world: KasabaTR-VampirKoylu-TamDunya
+template-world: vampirkoylu
 lobby:
-  world: KasabaTR-VampirKoylu-TamDunya
+  world: vampirkoylu
   x: 144.5
   y: 69.0
   z: 0.5

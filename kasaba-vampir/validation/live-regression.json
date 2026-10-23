@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1",
+  "version": "1.0.2",
   "paper": "1.21.10-130",
   "simultaneousClients": 6,
   "checks": [
@@ -17,5 +17,5 @@
     "Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance",
     "Pending inventory recovery is applied after authentication, preserving the original items"
   ],
-  "jarSha256": "326c945ab9cc51175177c679ad976a1384cc65884034b1d45adf50dc1ae7afd2"
+  "jarSha256": "23c64297b80da257cdff09c4e50d6cfd41f69a32bed85a6ee2ca6369c7674cfc"
 }

@@ -45,6 +45,13 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
     @Override public void onEnable(){
         saveDefaultConfig();itemKey=new NamespacedKey(this,"menu_item");shotKey=new NamespacedKey(this,"shot-room");instances=new WorldInstances(this);
         try{
+            if(WorldNames.migrate(getConfig(),Bukkit.getWorldContainer().toPath())){
+                var config=getDataFolder().toPath().resolve("config.yml");
+                var backup=getDataFolder().toPath().resolve("config-before-world-rename.yml");
+                try{if(java.nio.file.Files.isRegularFile(config)&&!java.nio.file.Files.exists(backup))java.nio.file.Files.copy(config,backup);getConfig().save(config.toFile());}
+                catch(IOException e){throw new IllegalStateException("Dünya adı ayarı kaydedilemedi; eski dosya korundu.",e);}
+                getLogger().info("Harita/lobi dünya adı otomatik ayarlandı: "+getConfig().getString("template-world"));
+            }
             instances.clearStaleCopies();String name=getConfig().getString("template-world","");
             if(instances.templateReady()&&Bukkit.getWorld(name)==null)Bukkit.createWorld(new WorldCreator(name));
             World template=Bukkit.getWorld(name);if(template!=null){template.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);template.setGameRule(GameRule.DO_WEATHER_CYCLE,false);template.setGameRule(GameRule.DO_MOB_SPAWNING,false);template.setTime(1000);template.setStorm(false);template.setThundering(false);}
@@ -53,7 +60,7 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
         Bukkit.getPluginManager().registerEvents(this,this);getCommand("vk").setExecutor(this);getCommand("vk").setTabCompleter(this);getCommand("v").setExecutor(this);
         Bukkit.getScheduler().runTaskTimer(this,()->{for(GameRoom room:List.copyOf(rooms.values()))try{room.tick();}catch(RuntimeException e){getLogger().log(Level.SEVERE,"Oda "+room.id+" güvenli biçimde durduruluyor.",e);room.finish(null,"Oda işlemi durduruldu.");}},20,20);
         if(!instances.templateReady())getLogger().warning("Harita şablonu yok; kurulum ZIP'indeki dünya klasörünü sunucu ana klasörüne koy.");
-        getLogger().info("Kasaba Vampir Köylü 1.0.1: Hub 1.2, yerleşik sayfalar, Türkçe komutlar ve 2 kişilik yönetici denemesi.");
+        getLogger().info("Kasaba Vampir Köylü 1.0.2: vampirkoylu dünya adı, Hub 1.2 ve 2 kişilik yönetici denemesi.");
     }
     @Override public void onDisable(){
         disabling=true;for(UUID id:List.copyOf(lobby)){Player p=Bukkit.getPlayer(id);if(p!=null)detach(p,true);}
