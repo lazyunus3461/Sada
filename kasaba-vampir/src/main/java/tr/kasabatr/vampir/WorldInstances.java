@@ -43,7 +43,8 @@ final class WorldInstances {
         if (!Files.isRegularFile(path.resolve("level.dat"), new LinkOption[0])) {
             throw new IOException("Harita şablonu yok: " + String.valueOf(path));
         }
-        World source=Bukkit.getWorld(path.getFileName().toString());if(source!=null)source.save();
+        // Finish Paper's queued region writes before copying headers and chunk data.
+        World source=Bukkit.getWorld(plugin.getConfig().getString("template-world", ""));if(source!=null)source.save(true);
         String string = PREFIX + n + "_" + UUID.randomUUID().toString().substring(0, 8);
         final Path path2 = this.path(string);
         Files.createDirectory(path2, new FileAttribute[0]);
@@ -142,9 +143,10 @@ final class WorldInstances {
 
     private Path template() {
         String string = this.plugin.getConfig().getString("template-world", "");
-        if (!string.matches("[A-Za-z0-9_-]{1,80}") || string.startsWith(PREFIX)) {
-            throw new IllegalArgumentException("Geçersiz template-world adı");
-        }
+        if(string.startsWith(PREFIX))throw new IllegalArgumentException("Geçici oda şablon olarak kullanılamaz");
+        World loaded=Bukkit.getWorld(string);
+        if(loaded!=null)return loaded.getWorldFolder().toPath().toAbsolutePath().normalize();
+        if(!string.matches("[A-Za-z0-9_-]{1,80}"))throw new IllegalArgumentException("Geçersiz template-world adı");
         return this.path(string);
     }
 

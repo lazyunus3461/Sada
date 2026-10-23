@@ -1,18 +1,35 @@
-# Kasaba Vampir Köylü 1.2.0
+# Kasaba Vampir Köylü 1.2.1
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
 
 ## Kurulum ve güncelleme
 
-Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.2.0.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
+Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.2.1.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
 
 Bu sürüm **vampirkoylu_uc_oda** adlı tek boş dünya içinde **üç fiziksel köy alanı ve bir ortak lobi** içerir. Oda 101 merkezi **0 / 69 / 0**, oda 102 **320 / 69 / 0**, oda 103 **640 / 69 / 0**; ortak lobi **144.5 / 69 / 0.5** konumundadır. Her köyde aynı 24 çift çıkışlı ev, 17 kapalı görev odası, avlular ve S biçimli dar sokaklar bulunur.
 
-[Üç alanlı dünya ZIP’ini indir](../dist/KasabaVampirKoylu-1.2.0-3-ODA-DUNYA.zip). Sunucu kapalıyken ZIP’teki `vampirkoylu_uc_oda` klasörünü **server.properties dosyasının yanına**, JAR’ı `plugins` içine koy. ZIP dünya dosyalarıdır; oyun ve görevler için aynı sürüm JAR da gerekir. JAR ilk kurulumda dünya klasörü yoksa kendisi de hazırlar.
+[Üç alanlı dünya ZIP’ini indir](../dist/KasabaVampirKoylu-1.2.0-3-ODA-DUNYA.zip). Sunucu kapalıyken ZIP’teki `vampirkoylu_uc_oda` klasörünü **server.properties dosyasının yanına**, JAR’ı `plugins` içine koy. ZIP dünya dosyalarıdır; oyun ve görevler için 1.2.1 JAR da gerekir. JAR ilk kurulumda dünya klasörü yoksa kendisi de hazırlar.
 
 **Yapıların ve kendi zeminlerinin dışı tamamen boşluktur.** Doğal arazi, dağ, köy veya başka yapı yoktur; yeni alanlarda da oluşmaz. Eski dünya dosyaları yeni haritaya aktarılmaz. Önceki dünya klasörleri silinmez. Önceki hazır haritayı kullanan sunucu yeni dünyaya ve hazırlanmış tek ortak lobiye otomatik geçer; özel adla ayarlanmış başka dünyalar korunur. Ayarın geçiş öncesi kopyası `plugins/KasabaVampirKoylu/config-before-three-villages-1.2.yml` dosyasındadır.
 
 Her oda maça başlarken bu dünyanın ayrı bir geçici kopyasını açar ve **kendi köyünün koordinatlarını** kullanır. Böylece 101, 102 ve 103 aynı anda oynanabilir; roller, görevler ve gece/gündüz süreleri ayrıdır. Maç sınırı yalnız ilgili köyü kapsar; o odanın oyuncusu diğer iki köye gidemez. Maç bitince yalnız geçici kopya kaldırılır; üç alanın bulunduğu ana dünya ve ortak lobi kalır. Yönetici düzenlemeyi ana dünyada `/vk düzenleme aç` ile yapar; sonraki maçlar bu düzenlenmiş şablondan açılır.
+
+## Pusula, dünya adı ve Multiverse düzeltmesi (1.2.1)
+
+Pusuladan girişte artık dünya dosyasının varlığıyla birlikte üç köyün ve güvenli lobi zemininin varlığı kontrol edilir. Boş veya yanlış lobiye oyuncu gönderilmez. Yüklü dünyalar arasında bu üç köyü içeren tek bir dünya varsa pusula ve maç kaynağı ona bağlanır; örneğin Multiverse ile `vampirkoylu` adıyla yüklediğin hazır harita. Bu bağlantı yeniden başlatmada korunur.
+
+Mevcut hazır dünya boş veya eksikse, dolu başka bir kaynak bulunamadığında JAR içindeki harita ayrı bir `vampirkoylu_uc_oda_onarim` klasörüne hazırlanır. Dolu klasör varsa sonuna numara eklenir. Mevcut dünyaların üzerine harita yazılmaz; önceki dosyalar silinmez. Bu güncelleme için dünya ZIP'ini yeniden indirmen gerekmez; 1.2.0 harita verileri aynıdır.
+
+Maç kopyası oluşturulmadan önce Paper’ın bekleyen dünya yazmaları diske tamamlanır; bölge dosyaları kayıt sürerken kopyalanmaz. Kaynak klasörü yüklü dünyanın gerçek klasöründen alınır.
+
+Multiverse-Core 5 kuruluysa ortak dünya otomatik kaydedilir; `/mv info` dünyayı tanır, `/mvtp <bağlanan dünya>` aynı ortak lobiye gider. Multiverse isteğe bağlıdır. Aktif maçların geçici dünyaları Multiverse'e kaydedilmez. Gerçek Multiverse-Core **5.3.2** ile test edilmiştir.
+
+Yönetici kontrolü:
+- `/vk dünya bilgi` — bulunduğun dünya/kimlik/konum, pusula lobisi, üç köy kontrolü, gerçek kaynak klasörü ve Multiverse kaydı.
+- `/vk dünya bağla` — bulunduğun üç köylü hazır dünyayı kaynak ve ortak lobi yapar.
+- `/vk dünya bağla vampirkoylu` — yüklü `vampirkoylu` dünyasına bağlar. Dünya üç köyü ve hazırlanmış lobiyi içermiyorsa reddedilir; tek köylü eski haritaya zorla bağlamaz.
+
+Bağlamadan önce aktif maçlar bitmelidir; bekleyen oyuncular yeni ortak lobiye taşınır. Önceki ayar `config-before-world-link-1.2.1.yml` olarak bir kez yedeklenir. Özel olarak ayarlanmış başka bir dünya otomatik değiştirilmez; yalnız doğrulanmış hazır kaynak bağlanır.
 
 ## Kolay ve orta görevler
 
@@ -113,6 +130,8 @@ Lobideki pusulaya sağ tıklamak da sayfayı açar. Ekranlar Minecraft'ın yerle
 | `/vk doğma ayarla` | Durduğun yeri Vampir Köylü lobi noktası yapar. Tüm oyuncular önce bu oyundan çıkmış olmalı. |
 | `/vk lobi ayarla` | Yukarıdaki lobi ayarlama komutunun alternatifidir. |
 | `/vk setspawn` | Önceki sürümle uyumlu lobi ayarlama komutu. |
+| `/vk dünya bilgi` | Dünya kimliği, kaynak, lobi zemini ve Multiverse kaydını gösterir. |
+| `/vk dünya bağla [dünya adı]` | Üç köylü hazır haritayı doğrulayarak pusula ve maç kaynağını bağlar. |
 | `/vk düzenleme aç` | Oyun dışında yetkili olarak şablon haritada blok düzenlemeye izin verir. |
 | `/vk düzenleme kapat` | Düzenleme iznini kapatır. |
 

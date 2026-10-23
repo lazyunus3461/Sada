@@ -1,0 +1,21 @@
+Kasaba Vampir Köylü 1.2.1 — test sonuçları
+Tarih: 23.10.2026
+Java 21; Paper 1.21.10 build 130; Auth 1.3.0, Hub 1.2.0, Roles 1.2.0; gerçek Multiverse-Core 5.3.2.
+42 birim testi geçti. Dağıtılacak üretim JAR'ıyla 29 canlı kontrol geçti; yerel sunucu 127.0.0.1 adresindeydi.
+
+Dünya bağlantısı — 3 senaryo x 5 kontrol:
+1. Kaynak klasörü mevcut fakat boşken, Multiverse'in yüklediği dolu vampirkoylu dünyası otomatik seçildi.
+2. Sunucu yeniden başlatıldı; vampirkoylu bağlantısı ve lobi korunarak tekrar doğrulandı.
+3. Yalnız boş hazır dünya varken, JAR içindeki üç köy ayrı vampirkoylu_uc_oda_onarim dünyasına kuruldu. Eski klasör ve işaret dosyası korundu.
+Her senaryoda gerçek Hub pusulasından menü düğmelerine basıldı. Pusula ve /mvtp aynı dünya UUID'sine ve 144.5 / 69 / 0.5 güvenli konumuna gitti. /mv info dünyayı tanıdı. Geçersiz lobi oyuna kapandı; /vk dünya bağla ile düzeldi. Maçta 17 gerçek istasyon ve 340 yürünebilir rota doğrulandı.
+
+Oyun kontrolleri:
+- 13 temel kontrol: altı oyunculu gerçek rol dağılımı, güvenli doğma/korumalar, görev, avcı, vampir, çan/konuşma/oylama, kahin ve doktor, iki kişilik yönetici denemesi, yetkiler, oda ayrımı ve envanter kurtarma.
+- 18 gerçek protokol istemcisiyle üç normal maç aynı anda 6'şar kişi oynadı. Odalar 101/102/103 X=0/320/640 alanlarında başladı; 1.020 görev rotası ve her alanda bir gerçek görev geçti. Geçici dünyalar temizlendi.
+- Paper kayıt işlemi diske tamamlanmadan dünya kopyalanmaz. Son üç çalışmada bölge başlığı/yanlış chunk koordinatı hatası çıkmadı. Kopyalar yüklü kaynağın gerçek klasöründen alındı.
+- Bağımsız kayıt sonrası NBT taraması: iki dolu kaynakta 320 harita chunk'ı korundu; fazladan üretilen chunk'lar yalnız havaydı. Eski boş kaynakta yapı oluşmadı. Bütün chunk koordinatları başlıklarıyla eşleşti. Ayrıntılar validation/world-link-storage.json dosyasında.
+- 1.2.0 dünya varlıkları JAR içinde birebir aynı kaldı; bu güncelleme için harita indirmeye gerek yok. Önceki sürümün 40 canlı kontrolü ayrı live-regression-1.2.0.json kaydında; bu sürümün 29 kontrolüne eklenmedi.
+
+Sınırlar: Gerçek istemci paketleri ve yerel Bukkit test adaptörü kullanıldı; bazı konum/faz/saldırı olayları adaptörden tetiklendi. İnsanla görsel kabul veya performans ölçümü yapılmadı. Multiverse 4 test edilmedi. Test makinesinde Mojang anahtar servisi DNS hatası ve ortam yeniden bağlanınca konsol giriş hatası vardı; tamamlanan çevrimdışı istemci kontrollerini etkilemedi. Üretim JAR'ı test adaptörü veya Multiverse sınıfları içermez.
+
+Üretim JAR SHA-256: 97da5c17a73c86fe6fa44e70f315c1a2d944b6d60b24f40bc7c2fe0e0c8e4d94

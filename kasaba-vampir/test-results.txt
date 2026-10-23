@@ -1,35 +1,21 @@
-Kasaba Vampir Köylü 1.2.0 — test sonuçları
+Kasaba Vampir Köylü 1.2.1 — test sonuçları
 Tarih: 23.10.2026
-Java 21, Paper 1.21.10 build 130; KasabaAuth 1.3.0, KasabaHub 1.2.0, KasabaRoles 1.2.0.
-41 birim testi ve aynı üretim JAR'ıyla 40 canlı kontrol geçti. Yerel sunucu yalnız 127.0.0.1 adresinde çalıştırıldı.
+Java 21; Paper 1.21.10 build 130; Auth 1.3.0, Hub 1.2.0, Roles 1.2.0; gerçek Multiverse-Core 5.3.2.
+42 birim testi geçti. Dağıtılacak üretim JAR'ıyla 29 canlı kontrol geçti; yerel sunucu 127.0.0.1 adresindeydi.
 
-Dünya:
-- vampirkoylu_uc_oda tek dünyasında üç fiziksel köy: merkezler X=0, 320, 640; Y=69, Z=0. Tek ortak lobi: 144.5 / 69 / 0.5.
-- Bağımsız NBT taraması 320 hazır chunk içindeki üç köyün birebir aynı olduğunu doğruladı. Üç köy, ortak lobi ve ilk köye bağlantı zemininin dışında 0 yapı bloğu vardı. Zeminler dışında yalnız boşluk vardır.
-- level.dat düz, sıfır katmanlı jeneratör kullanır; doğal yapılar kapalıdır. Bukkit EmptyWorldGenerator bütün üretim aşamalarını kapatır; WorldCreator da yapı üretimini kapatır.
-- Paper çalıştıktan sonra 320 hazır chunk korundu; ayrıca 1388 kayıtlı dış chunk yalnız hava içeriyordu. Doğal arazi oluşmadı.
-- Eski vampirkoylu_sokaklar klasörünün bütün dosyaları birebir değişmeden kaldı. Yeni dünya eski araziden veya yapılardan veri taşımaz. Hazır harita ayarları yeni dünya/ortak lobiye geçti, eski ayar dosyası yedeklendi. Eklenti süreleri ve diğer oyun ayarları korundu.
+Dünya bağlantısı — 3 senaryo x 5 kontrol:
+1. Kaynak klasörü mevcut fakat boşken, Multiverse'in yüklediği dolu vampirkoylu dünyası otomatik seçildi.
+2. Sunucu yeniden başlatıldı; vampirkoylu bağlantısı ve lobi korunarak tekrar doğrulandı.
+3. Yalnız boş hazır dünya varken, JAR içindeki üç köy ayrı vampirkoylu_uc_oda_onarim dünyasına kuruldu. Eski klasör ve işaret dosyası korundu.
+Her senaryoda gerçek Hub pusulasından menü düğmelerine basıldı. Pusula ve /mvtp aynı dünya UUID'sine ve 144.5 / 69 / 0.5 güvenli konumuna gitti. /mv info dünyayı tanıdı. Geçersiz lobi oyuna kapandı; /vk dünya bağla ile düzeldi. Maçta 17 gerçek istasyon ve 340 yürünebilir rota doğrulandı.
 
-Üç eşzamanlı oyun:
-- 18 gerçek protokol istemcisi aynı anda üç normal maçta 6'şar oyuncuyla oynadı. Odalar 101/102/103 kendi X=0/320/640 köyünü kullandı.
-- Üç odada toplam 1.020 yürünebilir görev rotası (20 başlangıç x 17 istasyon x 3 alan) doğrulandı. Her alanda gerçek zamanlı bir görev tamamlandı. Yerdeki oklar ilgili köyün sınırlarında kaldı.
-- Bağımsız geçici dünya kopyaları gece/gündüzü, rolleri ve görev durumunu ayırdı. Maç sınırları kendi köyünü kapsadı. Maç bitince kopyalar silindi, ana üç köylü dünya kaldı.
-- Üç iki kişilik deneme de eşzamanlı açıldı; dördüncü oda reddedildi ve odalar arası saldırı engellendi.
+Oyun kontrolleri:
+- 13 temel kontrol: altı oyunculu gerçek rol dağılımı, güvenli doğma/korumalar, görev, avcı, vampir, çan/konuşma/oylama, kahin ve doktor, iki kişilik yönetici denemesi, yetkiler, oda ayrımı ve envanter kurtarma.
+- 18 gerçek protokol istemcisiyle üç normal maç aynı anda 6'şar kişi oynadı. Odalar 101/102/103 X=0/320/640 alanlarında başladı; 1.020 görev rotası ve her alanda bir gerçek görev geçti. Geçici dünyalar temizlendi.
+- Paper kayıt işlemi diske tamamlanmadan dünya kopyalanmaz. Son üç çalışmada bölge başlığı/yanlış chunk koordinatı hatası çıkmadı. Kopyalar yüklü kaynağın gerçek klasöründen alındı.
+- Bağımsız kayıt sonrası NBT taraması: iki dolu kaynakta 320 harita chunk'ı korundu; fazladan üretilen chunk'lar yalnız havaydı. Eski boş kaynakta yapı oluşmadı. Bütün chunk koordinatları başlıklarıyla eşleşti. Ayrıntılar validation/world-link-storage.json dosyasında.
+- 1.2.0 dünya varlıkları JAR içinde birebir aynı kaldı; bu güncelleme için harita indirmeye gerek yok. Önceki sürümün 40 canlı kontrolü ayrı live-regression-1.2.0.json kaydında; bu sürümün 29 kontrolüne eklenmedi.
 
-Görevler ve renkler:
-- Düzenek 6'dan 5 saniyeye, malzeme sıralama 8'den 7 saniyeye indi. Giriş aralığı 800 yerine 700 ms. Hafıza iki turda da 3 renk; 4 saniyelik inceleme korunur. Paket 4 saniyelik hazırlık ve iki ayrı teslimat ister. Her rolde 2 kolay + 2 orta görev vardır.
-- Birim testleri yeni süre sınırlarının hemen öncesinde/sonrasında sonucu doğruladı. Canlı görevler hızlı/yanlış seçimi reddetti, uzaklaşma/toplantıda yarım aşamayı durdurdu ve gerçek süreyle tamamlandı.
-- Yerel istemciye gönderilen görev sayfasında altın başlık, açık mavi yönerge, yeşil adım ve gri açıklama bileşenleri birlikte doğrulandı. Hafıza düğmeleri ve ipuçları kendi renkleriyle görünür; metin ipuçları korunur.
-- Üst çubuklarda rol adı rol rengiyle kalın; açıklama gri, gündüz mavi, süre altın, görev yüzdesi yeşil, konuşanın adı açık mavidir.
-- Vampir aynı kolaylaştırılmış işleri çözer; görünür sahte ilerleme ve gizli gerçek görev hesabı ayrıdır.
+Sınırlar: Gerçek istemci paketleri ve yerel Bukkit test adaptörü kullanıldı; bazı konum/faz/saldırı olayları adaptörden tetiklendi. İnsanla görsel kabul veya performans ölçümü yapılmadı. Multiverse 4 test edilmedi. Test makinesinde Mojang anahtar servisi DNS hatası ve ortam yeniden bağlanınca konsol giriş hatası vardı; tamamlanan çevrimdışı istemci kontrollerini etkilemedi. Üretim JAR'ı test adaptörü veya Multiverse sınıfları içermez.
 
-Korunan davranışlar:
-- Yerdeki ok paketleri yalnız sahibine gitti; aynı yerde duran başka yaşayan oyuncu hiç almadı. Kapalı kapıda durdu, açılınca odaya devam etti. Yanlış sokaktan yeni rota üretildi; paket/teslimat hedefleri yenilendi. Toplantı ve çıkışta yeni ok gönderilmedi.
-- Kişisel rol çubukları, el eşyalarının başkalarından gizlenmesi, paket demetleri, 10 blok isim/5 blok ceset adı ve duvar görüşü geçti.
-- Çanı çalan/cesedi bildiren ilk konuştu; sayaç, /vk bitir, oylama ve Pas çalıştı. 40 saniyelik gece sayfaları, kahin sonucu ve doktor koruması geçti.
-- Kırma/koyma, normal hasar/açlık koruması, avcı ok hakkı, gündüz avı ve elenme doğrulandı.
-- /lobi, bağlantı kesilmesi ve kimlik doğrulama sonrası kurtarmada envanter, imleç, ek can, deneyim ve iksirler geri geldi.
-
-Sınırlar: Menüler ve özel okların kime gönderildiği gerçek Minecraft protokol paketleriyle test edildi; bazı konum/faz/saldırı olayları yerel Bukkit adaptörüyle tetiklendi. İnsanlarla görsel kabul oturumu yapılmadı. Görsel önizleme blok modelinin üstten şemasıdır. Oklar için istemci parçacıkları açık olmalıdır; mod veya kaynak paketi gerekmez. Eski parçacıklar yeni gönderim durunca kendi ömürlerinde söner. Rota bu köylerin Y=69 zeminine yöneliktir. Dağıtım JAR'ı/kurulum ZIP'i test adaptörü içermez.
-
-Üretim JAR SHA-256: f815cf95dc4d0d849898d1b649cb59af7c2514de019341721ffda63b74ae612b
+Üretim JAR SHA-256: 97da5c17a73c86fe6fa44e70f315c1a2d944b6d60b24f40bc7c2fe0e0c8e4d94

@@ -23,4 +23,5 @@ class WorldNamesTest {
     @Test void aLobbyInsideTheOldGameAreaMovesToTheNewSharedLobby(){var c=config(WorldNames.CLEAN,WorldNames.CLEAN);c.set("lobby.x",0);assertTrue(WorldNames.toVillage(c));assertEquals(WorldNames.VILLAGE,c.getString("template-world"));assertEquals(WorldNames.VILLAGE,c.getString("lobby.world"));assertEquals(144.5,c.getDouble("lobby.x"));}
     @Test void anAdminLobbyAlreadyInTheNewWorldIsNotReset(){var c=config(WorldNames.VILLAGE,WorldNames.VILLAGE);assertFalse(WorldNames.toVillage(c));assertEquals(222.5,c.getDouble("lobby.x"));}
     @Test void thePreviousSingleVillageMigratesToThreeAreas(){var c=config(WorldNames.OLD_VILLAGE,WorldNames.OLD_VILLAGE);assertTrue(WorldNames.toVillage(c));assertEquals(WorldNames.VILLAGE,c.getString("template-world"));assertEquals(WorldNames.VILLAGE,c.getString("lobby.world"));}
+    @Test void aConfirmedMultiverseBindingSurvivesTheLegacyNameMigration(){var c=config(WorldNames.CURRENT,WorldNames.CURRENT);c.set("world-link.world",WorldNames.CURRENT);assertFalse(WorldNames.toVillage(c));assertEquals(WorldNames.CURRENT,c.getString("template-world"));assertEquals(WorldNames.CURRENT,c.getString("lobby.world"));}
 }

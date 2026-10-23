@@ -1,0 +1,44 @@
+{
+  "version": "1.2.1",
+  "jarSha256": "97da5c17a73c86fe6fa44e70f315c1a2d944b6d60b24f40bc7c2fe0e0c8e4d94",
+  "paper": "1.21.10-130",
+  "multiverse": "5.3.2",
+  "scenarios": {
+    "imported-vampirkoylu": {
+      "version": "1.2.1",
+      "multiverse": "5.3.2",
+      "world": "vampirkoylu",
+      "checks": [
+        "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+        "Real Multiverse /mv info recognizes the world reached from the compass",
+        "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+        "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+        "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+      ]
+    },
+    "restart-preserves-binding": {
+      "version": "1.2.1",
+      "multiverse": "5.3.2",
+      "world": "vampirkoylu",
+      "checks": [
+        "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+        "Real Multiverse /mv info recognizes the world reached from the compass",
+        "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+        "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+        "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+      ]
+    },
+    "empty-source-repaired-separately": {
+      "version": "1.2.1",
+      "multiverse": "5.3.2",
+      "world": "vampirkoylu_uc_oda_onarim",
+      "checks": [
+        "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+        "Real Multiverse /mv info recognizes the world reached from the compass",
+        "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+        "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+        "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+      ]
+    }
+  }
+}

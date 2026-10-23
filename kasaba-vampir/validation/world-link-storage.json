@@ -1,0 +1,22 @@
+{
+  "vampirkoylu_uc_oda": {
+    "totalChunks": 1058,
+    "mapChunks": 0,
+    "verifiedEmptyChunks": 1058,
+    "invalidChunkCoordinates": 0
+  },
+  "vampirkoylu_uc_oda_onarim": {
+    "totalChunks": 1179,
+    "mapChunks": 320,
+    "verifiedEmptyChunks": 859,
+    "invalidChunkCoordinates": 0
+  },
+  "vampir-121-imported-world-preserved": {
+    "totalChunks": 1179,
+    "mapChunks": 320,
+    "verifiedEmptyChunks": 859,
+    "invalidChunkCoordinates": 0
+  },
+  "originalFolderPreserved": true,
+  "temporaryWorldsCleaned": true
+}

@@ -1,47 +1,51 @@
 {
-  "version": "1.2.0",
-  "jarSha256": "f815cf95dc4d0d849898d1b649cb59af7c2514de019341721ffda63b74ae612b",
+  "version": "1.2.1",
+  "jarSha256": "97da5c17a73c86fe6fa44e70f315c1a2d944b6d60b24f40bc7c2fe0e0c8e4d94",
   "paper": "1.21.10-130",
-  "unitTests": 41,
-  "liveChecks": 40,
+  "multiverse": "5.3.2",
+  "unitTests": 42,
+  "liveChecks": 29,
   "maxSimultaneousRealClients": 18,
   "suites": {
-    "village-tasks": [
-      "Every role receives two easy/two medium tasks; 17 indoor workstations are safe and all 34 task-room doors remain usable",
-      "A nearby name label disappears behind an opaque wall and returns when the view is clear",
-      "Task dialog packets distinguish the gold heading, aqua instruction, green step count and gray explanation",
-      "Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least five real seconds to complete",
-      "Material sorting uses all four items, follows its displayed order, and takes at least seven real seconds",
-      "Delivery requires packing and two distinct nearby stops; the atlas follows each leg and only final delivery adds progress",
-      "Medium memory task enforces its preview, hides the clue, restarts a mistaken round and requires both rounds before completion",
-      "Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress"
-    ],
-    "ground-trails": [
-      "All six roles start with the task compass instead of a held map",
-      "All 20 start seats reach all 17 stations on real Paper terrain: 340 cardinal routes, solid floors, usable doors, no wall or diagonal shortcuts",
-      "Only the task owner receives ground-arrow packets; another living player on the exact same block receives none",
-      "Walking advances the route by one tile; taking another street recalculates from the new block without switching the chosen task",
-      "The trail stops at a closed wooden door, asks the player to open it and continues inside when it opens",
-      "Packing and each delivery automatically retarget the path; completed work switches to the next unfinished task",
-      "Ground arrows stop during meetings"
-    ],
-    "experience": [
-      "Private persistent role bars are addressed to exactly their own player; three-minute day and held task navigation compass",
-      "Real map packets contain terrain, personal numbered tasks and only the viewer arrow; 17 physical markers, target selection and tutorial pages work",
-      "Vampire sword and hunter bow stay visible to their owner, masked to observers in normal packets and spawn bundles",
-      "Vanilla nameplates are hidden; personal name labels appear at nine blocks and disappear at eleven",
-      "Corpse name is visible within 4.5 blocks and hidden beyond 5 blocks",
-      "Corpse reporter speaks first; named top timer counts down, skip advances, and voting explains the report and consequence",
-      "The player ringing the emergency bell is the first speaker",
-      "40-second night opens the seer/doctor pages automatically; /vk gör and /vk koru work, seer result stays private and doctor blocks the attack",
-      "Fresh chunks in lobby and match worlds are void; role bars, private labels and map renderer are cleaned on exit",
-      "Three simultaneous two-player rooms use separate copies and a shared lobby; a fourth room is refused and cross-room damage is blocked",
-      "All three room copies are deleted after their games stop"
-    ],
-    "three-rooms": [
-      "18 real clients: three simultaneous six-player normal games at X=0/320/640, 1020 routes, a real task in each area, shared lobby and complete cleanup"
-    ],
-    "regression": [
+    "world-link": {
+      "imported-vampirkoylu": {
+        "version": "1.2.1",
+        "multiverse": "5.3.2",
+        "world": "vampirkoylu",
+        "checks": [
+          "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+          "Real Multiverse /mv info recognizes the world reached from the compass",
+          "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+          "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+          "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+        ]
+      },
+      "restart-preserves-binding": {
+        "version": "1.2.1",
+        "multiverse": "5.3.2",
+        "world": "vampirkoylu",
+        "checks": [
+          "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+          "Real Multiverse /mv info recognizes the world reached from the compass",
+          "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+          "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+          "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+        ]
+      },
+      "empty-source-repaired-separately": {
+        "version": "1.2.1",
+        "multiverse": "5.3.2",
+        "world": "vampirkoylu_uc_oda_onarim",
+        "checks": [
+          "Real Hub compass buttons enter the populated public lobby at 144.5 / 69 / 0.5",
+          "Real Multiverse /mv info recognizes the world reached from the compass",
+          "Real /mvtp and compass enter the same world UUID and the same solid lobby position",
+          "An invalid lobby is unavailable instead of teleporting into empty space; /vk d\u00fcnya ba\u011fla restores the populated link",
+          "A match copies the linked populated world and exposes 17 real stations with 340 walkable routes"
+        ]
+      }
+    },
+    "core": [
       "Six authenticated real clients enter native Hub/room pages; all five roles assigned in a separate world",
       "All 20 spawn/meeting seats are safe; break/place/damage/hunger blocked and locator bar disabled",
       "Physical indoor station interaction completes a server-timed personal task through native pages",
@@ -55,60 +59,61 @@
       "Concurrent demo rooms have independent worlds; cross-room attacks do nothing; a real victory deletes only its own world",
       "Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance",
       "Pending inventory recovery is applied after authentication, preserving the original items"
-    ]
-  },
-  "simultaneousRooms": {
-    "version": "1.2.0",
-    "realClients": 18,
-    "rooms": [
-      101,
-      102,
-      103
     ],
-    "worlds": [
-      "vk_room_101_89fb1aef",
-      "vk_room_102_80274de4",
-      "vk_room_103_f831b68f"
-    ],
-    "playersPerRoom": 6,
-    "origins": [
-      0,
-      320,
-      640
-    ],
-    "routesChecked": 1020,
-    "taskCompletedInEachArea": true,
-    "normalMatches": true,
-    "cleanup": true
+    "three-rooms": {
+      "version": "1.2.1",
+      "realClients": 18,
+      "rooms": [
+        101,
+        102,
+        103
+      ],
+      "worlds": [
+        "vk_room_101_e7b6b2c4",
+        "vk_room_102_247a7c1c",
+        "vk_room_103_4dcc7b9e"
+      ],
+      "playersPerRoom": 6,
+      "origins": [
+        0,
+        320,
+        640
+      ],
+      "routesChecked": 1020,
+      "taskCompletedInEachArea": true,
+      "normalMatches": true,
+      "cleanup": true
+    }
   },
-  "layout": {
-    "world": "vampirkoylu_uc_oda",
-    "chunks": 320,
-    "identicalVillageCopies": 3,
-    "centers": [
-      0,
-      320,
-      640
-    ],
-    "blocksOutsideBuildFootprints": 0,
-    "builtBlocks": 392041,
-    "emptyGenerator": true,
-    "naturalStructures": false,
-    "normalizedVillageSha256": "bd10f05eccd1b2aa15695825b4b7d80af4ead5d3d4be52e4eac5274a42bbd848"
+  "storage": {
+    "vampirkoylu_uc_oda": {
+      "totalChunks": 1058,
+      "mapChunks": 0,
+      "verifiedEmptyChunks": 1058,
+      "invalidChunkCoordinates": 0
+    },
+    "vampirkoylu_uc_oda_onarim": {
+      "totalChunks": 1179,
+      "mapChunks": 320,
+      "verifiedEmptyChunks": 859,
+      "invalidChunkCoordinates": 0
+    },
+    "vampir-121-imported-world-preserved": {
+      "totalChunks": 1179,
+      "mapChunks": 320,
+      "verifiedEmptyChunks": 859,
+      "invalidChunkCoordinates": 0
+    },
+    "originalFolderPreserved": true,
+    "temporaryWorldsCleaned": true
   },
-  "voidScan": {
-    "originalMapChunks": 320,
-    "preservedMapChunks": 320,
-    "verifiedEmptyOutsideChunks": 1388,
-    "naturalTerrainOutsideMap": false
-  },
-  "migration": {
-    "oldWorldUnchanged": true,
-    "oldConfigBackup": "config-before-three-villages-1.2.yml",
-    "preparedSharedLobby": [
-      144.5,
-      69,
-      0.5
-    ]
-  }
+  "previousReleaseEvidence": "live-regression-1.2.0.json",
+  "notes": [
+    "Three world-link scenarios each passed five checks on the exact distributed production JAR.",
+    "Core regression passed 13 checks; 18 clients played three simultaneous six-player games.",
+    "Paper region writes are flushed before copying the linked world; no chunk-header or coordinate errors in the final runs.",
+    "The source worlds and original empty folder were preserved; all match copies were removed.",
+    "Only Multiverse-Core 5.3.2 was tested. No human visual acceptance session or performance benchmark.",
+    "The test host could not resolve Mojang public-key DNS; a host reconnect also closed its console input. Neither affected these completed offline client tests."
+  ]
 }

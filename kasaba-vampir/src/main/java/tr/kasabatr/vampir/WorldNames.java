@@ -13,6 +13,8 @@ final class WorldNames {
     static boolean managed(String name){return CURRENT.equals(name)||LEGACY.equals(name)||CLEAN.equals(name)||OLD_VILLAGE.equals(name)||VILLAGE.equals(name);}
     static boolean separateLobby(FileConfiguration config){double x=config.getDouble("lobby.x",144.5),z=config.getDouble("lobby.z",.5),radius=Math.clamp(config.getInt("lobby.radius",31),1,128)+16;return Double.isFinite(x)&&Double.isFinite(z)&&(x-radius>80||x+radius< -80||z-radius>80||z+radius< -80);}
     static boolean toVillage(FileConfiguration config){
+        String linked=config.getString("world-link.world","");
+        if(!linked.isBlank()&&linked.equals(config.getString("template-world")))return false;
         boolean changed=false;
         if(managed(config.getString("template-world"))&&!VILLAGE.equals(config.getString("template-world"))){config.set("template-world",VILLAGE);changed=true;}
         if(managed(config.getString("lobby.world"))&&!VILLAGE.equals(config.getString("lobby.world"))){

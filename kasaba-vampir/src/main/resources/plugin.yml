@@ -1,10 +1,11 @@
 name: KasabaVampirKoylu
-version: 1.2.0
+version: 1.2.1
 main: tr.kasabatr.vampir.KasabaVampirPlugin
 api-version: '1.21.10'
 author: KasabaTR
 description: KasabaTR harabe koy vampir oyunu
 depend: [KasabaHub, KasabaAuth]
+softdepend: [Multiverse-Core]
 commands:
   vk:
     description: Vampir Koylu menu ve kurulum
