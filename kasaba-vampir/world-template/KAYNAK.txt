@@ -1,0 +1,3 @@
+Harita, kullanıcının gönderdiği KasabaTR-VampirKoylu-LOBI-VE-OYUN-1.0.0.zip paketinden alınmıştır.
+Orijinal ZIP SHA-256: c72f9dbaa31f65ec754b6bc4ec1380608c2d6d025b41c0183006ef9acfcd267a
+Dünya dosyaları, oyun alanı ve lobi korunmuştur.

@@ -1,0 +1,23 @@
+template-world: KasabaTR-VampirKoylu-TamDunya
+lobby:
+  world: KasabaTR-VampirKoylu-TamDunya
+  x: 144.5
+  y: 69.0
+  z: 0.5
+  yaw: 180.0
+  pitch: 0.0
+  radius: 31
+game:
+  minimum-players: 6
+  maximum-players: 20
+  day-seconds: 120
+  speaking-seconds-per-player: 20
+  vote-seconds: 30
+  night-choice-seconds: 20
+  day-vampire-kills-per-player: 1
+  day-vampire-cooldown-seconds: 45
+  low-player-night-team-kills: 1
+  high-player-night-kills-per-vampire: 1
+  high-player-threshold: 15
+  emergency-bell-cooldown-seconds: 45
+  hunter-arrows: 1

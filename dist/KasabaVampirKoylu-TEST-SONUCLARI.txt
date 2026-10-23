@@ -1,0 +1,28 @@
+Kasaba Vampir Köylü 1.0.1 — test sonuçları
+Tarih: 23.10.2026
+Ortam: Java 21, Paper 1.21.10 build 130, KasabaAuth 1.3.0, KasabaHub 1.2.0, KasabaRoles 1.2.0.
+Yalnızca 127.0.0.1 üzerinde, offline/crack hesaplarla doğrulandı.
+Maven clean verify: başarılı.
+Aynı anda 6 gerçek Minecraft protokol istemcisi; normal maç, iki kişilik yönetici denemesi ve eşzamanlı iki oda.
+Kontroller Minecraft istemci bağlantıları/native sayfa tıklamaları ile yapıldı; etkileşim/hasar ve süre geçişleri ayrıca yerel Bukkit test adaptörüyle tetiklendi. Bu, insanlarla görsel/oynanış kabul testinin yerini almaz.
+
+Doğrulananlar:
+1. Auth girişi, Hub'dan oyuna katılma, normal oyuncuların oda katılımı, yerleşik sayfa menüleri ve 6 oyuncuda 5 rol türünün dağıtılması.
+2. 20 güvenli doğma/toplantı noktası; kırma/koyma/hasar/açlık koruması; geçici dünyada konum çubuğu kapalı.
+3. Gerçek görev bloğuna etkileşim → sayfa → üç aşamalı görev ilerlemesi.
+4. Avcı ıskaladığında ok hakkı tükenir; fazladan atılan ok oyuncu elemez.
+5. Vampirin gündüz saldırısı çalışır; elenen oyuncu seyirci olur.
+6. Acil çan, konuşma sıraları, /vk bitir, sayfadan pas oyları ve gündüze dönüş.
+7. Doğal gece geçişi, kahinin gizli sonucu, doktor koruması ve vampir hedefi.
+8. Maç sırasında /lobi; 7 elmas, 3 zümrüt (imleç dahil), 4 ek can puanı, 11. deneyim seviyesi ve hız etkisinin geri yüklenmesi. Bekleyen yedeğin başarıdan sonra kaldırılması.
+9. Normal başlangıç 2 kişiyi reddeder; yönetici denemesi yalnız o odada 1 vampir + 1 köylü açar; durdurunca oyun lobisine/pusulaya dönüş.
+10. Yönetici olmayan oda kurucusu 2 kişilik denemeyi açamaz.
+11. İki odanın farklı dünyaları, odalar arası hasar engeli, kazanma koşulu ve yalnız biten odanın dünya temizliği.
+12. Maçta bağlantı kesilmesi, envanterin kaydedilmesi ve geçici dünyanın temizlenmesi.
+13. Bekleyen envanter kurtarma kaydının başarılı Auth girişinden sonra geri yüklenmesi.
+
+Harita: Kullanıcının gönderdiği şablon dosyaları değiştirilmedi. 120 chunk ve 17/17 görev bloğu okundu; merkez çan, lobi zemin/baş mesafesi doğrulandı.
+Test adaptörleri üretim JAR'ına ve kurulum paketine dahil edilmedi.
+Sınır: İnsanlarla tam 20 oyunculu oturum ve görsel sunum kabulü yapılmadı.
+
+Üretim JAR SHA-256: 326c945ab9cc51175177c679ad976a1384cc65884034b1d45adf50dc1ae7afd2

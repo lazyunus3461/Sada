@@ -1,0 +1,163 @@
+{
+  "chunks": 120,
+  "stations": [
+    {
+      "id": "sapel",
+      "block": "minecraft:chiseled_stone_bricks",
+      "position": [
+        -10,
+        69,
+        -41
+      ]
+    },
+    {
+      "id": "mezarlik",
+      "block": "minecraft:chiseled_stone_bricks",
+      "position": [
+        -49,
+        69,
+        -39
+      ]
+    },
+    {
+      "id": "gozcu",
+      "block": "minecraft:chiseled_stone_bricks",
+      "position": [
+        43,
+        69,
+        -42
+      ]
+    },
+    {
+      "id": "arsiv",
+      "block": "minecraft:bookshelf",
+      "position": [
+        16,
+        69,
+        -44
+      ]
+    },
+    {
+      "id": "sifaci",
+      "block": "minecraft:cauldron",
+      "position": [
+        44,
+        69,
+        -13
+      ]
+    },
+    {
+      "id": "demirci",
+      "block": "minecraft:anvil",
+      "position": [
+        44,
+        69,
+        19
+      ]
+    },
+    {
+      "id": "han",
+      "block": "minecraft:barrel",
+      "position": [
+        -8,
+        69,
+        43
+      ]
+    },
+    {
+      "id": "terzi",
+      "block": "minecraft:loom",
+      "position": [
+        -26,
+        69,
+        -18
+      ]
+    },
+    {
+      "id": "fener",
+      "block": "minecraft:barrel",
+      "position": [
+        25,
+        69,
+        -27
+      ]
+    },
+    {
+      "id": "tasci",
+      "block": "minecraft:stonecutter",
+      "position": [
+        25,
+        69,
+        31
+      ]
+    },
+    {
+      "id": "avci",
+      "block": "minecraft:barrel",
+      "position": [
+        -56,
+        69,
+        20
+      ]
+    },
+    {
+      "id": "karakol",
+      "block": "minecraft:chiseled_stone_bricks",
+      "position": [
+        56,
+        69,
+        3
+      ]
+    },
+    {
+      "id": "degirmen",
+      "block": "minecraft:barrel",
+      "position": [
+        -45,
+        69,
+        40
+      ]
+    },
+    {
+      "id": "pazar",
+      "block": "minecraft:barrel",
+      "position": [
+        -43,
+        69,
+        -3
+      ]
+    },
+    {
+      "id": "ahir",
+      "block": "minecraft:barrel",
+      "position": [
+        33,
+        69,
+        45
+      ]
+    },
+    {
+      "id": "tarla",
+      "block": "minecraft:composter",
+      "position": [
+        19,
+        69,
+        45
+      ]
+    },
+    {
+      "id": "kuyu",
+      "block": "minecraft:barrel",
+      "position": [
+        -31,
+        69,
+        23
+      ]
+    }
+  ],
+  "bell": "minecraft:bell",
+  "lobbyFeet": "minecraft:air",
+  "lobbyHead": "minecraft:air",
+  "lobbyFloor": "minecraft:sea_lantern",
+  "sourceAssetsUnchanged": true
+}

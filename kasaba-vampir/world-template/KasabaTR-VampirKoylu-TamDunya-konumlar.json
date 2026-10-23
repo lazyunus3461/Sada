@@ -1,0 +1,509 @@
+{
+  "world": "KasabaTR-VampirKoylu-TamDunya",
+  "minecraft_surumu": "1.21.10",
+  "boyut": [
+    248,
+    144
+  ],
+  "oyun_bolgesi": {
+    "min": [
+      -68,
+      65,
+      -68
+    ],
+    "max": [
+      68,
+      100,
+      68
+    ]
+  },
+  "bekleme_lobisi": {
+    "alan": {
+      "min": [
+        112,
+        63,
+        -32
+      ],
+      "max": [
+        175,
+        86,
+        31
+      ]
+    },
+    "boyut": [
+      64,
+      64
+    ],
+    "dogus": [
+      144.5,
+      69,
+      0.5,
+      180
+    ],
+    "not": "Aynı dünya dosyasında oyunun doğusunda; maçlar bu dünyanın ayrı kopyalarında oynanır."
+  },
+  "gece_toplanti_merkezi": [
+    0.5,
+    69,
+    0.5
+  ],
+  "sabit_can": [
+    0,
+    70,
+    0
+  ],
+  "baslangic_dogusleri": [
+    [
+      8.5,
+      69,
+      0.5,
+      270.0
+    ],
+    [
+      7.5,
+      69,
+      2.5,
+      285.94539590092285
+    ],
+    [
+      6.5,
+      69,
+      4.5,
+      303.69006752597977
+    ],
+    [
+      4.5,
+      69,
+      6.5,
+      326.30993247402023
+    ],
+    [
+      2.5,
+      69,
+      7.5,
+      344.05460409907715
+    ],
+    [
+      0.5,
+      69,
+      8.5,
+      0.0
+    ],
+    [
+      -1.5,
+      69,
+      7.5,
+      15.945395900922847
+    ],
+    [
+      -3.5,
+      69,
+      6.5,
+      33.69006752597977
+    ],
+    [
+      -5.5,
+      69,
+      4.5,
+      56.30993247402023
+    ],
+    [
+      -6.5,
+      69,
+      2.5,
+      74.05460409907715
+    ],
+    [
+      -7.5,
+      69,
+      0.5,
+      90.0
+    ],
+    [
+      -6.5,
+      69,
+      -1.5,
+      105.94539590092285
+    ],
+    [
+      -5.5,
+      69,
+      -3.5,
+      123.69006752597977
+    ],
+    [
+      -3.5,
+      69,
+      -5.5,
+      146.30993247402023
+    ],
+    [
+      -1.5,
+      69,
+      -6.5,
+      164.0546040990771
+    ],
+    [
+      0.5,
+      69,
+      -7.5,
+      180.0
+    ],
+    [
+      2.5,
+      69,
+      -6.5,
+      195.94539590092288
+    ],
+    [
+      4.5,
+      69,
+      -5.5,
+      213.69006752597977
+    ],
+    [
+      6.5,
+      69,
+      -3.5,
+      236.30993247402023
+    ],
+    [
+      7.5,
+      69,
+      -1.5,
+      254.05460409907715
+    ]
+  ],
+  "gece_toplanti_yerleri": [
+    [
+      8.5,
+      69,
+      0.5,
+      270.0
+    ],
+    [
+      7.5,
+      69,
+      2.5,
+      285.94539590092285
+    ],
+    [
+      6.5,
+      69,
+      4.5,
+      303.69006752597977
+    ],
+    [
+      4.5,
+      69,
+      6.5,
+      326.30993247402023
+    ],
+    [
+      2.5,
+      69,
+      7.5,
+      344.05460409907715
+    ],
+    [
+      0.5,
+      69,
+      8.5,
+      0.0
+    ],
+    [
+      -1.5,
+      69,
+      7.5,
+      15.945395900922847
+    ],
+    [
+      -3.5,
+      69,
+      6.5,
+      33.69006752597977
+    ],
+    [
+      -5.5,
+      69,
+      4.5,
+      56.30993247402023
+    ],
+    [
+      -6.5,
+      69,
+      2.5,
+      74.05460409907715
+    ],
+    [
+      -7.5,
+      69,
+      0.5,
+      90.0
+    ],
+    [
+      -6.5,
+      69,
+      -1.5,
+      105.94539590092285
+    ],
+    [
+      -5.5,
+      69,
+      -3.5,
+      123.69006752597977
+    ],
+    [
+      -3.5,
+      69,
+      -5.5,
+      146.30993247402023
+    ],
+    [
+      -1.5,
+      69,
+      -6.5,
+      164.0546040990771
+    ],
+    [
+      0.5,
+      69,
+      -7.5,
+      180.0
+    ],
+    [
+      2.5,
+      69,
+      -6.5,
+      195.94539590092288
+    ],
+    [
+      4.5,
+      69,
+      -5.5,
+      213.69006752597977
+    ],
+    [
+      6.5,
+      69,
+      -3.5,
+      236.30993247402023
+    ],
+    [
+      7.5,
+      69,
+      -1.5,
+      254.05460409907715
+    ]
+  ],
+  "gorev_istasyonlari": [
+    {
+      "id": "sapel_kitabesi",
+      "ad": "Şapel kitabesi",
+      "bolge": "Şapel",
+      "konum": [
+        -9.5,
+        69,
+        -40.5
+      ],
+      "etkilesim_blogu": "chiseled_stone_bricks"
+    },
+    {
+      "id": "mezarlik",
+      "ad": "Mezar taşı yazısı",
+      "bolge": "Mezarlık",
+      "konum": [
+        -48.5,
+        69,
+        -38.5
+      ],
+      "etkilesim_blogu": "chiseled_stone_bricks"
+    },
+    {
+      "id": "gozcu_kulesi",
+      "ad": "Gözcü işareti",
+      "bolge": "Gözcü Kulesi",
+      "konum": [
+        43.5,
+        69,
+        -41.5
+      ],
+      "etkilesim_blogu": "chiseled_stone_bricks"
+    },
+    {
+      "id": "arsiv_sayfalari",
+      "ad": "Arşiv sayfaları",
+      "bolge": "Arşiv",
+      "konum": [
+        16.5,
+        69,
+        -43.5
+      ],
+      "etkilesim_blogu": "bookshelf"
+    },
+    {
+      "id": "sifaci_malzemeleri",
+      "ad": "Şifacı malzemeleri",
+      "bolge": "Şifacı Evi",
+      "konum": [
+        44.5,
+        69,
+        -12.5
+      ],
+      "etkilesim_blogu": "cauldron"
+    },
+    {
+      "id": "demirci_ocagi",
+      "ad": "Demirci ocağı",
+      "bolge": "Demirci",
+      "konum": [
+        44.5,
+        69,
+        19.5
+      ],
+      "etkilesim_blogu": "anvil"
+    },
+    {
+      "id": "han_erzaklari",
+      "ad": "Han erzakları",
+      "bolge": "Harabe Han",
+      "konum": [
+        -7.5,
+        69,
+        43.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "terzi_tezgahi",
+      "ad": "Terzi tezgâhı",
+      "bolge": "Terzi Evi",
+      "konum": [
+        -25.5,
+        69,
+        -17.5
+      ],
+      "etkilesim_blogu": "loom"
+    },
+    {
+      "id": "fener_deposu",
+      "ad": "Fener deposu",
+      "bolge": "Fener Deposu",
+      "konum": [
+        25.5,
+        69,
+        -26.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "tas_isciligi",
+      "ad": "Taş işçiliği",
+      "bolge": "Taşçı Evi",
+      "konum": [
+        25.5,
+        69,
+        31.5
+      ],
+      "etkilesim_blogu": "stonecutter"
+    },
+    {
+      "id": "avci_barinagi",
+      "ad": "Avcı barınağı",
+      "bolge": "Avcı Barınağı",
+      "konum": [
+        -55.5,
+        69,
+        20.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "eski_karakol",
+      "ad": "Eski karakol",
+      "bolge": "Karakol",
+      "konum": [
+        56.5,
+        69,
+        3.5
+      ],
+      "etkilesim_blogu": "chiseled_stone_bricks"
+    },
+    {
+      "id": "degirmen_carki",
+      "ad": "Değirmen çarkı",
+      "bolge": "Değirmen",
+      "konum": [
+        -44.5,
+        69,
+        40.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "pazar",
+      "ad": "Pazar envanteri",
+      "bolge": "Pazar",
+      "konum": [
+        -42.5,
+        69,
+        -2.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "ahir_erzaklari",
+      "ad": "Ahır erzakları",
+      "bolge": "Ahır",
+      "konum": [
+        33.5,
+        69,
+        45.5
+      ],
+      "etkilesim_blogu": "barrel"
+    },
+    {
+      "id": "tarla",
+      "ad": "Tarlaya malzeme götür",
+      "bolge": "Tarla",
+      "konum": [
+        19.5,
+        69,
+        45.5
+      ],
+      "etkilesim_blogu": "composter"
+    },
+    {
+      "id": "kuyu",
+      "ad": "Kuyu mekanizması",
+      "bolge": "Kuyu",
+      "konum": [
+        -30.5,
+        69,
+        23.5
+      ],
+      "etkilesim_blogu": "barrel"
+    }
+  ],
+  "bolgeler": [
+    "Meydan",
+    "Şapel",
+    "Mezarlık",
+    "Gözcü Kulesi",
+    "Arşiv",
+    "Şifacı Evi",
+    "Demirci",
+    "Harabe Han",
+    "Terzi Evi",
+    "Fener Deposu",
+    "Taşçı Evi",
+    "Avcı Barınağı",
+    "Karakol",
+    "Değirmen",
+    "Pazar",
+    "Ahır",
+    "Tarla",
+    "Kuyu"
+  ],
+  "not": "Bu dosya plugin yapılandırması değildir; geliştiricinin haritayı bağlaması için koordinat kılavuzudur."
+}

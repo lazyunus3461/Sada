@@ -1,0 +1,22 @@
+name: KasabaVampirKoylu
+version: 1.0.1
+main: tr.kasabatr.vampir.KasabaVampirPlugin
+api-version: '1.21.10'
+author: KasabaTR
+description: KasabaTR harabe koy vampir oyunu
+depend: [KasabaHub, KasabaAuth]
+commands:
+  vk:
+    description: Vampir Koylu menu ve kurulum
+    aliases: [vampirkoylu]
+    usage: /vk yardım
+  v:
+    description: Vampirlerin gizli sohbeti
+    usage: /v <mesaj>
+permissions:
+  kasabatr.vampir.admin:
+    description: Vampir Koylu kurulum yetkisi
+    default: op
+  kasabatr.vampir.kullan:
+    description: Vampir Köylü oyununa katılma
+    default: true

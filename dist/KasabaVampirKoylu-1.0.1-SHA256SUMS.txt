@@ -1,0 +1,6 @@
+326c945ab9cc51175177c679ad976a1384cc65884034b1d45adf50dc1ae7afd2  KasabaVampirKoylu-1.0.1.jar
+94cb4fa769f6ca616f731ad0fe845e1d725772042d6e93f6585e4b0717cbd0a6  KasabaVampirKoylu-1.0.1-Kurulum.zip
+1c58c3fd27f1b1f3c3a281a507b65b7f2f7054d691f7b614f04c15ee9a9ad0cc  KasabaVampirKoylu-1.0.1-Kaynak.zip
+46d584528b2a48d76620b33be677f89d1813e8ad83bc841b2184df976edc1eda  KasabaVampirKoylu-1.0.1-KURULUM.md
+46d584528b2a48d76620b33be677f89d1813e8ad83bc841b2184df976edc1eda  KasabaVampirKoylu-1.0.1-KOMUTLAR.txt
+a9000972b70f303dcba373d2baefd1367ae51f2d26ed3f00931154e9250a80f8  KasabaVampirKoylu-TEST-SONUCLARI.txt
