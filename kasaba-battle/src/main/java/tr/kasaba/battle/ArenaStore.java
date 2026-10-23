@@ -9,7 +9,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 final class ArenaStore {
     static final class Definition {
-        final int id;BattleRules.Area area;Location center;boolean expanded;
+        final int id;BattleRules.Area area;Location center;boolean expanded,denseExpanded;
         final List<Location> spawns=new ArrayList<>(),candidates=new ArrayList<>();
         Definition(int id){this.id=id;}
         boolean ready(){return area!=null&&center!=null&&center.getWorld()!=null&&area.contains(center.getWorld().getUID(),center.getX(),center.getZ())&&area.radius(center.getX(),center.getZ())>=8&&spawns.size()>=2&&candidates.size()>=4;}
@@ -20,21 +20,21 @@ final class ArenaStore {
     ArenaStore(Path folder)throws IOException{file=folder.resolve("arenalar.yml");journal=folder.resolve("gecici-sandiklar.yml");load();recoverChests();}
     private static BattleRules.Area area(YamlConfiguration d,String path){if(!d.contains(path))return null;return new BattleRules.Area(UUID.fromString(d.getString(path+".world")),d.getInt(path+".x1"),d.getInt(path+".x2"),d.getInt(path+".z1"),d.getInt(path+".z2"));}
     private static void area(YamlConfiguration d,String path,BattleRules.Area a){if(a==null)return;d.set(path+".world",a.world().toString());d.set(path+".x1",a.minX());d.set(path+".x2",a.maxX());d.set(path+".z1",a.minZ());d.set(path+".z2",a.maxZ());}
-    void load()throws IOException{YamlConfiguration d=AtomicYaml.read(file);try{lobby=d.getLocation("lobi.konum");lobbyArea=area(d,"lobi.bolge");rooms.clear();for(int id=1;id<=3;id++){Definition r=new Definition(id);String k="arenalar."+id;r.expanded=d.getBoolean(k+".ek-dis-noktalar-v1",false);r.area=area(d,k+".bolge");r.center=d.getLocation(k+".merkez");for(Object value:d.getList(k+".dogmalar",List.of())){if(!(value instanceof Location l))throw new IOException("Doğma kaydı bozuk.");r.spawns.add(l);}for(Object value:d.getList(k+".sandik-adaylari",List.of())){if(!(value instanceof Location l))throw new IOException("Sandık kaydı bozuk.");r.candidates.add(l);}rooms.put(id,r);}}catch(RuntimeException e){throw new IOException("Arena kaydı okunamadı; dosya korundu.",e);}}
-    void save()throws IOException{YamlConfiguration d=new YamlConfiguration();d.set("lobi.konum",lobby);area(d,"lobi.bolge",lobbyArea);for(Definition r:rooms.values()){String k="arenalar."+r.id;d.set(k+".ek-dis-noktalar-v1",r.expanded);area(d,k+".bolge",r.area);d.set(k+".merkez",r.center);d.set(k+".dogmalar",r.spawns);d.set(k+".sandik-adaylari",r.candidates);}try{AtomicYaml.write(file,d);}catch(IOException e){load();throw e;}}
+    void load()throws IOException{YamlConfiguration d=AtomicYaml.read(file);try{lobby=d.getLocation("lobi.konum");lobbyArea=area(d,"lobi.bolge");rooms.clear();for(int id=1;id<=3;id++){Definition r=new Definition(id);String k="arenalar."+id;r.expanded=d.getBoolean(k+".ek-dis-noktalar-v1",false);r.denseExpanded=d.getBoolean(k+".yogun-noktalar-v2",false);r.area=area(d,k+".bolge");r.center=d.getLocation(k+".merkez");for(Object value:d.getList(k+".dogmalar",List.of())){if(!(value instanceof Location l))throw new IOException("Doğma kaydı bozuk.");r.spawns.add(l);}for(Object value:d.getList(k+".sandik-adaylari",List.of())){if(!(value instanceof Location l))throw new IOException("Sandık kaydı bozuk.");r.candidates.add(l);}rooms.put(id,r);}}catch(RuntimeException e){throw new IOException("Arena kaydı okunamadı; dosya korundu.",e);}}
+    void save()throws IOException{YamlConfiguration d=new YamlConfiguration();d.set("lobi.konum",lobby);area(d,"lobi.bolge",lobbyArea);for(Definition r:rooms.values()){String k="arenalar."+r.id;d.set(k+".ek-dis-noktalar-v1",r.expanded);d.set(k+".yogun-noktalar-v2",r.denseExpanded);area(d,k+".bolge",r.area);d.set(k+".merkez",r.center);d.set(k+".dogmalar",r.spawns);d.set(k+".sandik-adaylari",r.candidates);}try{AtomicYaml.write(file,d);}catch(IOException e){load();throw e;}}
     boolean lobbyReady(){return lobby!=null&&lobby.getWorld()!=null&&lobbyArea!=null&&in(lobbyArea,lobby);}
     /** Append data points only. Never rebuild a world or move a saved lobby/landing point. */
-    int expandPreparedCandidates(List<String> additions)throws IOException{
+    int expandPreparedCandidates(List<String> additions,boolean dense)throws IOException{
         int added=0;boolean changed=false;
         for(Definition r:rooms.values()){
-            if(r.expanded||!r.ready())continue;World w=r.center.getWorld();Path profile=w.getWorldFolder().toPath().resolve("kasaba-br-map.yml");
+            if((dense?r.denseExpanded:r.expanded)||!r.ready())continue;World w=r.center.getWorld();Path profile=w.getWorldFolder().toPath().resolve("kasaba-br-map.yml");
             if(!java.nio.file.Files.isRegularFile(profile))continue;YamlConfiguration data=AtomicYaml.read(profile);
             String bounds=data.getString("arenas."+r.id+".area");if(bounds==null||!r.area.equals(profileArea(w,bounds)))continue;
             for(String point:additions){Location l=position(w,point).add(r.area.minX()+256,0,0);
-                if(!in(r.area,l)||!safe(l)||!outdoors(l)||r.candidates.stream().anyMatch(old->old.distanceSquared(l)<36))continue;
+                if(!in(r.area,l)||!safe(l)||(!dense&&!outdoors(l))||r.candidates.stream().anyMatch(old->old.distanceSquared(l)<(dense?25:36)))continue;
                 r.candidates.add(l);added++;
             }
-            r.expanded=true;changed=true;
+            if(dense)r.denseExpanded=true;else r.expanded=true;changed=true;
         }
         if(changed)save();return added;
     }
@@ -58,7 +58,7 @@ final class ArenaStore {
         Definition r=rooms.get(id);if(r!=null){if(r.center!=null&&!in(next,r.center))throw new IllegalArgumentException("Arena merkezi seçilen bölgede kalmalı.");for(Location l:r.spawns)if(!in(next,l))throw new IllegalArgumentException("Kayıtlı doğma noktaları bölge dışında kalıyor.");for(Location l:r.candidates)if(!in(next,l))throw new IllegalArgumentException("Sandık adayları bölge dışında kalıyor.");}
     }
     static boolean safe(Location feet){if(feet.getWorld()==null)return false;Block b=feet.getBlock(),floor=b.getRelative(0,-1,0);if(!b.isEmpty()||!b.getRelative(0,1,0).isEmpty()||!floor.getType().isSolid())return false;return !Set.of(Material.MAGMA_BLOCK,Material.CACTUS,Material.CAMPFIRE,Material.SOUL_CAMPFIRE,Material.POWDER_SNOW,Material.FIRE,Material.SOUL_FIRE,Material.TNT).contains(floor.getType());}
-    List<Location> scan(Definition r,int count,Random random){if(r.area==null||r.center==null)throw new IllegalArgumentException("Önce bölgeyi ve arena merkezini ayarla.");List<Location> out=new ArrayList<>();World w=r.center.getWorld();double radius=r.area.radius(r.center.getX(),r.center.getZ())*0.9;for(int i=0;i<Math.min(10000,count*100)&&out.size()<count;i++){int x=r.area.minX()+random.nextInt(r.area.maxX()-r.area.minX()+1),z=r.area.minZ()+random.nextInt(r.area.maxZ()-r.area.minZ()+1);if(Math.hypot(x+0.5-r.center.getX(),z+0.5-r.center.getZ())>radius||!w.isChunkGenerated(x>>4,z>>4))continue;Location l=new Location(w,x+0.5,w.getHighestBlockYAt(x,z,HeightMap.MOTION_BLOCKING_NO_LEAVES)+1,z+0.5);if(safe(l)&&out.stream().noneMatch(a->a.distanceSquared(l)<16))out.add(l);}if(out.size()<count)throw new IllegalArgumentException("Yeterli güvenli zemin bulunamadı ("+out.size()+"/"+count+"). Haritayı yükle veya daha az nokta iste.");return out;}
+    List<Location> scan(Definition r,int count,Random random,BattleRules.Area bounds){if(r.area==null||r.center==null)throw new IllegalArgumentException("Önce bölgeyi ve arena merkezini ayarla.");List<Location> out=new ArrayList<>();World w=r.center.getWorld();double radius=r.area.radius(r.center.getX(),r.center.getZ())*0.9;for(int i=0;i<Math.min(10000,count*100)&&out.size()<count;i++){int x=bounds.minX()+random.nextInt(bounds.maxX()-bounds.minX()+1),z=bounds.minZ()+random.nextInt(bounds.maxZ()-bounds.minZ()+1);if(Math.hypot(x+0.5-r.center.getX(),z+0.5-r.center.getZ())>radius||!w.isChunkGenerated(x>>4,z>>4))continue;Location l=new Location(w,x+0.5,w.getHighestBlockYAt(x,z,HeightMap.MOTION_BLOCKING_NO_LEAVES)+1,z+0.5);if(safe(l)&&out.stream().noneMatch(a->a.distanceSquared(l)<16))out.add(l);}if(out.size()<count)throw new IllegalArgumentException("Yeterli güvenli zemin bulunamadı ("+out.size()+"/"+count+"). Haritayı yükle veya daha az nokta iste.");return out;}
     /** Open sky on natural ground: roofs never consume the guaranteed outdoor quota. */
     static boolean outdoors(Location l){
         if(l.getWorld()==null||l.getWorld().getHighestBlockYAt(l,HeightMap.MOTION_BLOCKING_NO_LEAVES)>l.getBlockY())return false;

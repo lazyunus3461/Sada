@@ -7,7 +7,7 @@ async function run(){
  const suffix=Date.now().toString(36).slice(-6),bots=[];for(const ch of 'AB'){const b=await connect('HP'+suffix+ch);b.c.write('custom_payload',{channel:'minecraft:register',data:Buffer.from('kasaba_test:battle')});bots.push(b);}
  const[a,b]=bots;await probe(a,'ADMIN');await probe(a,'EFFECT|3600|0');const outside=await state(a);assert.equal(outside.absorption,4);
  for(const bot of bots)await command(bot,'br solo');await waitState(a,s=>s.room?.players===2);await command(a,'br başlat 1');await waitState(a,s=>s.room?.stage==='OYNANIYOR');assert.equal((await state(a)).absorption,0);
- for(const bot of bots)await probe(bot,'LOOKBOX|any');
+ for(const bot of bots){await probe(bot,'LOOKBOX|any');await probe(bot,'UNARMOR');}
  await probe(a,'HEALTH|10');await probe(a,'RESERVE|2');let s=await eat(a);assert.equal(s.absorption,4);assert.equal(s.hp,10);assert.equal(s.reserveDuration,-1);assert(s.items.includes('DRIED_KELP:2'));
  s=await eat(a);assert.equal(s.absorption,4);assert(s.items.includes('DRIED_KELP:2'));
  await probe(a,'RESERVE|3');s=await eat(a);assert.equal(s.absorption,6);assert.equal(s.hp,10);assert(s.items.includes('SWEET_BERRIES:2'));

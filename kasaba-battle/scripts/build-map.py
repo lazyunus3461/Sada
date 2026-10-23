@@ -78,6 +78,29 @@ for q in walk:
 if len(extra)!=96:raise ValueError('Cannot expand exterior supply safely')
 resource=Path(__file__).resolve().parents[1]/'src/main/resources/hazir-dis-sandiklar.yml'
 resource.write_text('# Read-only template additions; existing arena/lobby/spawns are preserved.\nlocations:\n'+''.join(f'  - "{q[1]}|{q[2]}|{q[3]}"\n' for q in extra))
+# 800 CENTRAL additions support 240-320 chests inside a 250x250 square.
+# Preserve the existing 256 indices, then spread additions evenly over 48-block cells.
+from collections import deque
+dense_extra=[];dense_rng=np.random.default_rng(1032026)
+def add_dense(candidates,count,required=True):
+ dense_rng.shuffle(candidates);groups={}
+ for q in candidates:groups.setdefault((int((q[1]+256)//48),int((q[3]+256)//48)),deque()).append(q)
+ keys=list(groups);dense_rng.shuffle(keys);added=0
+ while keys and added<count:
+  for key in list(keys):
+   group=groups[key];point=None
+   while group:
+    q=group.popleft()
+    if all((q[1]-r[1])**2+(q[3]-r[3])**2+(q[2]-r[2])**2>=25 for r in selected):point=q;break
+   if point is None:keys.remove(key);continue
+   selected.append(point);dense_extra.append(point);added+=1
+   if added==count:break
+ if required and added!=count:raise ValueError(f'Cannot add dense candidates safely: {added}/{count}')
+central=lambda q: -125<=q[1]-.5<125 and -125<=q[3]-.5<125
+add_dense([q for q in walk if q[4]=='interior' and central(q)],240,False)
+natural={'grass_block','dirt','sand','gravel','stone','andesite','coarse_dirt'}
+add_dense([q for q in walk if q[4]=='outdoors' and central(q) and roofs[int(q[3]-.5)+256,int(q[1]-.5)+256]<q[2] and names[int(blocks[q[2]-LOW-1,int(q[3]-.5)+256,int(q[1]-.5)+256])] in natural],800-len(dense_extra))
+resource.with_name('hazir-yogun-sandiklar.yml').write_text('# Dense pool additions; append once without changing saved locations or world blocks.\nlocations:\n'+''.join(f'  - "{q[1]}|{q[2]}|{q[3]}"\n' for q in dense_extra))
 spawn_pool=[q for q in walk if q[4]=='outdoors' and roofs[int(q[3]-.5)+256,int(q[1]-.5)+256]<q[2]+2]
 spawns=[]
 for i in range(20):
@@ -142,7 +165,7 @@ profile={'schema':1,'lobby':{'position':'768.5|73|-440.5','area':'744|792|-464|-
 def pos(q,shift):return f'{q[1]+shift}|{q[2]}|{q[3]}'
 for i,shift in enumerate([0,768,1536],1):profile['arenas'][str(i)]={'center':f'{shift+.5}|{center[2]}|0.5','area':f'{shift-256}|{shift+255}|-256|255','spawns':[pos(q,shift) for q in spawns],'candidates':[pos(q,shift) for q in selected]}
 (out/'kasaba-br-map.yml').write_text(json.dumps(profile,ensure_ascii=False,indent=2),encoding='utf-8')
-report={'original_chunks':len(chunks),'prepared_chunks':len(all_chunks),'regions':len(regions),'islands':3,'offsets':[0,768,1536],'chest_candidates_per_island':len(selected),'candidates_by_kind':{s:sum(q[4]==s for q in selected) for s in ['interior','roof','outdoors']},'team_landing_points_per_island':20,'lobby':[768.5,73,-440.5],'global_border_size':4096,'gameplay_chests':'spawned and removed by plugin per match; selected locations rotate'}
+report={'original_chunks':len(chunks),'prepared_chunks':len(all_chunks),'regions':len(regions),'islands':3,'offsets':[0,768,1536],'chest_candidates_per_island':len(selected),'candidates_by_kind':{s:sum(q[4]==s for q in selected) for s in ['interior','roof','outdoors']},'active_chest_area_size':250,'active_candidates_per_island':sum(central(q) for q in selected),'team_landing_points_per_island':20,'lobby':[768.5,73,-440.5],'global_border_size':4096,'gameplay_chests':'spawned and removed by plugin per match; selected locations rotate'}
 (out.parent/'map-report.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
 # Actual block-derived overview of island 1 with candidate markers, not a concept image.
 colors={'water':(49,112,164),'grass_block':(96,144,74),'dirt_path':(163,142,93),'sand':(217,207,154),'spruce_leaves':(45,92,52),'oak_leaves':(57,116,59),'spruce_planks':(125,91,56),'oak_planks':(164,130,77),'dark_oak_planks':(78,57,38),'stone':(126,131,132),'gravel':(144,142,132),'stone_bricks':(145,149,150),'bricks':(150,94,76),'glass_pane':(172,203,207)}
@@ -152,6 +175,8 @@ for z in range(512):
   y=int(roofs[z,x]);name=names[int(blocks[y-LOW,z,x])] if LOW<=y<HIGH else 'water';image[z,x]=colors.get(name,(112,122,91))
 im=Image.fromarray(image).resize((1024,1024));draw=ImageDraw.Draw(im)
 for q in selected:
+ if not central(q):continue
  x,z=int((q[1]+256)*2),int((q[3]+256)*2);draw.ellipse((x-3,z-3,x+3,z+3),fill=(255,211,80),outline=(65,36,12))
+draw.rectangle((262,262,762,762),outline=(85,235,245),width=3)
 im.save(out.parent/'KasabaBR-Sandik-Adaylari.png')
 print(json.dumps(report,indent=2),flush=True)

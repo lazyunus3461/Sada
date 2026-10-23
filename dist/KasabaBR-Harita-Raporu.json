@@ -8,12 +8,14 @@
     768,
     1536
   ],
-  "chest_candidates_per_island": 256,
+  "chest_candidates_per_island": 1056,
   "candidates_by_kind": {
-    "interior": 112,
+    "interior": 352,
     "roof": 16,
-    "outdoors": 128
+    "outdoors": 688
   },
+  "active_chest_area_size": 250,
+  "active_candidates_per_island": 894,
   "team_landing_points_per_island": 20,
   "lobby": [
     768.5,
