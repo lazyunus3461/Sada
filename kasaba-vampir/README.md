@@ -8,6 +8,8 @@ Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKo
 
 Bu sürüm **vampirkoylu_sokaklar** adlı yeni bir dünya hazırlar. Küçük toplantı meydanı, 24 çift çıkışlı ev, 17 kapalı görev odası, avlular, fenerler ve S biçimli kısa sokaklar vardır. Önceki açık harita otomatik olarak bu yerleşime geçer. Hazır harita JAR'ın içindedir; ayrıca dünya indirip kurman gerekmez. Yeni chunk'lar boş üretilir.
 
+Haritayı ayrıca indirmek için [KasabaVampirKoylu-1.1.0-DUNYA.zip](../dist/KasabaVampirKoylu-1.1.0-DUNYA.zip) dosyası vardır. ZIP içindeki `vampirkoylu_sokaklar` klasörü doğrudan Minecraft dünya dosyalarıdır; JAR içermez. Paketi yeniden üretmek için `python3 scripts/package-world.py` kullanılır.
+
 **Eski dünya klasörleri silinmez ve üzerlerine yazılmaz.** Eski lobi oyun alanının dışındaysa lobi çevresindeki chunk'lar yeni dünyaya kopyalanır; bu bölgedeki düzenlemelerin ve lobi koordinatların korunur. Oyun alanı yeni köyle değiştirilir. Özel isimli başka bir harita/lobi kullanıyorsan o isimler korunur. Eski lobi doğrudan eski oyun alanının içindeyse lobi o eski dünyada kalır, maçlar yeni köyde açılır.
 
 Geçiş öncesi ayarın yedeği `plugins/KasabaVampirKoylu/config-before-village-1.1.yml` dosyasındadır. Varsayılan ortak lobi **144.5 / 69 / 0.5**, köy merkezi **0 / 69 / 0** konumundadır. Ana lobi hiç ayarlanmamışsa orada `/merkez lobi ayarla` kullan. 1.0.4'teki 40 saniyelik gündüz avı, özel sürelerin ve üç oda sistemi korunur.
