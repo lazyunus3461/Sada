@@ -11,9 +11,10 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.*;
 import org.bukkit.persistence.PersistentDataType;
 
-/** A contextual atlas and private role bars. Never contains other players' positions or roles. */
+/** Private ground navigation, optional atlas and role bars. No other players' positions or roles. */
 final class RoomGuide {
     private final GameRoom room;
+    final GroundTrail trail;
     final MapView map;
     final List<TextDisplay> markers=new ArrayList<>();
     private final Map<Integer,List<TextDisplay>> signs=new HashMap<>();
@@ -27,7 +28,7 @@ final class RoomGuide {
     private static final byte GOLD=MapPalette.matchColor(255,208,55),GREEN=MapPalette.matchColor(70,220,80),CYAN=MapPalette.matchColor(50,220,245),INK=MapPalette.matchColor(28,25,35),PAPER=MapPalette.matchColor(242,226,178),SHINE=MapPalette.matchColor(255,255,255);
 
     RoomGuide(GameRoom room){
-        this.room=room;map=Bukkit.createMap(room.world);map.getRenderers().forEach(map::removeRenderer);map.setCenterX(0);map.setCenterZ(0);map.setScale(MapView.Scale.CLOSEST);map.setTrackingPosition(false);map.setUnlimitedTracking(false);map.setLocked(true);
+        this.room=room;trail=new GroundTrail(room.world);map=Bukkit.createMap(room.world);map.getRenderers().forEach(map::removeRenderer);map.setCenterX(0);map.setCenterZ(0);map.setScale(MapView.Scale.CLOSEST);map.setTrackingPosition(false);map.setUnlimitedTracking(false);map.setLocked(true);
         Map<Integer,Byte> colors=new HashMap<>();
         for(int z=0;z<128;z++)for(int x=0;x<128;x++){
             int wx=TaskNavigation.world(x),wz=TaskNavigation.world(z);byte color=INK;
@@ -46,22 +47,25 @@ final class RoomGuide {
     }
     private String roleTitle(Player p){var role=room.roles.get(p.getUniqueId());String objective=!room.alive.contains(p.getUniqueId())?"Elendin • Seyirci":role==GameRoom.Role.VAMPIRE?"Kimliğini gizle, kasabayı ele geçir":"Görevleri tamamla, vampiri bul";if(role==GameRoom.Role.VAMPIRE&&room.alive.contains(p.getUniqueId())&&room.phase==GameRoom.Phase.DAY){long remaining=(room.dayKillRemainingMillis(p.getUniqueId())+999)/1000;objective=(remaining==0?"§aAv hazır":"§eAv: "+remaining+" sn")+" §7• Kimliğini gizle";}return "§dROLÜN: §f"+role.label.toUpperCase(Locale.forLanguageTag("tr-TR"))+" §7• "+objective;}
     ItemStack item(){ItemStack item=new ItemStack(Material.FILLED_MAP);MapMeta meta=(MapMeta)item.getItemMeta();meta.setMapView(map);meta.setDisplayName("§eGörev Haritası §7• Sağ Tıkla");meta.setLore(List.of("§eParlayan sarı: görev §aYeşil: bitti §bMavi: teslimat","§fBeyaz ok sensin; görev seçmek için sağ tıkla."));meta.getPersistentDataContainer().set(new NamespacedKey(room.plugin,"menu_item"),PersistentDataType.STRING,"map");item.setItemMeta(meta);return item;}
+    ItemStack navigationItem(){ItemStack item=new ItemStack(Material.COMPASS);var meta=item.getItemMeta();meta.setDisplayName("§bGörev Yolu §7• Sağ Tıkla");meta.setLore(List.of("§fGörevini seç; yerdeki mavi okları izle.","§7Okları yalnız sen görürsün; sokak ve kapılardan gider."));meta.getPersistentDataContainer().set(new NamespacedKey(room.plugin,"menu_item"),PersistentDataType.STRING,"tasks");item.setItemMeta(meta);return item;}
     void takeMap(Player p){if(closed||!room.members.contains(p.getUniqueId())||p.getWorld()!=room.world)throw new IllegalArgumentException("Harita maç başladıktan sonra kullanılabilir.");p.getInventory().setItem(6,item());p.getInventory().setHeldItemSlot(6);p.sendMap(map);}
     List<GameRoom.Task> tasks(Player p){return room.tasks.getOrDefault(p.getUniqueId(),List.of());}
     int target(Player p){
         var tasks=tasks(p);Integer chosen=tracked.get(p.getUniqueId());if(chosen!=null&&chosen>=0&&chosen<tasks.size()&&!tasks.get(chosen).completed)return TaskNavigation.station(tasks.get(chosen));
-        int nearest=-1;double best=Double.MAX_VALUE;for(var task:tasks){if(task.completed)continue;int s=TaskNavigation.station(task);double distance=distanceSquared(p,s);if(distance<best){best=distance;nearest=s;}}
+        int nearest=-1;double best=Double.MAX_VALUE;for(int i=0;i<tasks.size();i++){var task=tasks.get(i);if(task.completed)continue;int s=TaskNavigation.station(task),walking=trail.distance(p,s);double distance=walking>=0?walking:10000+Math.sqrt(distanceSquared(p,s));if(distance<best){best=distance;nearest=s;tracked.put(p.getUniqueId(),i);}}
         if(nearest<0&&room.firstNightDone&&room.taskDone<room.taskGoal)for(int i=0;i<MapLayout.STATIONS.size();i++){double distance=distanceSquared(p,i);if(distance<best){best=distance;nearest=i;}}
         return nearest;
     }
-    void select(Player p,int number){if(number<1||number>tasks(p).size())throw new IllegalArgumentException("Görev numarası 1–4 olmalı.");var task=tasks(p).get(number-1);if(task.completed)throw new IllegalArgumentException("Bu görevi zaten tamamladın.");tracked.put(p.getUniqueId(),number-1);room.plugin.tell(p,"Hedef: "+MapLayout.STATIONS.get(TaskNavigation.station(task)).name()+" • "+distance(p,TaskNavigation.station(task))+" blok. Alttaki yönü ve haritayı izle.");takeMap(p);}
+    void select(Player p,int number){if(number<1||number>tasks(p).size())throw new IllegalArgumentException("Görev numarası 1–4 olmalı.");var task=tasks(p).get(number-1);if(task.completed)throw new IllegalArgumentException("Bu görevi zaten tamamladın.");tracked.put(p.getUniqueId(),number-1);showTrail(p);}
+    void showTrail(Player p){if(closed||!room.members.contains(p.getUniqueId())||p.getWorld()!=room.world||!room.alive.contains(p.getUniqueId()))throw new IllegalArgumentException("Görev yolu maçta yaşayan oyuncular içindir.");p.getInventory().setItem(6,navigationItem());p.getInventory().setHeldItemSlot(6);int target=target(p);room.plugin.tell(p,target<0?"Görevlerin tamam.":"Hedef: "+MapLayout.STATIONS.get(target).name()+" • Yerdeki mavi okları izle. Okları yalnız sen görürsün.");if(room.phase==GameRoom.Phase.DAY&&target>=0)trail.render(p,target);}
+    void trails(){if(closed||room.phase!=GameRoom.Phase.DAY)return;for(UUID id:List.copyOf(room.alive)){Player p=Bukkit.getPlayer(id);if(p==null||p.getWorld()!=room.world||!room.members.contains(id))continue;int target=target(p);if(target>=0)trail.render(p,target);}}
     int distance(Player p,int station){return (int)Math.ceil(Math.sqrt(distanceSquared(p,station)));}
     private double distanceSquared(Player p,int station){var s=MapLayout.STATIONS.get(station);return Math.pow(p.getX()-s.x()-.5,2)+Math.pow(p.getZ()-s.z()-.5,2);}
     void tick(){
         if(closed)return;for(UUID id:List.copyOf(room.members)){Player p=Bukkit.getPlayer(id);if(p==null||p.getWorld()!=room.world)continue;
             BossBar bar=roleBars.get(id);if(bar!=null&&!bar.getTitle().equals(roleTitle(p)))bar.setTitle(roleTitle(p));
             String line;if(!room.alive.contains(id))line="Seyircisin • /vk rehber • Ana lobi: /lobi";
-            else if(room.phase==GameRoom.Phase.DAY){int target=target(p);if(target<0)line="Görevlerin tamam • Gördüklerini toplantıda anlat";else{var s=MapLayout.STATIONS.get(target);line=TaskNavigation.arrow(p.getYaw(),s.x()+.5-p.getX(),s.z()+.5-p.getZ())+" "+s.name()+" • "+distance(p,target)+" blok • Harita: 7. kutu";}
+            else if(room.phase==GameRoom.Phase.DAY){int target=target(p);if(target<0)line="Görevlerin tamam • Gördüklerini toplantıda anlat";else{var s=MapLayout.STATIONS.get(target);line=s.name()+" • "+trail.instruction(p,target);}
                 Set<Integer> active=new HashSet<>();for(var task:tasks(p))if(!task.completed)active.add(TaskNavigation.station(task));if(active.isEmpty()&&target>=0)active.add(target);for(int station:active){if(distanceSquared(p,station)>32*32)continue;var point=MapLayout.STATIONS.get(station).location(room.world).add(0,1.6,0);p.spawnParticle(Particle.END_ROD,point,4,.3,.4,.3,.01);p.spawnParticle(Particle.DUST,point,8,.4,.35,.4,0,new Particle.DustOptions(station==target?Color.fromRGB(255,225,70):Color.fromRGB(255,185,35),1.4f));}
             }else line=switch(room.phase){case SPEECH->room.isSpeaker(id)?"Söz sende • Gördüklerini anlat • Erken bitir: /vk bitir":"Konuşanı dinle; ardından şüpheli vampir için oy vereceksin";case VOTE->"Vampir olduğundan şüphelendiğin kişiyi seç; emin değilsen Pas • /vk";case ROLE->switch(room.roles.get(id)){case VAMPIRE->"Gizlice gece hedefini seç • /vk";case SEER->"Rolünü öğrenmek istediğin kişiyi seç • /vk";case DOCTOR->"Koruyacağın kişiyi seç • /vk";default->"Gece rollerinin seçim yapmasını bekle";};default->"";};
             p.sendActionBar(Component.text(line,NamedTextColor.YELLOW));

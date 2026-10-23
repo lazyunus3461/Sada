@@ -55,6 +55,6 @@ async function run(){
  pass('Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress');
 
  await owner.command('vk durdur');for(const bot of bots)await bot.command('lobi');
- console.log(JSON.stringify({version:'1.1.0',realClients:6,checks},null,2));
+ console.log(JSON.stringify({version:'1.1.1',realClients:6,checks},null,2));
 }
 run().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{for(const client of clients)client.end();await delay(500);});

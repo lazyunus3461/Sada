@@ -1,19 +1,19 @@
 {
-  "version": "1.1.0",
-  "jarSha256": "e26cc47d7970040838f795e6ce1ff5057208e89f73141ba7c44d4d1084c8e8e7",
+  "version": "1.1.1",
+  "jarSha256": "092db52051ee89182f2d7c9624a523e2d6518f0e141ea3842aa3e7ff6c061027",
   "paper": "1.21.10-130",
-  "unitTests": 34,
-  "liveChecks": 42,
+  "unitTests": 38,
+  "liveChecks": 39,
   "maxSimultaneousRealClients": 18,
   "suites": {
-    "village-tasks": [
-      "Every role receives two easy/two medium tasks; 17 indoor workstations are safe and all 34 task-room doors remain usable",
-      "A nearby name label disappears behind an opaque wall and returns when the view is clear",
-      "Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least six real seconds to complete",
-      "Material sorting uses all four items, follows its displayed order, and takes at least eight real seconds",
-      "Delivery requires packing and two distinct nearby stops; the atlas follows each leg and only final delivery adds progress",
-      "Medium memory task enforces its preview, hides the clue, restarts a mistaken round and requires both rounds before completion",
-      "Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress"
+    "ground-trails": [
+      "All six roles start with the task compass instead of a held map",
+      "All 20 start seats reach all 17 stations on real Paper terrain: 340 cardinal routes, solid floors, usable doors, no wall or diagonal shortcuts",
+      "Only the task owner receives ground-arrow packets; another living player on the exact same block receives none",
+      "Walking advances the route by one tile; taking another street recalculates from the new block without switching the chosen task",
+      "The trail stops at a closed wooden door, asks the player to open it and continues inside when it opens",
+      "Packing and each delivery automatically retarget the path; completed work switches to the next unfinished task",
+      "Ground arrows stop during meetings"
     ],
     "regression": [
       "Six authenticated real clients enter native Hub/room pages; all five roles assigned in a separate world",
@@ -30,17 +30,17 @@
       "Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance",
       "Pending inventory recovery is applied after authentication, preserving the original items"
     ],
-    "day-hunts": [
-      "A vampire fake task and a real task give identical public boss-bar increments; the hidden real count is not disclosed",
-      "Stationary held-map frames pulse around pending tasks and the selected destination without showing other players",
-      "A successful hunt starts a private forty-second countdown; immediate extra attacks are denied",
-      "An attack just before forty seconds is blocked; after forty seconds a second kill succeeds during the same day",
-      "The visible fake contribution survives voting/night; meetings and a new day do not reset the hunt cooldown",
-      "Vampires can also do fake common maintenance after the first night, with the same thirty-second repeat limit",
-      "Fake work caps the visible bar at 99% without ending the game; only the final genuine task awards the villager victory"
+    "village-tasks": [
+      "Every role receives two easy/two medium tasks; 17 indoor workstations are safe and all 34 task-room doors remain usable",
+      "A nearby name label disappears behind an opaque wall and returns when the view is clear",
+      "Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least six real seconds to complete",
+      "Material sorting uses all four items, follows its displayed order, and takes at least eight real seconds",
+      "Delivery requires packing and two distinct nearby stops; the atlas follows each leg and only final delivery adds progress",
+      "Medium memory task enforces its preview, hides the clue, restarts a mistaken round and requires both rounds before completion",
+      "Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress"
     ],
     "experience": [
-      "Private persistent role bars are addressed to exactly their own player; three-minute day and held task map",
+      "Private persistent role bars are addressed to exactly their own player; three-minute day and held task navigation compass",
       "Real map packets contain terrain, personal numbered tasks and only the viewer arrow; 17 physical markers, target selection and tutorial pages work",
       "Vampire sword and hunter bow stay visible to their owner, masked to observers in normal packets and spawn bundles",
       "Vanilla nameplates are hidden; personal name labels appear at nine blocks and disappear at eleven",
@@ -52,40 +52,43 @@
       "Three simultaneous two-player rooms use separate copies and a shared lobby; a fourth room is refused and cross-room damage is blocked",
       "All three room copies are deleted after their games stop"
     ],
-    "name-visibility": [
-      "Player names survive 80 near/far checks, cross-chunk teleports and ten simulated visibility resets"
-    ],
     "three-rooms": [
       "18 real clients: three simultaneous six-player normal games, shared lobby, separate void copies, private roles and complete cleanup"
-    ],
-    "cleanup": [
-      "Cancelled room teleport cleans the map, actor equipment mask and role state",
-      "Disabling the plugin during a live game restores inventories, equipment/nameplate visibility and deletes the room without scheduling on a disabled plugin"
     ]
   },
-  "voidScan": {
-    "originalMapChunks": 120,
-    "preservedMapChunks": 120,
-    "verifiedEmptyOutsideChunks": 1448,
-    "naturalTerrainOutsideMap": false
+  "navigation": {
+    "version": "1.1.1",
+    "realClients": 6,
+    "steps": 28894,
+    "routes": 340,
+    "doorCrossings": 340,
+    "checks": [
+      "All six roles start with the task compass instead of a held map",
+      "All 20 start seats reach all 17 stations on real Paper terrain: 340 cardinal routes, solid floors, usable doors, no wall or diagonal shortcuts",
+      "Only the task owner receives ground-arrow packets; another living player on the exact same block receives none",
+      "Walking advances the route by one tile; taking another street recalculates from the new block without switching the chosen task",
+      "The trail stops at a closed wooden door, asks the player to open it and continues inside when it opens",
+      "Packing and each delivery automatically retarget the path; completed work switches to the next unfinished task",
+      "Ground arrows stop during meetings"
+    ]
   },
-  "layout": {
-    "canonicalChunks": 120,
-    "houses": 24,
-    "taskRooms": 17,
-    "reachableTaskRooms": 17,
-    "reachableHouseExits": 48,
-    "walkableBlocks": 15035,
-    "connectedWalkableBlocks": 15035,
-    "longSightPairs": 417,
-    "unobstructedLongSightPairs": 1
-  },
-  "migration": {
-    "oldWorldFoldersUnchanged": [
-      "vampirkoylu",
-      "vampirkoylu_bos"
+  "simultaneousRooms": {
+    "version": "1.1.1",
+    "realClients": 18,
+    "rooms": [
+      101,
+      102,
+      103
     ],
-    "newWorld": "vampirkoylu_sokaklar",
-    "lobbyCoordinatesAndOtherSettingsPreserved": true
-  }
+    "worlds": [
+      "vk_room_101_6369550d",
+      "vk_room_102_685c8112",
+      "vk_room_103_21faf876"
+    ],
+    "playersPerRoom": 6,
+    "normalMatches": true,
+    "cleanup": true
+  },
+  "mapFilesChanged": false,
+  "worldFloorY": 69
 }

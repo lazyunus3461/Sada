@@ -1,0 +1,35 @@
+Kasaba Vampir Köylü 1.1.1 — test sonuçları
+Tarih: 23.10.2026
+Ortam: Java 21, Paper 1.21.10 build 130, KasabaAuth 1.3.0, KasabaHub 1.2.0, KasabaRoles 1.2.0.
+Bağımsız yerel test sunucusu: /workspace/scratch/kasaba-vampir-111-server (yalnız 127.0.0.1).
+Önceki test sunucusunun eklentileri, ayarları ve dünyaları değiştirilmedi.
+Maven verify: 38 birim testi, 0 hata. Aynı üretim JAR'ıyla 5 canlı pakette toplam 39 kontrol geçti.
+
+Yeni görev yolu:
+- 7. kutuda görev pusulası vardır; harita otomatik ele verilmez. /vk görev 1–4 hedef seçer; /vk yol pusulayı alır.
+- Gerçek Paper arazisinde 20 başlangıç yerinden 17 görev noktasına toplam 340 rota doğrulandı. 28894 rota hücresi ve 340 kapı geçişi kontrol edildi.
+- Rotalar sağlam zemin ve baş boşluğu olan hücrelerden, yalnız dört ana yönde geçer; çapraz köşe kesmez, duvarın içinden gitmez. Saf labirent testlerinde duvarı dolaşma, ulaşılamayan hedef, köşe kesmeme, hedef değişimi ve görünür yol sınırı denendi.
+- Mavi ok parçacıkları yalnız ilgili Player bağlantısına gönderildi. Aynı blokta duran başka yaşayan oyuncu hiç yer oku paketi almadı.
+- Yürüyünce yol mevcut bloktan ilerledi; başka sokağa geçince seçilen görev sabit kaldı ve yeni konumdan yol oluştu.
+- Kapalı ahşap kapıda oklar durdu ve açma yönergesi geldi; iki kanatlı kapı açılınca oklar odaya devam etti. Bukkit isPassable açık kapıda da false dönebildiği için kapının açık durumu ayrıca denetlenir.
+- Paket alınca ilk teslimat, ilk teslimatta ikinci durak hedef oldu. İş bitince bitmemiş göreve geçildi. Toplantıda ve çıkıştan sonra yeni yer oku paketi gönderilmedi.
+- Gösterim en fazla 10 blok ileriyi kapsar; yarım saniyede yenilenir. Harita 1.1.0 ile aynıdır ve yeniden kurulması gerekmez. Eski /vk harita komutu isteğe bağlı korunur.
+
+Üç eşzamanlı oyun:
+- 18 gerçek protokol istemcisi sırayla bağlandı; aynı anda üç normal maçta 6'şar oyuncuyla oynadı.
+- Ortak lobi vampirkoylu_sokaklar olarak kaldı; odalar 101, 102, 103 farklı vk_room_* dünya kopyalarında çalıştı.
+- Her odada bağımsız rol dağılımı ve görev durumu doğrulandı. Biten oyunların kopyaları kaldırıldı; şablon ve lobi kaldı.
+- Ayrı denemede üç adet iki kişilik yönetici odası da eşzamanlı çalıştı, dördüncü oda reddedildi ve odalar arası saldırı engellendi.
+
+Mevcut oyun kontrolleri:
+- Her rolde 2 kolay + 2 orta görev; zamanlı düzenek/malzeme işleri, iki teslimatlı paket ve iki turlu hafıza tamamlandı. Yanlış/hızlı giriş ve uzaklaşma denetimleri geçti.
+- Sahte vampir işi aynı bulmacayı gerektirdi; gerçek köylü görev sayısından ayrı kaldı. Toplantı yarım işi durdurdu.
+- Kişisel rol çubukları, yalnız sahibine görünen el eşyaları ve paket demeti maskelemesi, 10 blok isim/5 blok ceset adı sınırları ve duvar görüşü korundu.
+- İlk konuşmacı çanı çalan/cesedi bildiren oldu; süre, erken bitirme ve Pas oylaması çalıştı. Kahin/doktor seçimleri, gizli sonuç ve doktor koruması geçti.
+- Kırma/koyma/normal hasar/açlık korumaları, avcı ok hakkı, gündüz avı ve elenme geçti.
+- /lobi, bağlantı kesilmesi ve Auth sonrası kurtarmada envanter, imleç eşyası, ek can, deneyim ve iksirler geri geldi.
+
+Canlı kontrol sayıları: yer okları 7, temel oyun 13, köy/görevler 7, ekran/roller 11, üç normal maç 1.
+Sınırlar: İstemci menüleri ve okların kime gönderildiği gerçek Minecraft protokol paketleriyle denendi. Konum, kapı ve bazı faz/saldırı olaylarını yerel Bukkit test adaptörü tetikledi. İnsanlarla görsel kabul oturumu yapılmadı. Oklar için istemcinin parçacık ayarı açık olmalıdır. Kaynak paketi veya mod gerekmez. Yeni oklar durduktan sonra mevcut parçacıklar kendi ömürlerinde söner. Bu rota mevcut düz köyün Y=69 zeminine yöneliktir. Dağıtım JAR'ı ve kurulum ZIP'i test adaptörü içermez.
+
+Üretim JAR SHA-256: 092db52051ee89182f2d7c9624a523e2d6518f0e141ea3842aa3e7ff6c061027

@@ -178,7 +178,7 @@ final class GameRoom {
                 this.guide.attach(player);
                 this.plugin.tell(player, "Rolün: §d" + this.roles.get((Object)uUID).label + "§f. Başkalarına söylemek zorunda değilsin.");
                 this.plugin.tell(player, GameText.purpose(this.roles.get(uUID)));
-                this.plugin.tell(player, "7. kutudaki harita görevlerini gösterir. Haritaya/deftere sağ tıklayıp hedef seç. /vk rehber ile kuralları oku.");
+                this.plugin.tell(player, "7. kutudaki görev pusulasına sağ tıkla, hedef seç ve yerdeki mavi okları izle. Okları yalnız sen görürsün. /vk rehber ile kuralları oku.");
                 if (this.roles.get(uUID) != Role.VAMPIRE) continue;
                 this.plugin.tell(player, "Gündüz yakın dövüşle avlan; gece menüden hedef seç. /v gizli sohbet.");
             }
@@ -611,7 +611,7 @@ final class GameRoom {
         Task task=taskAt(id,station);
         if(task!=null&&task.kind==2&&task.carrying){
             if(station!=task.destination()){plugin.tell(player,"Paket sende. Teslim yeri: "+MapLayout.STATIONS.get(task.destination()).name());return;}
-            if(task.leg++==0){plugin.tell(player,"İlk teslimat tamam. Son durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Haritadaki mavi işareti izle.");}
+            if(task.leg++==0){plugin.tell(player,"İlk teslimat tamam. Son durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Yerdeki mavi okları izle.");}
             else completeTask(player,task,false);
             return;
         }
@@ -641,7 +641,7 @@ final class GameRoom {
             case HIDDEN -> plugin.tell(player,"Dizi gizlendi. Hatırladığın sıraya bas.");
             case STEP -> plugin.tell(player,"Doğru: "+task.work.step+"/"+task.work.sequence.length);
             case DONE -> {
-                if(task.kind==2){task.carrying=true;plugin.closePage(player);plugin.tell(player,"Paket hazır. İlk durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Mavi hedefi izle.");}
+                if(task.kind==2){task.carrying=true;if(guide!=null)guide.tracked.put(id,tasks.get(id).indexOf(task));plugin.closePage(player);plugin.tell(player,"Paket hazır. İlk durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Yerdeki mavi okları izle.");}
                 else if(task.maintenance){task.completed=true;publicTaskCooldown.put(id,now);commonWork.remove(id,task);plugin.closePage(player);recordTaskCompletion(player,"Ortak bakım görevi tamamlandı.");}
                 else completeTask(player,task,false);
             }

@@ -1,10 +1,10 @@
-# Kasaba Vampir Köylü 1.1.0
+# Kasaba Vampir Köylü 1.1.1
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
 
 ## Kurulum ve güncelleme
 
-Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.1.0.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
+Sunucuyu durdur, eski Vampir Köylü JAR dosyasını kaldırıp **KasabaVampirKoylu-1.1.1.jar** dosyasını `plugins` içine koy ve yeniden başlat. KasabaHub 1.2.0 ve KasabaAuth 1.3.0 gereklidir. Hazır harita JAR'ın içindedir; ilk kurulumda dünya otomatik hazırlanır. `/oyunlar` menüsüne oyun kendisi eklenir.
 
 Bu sürüm **vampirkoylu_sokaklar** adlı yeni bir dünya hazırlar. Küçük toplantı meydanı, 24 çift çıkışlı ev, 17 kapalı görev odası, avlular, fenerler ve S biçimli kısa sokaklar vardır. Önceki açık harita otomatik olarak bu yerleşime geçer. Hazır harita JAR'ın içindedir; ayrıca dünya indirip kurman gerekmez. Yeni chunk'lar boş üretilir.
 
@@ -29,20 +29,28 @@ Her oyuncuya ve vampire aynı dağılımla **2 kolay + 2 orta** kişisel görev 
 
 İlk geceden sonra ortak bakım işleri de açılır. Bunlar da kısa bir sıralama/hazırlık işidir; başarıyla bitirdikten sonra tekrar almak için 30 saniye beklersin. Vampir aynı bakımı sahte ilerleme olarak yapabilir.
 
-## Ekranlar, görev haritası ve gizlilik
+## Kişiye özel yerde görev okları
+
+Maçta **7. kutuda Görev Yolu pusulası** bulunur. Sağ tıkla ve görevini seç; `/vk görev 1`–`/vk görev 4` de aynı işi yapar. `/vk yol` pusulayı tekrar eline alır. Görev seçmesen bile en yakın yürünebilir görev yolu otomatik seçilir; yolda yürürken hedef kendi kendine başka göreve geçmez.
+
+Yerde yalnız sana gönderilen **mavi parçacık okları** görünür. Yol duvarı kestirmez; baş boşluğu ve sağlam zemini olan blokları, dört ana yönde takip eder. Önündeki en fazla 10 blok işaretlenir, her yarım saniyede bulunduğun bloğa göre yenilenir. Kapalı ahşap kapının önünde durur; kapıyı sağ tıklayıp açınca içeride devam eder. İstasyona bitişik zeminde işaretli görev bloğuna sağ tıklaman istenir. Mod veya kaynak paketi gerekmez; istemcide parçacıkların açık olması gerekir.
+
+Paket hazırlanınca oklar ilk teslim yerine, ilk teslimattan sonra ikinci durağa döner. Görev bitince sıradaki bitmemiş işe geçer. Vampirin sahte işleri de aynı yol gösterimini kullanır. Toplantı, gece, elenme ve oyun çıkışında yeni ok gönderilmez; eski parçacıklar kısa sürede söner. Harita artık otomatik ele verilmez; isteyen `/vk harita` ile mevcut kişisel haritayı açabilir. Köy dünya dosyaları 1.1.0 ile aynıdır; yalnız JAR güncellenir.
+
+## Ekranlar, isteğe bağlı harita ve gizlilik
 
 - Her oyuncunun üstte sürekli görünen **ROLÜN** çubuğu vardır. Bu çubuk yalnız o oyuncuya gönderilir. Başkalarının rolü bu göstergeden görülemez.
 - Toplantıda ortak üst çubuk **ŞU AN KONUŞUYOR: Oyuncu • 20 sn** yazar. Süre ve çubuk azalır; kişi değişince anında güncellenir.
 - **Çanı çalan veya cesedi bildiren oyuncu ilk konuşur.** Otomatik gece toplantısı katılım sırasını kullanır; elenenler atlanır.
-- 7. kutuda köyün gerçek görünümünü içeren **Görev Haritası** bulunur. Parlayan sarı 1–4 kendi görevlerin, yeşil bitenler, mavi taşıma işinin teslimat noktasıdır. Beyaz ok yalnız seni; kırmızı X seçtiğin hedefi gösterir. Diğer oyuncuların konumu haritada yer almaz.
-- Haritaya/deftere sağ tıkla veya `/vk görevler` yaz. Bir görev seçince yön ve mesafe ekranın altında gösterilir. `/vk harita` haritayı eline alır; `/vk görev 1` birinci görevi takip eder.
+- İsteğe bağlı `/vk harita` komutu 7. kutuya köyün gerçek görünümünü içeren **Görev Haritası** koyar. Parlayan sarı 1–4 kendi görevlerin, yeşil bitenler, mavi taşıma işinin teslimat noktasıdır. Beyaz ok yalnız seni; kırmızı X seçtiğin hedefi gösterir. Diğer oyuncuların konumu haritada yer almaz.
+- Pusulaya/deftere sağ tıkla veya `/vk görevler` yaz. Bir görev seçince yerdeki oklar ve ekranın altındaki yönerge onu takip eder. `/vk görev 1` birinci görevi seçer; `/vk yol` görev pusulasını eline alır.
 - 17 istasyonda **GÖREV NOKTASI**, işin adı ve sağ tıklama yönergesi görünür. Yakındaki kendi aktif işlerin ayrıca yalnız sana görünen sarı ışık/parıltı parçacıklarıyla işaretlenir. Haritadaki bekleyen işler ve seçilen hedef beyaz/sarı çerçeveyle yanıp söner. Taşıma işinde paketi alınca hedef teslimat yerine döner.
 - Vampirin kılıcı, avcının yayı ve diğer el eşyaları kendi ekranında görünür; diğer oyunculara el ekipmanı boş gönderilir. Bu maskeleme oyuncunun ilk görünme paketlerini de kapsar. Normal görünüm oyun çıkışında geri yüklenir.
 - Kafa üstü oyuncu isimleri **10 blok içinde**, ceset isimleri **5 blok içinde**, ayrıca **açık görüş hattı varsa** görünür. Duvar ve kapalı kapı arkasındaki isim gösterilmez. Görünürlük her izleyen oyuncu için ayrı hesaplanır. Işınlanma veya varlık görünürlüğünün sıfırlanması sonrasında gerçek görünürlük yeniden denetlenir; geçersiz isim etiketleri yenilenir.
 - `/vk rehber` oyunun amacı, roller, görevler, konuşma, oylama ve gece seçimlerini açıklar. Oylama sayfası toplantının nedenini, kimi neden seçtiğini, yanlış kararın etkisini ve Pas seçeneğini anlatır.
 - Gece kahin/doktor/vampir seçim sayfaları otomatik açılır. Kahin `/vk gör`, doktor `/vk koru`, vampir `/vk seçim` ile yeniden açabilir. Kahin ve doktora ayrıca yalnız kendilerinin göreceği gece yeteneği eşyası verilir. Bu yetenekler gece rol seçimi aşamasında kullanılabilir.
 
-Elde tutulan görev haritası yeni sokakları ve yeni görev odalarını gösterir. Sağ üstte sabit mini harita eklenmemiştir; oyuncuların mod kurması gerekmez.
+İsteğe bağlı görev haritası yeni sokakları ve yeni görev odalarını gösterir. Sağ üstte sabit mini harita eklenmemiştir; oyuncuların mod kurması gerekmez.
 
 ## Üç oda
 
@@ -76,9 +84,10 @@ Türkçe karakterler ve bunların sade yazılışları desteklenir: `katıl/kati
 | `/vk başlat` | Oda kurucusu normal maçı başlatır. Varsayılan 6–20 oyuncu. |
 | `/vk bitir` | **Kendi konuşma sıranı erken bitirir. Maçı bitirmez.** |
 | `/v <mesaj>` | Aynı odadaki yaşayan vampirlere gizli mesaj gönderir. |
-| `/vk harita` | Görev haritasını 7. kutuda eline alır. |
+| `/vk yol` | Görev pusulasını eline alır; yerde yalnız sana görünen oklar seçili göreve götürür. |
+| `/vk harita` | İsteğe bağlı eski kişisel haritayı 7. kutuda eline alır. |
 | `/vk görevler` | Görev konumlarını ve durumlarını sayfada açar. |
-| `/vk görev <1–4>` | Seçilen görev için yön/mesafe hedefi belirler. |
+| `/vk görev <1–4>` | Seçilen göreve sokak ve kapıları izleyen özel yer oklarını açar. |
 | `/vk rehber` | Ayrıntılı oyun açıklamasını açar. |
 | `/vk gör` | Kahinin gece rol görme sayfasını açar. |
 | `/vk koru` | Doktorun gece koruma sayfasını açar. |
