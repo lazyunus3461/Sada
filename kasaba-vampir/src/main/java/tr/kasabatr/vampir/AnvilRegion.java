@@ -7,11 +7,18 @@ import java.nio.ByteBuffer;
 final class AnvilRegion {
     private AnvilRegion() {}
     static byte[] retain(byte[] template,byte[] existing)throws IOException{
+        return merge(template,existing,index->true,false);
+    }
+    static byte[] village(byte[] template,byte[] existing,java.util.function.IntPredicate preserveLobby)throws IOException{
+        return merge(template,existing,preserveLobby,true);
+    }
+    private static byte[] merge(byte[] template,byte[] existing,java.util.function.IntPredicate preserve,boolean includeExtra)throws IOException{
         if(template.length<8192||existing!=null&&existing.length<8192)throw new IOException("Geçersiz bölge başlığı");
         byte[] header=new byte[8192];ByteArrayOutputStream body=new ByteArrayOutputStream();int sector=2;
         for(int index=0;index<1024;index++){
-            if(location(template,index)==0)continue;
-            byte[] chosen=existing!=null&&location(existing,index)!=0?existing:template;
+            boolean hasTemplate=location(template,index)!=0,hasOld=existing!=null&&location(existing,index)!=0;
+            if(!hasTemplate&&!(includeExtra&&hasOld&&preserve.test(index)))continue;
+            byte[] chosen=hasOld&&preserve.test(index)?existing:template;
             byte[] chunk=chunk(chosen,index);int sectors=(chunk.length+4095)/4096;
             if(sectors>255||sector>0xffffff)throw new IOException("Bölge dosyası sınırı aşıldı");
             ByteBuffer.wrap(header).putInt(index*4,(sector<<8)|sectors);System.arraycopy(chosen,4096+index*4,header,4096+index*4,4);

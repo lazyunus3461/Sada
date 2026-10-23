@@ -16,6 +16,7 @@ final class RoomGuide {
     private final GameRoom room;
     final MapView map;
     final List<TextDisplay> markers=new ArrayList<>();
+    private final Map<Integer,List<TextDisplay>> signs=new HashMap<>();
     final Map<UUID,BossBar> roleBars=new HashMap<>();
     final Map<UUID,Integer> tracked=new HashMap<>();
     final Map<UUID,TextDisplay> playerLabels=new HashMap<>(),corpseLabels=new HashMap<>();
@@ -34,9 +35,11 @@ final class RoomGuide {
             terrain[z*128+x]=color;
         }
         map.addRenderer(renderer);
-        try{for(var station:MapLayout.STATIONS){TextDisplay marker=room.world.spawn(station.location(room.world).add(0,2.35,0),TextDisplay.class,d->{d.text(Component.text("✦ GÖREV NOKTASI\n",NamedTextColor.YELLOW).append(Component.text(station.name()+"\n",NamedTextColor.WHITE)).append(Component.text("Alttaki bloğa sağ tıkla",NamedTextColor.GRAY)));d.setBillboard(Display.Billboard.CENTER);d.setBrightness(new Display.Brightness(15,15));d.setShadowed(true);d.setSeeThrough(false);d.setViewRange(24f/64f);d.setPersistent(false);});markers.add(marker);}}
+        try{for(var station:MapLayout.STATIONS)markers.add(stationMarker(station));refreshSigns();}
         catch(RuntimeException e){close();throw e;}
     }
+    private TextDisplay stationMarker(MapLayout.Station station){return room.world.spawn(station.location(room.world).add(0,2.35,0),TextDisplay.class,d->{d.text(Component.text("✦ GÖREV NOKTASI\n",NamedTextColor.YELLOW).append(Component.text(station.name()+"\n",NamedTextColor.WHITE)).append(Component.text("Alttaki bloğa sağ tıkla",NamedTextColor.GRAY)));d.setBillboard(Display.Billboard.CENTER);d.setBrightness(new Display.Brightness(15,15));d.setShadowed(true);d.setSeeThrough(false);d.setViewRange(16f/64f);d.setPersistent(false);});}
+    private void refreshSigns(){for(int i=0;i<MapLayout.STATIONS.size();i++){var station=MapLayout.STATIONS.get(i);if(!room.world.isChunkLoaded(station.x()>>4,station.z()>>4))continue;if(!markers.get(i).isValid())markers.set(i,stationMarker(station));List<TextDisplay> previous=signs.get(i);if(previous!=null&&previous.stream().allMatch(Entity::isValid))continue;if(previous!=null)previous.forEach(Entity::remove);List<TextDisplay> entries=new ArrayList<>();for(int side:new int[]{-1,1})entries.add(room.world.spawn(new Location(room.world,station.x()-2,71.3,station.z()+.5+side*6.6),TextDisplay.class,d->{d.text(Component.text(station.zone(),NamedTextColor.GOLD));d.setBillboard(Display.Billboard.CENTER);d.setBrightness(new Display.Brightness(15,15));d.setShadowed(true);d.setSeeThrough(false);d.setViewRange(14f/64f);d.setPersistent(false);}));signs.put(i,entries);}}
     void attach(Player p){
         var role=room.roles.get(p.getUniqueId());BarColor color=switch(role){case VAMPIRE->BarColor.RED;case DOCTOR->BarColor.BLUE;case SEER->BarColor.PURPLE;case HUNTER->BarColor.YELLOW;default->BarColor.GREEN;};
         BossBar bar=Bukkit.createBossBar(roleTitle(p),color,BarStyle.SOLID);bar.addPlayer(p);roleBars.put(p.getUniqueId(),bar);
@@ -73,14 +76,15 @@ final class RoomGuide {
     }
     void proximity(){
         if(closed||room.phase==GameRoom.Phase.FINISHED)return;
+        refreshSigns();
         for(UUID id:List.copyOf(playerLabels.keySet()))if(!room.alive.contains(id)||!room.members.contains(id)||!playerLabels.get(id).isValid())removeLabel(playerLabels.remove(id));
         for(UUID id:room.alive){Player actor=Bukkit.getPlayer(id);if(actor==null||actor.getWorld()!=room.world)continue;TextDisplay label=playerLabels.computeIfAbsent(id,key->label(actor.getLocation().add(0,2.25,0),Component.text(actor.getName(),NamedTextColor.WHITE)));label.teleport(actor.getLocation().add(0,2.25,0));}
         for(UUID id:List.copyOf(corpseLabels.keySet()))if(!room.corpses.containsKey(id)||!corpseLabels.get(id).isValid())removeLabel(corpseLabels.remove(id));
         for(var entry:room.corpses.entrySet())corpseLabels.computeIfAbsent(entry.getKey(),id->label(entry.getValue().stand().getLocation().add(0,1.25,0),Component.text(ChatColor.stripColor(entry.getValue().stand().getCustomName()),NamedTextColor.RED)));
-        for(UUID id:room.members){Player viewer=Bukkit.getPlayer(id);if(viewer==null||viewer.getWorld()!=room.world)continue;for(var entry:playerLabels.entrySet()){Player actor=Bukkit.getPlayer(entry.getKey());visible(viewer,entry.getValue(),actor!=null&&!id.equals(entry.getKey())&&viewer.getLocation().distanceSquared(actor.getLocation())<=100);}for(var entry:corpseLabels.entrySet()){var corpse=room.corpses.get(entry.getKey());visible(viewer,entry.getValue(),corpse!=null&&viewer.getLocation().distanceSquared(corpse.stand().getLocation())<=25);}}
+        for(UUID id:room.members){Player viewer=Bukkit.getPlayer(id);if(viewer==null||viewer.getWorld()!=room.world)continue;for(var entry:playerLabels.entrySet()){Player actor=Bukkit.getPlayer(entry.getKey());visible(viewer,entry.getValue(),actor!=null&&!id.equals(entry.getKey())&&viewer.getLocation().distanceSquared(actor.getLocation())<=100&&viewer.hasLineOfSight(actor));}for(var entry:corpseLabels.entrySet()){var corpse=room.corpses.get(entry.getKey());visible(viewer,entry.getValue(),corpse!=null&&viewer.getLocation().distanceSquared(corpse.stand().getLocation())<=25&&viewer.hasLineOfSight(corpse.stand()));}}
     }
     void forget(UUID id){removeLabel(playerLabels.remove(id));Player actor=Bukkit.getPlayer(id);if(actor!=null)room.plugin.privacy.release(actor);BossBar role=roleBars.remove(id);if(role!=null)role.removeAll();tracked.remove(id);rendered.remove(id);Player p=Bukkit.getPlayer(id);if(p!=null)p.sendActionBar(Component.empty());}
-    void close(){if(closed)return;closed=true;for(UUID id:List.copyOf(room.members))forget(id);markers.forEach(Entity::remove);markers.clear();playerLabels.values().forEach(Entity::remove);corpseLabels.values().forEach(Entity::remove);playerLabels.clear();corpseLabels.clear();map.removeRenderer(renderer);rendered.clear();tracked.clear();}
+    void close(){if(closed)return;closed=true;for(UUID id:List.copyOf(room.members))forget(id);markers.forEach(Entity::remove);markers.clear();signs.values().forEach(list->list.forEach(Entity::remove));signs.clear();playerLabels.values().forEach(Entity::remove);corpseLabels.values().forEach(Entity::remove);playerLabels.clear();corpseLabels.clear();map.removeRenderer(renderer);rendered.clear();tracked.clear();}
     final class AtlasRenderer extends MapRenderer {
         AtlasRenderer(){super(true);}
         @Override public void render(MapView view,MapCanvas canvas,Player p){

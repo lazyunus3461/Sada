@@ -1,33 +1,40 @@
-Kasaba Vampir Köylü 1.0.4 — test sonuçları
+Kasaba Vampir Köylü 1.1.0 — test sonuçları
 Tarih: 23.10.2026
 Ortam: Java 21, Paper 1.21.10 build 130, KasabaAuth 1.3.0, KasabaHub 1.2.0, KasabaRoles 1.2.0.
-Yerel sunucu yalnız 127.0.0.1 üzerinde, offline/crack hesaplarla denendi.
-Maven verify: 22 birim testi başarılı, 0 hata. Son üretim JAR'ıyla 34 canlı kontrol başarılı.
+Yerel sunucu yalnız 127.0.0.1 üzerinde offline/crack protokol istemcileriyle denendi.
+Maven verify: 34 birim testi, 0 hata. Son üretim JAR'ıyla toplam 42 canlı kontrol geçti.
 
-Yeni özellikler:
-- Gerçek 40 saniyelik bekleme denendi: ilk av çalıştı, hemen yapılan ve 40 saniyeye az kala yapılan ikinci saldırı engellendi; süre dolunca aynı gündüzde ikinci av çalıştı.
-- Başarılı av kalan süresi yalnız vampirin kendi rol çubuğunda gösterildi. Toplantı/yeni gündüz beklemeyi sıfırlamadı.
-- Vampirin sahte kişisel görevi ve köylünün gerçek görevi herkese giden görev çubuğuna aynı miktarda ilerleme ekledi. Gerçek takım sayacı sohbetten açıklanmadı.
-- Sahte katkı oylama/gece aşamasında da görünür çubukta kaldı. Vampir ilk geceden sonra sahte ortak bakım da yapabildi; 30 saniyelik bakım beklemesi korundu.
-- Maç sonuna yakın sayaç test adaptörüyle hazırlandı, ardından gerçek görev sayfaları kullanıldı: gerçek+sahte işler hedefi geçince %99 gösterildi ama maç bitmedi. Son gerçek iş tamamlanınca köylüler kazandı.
-- Hareket etmeyen oyuncunun harita kareleri geri okunup karşılaştırıldı: görev çerçeveleri yanıp söndü. Köy görüntüsü, numaralı kişisel işler, tek kişisel ok ve hedef işareti korundu.
-- Mevcut köy yerleşimi değiştirilmedi; istemci modu/sabit mini harita eklenmedi. Yakındaki kendi görevleri kişisel sarı/parlak parçacıklarla işaretlendi.
-- Eski sürüm işaretli ayar dosyası ve yeni JAR varsayılanlarını içeren sürümsüz eski ayar dosyası için geçiş denendi. Av aralığı 40 saniyeye geçti, günlük sınır kaldırıldı; diğer süreler/lobi ayarları korundu.
+Yeni köy:
+- Küçük toplantı meydanı, 24 çift çıkışlı ev, 17 kapalı görev odası, avlular, dar S sokaklar, ışıklar ve çatı işaretleri üretildi.
+- Üretilen blok modelinde 15.035 yürünebilir zemin hücresinin tamamı bağlıydı; 17 görev odası ve 48 ev kapısı erişilebilirdi. Kapalı kapılar bu erişim hesabında açılabilir kabul edildi.
+- Seçilmiş 417 uzak nokta çiftiyle yapılan yatay görüş analizinde 416 hat örtüldü. Bu örnekleme genel bir görüş uzaklığı sınırı değildir.
+- Gerçek Paper dünyasında 17 istasyonun önünde güvenli zemin/baş boşluğu vardı. Görev odalarının 34 kapısında oyuncu etkileşimine izin verildi. 20 başlangıç/toplantı noktası da güvenliydi.
+- 9 blok yakınındaki isim açık görüşte görünürken test duvarı arkasında gizlendi; duvar kaldırılınca geri geldi. 11 blokta gizli kaldı. Ceset isimlerinin 5 blok sınırı ve görüş kontrolü de geçti.
+- Yeni dünya vampirkoylu_sokaklar olarak otomatik kuruldu. Önceki vampirkoylu ve vampirkoylu_bos klasörlerindeki bütün dosyaların birebir değişmediği doğrulandı.
+- Ayar dosyasında yalnız iki yönetilen dünya adı değişti; lobi koordinatları/yönü, süreler ve diğer ayarlar korundu. Dünya düzenlemelerini tekrar açılışta ezmemek için mevcut yeni dünya yeniden kurulmaz.
 
-Mevcut oyun kontrolleri:
-- 6 gerçek protokol istemcisiyle normal maçta vampir, köylü, avcı, kahin, doktor rolleri dağıtıldı. 2 kişilik deneme yalnız yetkili kurucuya açıldı.
-- Kahin/doktor seçimleri otomatik açıldı; özel sonuç ve koruma çalıştı. Gece seçim süresi 40, gündüz 180 saniye kaldı.
-- Kişisel rol çubuğu, 17 görev noktası, harita/hedef seçme/rehber sayfaları, görev adımları, avcı ok hakkı ve ıskalama kontrol edildi.
-- Çan/ceset bildirimi, bildireni ilk konuşturma, isimli süre çubuğu, /vk bitir, oylama gerekçeleri ve Pas çalıştı.
-- Vampir kılıcı ve avcı yayı sahibine görünür, diğer oyuncuya boş el gönderildi; ilk görünme paket demetleri de denendi.
-- Oyuncu isimleri 9 blokta görünür, 11 blokta gizli; ceset isimleri 4.5 blokta görünür, 5.5 blokta gizliydi.
-- İsim etiketleri ayrıca 80 yakın/uzak kontrolü, chunk geçişleri ve 10 yapay görünürlük sıfırlamasıyla denendi; sonraki güncellemede doğru görünüm geri geldi.
-- Üç adet iki kişilik oda aynı lobide ayrı kopyalarda eşzamanlı çalıştı. Dördüncü oda reddedildi, odalar arası hasar engellendi, biten kopyalar silindi.
-- 20 doğma/toplantı noktası, kırma/koyma/normal hasar/açlık koruması, ana lobiye çıkış, bağlantı kesilmesi ve Auth sonrası envanter kurtarma geçti.
-- İmleçteki eşya, envanter, ek can, XP ve iksirler geri yüklendi. Engellenen başlangıç ve canlı oyunda eklentiyi kapatma temizliği de geçti.
-- Önceki vampirkoylu dünya klasöründeki bütün dosyaların değişmediği birebir doğrulandı.
-- Temiz dünyada 120 hazır harita chunk'ı korundu; harita dışındaki 1488 kaydedilmiş chunk'ın tamamı yalnız havaydı.
+Görevler:
+- Altı oyuncunun ve vampirin her birinde tam 2 kolay/2 orta görev vardı.
+- Kolay düzenek hızlı/yanlış basışları reddetti. Noktadan uzaklaşınca sıfırlandı; gerçek zamanla en az 6 saniye sürerek tamamlandı.
+- Malzeme işi dört malzemeyi gösterilen sırayla aldı ve gerçek zamanla en az 8 saniye sürdü.
+- Teslimat önce paket hazırlama istedi, sonra iki ayrı yakın durağa gönderdi. Harita hedefi her bacakta değişti; yalnız ikinci teslimat ilerleme verdi.
+- Hafıza işi en az dört saniyelik incelemeyi zorunlu tuttu, sonra ipucunu gizledi. Yanlış seçim turu yeniden hazırladı; iki tur bitmeden tamamlanmadı.
+- Toplantı yarım işi durdurdu. Vampir de aynı iki turlu hafıza işini çözmek zorunda kaldı; yalnız sahte görünür ilerleme aldı.
+- Ortak bakım da hazırlık/sıra işi haline geldi; 30 saniyelik tekrar arası ve vampirin sahte bakım yapabilmesi korundu.
+- Görünür gerçek/sahte katkılar aynı miktarda arttı; gerçek takım sayısı açıklanmadı. Gösterge en fazla %99'da kaldı, son gerçek görev köylü zaferini verdi.
 
-Doğrulama sınırı: Menü eylemleri gerçek istemci paketleriyle; saldırı, mesafe ve bazı faz geçişleri yerel Bukkit test adaptörüyle tetiklendi. Av beklemesi gerçek zamanla ölçüldü. İnsanlarla görsel kabul oturumu yapılmadı. Üretim JAR'ı ve kurulum ZIP'i test adaptörünü içermez.
+Korunan oyun davranışları:
+- Gerçek 40 saniye beklenerek gündüz yeniden avlanma denendi. Süre dolmadan ikinci av reddedildi, süre dolunca aynı gündüzde çalıştı. Toplantı/yeni gündüz beklemeyi sıfırlamadı; süre yalnız vampire gösterildi.
+- Kişisel rol çubukları, gerçek görev haritası paketleri, yalnız oyuncunun kendi oku, hedef seçme, görev/rehber sayfaları ve özel parıltılar çalıştı.
+- Vampir kılıcı/avcı yayı yalnız sahibine göründü; normal ekipman paketleri ve paket demetleri denendi.
+- Kahin/doktor sayfaları otomatik açıldı, özel sonuç/koruma çalıştı. Gündüz 180, gece rol seçimi 40 saniye kaldı.
+- Cesedi bildiren ve çanı çalan ilk konuştu; isimli süre çubuğu, /vk bitir, oylama gerekçesi ve Pas çalıştı.
+- 80 yakın/uzak isim kontrolü, chunk geçişleri ve 10 görünürlük sıfırlamasından sonra doğru görünüm korundu.
+- 18 istemci sırayla bağlanıp üç ayrı normal maçta aynı anda 6'şar kişiyle oynadı. Rol dağılımı, ortak lobi ve ayrı dünya kopyaları doğrulandı. Üç adet iki kişilik deneme de eşzamanlı çalıştı; dördüncü oda reddedildi.
+- Odalar arası saldırı, kırma/koyma, normal hasar/açlık, avcı ok hakkı, ıskalama kontrolü geçti.
+- Çıkış/bağlantı kesilmesi/Auth sonrası kurtarmada envanter, imleç eşyası, ek can, XP ve iksirler geri geldi. Engellenen başlangıç ve eklenti kapatma temizliği geçti; geçici odalar kaldırıldı.
+- Yeni dünyada 120 hazır harita chunk'ı korundu; bunların dışındaki 1448 kaydedilmiş chunk yalnız hava içeriyordu.
 
-Üretim JAR SHA-256: e939382c2889947745f881e6e2d242f04c33e1679ac3241edbab9fcd5d7b52e9
+Sınırlar: Menü eylemleri gerçek istemci paketleriyle; saldırı, mesafe ve bazı faz geçişleri yerel Bukkit test adaptörüyle tetiklendi. Görev/av süreleri gerçek zamanla ölçüldü. İnsanlarla görsel kabul oturumu yapılmadı. Köy görselleri üretilen blok modelinin şematik çizimleridir. Üretim JAR'ı/kurulum ZIP'i test adaptörü içermez.
+
+Üretim JAR SHA-256: e26cc47d7970040838f795e6ce1ff5057208e89f73141ba7c44d4d1084c8e8e7

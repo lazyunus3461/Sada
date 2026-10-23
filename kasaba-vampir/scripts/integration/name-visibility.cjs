@@ -10,7 +10,7 @@ async function run() {
   await viewer.command('vk oda katıl ' + (await actor.state()).room);
   await actor.command('vk deneme');
   for (let i = 0; i < 40; i++) {
-    const x = i % 2 ? -20.5 : 20.5, z = i % 4 < 2 ? -20.5 : 20.5;
+    const x = -5.5, z = i % 2 ? -6.5 : 6.5;
     for (const distance of [9, 11]) {
       await actor.probe(`POSE|${x}|69|${z}`);
       await viewer.probe(`POSE|${x + distance}|69|${z}`);

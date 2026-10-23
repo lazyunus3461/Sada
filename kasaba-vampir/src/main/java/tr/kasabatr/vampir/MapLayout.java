@@ -5,7 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 final class MapLayout {
-    static final List<Station> STATIONS = List.of(new Station("sapel", "Şapel kitabesi", "Şapel", -10, 69, -41), new Station("mezarlik", "Mezar taşı yazısı", "Mezarlık", -49, 69, -39), new Station("gozcu", "Gözcü işareti", "Gözcü Kulesi", 43, 69, -42), new Station("arsiv", "Arşiv sayfaları", "Arşiv", 16, 69, -44), new Station("sifaci", "Şifacı malzemeleri", "Şifacı Evi", 44, 69, -13), new Station("demirci", "Demirci ocağı", "Demirci", 44, 69, 19), new Station("han", "Han erzakları", "Harabe Han", -8, 69, 43), new Station("terzi", "Terzi tezgâhı", "Terzi Evi", -26, 69, -18), new Station("fener", "Fener deposu", "Fener Deposu", 25, 69, -27), new Station("tasci", "Taş işçiliği", "Taşçı Evi", 25, 69, 31), new Station("avci", "Avcı barınağı", "Avcı Barınağı", -56, 69, 20), new Station("karakol", "Eski karakol", "Karakol", 56, 69, 3), new Station("degirmen", "Değirmen çarkı", "Değirmen", -45, 69, 40), new Station("pazar", "Pazar envanteri", "Pazar", -43, 69, -3), new Station("ahir", "Ahır erzakları", "Ahır", 33, 69, 45), new Station("tarla", "Tarlaya malzeme götür", "Tarla", 19, 69, 45), new Station("kuyu", "Kuyu mekanizması", "Kuyu", -31, 69, 23));
+    static final List<Station> STATIONS = List.of(new Station("sapel", "Şapel kitabesi", "Şapel", -22, 69, -48), new Station("mezarlik", "Mezar taşı yazısı", "Mezarlık", -46, 69, -48), new Station("gozcu", "Gözcü işareti", "Gözcü Kulesi", 50, 69, -48), new Station("arsiv", "Arşiv sayfaları", "Arşiv", 2, 69, -48), new Station("sifaci", "Şifacı malzemeleri", "Şifacı Evi", 50, 69, -24), new Station("demirci", "Demirci ocağı", "Demirci", 50, 69, 24), new Station("han", "Han erzakları", "Harabe Han", 2, 69, 48), new Station("terzi", "Terzi tezgâhı", "Terzi Evi", -22, 69, -24), new Station("fener", "Fener deposu", "Fener Deposu", 26, 69, -24), new Station("tasci", "Taş işçiliği", "Taşçı Evi", 26, 69, 24), new Station("avci", "Avcı barınağı", "Avcı Barınağı", -46, 69, 0), new Station("karakol", "Eski karakol", "Karakol", 50, 69, 0), new Station("degirmen", "Değirmen çarkı", "Değirmen", -46, 69, 48), new Station("pazar", "Pazar envanteri", "Pazar", -46, 69, 24), new Station("ahir", "Ahır erzakları", "Ahır", 50, 69, 48), new Station("tarla", "Tarlaya malzeme götür", "Tarla", 26, 69, 48), new Station("kuyu", "Kuyu mekanizması", "Kuyu", -22, 69, 24));
     private static final double[][] SEATS = new double[][]{{8.5, 0.5}, {7.5, 2.5}, {6.5, 4.5}, {4.5, 6.5}, {2.5, 7.5}, {0.5, 8.5}, {-1.5, 7.5}, {-3.5, 6.5}, {-5.5, 4.5}, {-6.5, 2.5}, {-7.5, 0.5}, {-6.5, -1.5}, {-5.5, -3.5}, {-3.5, -5.5}, {-1.5, -6.5}, {0.5, -7.5}, {2.5, -6.5}, {4.5, -5.5}, {6.5, -3.5}, {7.5, -1.5}};
 
     MapLayout() {
@@ -29,6 +29,10 @@ final class MapLayout {
             station = station2;
         }
         return d > 225.0 ? "Meydan/sokak" : station.zone;
+    }
+
+    static int deliveryStop(int from,int excluded) {
+        return java.util.stream.IntStream.range(0,STATIONS.size()).filter(i->i!=from&&i!=excluded).boxed().min(java.util.Comparator.<Integer>comparingDouble(i->{var a=STATIONS.get(from);var b=STATIONS.get(i);return Math.pow(a.x-b.x,2)+Math.pow(a.z-b.z,2);}).thenComparingInt(i->i)).orElseThrow();
     }
 
     static boolean inside(Location location) {

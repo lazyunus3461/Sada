@@ -1,0 +1,11 @@
+{
+  "canonicalChunks": 120,
+  "houses": 24,
+  "taskRooms": 17,
+  "reachableTaskRooms": 17,
+  "reachableHouseExits": 48,
+  "walkableBlocks": 15035,
+  "connectedWalkableBlocks": 15035,
+  "longSightPairs": 417,
+  "unobstructedLongSightPairs": 1
+}

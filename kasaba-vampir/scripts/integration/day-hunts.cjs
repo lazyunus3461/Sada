@@ -1,27 +1,12 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
-const {fixture, speech, pas} = require('./regression.cjs');
+const {fixture, speech, pas, finishPersonal, finishWork} = require('./regression.cjs');
 const {clients, delay} = require('../../../kasaba-arena/scripts/integration/regression.cjs');
 const checks = [];
 const pass = text => { checks.push(text); console.log('PASS ' + text); };
 
-async function completeTask(bot, finishes = false) {
-  const task = (await bot.state()).tasks.find(t => !t.completed);
-  assert(task, 'Expected an unfinished personal task');
-  await bot.probe('STATION|' + task.station);
-  if (task.kind === 2) {
-    assert((await bot.state()).tasks.find(t => t.station === task.station).carrying);
-    await bot.probe('STATION|' + ((task.station + 5) % 17));
-  } else {
-    await delay(175);
-    for (const label of task.kind === 0 ? ['1 • Sol', '2 • Orta', '3 • Sağ'] : ['Odun', 'Demir', 'Erzak'])
-      await bot.button(label);
-  }
-  const state = await bot.state();
-  if (finishes) assert(!state.room, 'The final real task should finish the room');
-  else assert(state.tasks.find(t => t.station === task.station).completed);
-}
+const completeTask = finishPersonal;
 
 async function run() {
   const suffix = Date.now().toString(36).slice(-5), bots = [];
@@ -52,7 +37,7 @@ async function run() {
   assert.equal(real.taskDone, 1);
   assert.equal(real.fakeTaskDone, 1);
   assert(Math.abs(real.barProgress - 2 / 15) < .00001);
-  for (const bot of bots) assert.equal((await bot.state()).barTitle, real.barTitle);
+  for (const bot of bots) { const state=await bot.state(); assert(Math.abs(state.barProgress-real.barProgress)<.00001); assert.equal(state.barTitle.match(/Görev %\d+/)[0],real.barTitle.match(/Görev %\d+/)[0]); }
   assert(!doctor.log.some(e => doctor.msg(e).includes('Takım ilerlemesi:')));
   pass('A vampire fake task and a real task give identical public boss-bar increments; the hidden real count is not disclosed');
 
@@ -61,7 +46,7 @@ async function run() {
   const hashes = new Set();
   for (let frame = 0; frame < 6 && hashes.size < 2; frame++) {
     await doctor.probe('PAINT|' + frame);
-    const png = fs.readFileSync('/workspace/scratch/kasaba-vampir-104-validation/atlas-' + doctor.name + '-' + frame + '.png');
+    const png = fs.readFileSync('/workspace/scratch/kasaba-vampir-110-validation/atlas-' + doctor.name + '-' + frame + '.png');
     hashes.add(crypto.createHash('sha256').update(png).digest('hex'));
     await delay(350);
   }
@@ -117,7 +102,7 @@ async function run() {
   const station = Array.from({length: 17}, (_, i) => i).find(i => !tasks.some(t => !t.completed && t.station === i));
   await vamp.probe('STATION|' + station);
   await delay(175);
-  await vamp.button('Bakımı Tamamla');
+  await finishWork(vamp, true);
   hunt = await vamp.state();
   assert.equal(hunt.taskDone, 1);
   assert.equal(hunt.fakeTaskDone, 2);
@@ -148,7 +133,7 @@ async function run() {
   assert(doctor.log.some(e => doctor.msg(e).includes('Köylüler bütün görevleri tamamladı')));
   pass('Fake work caps the visible bar at 99% without ending the game; only the final genuine task awards the villager victory');
   for (const bot of bots) await bot.command('lobi');
-  console.log(JSON.stringify({version: '1.0.4', realClients: 6, checks}, null, 2));
+  console.log(JSON.stringify({version: '1.1.0', realClients: 6, checks}, null, 2));
 }
 
 run().catch(e => { console.error(e); process.exitCode = 1; }).finally(async () => {

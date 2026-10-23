@@ -14,7 +14,7 @@ def chunks(path):
    offset=sector*4096;length=int.from_bytes(data[offset:offset+4],'big');kind=data[offset+4]
    assert kind==2,(region,kind)
    yield (rx*32+i%32,rz*32+i//32),nbtlib.File.parse(io.BytesIO(zlib.decompress(data[offset+5:offset+4+length])))
-mask={pos for pos,_ in chunks(root/'world-template/KasabaTR-VampirKoylu-TamDunya')}
+mask={pos for pos,_ in chunks(root/'world-template/vampirkoylu_sokaklar')}
 empty=0;kept=set()
 for pos,chunk in chunks(world):
  if pos in mask:kept.add(pos);continue

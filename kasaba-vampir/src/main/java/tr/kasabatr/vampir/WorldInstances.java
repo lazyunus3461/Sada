@@ -76,6 +76,7 @@ final class WorldInstances {
             }
             world.setAutoSave(false);
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+            world.setGameRule(GameRule.RANDOM_TICK_SPEED,0);
             world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
             world.setGameRule(GameRule.KEEP_INVENTORY, true);
             world.setGameRule(GameRule.DO_WEATHER_CYCLE,false);

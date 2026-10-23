@@ -1,24 +1,24 @@
 {
-  "version": "1.0.4",
-  "jarSha256": "e939382c2889947745f881e6e2d242f04c33e1679ac3241edbab9fcd5d7b52e9",
+  "version": "1.1.0",
+  "jarSha256": "e26cc47d7970040838f795e6ce1ff5057208e89f73141ba7c44d4d1084c8e8e7",
   "paper": "1.21.10-130",
-  "unitTests": 22,
-  "liveChecks": 34,
-  "maxSimultaneousRealClients": 7,
+  "unitTests": 34,
+  "liveChecks": 42,
+  "maxSimultaneousRealClients": 18,
   "suites": {
-    "dayHunts": [
-      "A vampire fake task and a real task give identical public boss-bar increments; the hidden real count is not disclosed",
-      "Stationary held-map frames pulse around pending tasks and the selected destination without showing other players",
-      "A successful hunt starts a private forty-second countdown; immediate extra attacks are denied",
-      "An attack just before forty seconds is blocked; after forty seconds a second kill succeeds during the same day",
-      "The visible fake contribution survives voting/night; meetings and a new day do not reset the hunt cooldown",
-      "Vampires can also do fake common maintenance after the first night, with the same thirty-second repeat limit",
-      "Fake work caps the visible bar at 99% without ending the game; only the final genuine task awards the villager victory"
+    "village-tasks": [
+      "Every role receives two easy/two medium tasks; 17 indoor workstations are safe and all 34 task-room doors remain usable",
+      "A nearby name label disappears behind an opaque wall and returns when the view is clear",
+      "Easy mechanism rejects rapid/wrong input, resets when the player leaves, and takes at least six real seconds to complete",
+      "Material sorting uses all four items, follows its displayed order, and takes at least eight real seconds",
+      "Delivery requires packing and two distinct nearby stops; the atlas follows each leg and only final delivery adds progress",
+      "Medium memory task enforces its preview, hides the clue, restarts a mistaken round and requires both rounds before completion",
+      "Meetings interrupt unfinished work; a vampire must solve the same medium memory task and earns only fake public progress"
     ],
-    "core": [
+    "regression": [
       "Six authenticated real clients enter native Hub/room pages; all five roles assigned in a separate world",
       "All 20 spawn/meeting seats are safe; break/place/damage/hunger blocked and locator bar disabled",
-      "Physical station interaction opens a native page and completes a three-step personal task",
+      "Physical indoor station interaction completes a server-timed personal task through native pages",
       "Hunter misses consume the configured one-arrow allowance; extra launches cannot kill",
       "Vampire daytime melee works; eliminated players become spectators",
       "Emergency bell, individual speaking turns, /vk bitir and native pass voting resume the day",
@@ -29,6 +29,15 @@
       "Concurrent demo rooms have independent worlds; cross-room attacks do nothing; a real victory deletes only its own world",
       "Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance",
       "Pending inventory recovery is applied after authentication, preserving the original items"
+    ],
+    "day-hunts": [
+      "A vampire fake task and a real task give identical public boss-bar increments; the hidden real count is not disclosed",
+      "Stationary held-map frames pulse around pending tasks and the selected destination without showing other players",
+      "A successful hunt starts a private forty-second countdown; immediate extra attacks are denied",
+      "An attack just before forty seconds is blocked; after forty seconds a second kill succeeds during the same day",
+      "The visible fake contribution survives voting/night; meetings and a new day do not reset the hunt cooldown",
+      "Vampires can also do fake common maintenance after the first night, with the same thirty-second repeat limit",
+      "Fake work caps the visible bar at 99% without ending the game; only the final genuine task awards the villager victory"
     ],
     "experience": [
       "Private persistent role bars are addressed to exactly their own player; three-minute day and held task map",
@@ -43,8 +52,11 @@
       "Three simultaneous two-player rooms use separate copies and a shared lobby; a fourth room is refused and cross-room damage is blocked",
       "All three room copies are deleted after their games stop"
     ],
-    "nameVisibility": [
+    "name-visibility": [
       "Player names survive 80 near/far checks, cross-chunk teleports and ten simulated visibility resets"
+    ],
+    "three-rooms": [
+      "18 real clients: three simultaneous six-player normal games, shared lobby, separate void copies, private roles and complete cleanup"
     ],
     "cleanup": [
       "Cancelled room teleport cleans the map, actor equipment mask and role state",
@@ -54,14 +66,26 @@
   "voidScan": {
     "originalMapChunks": 120,
     "preservedMapChunks": 120,
-    "verifiedEmptyOutsideChunks": 1488,
+    "verifiedEmptyOutsideChunks": 1448,
     "naturalTerrainOutsideMap": false
   },
-  "settingsUpgrade": {
-    "fromVersion1": true,
-    "fromUnversionedWithJarDefaults": true,
-    "cooldownSeconds": 40,
-    "legacyDailyLimitRemoved": true,
-    "lobbyPreserved": true
+  "layout": {
+    "canonicalChunks": 120,
+    "houses": 24,
+    "taskRooms": 17,
+    "reachableTaskRooms": 17,
+    "reachableHouseExits": 48,
+    "walkableBlocks": 15035,
+    "connectedWalkableBlocks": 15035,
+    "longSightPairs": 417,
+    "unobstructedLongSightPairs": 1
+  },
+  "migration": {
+    "oldWorldFoldersUnchanged": [
+      "vampirkoylu",
+      "vampirkoylu_bos"
+    ],
+    "newWorld": "vampirkoylu_sokaklar",
+    "lobbyCoordinatesAndOtherSettingsPreserved": true
   }
 }

@@ -4,13 +4,32 @@ const checks=[];function pass(s){checks.push(s);console.log('PASS '+s);}
 async function fixture(name){const b=await connect(name);b.c.write('custom_payload',{channel:'minecraft:register',data:Buffer.from('kasaba_test:vampir')});b.probe=async(op)=>{const mark=b.log.length;b.c.write('custom_payload',{channel:'kasaba_test:vampir',data:Buffer.from(op)});const e=await b.wait(e=>b.msg(e).startsWith('vampir-probe:done:'+op)||b.msg(e).startsWith('vampir-probe:error:'),mark,30000);assert(!b.msg(e).startsWith('vampir-probe:error:'),b.msg(e));return mark;};b.command=cmd=>b.probe('CMD|'+cmd);b.json=async(op,prefix)=>{const mark=await b.probe(op);return JSON.parse(b.msg(b.log.slice(mark).find(e=>b.msg(e).startsWith('vampir-probe:'+prefix+':'))).split('vampir-probe:'+prefix+':')[1]);};b.state=()=>b.json('STATE','state');b.page=async cmd=>{const mark=await b.command(cmd);await b.wait(e=>e.name==='show_dialog',mark);await delay(150);return b.form;};b.button=async label=>{const buttons=b.form.actions;const index=buttons.findIndex(x=>x.label===label||JSON.stringify(x.label).includes(label));assert(index>=0,'Missing button '+label+' in '+JSON.stringify(buttons));b.click(index);await delay(250);};return b;}
 async function speech(bots){for(let i=0;i<bots.length+2;i++){let changed=false;for(const b of bots){const s=await b.state();if(s.phase==='SPEECH'&&s.speaker){await b.command('vk bitir');changed=true;break;}}if(!changed)return;}}
 async function pas(bots){for(const b of bots){const s=await b.state();if(s.phase==='VOTE'&&s.alive){await b.page('vk');const mark=b.log.length;await b.button('Pas');assert(b.log.slice(mark).some(e=>b.msg(e).includes('Pas oyu verildi')),JSON.stringify({player:b.name,state:await b.state(),messages:b.log.slice(-20).map(e=>b.msg(e)).filter(Boolean)}));}}}
+async function finishWork(bot, common=false, finishes=false, options={}) {
+ let state=await bot.state(), task=common?state.common:state.tasks.find(t=>!t.completed&&(options.station==null||t.station===options.station));
+ assert(task,'No active work');const station=task.station;
+ for(let attempt=0;attempt<50;attempt++){
+  state=await bot.state();if(!state.room){assert(finishes);return;}task=common?state.common:state.tasks.find(t=>t.station===station);
+  if(!task||task.completed||task.carrying)break;
+  const work=task.work;if(work.done)break;
+  let action,label,ready;
+  if(task.kind===3&&work.preview){action=10;label='Diziyi Gizle ve Başla';ready=work.startedAt+4000;}
+  else{action=work.sequence[work.step];label=work.labels[action];ready=Math.max(work.nextInputAt,work.step===work.sequence.length-1?work.startedAt+work.minimumMillis:0);}
+  await delay(Math.max(0,ready-Date.now())+100);await bot.button(label);
+ }
+ state=await bot.state();if(!state.room){assert(finishes);return;}
+ task=common?state.common:state.tasks.find(t=>t.station===station);
+ if(common){assert(!task);return;}
+ if(task.kind===2){assert(task.carrying);if(options.packingOnly)return;for(let leg=0;leg<2;leg++){await bot.probe('STATION|'+task.destination);state=await bot.state();if(!state.room){assert(finishes);return;}task=state.tasks.find(t=>t.station===station);}}
+ if(finishes)assert(!state.room,'Final task did not finish the match');else assert(task.completed,'Task did not complete');
+}
+async function finishPersonal(bot, finishes=false){const task=(await bot.state()).tasks.find(t=>!t.completed);await bot.probe('STATION|'+task.station);await delay(175);await finishWork(bot,false,finishes);}
 async function run(){
  const suffix=Date.now().toString(36).slice(-5),bots=[];for(const ch of'ABCDEF')bots.push(await fixture('VK'+suffix+ch));let [a,b,c,d,e,f]=bots;await a.probe('ADMIN');for(const bot of bots.slice(1))await bot.probe('USER');for(const bot of bots){await bot.probe('SEED');assert.equal((await bot.state()).absorption,4);}
  await a.page('vk');assert(JSON.stringify(a.form).includes('Oda Kur'));await a.button('Oda Kur');let s=await a.state();const id=s.room;assert(id);for(const bot of bots.slice(1))await bot.command('vk oda katıl '+id);assert.equal((await b.state()).members,6,JSON.stringify({state:await b.state(),messages:b.log.map(e=>b.msg(e)).filter(Boolean)}));await b.command('vk deneme');assert.equal((await b.state()).phase,'WAITING');await a.page('vk');await a.button('Maçı Başlat');await delay(1000);
  s=await a.state();assert.equal(s.phase,'DAY');assert.equal(s.demo,false);assert(s.world.startsWith('vk_room_'));assert.equal(s.mode,'ADVENTURE');assert.equal(s.absorption,0);assert(!s.effects.includes('speed'));assert(!s.items.includes('DIAMOND:7'));const states=await Promise.all(bots.map(x=>x.state()));assert.deepEqual(states.map(x=>x.role).sort(),['DOCTOR','HUNTER','SEER','VAMPIRE','VILLAGER','VILLAGER'].sort());pass('Six authenticated real clients enter native Hub/room pages; all five roles assigned in a separate world');
  const byRole=Object.fromEntries(states.map((s,i)=>[s.role,bots[i]])),vamp=byRole.VAMPIRE,hunter=byRole.HUNTER,doctor=byRole.DOCTOR,seer=byRole.SEER,villager=byRole.VILLAGER;
  assert.deepEqual(await a.json('GUARDS','guards'),{damage:true,break:true,place:true,hunger:true});const map=await a.json('MAP','map');assert.equal(map.unsafeSeats,0);assert.equal(map.locator,false);assert.equal(map.border,137);pass('All 20 spawn/meeting seats are safe; break/place/damage/hunger blocked and locator bar disabled');
- const task=(await villager.state()).tasks.find(t=>t.kind!==2);await villager.probe('STATION|'+task.station);await delay(200);assert(JSON.stringify(villager.form).includes('Sıra'));for(const label of(task.kind===0?['1 • Sol','2 • Orta','3 • Sağ']:['Odun','Demir','Erzak']))await villager.button(label);assert.equal((await villager.state()).taskDone,1);pass('Physical station interaction opens a native page and completes a three-step personal task');
+ await finishPersonal(villager);assert.equal((await villager.state()).taskDone,1);pass('Physical indoor station interaction completes a server-timed personal task through native pages');
  await hunter.probe('MISS');assert.equal((await hunter.state()).shots,1);await hunter.probe('ARROW|'+vamp.name);assert((await vamp.state()).alive);pass('Hunter misses consume the configured one-arrow allowance; extra launches cannot kill');
  await vamp.probe('POSE|3.5|69|.5');await villager.probe('POSE|5.5|69|.5');await vamp.probe('HIT|'+villager.name);assert.equal((await villager.state()).alive,false);assert.equal((await villager.state()).mode,'SPECTATOR');assert.equal((await vamp.state()).aliveCount,5);pass('Vampire daytime melee works; eliminated players become spectators');
  await doctor.probe('BELL');assert.equal((await doctor.state()).phase,'SPEECH');await speech(bots);assert.equal((await doctor.state()).phase,'VOTE');await pas(bots);assert.equal((await doctor.state()).phase,'DAY');pass('Emergency bell, individual speaking turns, /vk bitir and native pass voting resume the day');
@@ -22,7 +41,7 @@ async function run(){
  const quitName=e.name;e.c.end();await delay(800);assert(!(await d.state()).room);assert(!require('node:fs').existsSync('/workspace/kasaba-test-server/'+secondWorld));await d.command('lobi');const afterQuit=await fixture(quitName);s=await afterQuit.state();assert.equal(s.backup,false);assert(s.items.includes('DIAMOND:7'));assert(s.items.includes('EMERALD:3')||s.cursor==='EMERALD:3');pass('Disconnecting during a match restores the saved inventory and safely removes the empty/finished instance');
  // Leave recovery pending while offline, then authenticate again: recovery must not run during Auth admission.
  const recoveryName=f.name;await f.probe('SEED');await f.probe('RECOVERY');assert.equal((await f.state()).backup,true);f.c.end();await delay(700);const recovered=await fixture(recoveryName);s=await recovered.state();assert.equal(s.backup,false);assert(s.items.includes('DIAMOND:7'));assert(s.items.includes('EMERALD:3')||s.cursor==='EMERALD:3');pass('Pending inventory recovery is applied after authentication, preserving the original items');
- console.log(JSON.stringify({version:'1.0.4',paper:'1.21.10-130',realClients:6,checks},null,2));
+ console.log(JSON.stringify({version:'1.1.0',paper:'1.21.10-130',realClients:6,checks},null,2));
 }
-module.exports={fixture,speech,pas,run};
+module.exports={fixture,speech,pas,finishPersonal,finishWork,run};
 if(require.main===module)run().catch(e=>{console.error(e);process.exitCode=1;}).finally(async()=>{for(const c of clients)c.end();await delay(500);});

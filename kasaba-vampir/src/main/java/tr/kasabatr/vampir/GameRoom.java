@@ -42,6 +42,7 @@ final class GameRoom {
     final Map<UUID, Long> lastDayKill = new HashMap<UUID, Long>();
     final Map<UUID, Integer> hunterShots = new HashMap<UUID, Integer>();
     final Map<UUID, Long> publicTaskCooldown = new HashMap<UUID, Long>();
+    final Map<UUID, Task> commonWork = new HashMap<>();
     final Set<UUID> emergencyUsed = new HashSet<UUID>();
     private final Random random = new Random();
     private final BossBar bar;
@@ -164,7 +165,9 @@ final class GameRoom {
                     arrayList2.add(i);
                 }
                 Collections.shuffle(arrayList2, this.random);
-                this.tasks.put(uUID, arrayList2.subList(0, 4).stream().map(Task::new).toList());
+                List<Task> assigned = new ArrayList<>();
+                for(int kind=0;kind<4;kind++)assigned.add(new Task(arrayList2.get(kind),kind));
+                this.tasks.put(uUID, List.copyOf(assigned));
             }
             this.guide = new RoomGuide(this);
             int n2 = 0;
@@ -216,6 +219,7 @@ final class GameRoom {
                 }
             }
         }
+        for(UUID id:List.copyOf(this.alive)){Player player=Bukkit.getPlayer(id);if(player!=null)interruptTaskWork(player,player.getLocation());}
         this.refreshBar();
         if (this.guide != null && phase != Phase.FINISHED) this.guide.tick();
     }
@@ -585,90 +589,63 @@ final class GameRoom {
         this.beginMeeting(false, null, player.getUniqueId());
     }
 
-    Task taskAt(UUID uUID, int n) {
-        List<Task> list = this.tasks.get(uUID);
-        if (list == null) {
-            return null;
-        }
-        for (Task task : list) {
-            if (task.completed || task.station != n && (task.kind != 2 || !task.carrying || task.destination() != n)) continue;
-            return task;
-        }
+    Task taskAt(UUID player, int station) {
+        List<Task> assigned=this.tasks.getOrDefault(player,List.of());
+        for(Task task:assigned)if(!task.completed&&task.kind==2&&task.carrying&&task.destination()==station)return task;
+        for(Task task:assigned)if(!task.completed&&task.station==station)return task;
         return null;
     }
 
-    void clickStation(Player player, int n) {
-        if (this.phase != Phase.DAY || !this.alive.contains(player.getUniqueId())) {
-            return;
-        }
-        if(n<0||n>=MapLayout.STATIONS.size()||player.getWorld()!=world||player.getLocation().distanceSquared(MapLayout.STATIONS.get(n).location(world))>25)return;
-        Task task = this.taskAt(player.getUniqueId(), n);
-        if (task == null) {
-            if (this.firstNightDone && this.taskDone < this.taskGoal) {
-                long l = this.publicTaskCooldown.getOrDefault(player.getUniqueId(), 0L);
-                if (System.currentTimeMillis() - l >= 30000L) {
-                    this.plugin.openTaskMenu(player, this, n, null);
-                    return;
-                }
-            }
-            this.plugin.tell(player, "Bu istasyonda aktif görevin yok. Görev defterine bak.");
-            return;
-        }
-        if (task.kind == 2) {
-            if (!task.carrying && n == task.station) {
-                task.carrying = true;
-                this.plugin.tell(player, "Paketi aldın. " + MapLayout.STATIONS.get(task.destination()).name() + " noktasına götür.");
-            } else if (task.carrying && n == task.destination()) {
-                this.completeTask(player, task, false);
-            }
-        } else {
-            this.plugin.openTaskMenu(player, this, n, task);
-        }
+    void interruptTaskWork(Player player,Location position) {
+        List<Task> work=new ArrayList<>(tasks.getOrDefault(player.getUniqueId(),List.of()));
+        Task common=commonWork.get(player.getUniqueId());if(common!=null)work.add(common);
+        for(Task task:work)if(!task.completed&&!task.carrying&&task.work.startedAt>=0
+            &&(phase!=Phase.DAY||position.getWorld()!=world||position.distanceSquared(MapLayout.STATIONS.get(task.station).location(world))>25))task.work.interrupt();
     }
 
-    void clickTaskGui(Player player, int n, Task task, int n2) {
-        int[] nArray;
-        if (this.phase != Phase.DAY || !this.alive.contains(player.getUniqueId())) {
+    void clickStation(Player player, int station) {
+        UUID id=player.getUniqueId();
+        if(phase!=Phase.DAY||!alive.contains(id)||station<0||station>=MapLayout.STATIONS.size()
+            ||player.getWorld()!=world||player.getLocation().distanceSquared(MapLayout.STATIONS.get(station).location(world))>25)return;
+        interruptTaskWork(player,player.getLocation());
+        Task task=taskAt(id,station);
+        if(task!=null&&task.kind==2&&task.carrying){
+            if(station!=task.destination()){plugin.tell(player,"Paket sende. Teslim yeri: "+MapLayout.STATIONS.get(task.destination()).name());return;}
+            if(task.leg++==0){plugin.tell(player,"İlk teslimat tamam. Son durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Haritadaki mavi işareti izle.");}
+            else completeTask(player,task,false);
             return;
         }
-        if (n<0||n>=MapLayout.STATIONS.size()||task!=null&&(!tasks.getOrDefault(player.getUniqueId(),List.of()).contains(task)||task.station!=n)||player.getWorld() != this.world || player.getLocation().distanceSquared(MapLayout.STATIONS.get(n).location(this.world)) > 25.0) {
-            return;
+        if(task==null){
+            if(!firstNightDone||taskDone>=taskGoal){plugin.tell(player,"Bu istasyonda aktif görevin yok. Görev defterine bak.");return;}
+            long wait=30000-(System.currentTimeMillis()-publicTaskCooldown.getOrDefault(id,0L));
+            if(wait>0){plugin.tell(player,"Ortak bakım için "+(wait+999)/1000+" saniye bekle.");return;}
+            task=commonWork.get(id);
+            if(task==null||task.station!=station||task.completed){task=new Task(station,0,true);commonWork.put(id,task);}
         }
-        if (task == null) {
-            if (n2 == 13 && this.firstNightDone && this.taskDone < this.taskGoal && System.currentTimeMillis() - this.publicTaskCooldown.getOrDefault(player.getUniqueId(), 0L) >= 30000L) {
-                this.publicTaskCooldown.put(player.getUniqueId(), System.currentTimeMillis());
-                this.recordTaskCompletion(player, "Ortak bakım görevi tamamlandı.");
+        task.work.begin(System.currentTimeMillis());
+        plugin.openTaskMenu(player,this,station,task);
+    }
+
+    void clickTaskGui(Player player,int station,Task task,int action) {
+        UUID id=player.getUniqueId();
+        if(phase!=Phase.DAY||!alive.contains(id)||task==null||task.completed||task.carrying||task.station!=station
+            ||station<0||station>=MapLayout.STATIONS.size()||player.getWorld()!=world
+            ||player.getLocation().distanceSquared(MapLayout.STATIONS.get(station).location(world))>25
+            ||!(tasks.getOrDefault(id,List.of()).contains(task)||commonWork.get(id)==task))return;
+        if(task.maintenance&&(!firstNightDone||taskDone>=taskGoal||System.currentTimeMillis()-publicTaskCooldown.getOrDefault(id,0L)<30000))return;
+        long now=System.currentTimeMillis();TaskWork.Result result=task.work.select(action,now);
+        switch(result){
+            case WAIT -> plugin.tell(player,"İşlem sürüyor: "+Math.max(1,(task.work.remaining(action,now)+999)/1000)+" saniye bekle.");
+            case WRONG -> plugin.tell(player,"Sıra karıştı. Bu aşamayı yeniden dene.");
+            case ROUND -> plugin.tell(player,"Yeni diziyi incele. Hazır olduğunda gizleyip devam et.");
+            case HIDDEN -> plugin.tell(player,"Dizi gizlendi. Hatırladığın sıraya bas.");
+            case STEP -> plugin.tell(player,"Doğru: "+task.work.step+"/"+task.work.sequence.length);
+            case DONE -> {
+                if(task.kind==2){task.carrying=true;plugin.closePage(player);plugin.tell(player,"Paket hazır. İlk durak: "+MapLayout.STATIONS.get(task.destination()).name()+". Mavi hedefi izle.");}
+                else if(task.maintenance){task.completed=true;publicTaskCooldown.put(id,now);commonWork.remove(id,task);plugin.closePage(player);recordTaskCompletion(player,"Ortak bakım görevi tamamlandı.");}
+                else completeTask(player,task,false);
             }
-            this.plugin.closePage(player);
-            return;
-        }
-        if (task.completed || task.kind == 2) {
-            return;
-        }
-        if (task.kind == 0) {
-            int[] nArray2 = new int[3];
-            nArray2[0] = 10;
-            nArray2[1] = 13;
-            nArray = nArray2;
-            nArray2[2] = 16;
-        } else {
-            int[] nArray3 = new int[3];
-            nArray3[0] = 16;
-            nArray3[1] = 10;
-            nArray = nArray3;
-            nArray3[2] = 13;
-        }
-        int[] nArray4 = nArray;
-        if (n2 != nArray4[task.step]) {
-            task.step = 0;
-            this.plugin.tell(player, "Sıra karıştı; baştan dene.");
-            return;
-        }
-        ++task.step;
-        if (task.step == nArray4.length) {
-            this.completeTask(player, task, false);
-        } else {
-            this.plugin.tell(player, "Doğru: " + task.step + "/3");
+            default -> { }
         }
     }
 
@@ -796,19 +773,15 @@ final class GameRoom {
     }
 
     static final class Task {
-        final int station;
-        final int kind;
-        boolean completed;
-        boolean carrying;
-        int step;
-
-        Task(int n) {
-            this.station = n;
-            this.kind = n % 3;
-        }
-
-        int destination() {
-            return (this.station + 5) % MapLayout.STATIONS.size();
-        }
+        final int station,kind;
+        final boolean maintenance;
+        final TaskWork work;
+        boolean completed,carrying;
+        int leg;
+        Task(int station){this(station,station%4);}
+        Task(int station,int kind){this(station,kind,false);}
+        Task(int station,int kind,boolean maintenance){this.station=station;this.kind=kind;this.maintenance=maintenance;this.work=new TaskWork(kind,new Random());}
+        int destination(){int first=MapLayout.deliveryStop(station,-1);return leg==0?first:MapLayout.deliveryStop(first,station);}
+        String status(){if(completed)return "Tamamlandı";if(carrying)return "Teslimat "+(leg+1)+"/2";return work.title()+" • "+work.difficulty()+(kind==3?" • Tur "+(work.round+1)+"/2":"");}
     }
 }

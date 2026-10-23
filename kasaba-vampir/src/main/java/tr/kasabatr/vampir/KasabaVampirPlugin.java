@@ -46,19 +46,20 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
         saveDefaultConfig();itemKey=new NamespacedKey(this,"menu_item");shotKey=new NamespacedKey(this,"shot-room");instances=new WorldInstances(this);
         try{
             boolean managed=WorldNames.managed(getConfig().getString("template-world"));
-            if(managed)try{CleanWorldInstaller.ensure(this,Bukkit.getWorldContainer().toPath(),getConfig().getString("template-world"));}catch(IOException e){throw new IllegalStateException("Boş dünya hazırlanamadı; önceki dünya korundu.",e);}
+            if(managed)try{CleanWorldInstaller.ensure(this,Bukkit.getWorldContainer().toPath(),getConfig());}catch(IOException e){throw new IllegalStateException("Boş dünya hazırlanamadı; önceki dünya korundu.",e);}
             boolean settingsChanged=GuideSettings.migrate(getConfig());
-            boolean namesChanged=managed?WorldNames.toClean(getConfig()):WorldNames.migrate(getConfig(),Bukkit.getWorldContainer().toPath());
+            boolean namesChanged=managed?WorldNames.toVillage(getConfig()):WorldNames.migrate(getConfig(),Bukkit.getWorldContainer().toPath());
             if(namesChanged||settingsChanged){
                 var config=getDataFolder().toPath().resolve("config.yml");
-                var backup=getDataFolder().toPath().resolve("config-before-world-rename.yml");
+                var backup=getDataFolder().toPath().resolve("config-before-village-1.1.yml");
                 try{if(java.nio.file.Files.isRegularFile(config)&&!java.nio.file.Files.exists(backup))java.nio.file.Files.copy(config,backup);getConfig().save(config.toFile());}
                 catch(IOException e){throw new IllegalStateException("Dünya adı ayarı kaydedilemedi; eski dosya korundu.",e);}
                 getLogger().info("Harita/lobi dünya adı otomatik ayarlandı: "+getConfig().getString("template-world"));
             }
             instances.clearStaleCopies();String name=getConfig().getString("template-world","");
             if(instances.templateReady()&&Bukkit.getWorld(name)==null)Bukkit.createWorld(new WorldCreator(name).generator(new EmptyWorldGenerator()));
-            World template=Bukkit.getWorld(name);if(template!=null){template.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);template.setGameRule(GameRule.DO_WEATHER_CYCLE,false);template.setGameRule(GameRule.DO_MOB_SPAWNING,false);template.setTime(1000);template.setStorm(false);template.setThundering(false);}
+            World template=Bukkit.getWorld(name);if(template!=null){template.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);template.setGameRule(GameRule.DO_WEATHER_CYCLE,false);template.setGameRule(GameRule.DO_MOB_SPAWNING,false);template.setGameRule(GameRule.RANDOM_TICK_SPEED,0);template.getWorldBorder().setCenter(.5,.5);template.getWorldBorder().setSize(Math.max(180,2*(Math.max(Math.abs(getConfig().getDouble("lobby.x",144.5)),Math.abs(getConfig().getDouble("lobby.z",.5)))+Math.clamp(getConfig().getInt("lobby.radius",31),1,128)+16)));template.setTime(1000);template.setStorm(false);template.setThundering(false);}
+            String lobbyName=getConfig().getString("lobby.world","");if(WorldNames.managed(lobbyName)&&Bukkit.getWorld(lobbyName)==null&&java.nio.file.Files.isRegularFile(Bukkit.getWorldContainer().toPath().resolve(lobbyName).resolve("level.dat")))Bukkit.createWorld(new WorldCreator(lobbyName).generator(new EmptyWorldGenerator()));
             privacy=new EquipmentPrivacy(this);for(Player p:Bukkit.getOnlinePlayers())privacy.install(p);
             hub=Bukkit.getServicesManager().load(HubApi.class);if(hub==null)throw new IllegalStateException("KasabaHub / KasabaAuth API bulunamadı.");hub.register(this,this);
         }catch(RuntimeException e){getLogger().log(Level.SEVERE,"Vampir Köylü başlatılamadı; mevcut dosyalar korundu.",e);Bukkit.getPluginManager().disablePlugin(this);return;}
@@ -66,7 +67,7 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
         Bukkit.getScheduler().runTaskTimer(this,()->{for(GameRoom room:List.copyOf(rooms.values()))try{room.tick();}catch(RuntimeException e){getLogger().log(Level.SEVERE,"Oda "+room.id+" güvenli biçimde durduruluyor.",e);room.finish(null,"Oda işlemi durduruldu.");}},20,20);
         Bukkit.getScheduler().runTaskTimer(this,()->{for(GameRoom room:List.copyOf(rooms.values()))if(room.guide!=null)room.guide.proximity();},5,5);
         if(!instances.templateReady())getLogger().warning("Harita şablonu yok; kurulum ZIP'indeki dünya klasörünü sunucu ana klasörüne koy.");
-        getLogger().info("Kasaba Vampir Köylü 1.0.4: 40 saniyede yenilenen av, sahte görev ilerlemesi ve parlayan görev haritası.");
+        getLogger().info("Kasaba Vampir Köylü 1.1.0: dar sokaklı köy, kolay/orta görevler ve görüş hattına bağlı isimler.");
     }
     @Override public void onDisable(){
         disabling=true;for(UUID id:List.copyOf(lobby)){Player p=Bukkit.getPlayer(id);if(p!=null)detach(p,true);}
@@ -155,7 +156,7 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
     private void openPlayMenu(Player p,GameRoom room){List<Choice> buttons=new ArrayList<>();if(room.guide!=null){buttons.add(new Choice("Görevlerim",()->openJournal(p,room)));buttons.add(new Choice("Haritayı Eline Al",()->room.guide.takeMap(p)));}buttons.add(new Choice("Oyun Nasıl Oynanır?",()->openGuide(p)));if(room.isSpeaker(p.getUniqueId()))buttons.add(new Choice("Sözümü Bitir",()->{if(room.isSpeaker(p.getUniqueId()))room.nextSpeaker();}));buttons.add(new Choice("Oda Lobisine Dön",()->{leaveRoom(p);openLobbyMenu(p);}));buttons.add(close());show(p,"Vampir Köylü • Oda "+room.id,List.of("Rolün: "+room.roles.get(p.getUniqueId()).label+" • "+phase(room),GameText.purpose(room.roles.get(p.getUniqueId()))),buttons);}
     boolean hasPage(Player p){return pages.containsKey(p.getUniqueId());}
     private void openGuide(Player p){show(p,"Vampir Köylü • Nasıl Oynanır?",GameText.rules(),List.of(new Choice("Geri",()->menu(p)),close()));}
-    private void openJournal(Player p,GameRoom room){if(room.guide==null)throw new IllegalArgumentException("Görevler maç başlayınca açılır.");List<Choice> buttons=new ArrayList<>();List<String> lines=new ArrayList<>();lines.add("Haritada parlayan sarı: bekleyen görev; yeşil: tamamlanan; mavi: paketin teslim yeri. Beyaz ok yalnız seni gösterir.");var tasks=room.guide.tasks(p);for(int i=0;i<tasks.size();i++){int number=i+1;var task=tasks.get(i);int station=TaskNavigation.station(task);var point=MapLayout.STATIONS.get(station);lines.add(number+" • "+point.name()+" • "+point.x()+", "+point.z()+" • "+(task.completed?"Tamamlandı":task.kind==2?(task.carrying?"Paketi teslim et":"Paketi al"):"Bloğa sağ tıkla ve sırayı tamamla"));buttons.add(new Choice((task.completed?"✓ ":"→ ")+number+" • "+point.zone()+" • "+room.guide.distance(p,station)+" blok",()->room.guide.select(p,number)));}if(room.roles.get(p.getUniqueId())==GameRoom.Role.VAMPIRE)lines.add("Senin görevlerin sahtedir; üstteki ilerlemeyi artırır ama köylülerin kazanma hesabına eklenmez.");if(room.firstNightDone)lines.add("Herkes istasyonlarda ortak bakım yapabilir; vampirin bakımı da sahte ilerleme verir. Ortak bakım beklemesi: 30 saniye.");buttons.add(new Choice("Haritayı Eline Al",()->room.guide.takeMap(p)));buttons.add(new Choice("Nasıl Oynanır?",()->openGuide(p)));buttons.add(close());show(p,"Görev Defteri • Hedefini Seç",lines,buttons);}
+    private void openJournal(Player p,GameRoom room){if(room.guide==null)throw new IllegalArgumentException("Görevler maç başlayınca açılır.");List<Choice> buttons=new ArrayList<>();List<String> lines=new ArrayList<>();lines.add("Haritada parlayan sarı: bekleyen görev; yeşil: tamamlanan; mavi: paketin teslim yeri. Beyaz ok yalnız seni gösterir.");var tasks=room.guide.tasks(p);for(int i=0;i<tasks.size();i++){int number=i+1;var task=tasks.get(i);int station=TaskNavigation.station(task);var point=MapLayout.STATIONS.get(station);lines.add(number+" • "+point.name()+" • "+point.x()+", "+point.z()+" • "+task.status());buttons.add(new Choice((task.completed?"✓ ":"→ ")+number+" • "+point.zone()+" • "+room.guide.distance(p,station)+" blok",()->room.guide.select(p,number)));}if(room.roles.get(p.getUniqueId())==GameRoom.Role.VAMPIRE)lines.add("Senin görevlerin sahtedir; üstteki ilerlemeyi artırır ama köylülerin kazanma hesabına eklenmez.");if(room.firstNightDone)lines.add("Herkes istasyonlarda ortak bakım yapabilir; vampirin bakımı da sahte ilerleme verir. Ortak bakım beklemesi: 30 saniye.");buttons.add(new Choice("Haritayı Eline Al",()->room.guide.takeMap(p)));buttons.add(new Choice("Nasıl Oynanır?",()->openGuide(p)));buttons.add(close());show(p,"Görev Defteri • Hedefini Seç",lines,buttons);}
 
     private String phase(GameRoom r){return switch(r.phase){case WAITING->"Bekliyor";case DAY->"Gündüz";case SPEECH->"Konuşma";case VOTE->"Oylama";case ROLE->"Gece rolleri";case FINISHED->"Bitti";};}
     private void openLobbyMenu(Player p){if(!lobby.contains(p.getUniqueId()))return;show(p,"Kasaba • Vampir Köylü",List.of("Oda kur, arkadaşlarınla katıl ve gizli vampiri bul.","Normal maç: 6–20 kişi • Yönetici denemesi: 2 kişi"),List.of(new Choice("Oda Kur",()->createRoom(p)),new Choice("Açık Odalar",()->openRooms(p,0)),new Choice("Odam",()->openRoomMenu(p,own(p))),new Choice("Nasıl Oynanır?",()->openGuide(p)),new Choice("Ana lobiye dön",()->exit(p)),close()));}
@@ -182,10 +183,23 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
         if(vote)choices.add(new Choice("Pas",()->{if(membership.get(actor)==room)room.vote(actor,null);}));choices.add(close());show(p,vote?"Vampir Köylü • Oylama":"Vampir Köylü • Gece Seçimi",vote?GameText.voting(room.meetingReason):List.of("Rolün: "+role.label,GameText.purpose(role),"Bu gece için hedefini seç. Seçimin yalnız sana ve rolünün gerektirdiği sonuca etki eder."),choices);
     }
     void openTaskMenu(Player p,GameRoom room,int station,GameRoom.Task task){
-        if(membership.get(p.getUniqueId())!=room||room.phase!=GameRoom.Phase.DAY||!room.alive.contains(p.getUniqueId()))return;
-        List<Choice> choices=new ArrayList<>();int[] slots=task==null?new int[]{13}:new int[]{10,13,16};String[] names=task==null?new String[]{"Bakımı Tamamla"}:task.kind==0?new String[]{"1 • Sol","2 • Orta","3 • Sağ"}:new String[]{"Demir","Erzak","Odun"};
-        for(int i=0;i<slots.length;i++){int slot=slots[i];choices.add(new Choice(names[i],()->{if(membership.get(p.getUniqueId())!=room)return;room.clickTaskGui(p,station,task,slot);if(task!=null&&!task.completed&&room.phase==GameRoom.Phase.DAY&&p.getWorld()==room.world&&p.getLocation().distanceSquared(MapLayout.STATIONS.get(station).location(room.world))<=25)openTaskMenu(p,room,station,task);}));}
-        choices.add(close());show(p,MapLayout.STATIONS.get(station).name(),List.of(task==null?"İlk geceden sonra açılan ortak bakım işi.":task.kind==0?"Sıra: Sol → Orta → Sağ • "+task.step+"/3":"Sıra: Odun → Demir → Erzak • "+task.step+"/3"),choices);
+        if(membership.get(p.getUniqueId())!=room||room.phase!=GameRoom.Phase.DAY||!room.alive.contains(p.getUniqueId())||task==null||task.completed||task.carrying)return;
+        TaskWork work=task.work;List<Choice> choices=new ArrayList<>();List<String> lines=new ArrayList<>();
+        lines.add((task.maintenance?"Ortak bakım":work.title())+" • "+work.difficulty());
+        if(work.kind==3&&work.preview){
+            lines.add("Hafıza turu "+(work.round+1)+"/2 • Diziyi en az 4 saniye incele.");lines.add("Hatırla: "+work.sequenceText());
+            choices.add(taskChoice(p,room,task,TaskWork.READY,"Diziyi Gizle ve Başla"));
+        }else{
+            lines.add(work.kind==3?"Dizi gizli • Tur "+(work.round+1)+"/2":"İstenen sıra: "+work.sequenceText());
+            lines.add("Adım "+work.step+"/"+work.sequence.length+" • Her işlem arasında kısa hazırlık süresi var.");
+            String[] labels=work.labels();for(int action=0;action<labels.length;action++)choices.add(taskChoice(p,room,task,action,labels[action]));
+            if(work.kind==3)choices.add(taskChoice(p,room,task,TaskWork.HINT,"Diziyi Tekrar Göster"));
+        }
+        lines.add(work.kind==2?"Paketi hazırladıktan sonra haritadaki iki teslimat noktasına sırayla götür.":"Uzaklaşırsan veya toplantı başlarsa bu aşamayı yeniden hazırlaman gerekir.");
+        choices.add(close());show(p,MapLayout.STATIONS.get(station).name(),lines,choices);
+    }
+    private Choice taskChoice(Player p,GameRoom room,GameRoom.Task task,int action,String label){
+        return new Choice(label,()->{if(membership.get(p.getUniqueId())!=room)return;room.clickTaskGui(p,task.station,task,action);if(!task.completed&&!task.carrying&&room.phase==GameRoom.Phase.DAY&&p.getWorld()==room.world&&p.getLocation().distanceSquared(MapLayout.STATIONS.get(task.station).location(room.world))<=25)openTaskMenu(p,room,task.station,task);});
     }
 
     @Override public boolean onCommand(CommandSender sender,Command command,String label,String[] args){
@@ -266,7 +280,7 @@ public final class KasabaVampirPlugin extends JavaPlugin implements Listener,Hub
         if(!lobby.contains(p.getUniqueId()))return;
         if(r!=null&&r.world!=null){if(to.getWorld()!=r.world||!MapLayout.inside(to)||r.alive.contains(p.getUniqueId())&&r.phase!=GameRoom.Phase.DAY)e.setCancelled(true);}else if(!protectedLobby(to))e.setCancelled(true);
     }
-    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void move(PlayerMoveEvent e){Player p=e.getPlayer();if(internalTeleports.contains(p.getUniqueId())||e.getTo()==null||e.getFrom().toVector().equals(e.getTo().toVector())||!lobby.contains(p.getUniqueId()))return;GameRoom r=membership.get(p.getUniqueId());if(r!=null&&r.world!=null){if(!MapLayout.inside(e.getTo())||r.alive.contains(p.getUniqueId())&&r.phase!=GameRoom.Phase.DAY)e.setTo(e.getFrom());}else if(!protectedLobby(e.getTo()))e.setTo(e.getFrom());}
+    @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void move(PlayerMoveEvent e){Player p=e.getPlayer();if(internalTeleports.contains(p.getUniqueId())||e.getTo()==null||e.getFrom().toVector().equals(e.getTo().toVector())||!lobby.contains(p.getUniqueId()))return;GameRoom r=membership.get(p.getUniqueId());if(r!=null&&r.world!=null){r.interruptTaskWork(p,e.getTo());if(!MapLayout.inside(e.getTo())||r.alive.contains(p.getUniqueId())&&r.phase!=GameRoom.Phase.DAY)e.setTo(e.getFrom());}else if(!protectedLobby(e.getTo()))e.setTo(e.getFrom());}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void chat(AsyncChatEvent e){
         GameRoom r=membership.get(e.getPlayer().getUniqueId());if(r==null)return;e.setCancelled(true);String message=PlainTextComponentSerializer.plainText().serialize(e.message());Player p=e.getPlayer();Bukkit.getScheduler().runTask(this,()->{
             UUID id=p.getUniqueId();if(!authenticated(p)||membership.get(id)!=r)return;if(r.phase!=GameRoom.Phase.WAITING&&(!r.alive.contains(id)||r.phase!=GameRoom.Phase.DAY&&!r.isSpeaker(id))){tell(p,"Şu anda konuşamazsın.");return;}

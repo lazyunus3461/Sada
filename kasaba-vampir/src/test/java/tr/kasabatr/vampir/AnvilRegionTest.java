@@ -7,4 +7,6 @@ class AnvilRegionTest {
     @Test void keepsOnlyMapChunksAndPreservesEdits()throws Exception{byte[] seed=region(0,5),existing=region(0,5,20);existing[2*4096+5]=99;byte[] result=AnvilRegion.retain(seed,existing);assertEquals(4*4096,result.length);assertEquals(0,ByteBuffer.wrap(result).getInt(20*4));assertEquals(99,result[2*4096+5]);}
     @Test void missingMapChunksAreRestoredFromTemplate()throws Exception{byte[] result=AnvilRegion.retain(region(0,5),region(0));assertNotEquals(0,ByteBuffer.wrap(result).getInt(5*4));assertEquals(35,result[3*4096+5]);}
     @Test void corruptExistingChunkIsRejected(){byte[] existing=region(0);ByteBuffer.wrap(existing).putInt(0,0x7fffff01);assertThrows(java.io.IOException.class,()->AnvilRegion.retain(region(0),existing));}
+    @Test void villageReplacesOldGameChunksButKeepsLobbyEdits()throws Exception{byte[] old=region(0,7);old[2*4096+5]=99;old[3*4096+5]=98;byte[] merged=AnvilRegion.village(region(0,7),old,i->i==7);assertEquals(30,merged[2*4096+5]);assertEquals(98,merged[3*4096+5]);}
+    @Test void aCustomLobbyCanKeepChunksOutsideTheSeedMask()throws Exception{byte[] merged=AnvilRegion.village(region(0),region(0,50,700),i->i==50);assertNotEquals(0,ByteBuffer.wrap(merged).getInt(50*4));assertEquals(0,ByteBuffer.wrap(merged).getInt(700*4));}
 }
