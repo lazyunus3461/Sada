@@ -14,10 +14,14 @@ alan-hasari: 2.0
 azami-mac-saniye: 1200
 sifa-kalp: 2.0
 sifa-bekleme-saniye: 10
-sandik-esya-alt-siniri: 4
-sandik-esya-ust-siniri: 7
+# Eski sandik-esya-*-siniri anahtarları yerine bu seyrek profil kullanılır.
+seyrek-ganimet:
+  min: 1
+  max: 3
+sandik-sayisi-carpani: 3
 asgari-sandik: 12
 oyuncu-basina-sandik: 1.5
+# Nadir sandık adedi çarpan öncesi sayıya göre hesaplanır; güçlü eşya üçe katlanmaz.
 nadir-sandik-orani: 0.15
 # Şifa ve altın elma stratejik kalsın; yalnızca BR maçındaki doğal tokluk/barışçıl yenilemesi.
 dogal-can-yenileme: false

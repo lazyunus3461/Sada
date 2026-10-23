@@ -24,6 +24,7 @@ final class BattleRules {
     }
     static double zone(double initial,double last,int elapsed,int delay,int duration){double end=Math.min(initial,Math.max(1,last));if(elapsed<=delay)return initial;return Math.max(end,initial-(initial-end)*Math.min(1,(elapsed-delay)/(double)Math.max(1,duration)));}
     static double healed(double current,double maximum,double hearts){return Math.min(maximum,current+Math.max(0,hearts)*2);}
+    static int chestCount(int players,int minimum,double perPlayer,int multiplier){return Math.max(Math.max(1,minimum),(int)Math.ceil(players*Math.max(0,perPlayer)))*Math.clamp(multiplier,1,10);}
     static boolean outsideZone(double x,double z,double centerX,double centerZ,double radius){return Math.max(Math.abs(x-centerX),Math.abs(z-centerZ))>radius;}
     static List<Integer> chestSelection(int candidates,int wanted,Set<Integer> previous,Random random){return chestSelection(candidates,wanted,previous,Set.of(),random);}
     static List<Integer> chestSelection(int candidates,int wanted,Set<Integer> previous,Set<Integer> outdoors,Random random){

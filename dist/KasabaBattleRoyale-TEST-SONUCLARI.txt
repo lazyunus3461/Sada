@@ -1,21 +1,28 @@
-Kasaba Battle Royale 1.0.1 — 23 Ekim 2026
-Paper 1.21.10 build 130 / Java 21. Auth 1.3.0, Hub 1.2.0 ve Roles 1.2.0 ile loopback test sunucusu.
-Mevcut 1.0.0 dünyası ve arena dosyasıyla yükseltme test edildi. arenalar.yml birebir korunuyor.
-Test probe eklentileri dağıtımda yoktur.
+Kasaba Battle Royale 1.0.2 — 23 Ekim 2026
+Paper 1.21.10 build 130 / Java 21. Auth 1.3.0, Hub 1.2.0, Roles 1.2.0; loopback gerçek protokol istemcileri.
+Sadece yeni BR JAR dosyasıyla 1.0.1 -> 1.0.2 yükseltme denendi. Eski config.yml ve ganimetler.yml baytları birebir korundu.
+Lobi, bölge, merkez, doğma kayıtları ve ilk 160 sandık adayının sırası korundu; adalara 96'şar güvenli dış aday eklendi.
+Test fixture/probe JAR dosyaları üretim paketlerinde yoktur.
 
 -------------------------------------------------------------------------------
 Test set: tr.kasaba.battle.BattleRulesTest
 -------------------------------------------------------------------------------
-Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.119 s -- in tr.kasaba.battle.BattleRulesTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.292 s -- in tr.kasaba.battle.BattleRulesTest
 
 PASS three private visible borders, no global border/rule changes, no locator transmission/reception, hidden nametags survive Roles refresh and native client packets are sent
-PASS two-player test creates at least six outdoor ground chests as well as house chests
+PASS two-player test creates at least eighteen outdoor ground chests as well as house chests
 PASS a real empty-hand block click opens normal loot and a real shift-click transfers an item
 PASS rare chest opens with a held weapon; item-use-denied empty-hand interactions still open owned loot
 PASS shrinking border sends red-wall interpolation; square corner inside the visible wall is safe and outside it takes damage; other matches stay unchanged
 PASS finish restores the previous scoreboard, locator ranges and custom border while other matches remain hidden
-PASS both players leaving during the victory countdown removes every old chest; immediate next match has 12 fresh usable chests
-PASS ALL 1.0.1 CHEST / VISIBILITY / ZONE REGRESSIONS
+PASS both players leaving during the victory countdown removes every old chest; immediate next match has 36 fresh usable chests
+PASS ALL 1.0.2 CHEST / VISIBILITY / ZONE REGRESSIONS
+
+PASS real eating at full hunger gives exactly 2/3 yellow hearts, normal health stays unchanged, no stacking/downgrade and rejected food is not consumed
+PASS incoming damage consumes yellow reserve first; depleted reserve refills only to the food limit; existing healing cookie separately restores two red hearts
+PASS yellow reserve remains for 65 real seconds with infinite duration and never replenishes itself after damage
+PASS BR lobby clears bonus hearts; main-lobby exit restores the pre-BR absorption effect and leaves other players with zero bonus
+PASS death clears reserve hearts and bonus foods; PASS ALL RESERVE-HEALTH REGRESSIONS
 
 Connected 4/20 real protocol clients
 Connected 8/20 real protocol clients
@@ -23,11 +30,15 @@ Connected 12/20 real protocol clients
 Connected 16/20 real protocol clients
 Connected 20/20 real protocol clients
 PASS automatic map import, same-world BR lobby, original inventory isolation, protection and actual compass native-page selection
-PASS nine players wait; ten start; 15 ordinary chest blocks include rare loot; nonparticipants stay safe in the lobby
+PASS nine players wait; ten start; 45 ordinary chest blocks include rare loot; nonparticipants stay safe in the lobby
 PASS rare chest opens its virtual loot inventory; actual eating with full hunger consumes one item, heals exactly two hearts, respects cooldown and caps at max health
-PASS twenty-player match, scaled 30-chest supply, rare chests and completely changed chest positions from the previous match
+PASS twenty-player match, scaled 90-chest supply, rare chests and completely changed chest positions from the previous match
 PASS all three matches run together, room capacity routes new players, cross-room melee/arrows are blocked and stopping one match preserves the others
-PASS 4,000 chest rolls: iron/diamond/netherite rarity differs, food is selected, ranged weapons always include matching arrows and no old PUBG guns/ammo exist
+PASS 8,000 chest rolls: combined reserve-food rate is 30%, at most one bonus food, ordinary supply is sparse, rare gear is stronger, bows include arrows, no PUBG guns
 PASS existing Hub friend groups stay on the same duo teams; melee/projectile friendly fire is blocked and team elimination returns everyone to the BR lobby
 PASS original Adventure mode and diamonds restore; no BR compass, enchanted loot or healing item escapes to the main lobby
 PASS ALL BATTLE ROYALE REGRESSIONS
+
+Ganimet örneği: 8000 sandık; 2370 yedek kalp yiyeceği = %29.625; hedef toplam %30. Her sandıkta en fazla bir yedek yiyecek.
+
+Harita bağımsız doğrulaması: PASS 828 safe gameplay locations, 3048 preserved upper sections across three islands, filled underside, safe lobby, expanded global border and no player/test data.

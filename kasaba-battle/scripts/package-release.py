@@ -5,7 +5,7 @@ root=Path(__file__).resolve().parents[2];module=root/'kasaba-battle';dist=root/'
 world=module/'target/KasabaBR'
 assert (world/'kasaba-br-map.yml').is_file()
 assert not any((world/x).exists() for x in ('uid.dat','session.lock','playerdata','stats','advancements'))
-jars={'kasaba-battle':'KasabaBattleRoyale-1.0.1.jar','kasaba-hub':'KasabaHub-1.2.0.jar','kasaba-arena':'KasabaArena-1.2.1.jar','kasaba-akce':'KasabaAkce-1.0.0.jar'}
+jars={'kasaba-battle':'KasabaBattleRoyale-1.0.2.jar','kasaba-hub':'KasabaHub-1.2.0.jar','kasaba-arena':'KasabaArena-1.2.1.jar','kasaba-akce':'KasabaAkce-1.0.0.jar'}
 for folder,name in jars.items():
  source=root/folder/'target'/name
  with zipfile.ZipFile(source) as z:
@@ -28,7 +28,7 @@ with zipfile.ZipFile(dist/'KasabaBattleRoyale-Kurulum.zip','w',zipfile.ZIP_DEFLA
 combined='''KASABA BR + X ARENA GÜNCELLEMESİ — Paper 1.21.10 / Java 21
 
 1. Sunucuyu durdur. Dünya ve plugins veri klasörlerini yedekle.
-2. Eski BattleRoyale ... v0.3.1 veya KasabaBattleRoyale-1.0.0, KasabaArena ve KasabaHub JAR dosyalarını plugins dışına çıkar. Aynı eklentinin iki sürümünü bırakma. Veri klasörlerini silme.
+2. Eski BattleRoyale ... v0.3.1 veya KasabaBattleRoyale-1.0.0 / 1.0.1, KasabaArena ve KasabaHub JAR dosyalarını plugins dışına çıkar. Aynı eklentinin iki sürümünü bırakma. Veri klasörlerini silme.
 3. ZIP içindeki plugins klasörünün JAR dosyalarını sunucunun plugins klasörüne koy.
    KasabaAkce-1.0.0 zaten varsa aynı sürüm; ikinci kopya koyma.
 4. ZIP içindeki KasabaBR dünya klasörünü sunucunun ana klasörüne koy.
@@ -53,16 +53,23 @@ with zipfile.ZipFile(dist/'Kasaba-BR-XArena-Guncelleme.zip','w',zipfile.ZIP_DEFL
  for p in world_files:z.write(p,p.relative_to(world.parent).as_posix())
  for name in jars.values():z.write(dist/name,'plugins/'+name)
  for name in ('KasabaBattleRoyale-KURULUM.txt','KasabaBattleRoyale-TEST-SONUCLARI.txt','KasabaArena-KURULUM.txt','KasabaArena-TEST-SONUCLARI.txt','KasabaBR-Sandik-Adaylari.png'):z.write(dist/name,name)
-update="""KASABA BATTLE ROYALE 1.0.1 GÜNCELLEMESİ
+update="""KASABA BATTLE ROYALE 1.0.2 GÜNCELLEMESİ
 
 1. Sunucuyu durdur.
-2. plugins içindeki KasabaBattleRoyale-1.0.0.jar dosyasını dışarı çıkar.
-3. Bu paketteki plugins/KasabaBattleRoyale-1.0.1.jar dosyasını plugins içine koy.
+2. plugins içindeki KasabaBattleRoyale-1.0.0.jar veya KasabaBattleRoyale-1.0.1.jar dosyasını dışarı çıkar.
+3. Bu paketteki plugins/KasabaBattleRoyale-1.0.2.jar dosyasını plugins içine koy.
 4. Sunucuyu yeniden başlat.
 
 KasabaBR dünya klasörünü ve plugins/BattleRoyalePrototype veri klasörünü silme.
 Harita değiştirme, lobi veya sandık noktası yeniden ayarlama gerekmez.
 Diğer Kasaba eklentilerini yeniden kurma.
+
+Sandıklar üç katına çıkarıldı: 2 kişilik testte 36, 10 kişide 45, 20 kişide 90.
+İçerikler seyrektir; nadir güçlü ganimet sandıklarının sayısı üçe katlanmaz.
+Her sandıkta toplam %30 ihtimalle 2 veya 3 sarı yedek kalp veren tek bir yiyecek çıkar.
+Sarı kalpler süreyle kaybolmaz, hasarla tükenir; üst üste birikmez.
+Ölümde ve BR'den çıkışta bonus temizlenir. Eski şifa yiyeceği 2 kırmızı kalp yenilemeye devam eder.
+Mevcut dünya/iniş/lobi konumları korunur; hazır adalara güvenli dış sandık adayları eklenir.
 
 Maç sırasında oyuncu konum çubuğu ve kafa üstü isimler gizlenir.
 Boş elle/elde eşya varken sandık açılır; dışarıda da düzenli sandık çıkar.

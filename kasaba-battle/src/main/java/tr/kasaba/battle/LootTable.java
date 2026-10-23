@@ -13,16 +13,39 @@ import org.bukkit.persistence.PersistentDataType;
 final class LootTable {
     enum Tier{YAYGIN,NADIR,EPIK,EFSANE}
     record Entry(String id,ItemStack item,double weight,int min,int max,Tier tier){Entry{if(id==null||!id.matches("[a-z0-9_-]{1,40}")||item==null||item.getType().isAir()||!Double.isFinite(weight)||weight<=0||min<1||max<min||max>item.getMaxStackSize())throw new IllegalArgumentException("Ganimet adı/ağırlığı/adedi geçersiz.");item=item.clone();}}
-    final Map<String,Entry> entries=new LinkedHashMap<>();private final Path file;private final NamespacedKey heal;
-    LootTable(Path file,NamespacedKey heal)throws IOException{this.file=file;this.heal=heal;if(!java.nio.file.Files.exists(file)){defaults();save();}else load();}
+    final Map<String,Entry> entries=new LinkedHashMap<>();private final Path file;private final NamespacedKey heal,reserve;
+    LootTable(Path file,NamespacedKey heal,NamespacedKey reserve)throws IOException{this.file=file;this.heal=heal;this.reserve=reserve;if(!java.nio.file.Files.exists(file)){defaults();save();}else load();}
     void load()throws IOException{YamlConfiguration d=AtomicYaml.read(file);Map<String,Entry> next=new LinkedHashMap<>();try{var section=d.getConfigurationSection("esyalar");if(section==null)throw new IllegalArgumentException("Ganimet havuzu boş.");for(String id:section.getKeys(false)){String k="esyalar."+id;next.put(id,new Entry(id,d.getItemStack(k+".esya"),d.getDouble(k+".agirlik"),d.getInt(k+".min",1),d.getInt(k+".max",1),Tier.valueOf(d.getString(k+".seviye","YAYGIN"))));}if(next.isEmpty())throw new IllegalArgumentException("Ganimet havuzu boş.");}catch(RuntimeException ex){throw new IOException("Ganimet dosyası bozuk; korundu.",ex);}entries.clear();entries.putAll(next);}
     void save()throws IOException{YamlConfiguration d=new YamlConfiguration();for(Entry e:entries.values()){String k="esyalar."+e.id;d.set(k+".esya",e.item);d.set(k+".agirlik",e.weight);d.set(k+".min",e.min);d.set(k+".max",e.max);d.set(k+".seviye",e.tier.name());}AtomicYaml.write(file,d);}
     void put(Entry e)throws IOException{Entry before=entries.put(e.id,e);try{save();}catch(IOException ex){if(before==null)entries.remove(e.id);else entries.put(e.id,before);throw ex;}}
     void remove(String id)throws IOException{if(entries.size()<=1)throw new IllegalArgumentException("En az bir ganimet kalmalı.");Entry e=entries.remove(id);if(e==null)throw new IllegalArgumentException("Bu ganimet yok.");try{save();}catch(IOException ex){entries.put(id,e);throw ex;}}
     ItemStack healing(int amount){ItemStack item=new ItemStack(Material.COOKIE,amount);ItemMeta meta=item.getItemMeta();meta.setDisplayName("§dŞifa Lokması §7(+2 kalp)");meta.setLore(List.of("§7Yiyince anında 2 kalp yeniler.","§7Yalnızca aktif BR maçında • 10 sn ara"));meta.getPersistentDataContainer().set(heal,PersistentDataType.BYTE,(byte)1);var food=meta.getFood();food.setNutrition(0);food.setSaturation(0);food.setCanAlwaysEat(true);meta.setFood(food);item.setItemMeta(meta);return item;}
     boolean isHealing(ItemStack item){return item!=null&&item.hasItemMeta()&&item.getItemMeta().getPersistentDataContainer().has(heal,PersistentDataType.BYTE);}
-    List<ItemStack> roll(Random random,boolean rare,int count){List<Entry> pool=new ArrayList<>(entries.values());List<ItemStack> result=new ArrayList<>();for(int n=0;n<count&&!pool.isEmpty();n++){double total=pool.stream().mapToDouble(e->weighted(e,rare)).sum(),r=random.nextDouble()*total;Entry chosen=pool.getLast();for(Entry e:pool)if((r-=weighted(e,rare))<0){chosen=e;break;}pool.remove(chosen);ItemStack item=chosen.item.clone();item.setAmount(chosen.min+random.nextInt(chosen.max-chosen.min+1));result.add(item);}Material[] food={Material.COOKED_BEEF,Material.COOKED_PORKCHOP,Material.BREAD,Material.BAKED_POTATO};result.add(new ItemStack(food[random.nextInt(food.length)],2+random.nextInt(4)));if(result.stream().anyMatch(i->i.getType()==Material.BOW||i.getType()==Material.CROSSBOW))result.add(new ItemStack(Material.ARROW,8+random.nextInt(9)));return result;}
-    private double weighted(Entry e,boolean rare){return e.weight*switch(e.tier){case YAYGIN->rare?0.25:1;case NADIR->rare?1.5:0.45;case EPIK->rare?1:0.06;case EFSANE->rare?0.15:0.004;};}
+    ItemStack reserve(int hearts,int amount){
+        if(hearts!=2&&hearts!=3)throw new IllegalArgumentException("Yedek kalp 2 veya 3 olmalı.");
+        ItemStack item=new ItemStack(hearts==2?Material.DRIED_KELP:Material.SWEET_BERRIES,amount);ItemMeta meta=item.getItemMeta();
+        meta.setDisplayName(hearts==2?"§eKoruma Lokması §7(+2 sarı kalp)":"§6Güçlü Koruma Lokması §7(+3 sarı kalp)");
+        meta.setLore(List.of("§7Yedek can verir; süreyle kaybolmaz.","§7Darbe aldıkça tükenir. Üst üste birikmez.","§7Yalnızca aktif Battle Royale maçında."));
+        meta.getPersistentDataContainer().set(reserve,PersistentDataType.INTEGER,hearts);var food=meta.getFood();food.setNutrition(0);food.setSaturation(0);food.setCanAlwaysEat(true);meta.setFood(food);item.setItemMeta(meta);return item;
+    }
+    int reserveHearts(ItemStack item){if(item==null||!item.hasItemMeta())return 0;int value=item.getItemMeta().getPersistentDataContainer().getOrDefault(reserve,PersistentDataType.INTEGER,0);return value==2||value==3?value:0;}
+    List<ItemStack> roll(Random random,boolean rare,int count){
+        // More supply points, not three times as much strong equipment.
+        List<Entry> pool=entries.values().stream().filter(e->reserveHearts(e.item)==0).collect(java.util.stream.Collectors.toCollection(ArrayList::new));List<ItemStack> result=new ArrayList<>();
+        for(int n=0;n<count;n++){
+            if((!rare&&random.nextDouble()<0.70)||pool.isEmpty()){
+                Material[] basics={Material.ARROW,Material.ARROW,Material.BREAD,Material.BAKED_POTATO,Material.COOKED_BEEF};Material type=basics[random.nextInt(basics.length)];
+                result.add(new ItemStack(type,1+random.nextInt(type==Material.ARROW?4:2)));continue;
+            }
+            double total=pool.stream().mapToDouble(e->weighted(e,rare)).sum(),r=random.nextDouble()*total;Entry chosen=pool.getLast();
+            for(Entry e:pool)if((r-=weighted(e,rare))<0){chosen=e;break;}pool.remove(chosen);ItemStack item=chosen.item.clone();
+            item.setAmount(chosen.min+random.nextInt(chosen.max-chosen.min+1));result.add(item);
+        }
+        if(result.stream().anyMatch(i->i.getType()==Material.BOW||i.getType()==Material.CROSSBOW))result.add(new ItemStack(Material.ARROW,4+random.nextInt(5)));
+        // One shared roll: 30% TOTAL, at most one reserve food per chest.
+        if(random.nextDouble()<0.30)result.add(reserve(random.nextBoolean()?2:3,1));return result;
+    }
+    private double weighted(Entry e,boolean rare){return e.weight*switch(e.tier){case YAYGIN->rare?0.25:1;case NADIR->rare?1.5:0.18;case EPIK->rare?1:0.012;case EFSANE->rare?0.15:0.0005;};}
     private void add(String id,Material material,double w,Tier tier,Enchantment ench,int level){ItemStack item=new ItemStack(material);if(ench!=null)item.addUnsafeEnchantment(ench,level);entries.put(id,new Entry(id,item,w,1,1,tier));}
     private void defaults(){
         add("altin-savurma",Material.GOLDEN_SWORD,14,Tier.YAYGIN,Enchantment.KNOCKBACK,1);add("demir-keskinlik",Material.IRON_SWORD,12,Tier.NADIR,Enchantment.SHARPNESS,2);add("elmas-kilic",Material.DIAMOND_SWORD,4,Tier.EPIK,Enchantment.SHARPNESS,3);

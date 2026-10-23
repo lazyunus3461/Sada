@@ -65,6 +65,19 @@ for q in walk:
  selected.append(q);sectors[sector]=sectors.get(sector,0)+1
  if len(selected)==160:break
 if len(selected)<80:raise ValueError('Not enough safe, distributed chest candidates')
+# Keep the original 160 indices stable for existing servers, then add open-sky ground.
+extra=[];outdoor_sectors={}
+for q in walk:
+ if q[4]!='outdoors':continue
+ x,z=int(q[1]-.5)+256,int(q[3]-.5)+256
+ if roofs[z,x]>=q[2] or names[int(blocks[q[2]-LOW-1,z,x])] not in {'grass_block','dirt','sand','gravel','stone','andesite','coarse_dirt'}:continue
+ sector=(int((q[1]+256)//64),int((q[3]+256)//64))
+ if outdoor_sectors.get(sector,0)>=4 or any((q[1]-r[1])**2+(q[3]-r[3])**2+(q[2]-r[2])**2<36 for r in selected):continue
+ selected.append(q);extra.append(q);outdoor_sectors[sector]=outdoor_sectors.get(sector,0)+1
+ if len(extra)==96:break
+if len(extra)!=96:raise ValueError('Cannot expand exterior supply safely')
+resource=Path(__file__).resolve().parents[1]/'src/main/resources/hazir-dis-sandiklar.yml'
+resource.write_text('# Read-only template additions; existing arena/lobby/spawns are preserved.\nlocations:\n'+''.join(f'  - "{q[1]}|{q[2]}|{q[3]}"\n' for q in extra))
 spawn_pool=[q for q in walk if q[4]=='outdoors' and roofs[int(q[3]-.5)+256,int(q[1]-.5)+256]<q[2]+2]
 spawns=[]
 for i in range(20):
