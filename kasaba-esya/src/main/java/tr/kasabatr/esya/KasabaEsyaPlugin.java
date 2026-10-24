@@ -32,7 +32,7 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
     private final Set<UUID> internalTeleport=new HashSet<>(),quitting=new HashSet<>(),editors=new HashSet<>();
     private BossBar queueBar;
     private final Map<UUID,Long> messageAt=new HashMap<>();
-    ToyMap lobbyMap;
+    World lobbyWorld;
     WorldInstances instances;
     HubApi hub;
     GameScreens screens;
@@ -46,13 +46,14 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
         try{
             List<String> names=getConfig().getStringList("template-worlds");if(names.size()!=3||new HashSet<>(names).size()!=3)throw new IOException("Üç farklı harita gerekli.");
             for(String name:names){MapInstaller.ensure(this,name);ToyMap map=new ToyMap(Bukkit.getWorldContainer().toPath().resolve(name).resolve("prop-map.json"));if(!map.worldName.equals(name))throw new IOException("Harita adı config ile uyuşmuyor: "+name);maps.add(map);}
-            lobbyMap=maps.getFirst();instances=new WorldInstances(this);instances.clearStaleCopies();
+            instances=new WorldInstances(this);instances.clearStaleCopies();
             for(ToyMap map:maps){World world=Bukkit.getWorld(map.worldName);if(world==null)world=Bukkit.createWorld(new WorldCreator(map.worldName).generator(new EmptyWorldGenerator()).generateStructures(false));if(world==null)throw new IOException("Harita açılamadı: "+map.worldName);configure(world);validateWorld(map,world);new MultiverseBridge(this).register(world,map.lobby.at(world));}
+            lobbyWorld=LobbyWorld.open();configure(lobbyWorld);new MultiverseBridge(this).register(lobbyWorld,lobbyPoint());
             hub=Bukkit.getServicesManager().load(HubApi.class);if(hub==null)throw new IOException("KasabaHub bulunamadı.");hub.register(this,this);presentLobby();
         }catch(Exception e){getLogger().log(Level.SEVERE,"Eşya Saklambacı açılamadı; mevcut dünya/veri dosyaları korundu.",e);Bukkit.getPluginManager().disablePlugin(this);return;}
         Bukkit.getPluginManager().registerEvents(this,this);Objects.requireNonNull(getCommand("esya")).setTabCompleter(this);
         Bukkit.getScheduler().runTaskTimer(this,this::tick,5,5);for(Player p:Bukkit.getOnlinePlayers())recover(p);
-        getLogger().info("Eşya Saklambacı hazır: üç harita, /oyunlar, /esya; normal maç 4–12, yönetici denemesi 2 kişi.");
+        getLogger().info("Eşya Saklambacı hazır: ayrı lobi dünyası ve üç harita, /oyunlar, /esya; normal maç 4–12, yönetici denemesi 2 kişi.");
     }
     @Override public void onDisable(){
         stopping=true;if(queueBar!=null)queueBar.removeAll();
@@ -63,7 +64,7 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
     private void configure(World world){world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);world.setGameRule(GameRule.DO_WEATHER_CYCLE,false);world.setGameRule(GameRule.DO_MOB_SPAWNING,false);world.setGameRule(GameRule.KEEP_INVENTORY,true);world.setGameRule(GameRule.LOCATOR_BAR,false);world.setGameRule(GameRule.RANDOM_TICK_SPEED,0);world.setTime(1000);world.setStorm(false);world.setThundering(false);}
     @Override public ChunkGenerator getDefaultWorldGenerator(String name,String id){return new EmptyWorldGenerator();}
     @Override public GameInfo info(){return new GameInfo(ID,"Eşya Saklambacı","Oyuncakçı / Müze / Akvaryum • kılık değiştir • 4–12 kişi",1,12);}
-    @Override public boolean available(){return !stopping&&hub!=null&&maps.size()==3&&maps.stream().allMatch(map->Bukkit.getWorld(map.worldName)!=null&&instances.templateReady(map));}
+    @Override public boolean available(){return !stopping&&hub!=null&&lobbyWorld!=null&&Bukkit.getWorld(lobbyWorld.getUID())==lobbyWorld&&maps.size()==3&&maps.stream().allMatch(map->Bukkit.getWorld(map.worldName)!=null&&instances.templateReady(map));}
     @Override public boolean lobby(UUID id){return visitors.contains(id)&&!membership.containsKey(id);}
     @Override public boolean penaltyEligible(UUID id){PropRoom room=membership.get(id);Player p=Bukkit.getPlayer(id);return !stopping&&room!=null&&room.active()&&!room.practice&&p!=null&&!p.isDead();}
     @Override public boolean containsMatch(UUID id,Location at){PropRoom room=membership.get(id);return room==null||room.contains(at);}
@@ -93,7 +94,7 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
         for(var effect:p.getActivePotionEffects())p.removePotionEffect(effect.getType());p.setGameMode(GameMode.ADVENTURE);p.setFlying(false);p.setAllowFlight(false);p.setGravity(true);p.setInvulnerable(false);p.setAbsorptionAmount(0);p.setCollidable(false);p.setFireTicks(0);p.setFallDistance(0);p.setNoDamageTicks(0);p.setFoodLevel(20);p.setSaturation(20);p.setExhaustion(0);if(!p.isDead())p.setHealth(Math.min(20,p.getMaxHealth()));p.setTotalExperience(0);p.setLevel(0);p.setExp(0);teleport(p,at);
     }
     private void prepareLobby(Player p){prepare(p,lobbyPoint());tools(p);}
-    Location lobbyPoint(){return lobbyMap.lobby.at(Bukkit.getWorld(lobbyMap.worldName));}
+    Location lobbyPoint(){return LobbyWorld.spawn(lobbyWorld);}
     void teleport(Player p,Location to){internalTeleport.add(p.getUniqueId());try{if(p.isInsideVehicle())p.leaveVehicle();if(!p.teleport(to,PlayerTeleportEvent.TeleportCause.PLUGIN))throw new IllegalStateException("Işınlanma engellendi.");p.setFallDistance(0);}finally{internalTeleport.remove(p.getUniqueId());}}
     void reveal(Player p){for(Player viewer:Bukkit.getOnlinePlayers())if(viewer!=p)viewer.showPlayer(this,p);}
     private boolean enter(Player p){if(!auth(p))throw new IllegalArgumentException("Önce hesabına giriş yap.");if(visitors.contains(p.getUniqueId()))return true;if(hub.playing(p.getUniqueId()))throw new IllegalArgumentException("Mevcut oyunun lobisindeki pusuladan geçiş yap veya /lobi kullan.");Bukkit.dispatchCommand(p,"oyunlar git "+ID);return visitors.contains(p.getUniqueId());}
@@ -154,8 +155,8 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
         }catch(Exception e){tell(sender,e.getMessage()==null?"İşlem tamamlanamadı.":e.getMessage());}return true;
     }
     @Override public List<String> onTabComplete(CommandSender sender,Command command,String alias,String[] args){return args.length==1?List.of("oyna","kılık","durum","lobi","çık","yardım","başlat","deneme","testharita","düzenleme").stream().filter(s->normalize(s).startsWith(normalize(args[0]))).toList():args.length==2&&normalize(args[0]).equals("duzenleme")?List.of("aç","kapat"):List.of();}
-    private boolean insideLobby(Location at){Location center=lobbyPoint();return at.getWorld()==center.getWorld()&&Math.abs(at.getX()-center.getX())<=18&&Math.abs(at.getZ()-center.getZ())<=10&&at.getY()>=center.getY()-.25&&at.getY()<center.getY()+8;}
-    private boolean managed(World world){return world.getName().startsWith("esya_room_")||maps.stream().anyMatch(map->map.worldName.equals(world.getName()));}
+    private boolean insideLobby(Location at){return LobbyWorld.contains(at,lobbyWorld);}
+    private boolean managed(World world){return world==lobbyWorld||world.getName().startsWith("esya_room_")||maps.stream().anyMatch(map->map.worldName.equals(world.getName()));}
     private boolean editing(Player p){return editors.contains(p.getUniqueId())&&p.hasPermission("kasaba.esya.admin")&&!visitors.contains(p.getUniqueId())&&!p.getWorld().getName().startsWith("esya_room_");}
     private void recover(Player p){if(!auth(p)||visitors.contains(p.getUniqueId())||!PlayerBackup.exists(getDataFolder(),p.getUniqueId()))return;try{PlayerBackup.restore(getDataFolder(),p,true);tell(p,"Önceki oyun oturumundaki eşyaların ve durumun geri yüklendi.");}catch(RuntimeException e){getLogger().log(Level.SEVERE,"Eşya kurtarma dosyası korundu.",e);p.kick(net.kyori.adventure.text.Component.text("Eşya Saklambacı envanter kaydın okunamadı. Yöneticiye haber ver."));}}
     @EventHandler(priority=EventPriority.LOWEST) public void verified(PlayerAuthenticatedEvent e){recover(e.getPlayer());}
@@ -184,7 +185,7 @@ public final class KasabaEsyaPlugin extends JavaPlugin implements HubGame,Listen
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void commands(PlayerCommandPreprocessEvent e){if(!membership.containsKey(e.getPlayer().getUniqueId()))return;String command=normalize(e.getMessage().substring(1).split(" ",2)[0]);if(command.contains(":"))command=command.substring(command.indexOf(':')+1);if(!Set.of("esya","esyasaklambaci","lobi","oyunlar","oyunceza").contains(command)){e.setCancelled(true);tell(e.getPlayer(),"Maçta /esya veya /lobi kullanabilirsin.");}}
     @EventHandler public void spawn(EntitySpawnEvent e){if(managed(e.getEntity().getWorld())&&(e.getEntity() instanceof Mob||e.getEntity() instanceof TNTPrimed||e.getEntity() instanceof Projectile))e.setCancelled(true);}
     @EventHandler public void explode(EntityExplodeEvent e){if(managed(e.getLocation().getWorld()))e.setCancelled(true);}
-    @EventHandler public void multiverse(org.bukkit.event.server.PluginEnableEvent e){if(e.getPlugin().getName().equals("Multiverse-Core"))Bukkit.getScheduler().runTask(this,()->{for(ToyMap map:maps)new MultiverseBridge(this).register(Bukkit.getWorld(map.worldName),map.lobby.at(Bukkit.getWorld(map.worldName)));});}
+    @EventHandler public void multiverse(org.bukkit.event.server.PluginEnableEvent e){if(e.getPlugin().getName().equals("Multiverse-Core"))Bukkit.getScheduler().runTask(this,()->{for(ToyMap map:maps)new MultiverseBridge(this).register(Bukkit.getWorld(map.worldName),map.lobby.at(Bukkit.getWorld(map.worldName)));new MultiverseBridge(this).register(lobbyWorld,lobbyPoint());});}
     private void validateWorld(ToyMap map,World world)throws IOException{for(ToyMap.Point point:map.hiderSpawns)if(!safe(point.at(world)))throw new IOException("Saklanan doğması güvenli değil: "+map.worldName);if(!safe(map.lobby.at(world))||!safe(map.seekerWait.at(world))||!safe(map.seekerRelease.at(world)))throw new IOException("Lobi/ebe doğması güvenli değil: "+map.worldName);}
     private boolean safe(Location at){return at.getBlock().isPassable()&&at.clone().add(0,1,0).getBlock().isPassable()&&at.clone().subtract(0,1,0).getBlock().getType().isSolid();}
     private void testMaps(CommandSender sender)throws IOException{for(ToyMap map:maps){World copy=null;try{copy=instances.create(nextRoom++,map);validateWorld(map,copy);for(ToyMap.Decoy decoy:map.decoys)if(copy.getBlockAt(decoy.pos().x(),decoy.pos().y(),decoy.pos().z()).getType()!=decoy.material())throw new IOException("Başlangıç yemi farklı: "+decoy.pos());Set<ToyMap.Pos> active=placeDecoys(map,copy);if(active.size()!=map.decoys.size())throw new IOException("Yem sayısı hatalı.");for(ToyMap.Pos pos:map.decoyCandidates){Material kind=copy.getBlockAt(pos.x(),pos.y(),pos.z()).getType();if(active.contains(pos)!=map.materials.contains(kind))throw new IOException("Yem konumu hatalı: "+pos);}tell(sender,"§a"+mapName(map)+": "+active.size()+" yem / "+map.decoyCandidates.size()+" aday ve doğmalar doğrulandı.");}finally{if(copy!=null)instances.close(copy);}}}

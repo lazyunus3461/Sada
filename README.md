@@ -1,5 +1,9 @@
 # Kasaba oyun merkezi
 
+## Eşya Saklambacı 1.3.1 — ayrı lobi
+
+Bekleme alanı oyun haritalarından tamamen ayrı `KasabaTR-Esya-Lobi-v01` dünyasına taşındı. Lobide haritalar görünmez; pusula girişi ve maç sonu dönüşü yeni alana gider. [Güncel kurulum ZIP'i](dist/KasabaEsya-KasabaTR-Hazir-Paket-1.3.1.zip), [tek JAR](dist/KasabaEsya-1.3.1.jar) ve [test kayıtları](kasaba-esya/validation/1.3.1/) burada. Mevcut kurulumda yalnız eski KasabaEsya JAR'ını değiştir; dünya ve ayar klasörlerini koru.
+
 ## Eşya Saklambacı — sunucu paketi 1.6.0
 
 Yeni [KasabaEsya 1.3.0](kasaba-esya/README.md), üç gömülü harita, ayrı maç dünyaları, Türkçe yerel ekranlar, grup/sıra akışı ve ilk beş liderliğiyle KasabaTR merkezine bağlanır. Oyun `/oyunlar` listesinde otomatik görünür. Yalnız iki JAR içeren [ekleme paketi](dist/KasabaEsya-KasabaTR-Hazir-Paket-1.3.0.zip), KasabaEsya 1.3.0 ve KasabaHub 1.6.1 içerir; diğer oyunların JAR'ları ve kayıtları korunur. [Tam 14 eklentili paket](dist/KasabaTR-Sunucu-Paketi-1.6.0.zip) ve [doğrulama kayıtları](validation/1.6.0/) ayrıca bulunur.

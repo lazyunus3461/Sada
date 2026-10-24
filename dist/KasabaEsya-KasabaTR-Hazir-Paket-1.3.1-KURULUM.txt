@@ -1,0 +1,27 @@
+KASABA EŞYA SAKLAMBACI 1.3.1 — HARİTALARDAN AYRI LOBİ
+Paper 1.21.10 / Java 21
+
+1. Sunucuyu tamamen durdur.
+2. plugins içindeki eski KasabaEsya JAR'ını çıkar ve KasabaEsya-1.3.1.jar dosyasını koy.
+3. KasabaHub-1.6.1 zaten kuruluysa aynen kalabilir. İlk kez kuruyorsan ZIP'teki Hub JAR'ını da koy ve eski Hub JAR'ını çıkar.
+4. Dünya/ayar/oyuncu kayıt klasörlerini silme. Sunucuyu yeniden başlat; /reload kullanma.
+5. /esya veya /oyunlar > Eşya Saklambacı ile yeni lobiye gir.
+
+Yeni lobi otomatik yapılır: KasabaTR-Esya-Lobi-v01.
+Bu, üç oyun haritasından tamamen ayrı bir boşluk dünyasıdır; beklerken haritalar görünmez.
+Pusuladan giriş, /esya lobi ve maç sonu dönüşü yeni lobiye gider.
+Lobi çevresi kapalıdır; blok kırma/yerleştirme ve hasar engellenir.
+Bilgi yazısı ve ilk 5 tablosu yeni lobide görünür.
+Eski Oyuncakçı, Müze ve Akvaryum haritaları korunur ve maçlarda kullanılır.
+Lobi sonraki açılışlarda yeniden inşa edilmez; yaptığın düzenlemeler korunur.
+
+Komutlar aynı:
+/esya            Lobi/menü
+/esya oyna       Sıraya gir
+/esya kılık      Maçta eşya seç
+/esya lobi       Eşya lobisine dön
+/lobi            Ana spawna dön
+İki kişilik deneme: ikiniz /esya, ikiniz /esya oyna, yönetici /esya deneme.
+Normal maç 4–12 kişi, deneme iki kişi. Başlamış normal maçı bırakma cezası aynı kalır.
+
+Ayar değişikliği, dünya taşıma veya /mv import gerekmez.

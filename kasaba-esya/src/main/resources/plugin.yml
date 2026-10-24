@@ -1,5 +1,5 @@
 name: KasabaEsya
-version: 1.3.0
+version: 1.3.1
 main: tr.kasabatr.esya.KasabaEsyaPlugin
 api-version: '1.21.10'
 depend: [KasabaHub, KasabaAuth]

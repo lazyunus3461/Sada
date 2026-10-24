@@ -1,12 +1,12 @@
-# KasabaTR Eşya Saklambacı 1.3.0
+# KasabaTR Eşya Saklambacı 1.3.1
 
 Paper **1.21.10**, Java **21**, KasabaAuth **1.3.0** ve KasabaHub **1.6.1** için hazırlandı. KasabaSosyal varsa lobi arkadaş/grup/görünürlük araçları ve aktif oyun süresi mevcut sistemden çalışır. Multiverse-Core 5.3.2 ile ortak haritalar otomatik kaydedilir; Multiverse zorunlu değildir.
 
 ## Kurulum
 
 1. Sunucuyu tamamen durdur. Mevcut `plugins` ve dünya klasörlerinin yedeğini al.
-2. Hazır paketin `plugins` klasöründeki **KasabaHub-1.6.1.jar** ve **KasabaEsya-1.3.0.jar** dosyalarını sunucunun `plugins` klasörüne koy. Eski KasabaHub ve KasabaEsya JAR'larını kaldır; aynı eklentiden iki sürüm bırakma.
-3. Sunucuyu başlat. Dünya yüklemek, `/mv import` veya `/oyunlar ekle` yazmak gerekmez. JAR, eksik olan üç dünyayı ilk açılışta kurar. Mevcut dünya ve ayar klasörlerinin üzerine yazmaz.
+2. Hazır paketin `plugins` klasöründeki **KasabaHub-1.6.1.jar** ve **KasabaEsya-1.3.1.jar** dosyalarını sunucunun `plugins` klasörüne koy. Eski KasabaHub ve KasabaEsya JAR'larını kaldır; aynı eklentiden iki sürüm bırakma.
+3. Sunucuyu başlat. Dünya yüklemek, `/mv import` veya `/oyunlar ekle` yazmak gerekmez. JAR, eksik olan üç oyun haritasını ve ayrı lobi dünyasını ilk açılışta kurar. Mevcut dünya ve ayar klasörlerinin üzerine yazmaz.
 4. `/oyunlar` → **Eşya Saklambacı**. İlk gelişte yalnız lobi açılır. **Oyna** seçince sıraya girilir; **Bu lobide kal** sıradan çıkarır.
 
 Mevcut Kasaba oyunlarını, para/rol kayıtlarını veya lobi/arena doğmalarını silme. `/reload` kullanma. Paket bir sunucu yaması ve yeni oyundur; kullanıcı yüklemeyi kendisi yapar.
@@ -54,12 +54,14 @@ Türkçe karakterler veya `kilik`, `cik`, `baslat`, `duzenleme ac` yazımları k
 
 Otomatik kurulan dünyalar:
 
+- `KasabaTR-Esya-Lobi-v01` — haritalardan ayrı, kapalı ve güvenli bekleme lobisi.
+
 - `KasabaTR-Esya-Saklambaci-Oyuncakci-v02`
 - `KasabaTR-Esya-Saklambaci-Muze-v01`
 - `KasabaTR-Esya-Saklambaci-Akvaryum-v01`
 
-Oyuncakçı ortak lobidir. Müze ve Akvaryum da maç şablonlarıdır; buralara ayrı ayrı lobi kurmak gerekmez. Maç kopyaları `esya_room_...` adını alır ve Multiverse'e kaydedilmez. Yalnız bu eklentinin işaretlediği kullanılmayan geçici kopyalar silinir. Ortak dünyalar, kullanıcı yapıları ve başka eklentilerin dosyaları silinmez. Harita düzenlemeleri sonraki maç kopyalarına alınır; `prop-map.json` içindeki doğma ve yem konumlarını kapatmamak gerekir.
+Lobi `KasabaTR-Esya-Lobi-v01` adlı ayrı bir boşluk dünyasındadır. Bekleyen oyuncular hiçbir oyun haritasını göremez. Pusula girişi, `/esya lobi` ve maç sonu dönüşü bu lobiye gider. Üç eski oyun dünyası yalnız maç şablonlarıdır; lobi taşınırken üzerlerine yazılmaz. Lobi ilk açılışta otomatik yapılır; yeniden başlatmada yeniden inşa edilmez ve yönetici düzenlemeleri korunur. Maç kopyaları `esya_room_...` adını alır ve Multiverse'e kaydedilmez. Yalnız bu eklentinin işaretlediği kullanılmayan geçici kopyalar silinir. Ortak dünyalar, kullanıcı yapıları ve başka eklentilerin dosyaları silinmez. Harita düzenlemeleri sonraki maç kopyalarına alınır; `prop-map.json` içindeki doğma ve yem konumlarını kapatmamak gerekir.
 
 `plugins/KasabaEsya/config.yml` üç şablonun adını, `countdown-seconds: 15` ve `max-concurrent-rooms: 3` ayarlarını içerir. Eski 1.2.0 ayarı ve envanter kurtarma kayıtları korunur. Bozuk kayıt varsa üzeri yazılmaz ve yöneticiye günlükte hata gösterilir.
 
-Kaynak yüklemelerinin belgeleri ve önizlemeleri `docs/` içindedir; eski kurulum metni 1.2.0 davranışını anlatır. Bu README 1.3.0'ın güncel kılavuzudur.
+Kaynak yüklemelerinin belgeleri ve önizlemeleri `docs/` içindedir; eski kurulum metni 1.2.0 davranışını anlatır. Bu README 1.3.1'ın güncel kılavuzudur.
