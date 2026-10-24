@@ -75,9 +75,13 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
         var yaml=RoleFiles.read(configPath);
         boolean migrated=yaml.getInt("network-perks-version",0)<1;
         if(migrated){for(String id:List.of("kurucu","admin","moderator","rehber","vip")){String key="roles."+id;if(yaml.isConfigurationSection(key)&&"white".equals(yaml.getString(key+".name-color","white")))yaml.set(key+".name-color",yaml.getString(key+".color","white"));}if(yaml.isConfigurationSection("roles.vip"))yaml.set("roles.vip.permissions.kasaba.vip",true);if(yaml.isConfigurationSection("roles.kurucu"))yaml.set("roles.kurucu.permissions.kasaba.fly",true);if(yaml.isConfigurationSection("roles.rehber"))yaml.set("roles.rehber.permissions.kasaba.fly",true);yaml.set("network-perks-version",1);}
+        boolean prisonMigration=yaml.getInt("prison-permissions-version",0)<1;
+        if(prisonMigration){for(String id:List.of("kurucu","admin","moderator")){String key="roles."+id;if(yaml.isConfigurationSection(key)&&(yaml.getConfigurationSection(key+".permissions")==null||!yaml.getConfigurationSection(key+".permissions").getValues(true).containsKey("kasabatr.hapis.admin")))yaml.set(key+".permissions.kasabatr.hapis.admin",true);}yaml.set("prison-permissions-version",1);}
+        boolean vipColors=yaml.getInt("vip-colors-version",0)<1;if(vipColors){if(yaml.isConfigurationSection("roles.vip")){yaml.set("roles.vip.color","gold");yaml.set("roles.vip.name-color","aqua");yaml.set("roles.vip.chat-color","yellow");}yaml.set("vip-colors-version",1);}
         var next=RoleFiles.configuration(yaml);
         var nextAssignments=RoleFiles.assignments(RoleFiles.read(playersPath),next.catalog());
-        if(migrated){Path backup=configPath.resolveSibling("config-before-vip-1.3.0.yml");if(!Files.exists(backup))Files.copy(configPath,backup);RoleFiles.write(configPath,yaml.saveToString());}
+        List<String> backups=new ArrayList<>();if(migrated)backups.add("config-before-vip-1.3.0.yml");if(prisonMigration)backups.add("config-before-hapis-1.3.1.yml");if(vipColors)backups.add("config-before-vip-colors-1.3.1.yml");
+        for(String file:backups){Path backup=configPath.resolveSibling(file);if(!Files.exists(backup))Files.copy(configPath,backup);}if(!backups.isEmpty())RoleFiles.write(configPath,yaml.saveToString());
         configuration=next;assignments=nextAssignments;
         refreshChat();
     }

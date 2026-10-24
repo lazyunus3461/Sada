@@ -1,12 +1,12 @@
 # KasabaTR sunucu güncellemesi
 
-Paper **1.21.10 / Java 21** için hazırlanmıştır. Bu paket KasabaHub 1.3.0, KasabaRoles 1.3.0, KasabaAkçe 1.1.0, KasabaArena 1.3.0, KasabaAdalar 1.4.0, Battle Royale 1.1.0, Vampir Köylü 1.3.0 ve yeni KasabaSosyal 1.0.0 eklentilerini birlikte kullanır. KasabaAuth 1.3.0 da pakettedir.
+Paper **1.21.10 / Java 21** için hazırlanmıştır. Bu paket KasabaHub 1.3.1, KasabaRoles 1.3.1, KasabaAkçe 1.1.0, KasabaArena 1.3.1, KasabaAdalar 1.4.0, Battle Royale 1.1.1, Vampir Köylü 1.3.1 ve yeni KasabaSosyal 1.0.1 eklentilerini birlikte kullanır. KasabaAuth 1.3.0 da pakettedir.
 
 ## Kurulum
 
 1. Sunucuyu tamamen **durdur**. `plugins` klasörünün ve dünyalarının yedeğini al.
 2. `plugins` içindeki eski **KasabaAuth, KasabaHub, KasabaRoles, KasabaAkce, KasabaArena, KasabaAdalar, BattleRoyalePrototype/Battle Royale ve KasabaVampirKoylu** JAR'larını kaldır. Aynı eklentinin iki JAR'ını birlikte bırakma. **Eklentilerin veri klasörlerini, Akçe hesaplarını, sahiplik dosyalarını ve dünya klasörlerini silme.**
-3. ZIP içindeki `plugins` klasörünü sunucunun ana dizinindeki mevcut `plugins` ile birleştir. Sonuç `plugins/KasabaSosyal-1.0.0.jar` gibi olmalı; `plugins/plugins` oluşturma.
+3. ZIP içindeki `plugins` klasörünü sunucunun ana dizinindeki mevcut `plugins` ile birleştir. Sonuç `plugins/KasabaSosyal-1.0.1.jar` gibi olmalı; `plugins/plugins` oluşturma.
 4. Sunucuyu başlat. Eski arsa sahiplikleri, Akçe bakiyeleri, roller, arena noktaları, sandık adayları ve lobi ayarları korunur. Yeni davranışlar koddan eklenir; config dosyalarını elle değiştirmen gerekmez.
 
 Bu paket mevcut sunucunun güncellemesidir. Mevcut `ada`, arena ve `KasabaBR` dünyaları kullanılmaya devam eder; yeni dünya indirmen gerekmez. Vampir Köylü hazır haritasını kendi JAR'ında taşır. Parkur, Warp ve diğer eklentilerini kaldırma.
@@ -59,7 +59,7 @@ Süre gerçek zamanla işler, çevrimdışıyken de azalır. Yenileme varsa mevc
 - **Arena:** X Arena, 1v1 ve 2v2'de netherit **Korunma III** zırh. Maç silahları normal kittendir; ayrı VIP kit seçme sekmesi yoktur. X Arena becerilerinin her birinin beklemesi 2 saniye azalır; en az 1 saniye kalır. Kısa ortak kullanım animasyonu ve diğer mevcut kurallar korunur. X Arena'nın özel hasar hesabında VIP zırhı ek azaltma uygular.
 - **Vampir Köylü:** oyun lobisinde `/vk viprol` veya bekleyen odadaki **VIP rol tercihim** ile gizli tercihini seç. Rol sayısı değişmez. Aynı rolü isteyen VIP'ler arasında kura yapılır; kontenjan kazanamayan oyuncu kalan rollere dağıtılır. Oda kurucusunun kapattığı rol verilmez. Tercih yalnız sahibine gösterilir.
 - **Fısıltı:** `/fısla Ali Merhaba` veya `/fısla 123 Merhaba`. Ad ya da çevrimiçi kimlik kullanılır; kimlik arkadaş listesindeki çevrimiçi kayıtta gösterilir ve yeniden girişte değişebilir. VIP fısıltısı oyun sırasında da kullanılabilir; alıcının VIP olması gerekmez.
-- **BR:** 3 sarı yedek kalple başlar. Tam 36 yuvalı eşya envanteri ve alt el açıktır. İnişte elitra giyilir; yere değince elitra kaldırılır ve önceki göğüs zırhı geri verilir. İniş eltrası taşınamaz veya saklanamaz.
+- **BR:** 3 sarı yedek kalple başlar. Tam 36 yuvalı eşya envanteri ve alt el açıktır. Elitra verilmez; başlangıç göğüs zırhı korunur.
 
 Yönetici tarafından `/rol ver Ali vip` ile atanmış kalıcı rol de VIP sayılır. Satın alınmış süreli VIP ayrı dosyada saklanır; satın alma görevli rolünü silmez. OP olmak tek başına VIP sayılmaz.
 
@@ -104,3 +104,11 @@ Mevcut `/akçe`, `/akçe gönder Ali 5`, `/akçe bak Ali`, `/akçe sıralama` ve
 **`/fly`**, Rehber ve bu yetkiyi miras alan görevli rollerinde uçuş iznini açıp kapatır; oyun alanlarında da çalışır. Uçuş izni açıkken çift zıplayarak uçabilirsin. Rol izni kaldırılırsa bu sistemin verdiği uçuş izni de kaldırılır. Kurucu için de bu yetki eklenir.
 
 Lobide yapı düzenlemek: `/merkez düzenleme aç`, bitince `/merkez düzenleme kapat`. Arena, BR ve Vampir Köylü'nün mevcut konum/bölge yönetim komutları korunur. Bu paket yeni arena veya lobi konumlarını kendi kendine değiştirmez.
+
+## Son güncelleme
+
+Ana oyun listesinde yalnız oyun düğmeleri vardır. Bilgiler oyunların kendi
+menülerindedir. VIP satın alma düğmeleri ürünün VIP olduğunu açıkça yazar.
+VIP etiketi altın, adı turkuaz, sohbet mesajı açık sarıdır. Kendi oltanla
+spawn’da tuttuğun balık yere düşmeden doğrudan envantere eklenir.
+Hapis cezası olanlar eski menülerden oyun/mesaj/market işlemi yapamaz.

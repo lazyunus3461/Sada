@@ -1,5 +1,5 @@
 name: BattleRoyalePrototype
-version: 1.1.0
+version: 1.1.1
 main: tr.kasaba.battle.KasabaBattleRoyale
 api-version: '1.21.10'
 depend: [KasabaHub, KasabaAuth]

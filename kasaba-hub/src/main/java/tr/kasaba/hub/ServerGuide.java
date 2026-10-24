@@ -27,6 +27,10 @@ final class ServerGuide {
             page("Arkadaşlar ve VIP","/arkadaş → arkadaşlar\n/mesaj Ali Merhaba\nArkadaş mesajları ve\ngruplar spawn/lobide.\nBoya: gizle / göster.\n\n/vip → ayrıcalıklar\n/market → VIP satın al\n3 gün 40 • 7 gün 75\n15 gün 145 • 30 gün 250\nAkçe. Süre gerçek zaman."),
             page("Spawn Balıkçılığı","/olta → ücretsiz olta\nYeni olta: 1 saat.\n/sat balık → kendi\nbalığını 0,05 Akçeye sat.\nGünlük 15 adet.\n\n15. satıştan sonra\n24 saat ara başlar.\nBu sürede gelen balıklar\notomatik kaldırılır.\nSatışta olta 0 Akçeye\ngeri alınır."),
             page("Aktif Oyun ve Akçe","15 dakika aktif oyun:\n+0,20 Akçe.\n\nSpawn, lobiler, seyirci\nve AFK süreleri sayılmaz.\nEn az iki dakikada bir\nhareket veya oyun\netkileşimi yapmalısın.\n\n/akçe → bakiyen"),
+            page("At ve Tekne Yarışı","/oyunlar → At Yarışı\nveya Tekne Yarışı.\nİkisi aynı lobidedir.\nPusuladan oyun seç.\n\n/yaris → menü\n/yaris oluştur at\n/yaris oluştur tekne\n/yaris katıl 101\n/yaris başlat\nİki tur, sıralı kapılar.\n/yaris ayrıl → yarış lobisi"),
+            page("Şans Yolu","/sansyolu → menü\n/sansyolu oluştur\n/sansyolu katıl 101\n/sansyolu başlat\n/sansyolu zar\n\nZar otomatik atılmaz.\n3 kez atlamada lobi.\nSarıda kestirme çubuğu\nverilir; sağ tıkla kullan.\nRenkler her maç değişir.\nSonuçtan 10 sn sonra lobi."),
+            page("Renk Kaçışı","/renk → menü\n/renk oda 1\n/renk başlat\n\nHedef renge yetiş.\nİki hata hakkın var.\n3. turdan sonra alan\nve renk kareleri küçülür.\n\nTüm oyun menülerinde\nBurada kal ile lobide\nbekleyebilirsin."),
+            page("Hapishane","Yetkili komutları:\n/hapis Oyuncu 60dk\n/hapis durum Oyuncu\n/hapis bırak Oyuncu\n\nCezalı oyuncu:\n/hapis durum\n\nCeza gerçek zamanla\nişler; çıkışta ve sunucu\nyenilendiğinde korunur.\nSüre bitince ana lobi."),
             page("Akçe ve Market","/akçe → bakiyen\n/akçe gönder Ali 100\nArkadaşına para gönder.\n/akçe sıralama\nZenginler listesi.\n\n/arena market\nX Arena ürünleri.\nSatın alınanlar yalnızca\nX Arena'da kullanılır;\nsüreli ürünler sona erer.")
         ));item.setItemMeta(meta);return item;
     }

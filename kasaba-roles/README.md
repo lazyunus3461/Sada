@@ -75,3 +75,11 @@ Bulutta `bash /workspace/Sada/kasaba-roles/scripts/cloud-build.sh` bağımlılı
 ## KasabaKlan etiketi
 
 1.2.0, KasabaKlan 1.0.0 ile rol ve klan etiketini birlikte gösterir: `[Kurucu] [KSB] Redkit`. Üyelik değişimleri TAB, sohbet ve mevcut scoreboard üzerindeki kafa üstü takımlarına anında yansır. Klan eklentisi yoksa eski davranış sürer; rol atamaları ve yetkiler korunur. `ClanLabels` servisi, async sohbet için değişmez bir etiket görüntüsü sunar. Birim testi sayısı 20 oldu.
+
+## 1.3.1
+
+VIP rolü için etiket `gold`, oyuncu adı `aqua`, sohbet metni `yellow` olarak
+ayrılır. Mesaj rengi rolün `chat-color` ayarıdır; ayar bulunmayan rollerin
+mesaj biçimi korunur. Mevcut VIP ayarları ilk açılışta güncellenir, eski config
+yedeği saklanır. Kurucu/Admin/Moderatör için hapishane yönetim izni eklenir;
+açıkça yasaklanmış izinler açılmaz. Rehber bu izni almaz.

@@ -1,5 +1,5 @@
 name: KasabaAdalar
-version: 1.4.0
+version: 1.4.1
 main: tr.kasabatr.islands.KasabaIslandsPlugin
 api-version: '1.21.10'
 load: POSTWORLD

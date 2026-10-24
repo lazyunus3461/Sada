@@ -37,11 +37,11 @@ final class RoleFiles {
                 if(!p.isBoolean(node))throw new IllegalArgumentException("Yetki true/false olmalı: "+node);
                 permissions.put(Role.permissionNode(node),p.getBoolean(node));
             }
-            String color=r.getString("color","gray"), nameColor=r.getString("name-color","white");
-            KasabaRoles.color(color);KasabaRoles.color(nameColor);
+            String color=r.getString("color","gray"), nameColor=r.getString("name-color","white"),chatColor=r.getString("chat-color");
+            KasabaRoles.color(color);KasabaRoles.color(nameColor);if(chatColor!=null)KasabaRoles.color(chatColor);
             if(r.contains("inherits")&&(!r.isList("inherits")||r.getList("inherits").stream().anyMatch(v->!(v instanceof String))))
                 throw new IllegalArgumentException("inherits rol kimliklerinden oluşan bir liste olmalı: "+key);
-            roles.put(id,new Role(id,r.getString("label",id),color,nameColor,r.getInt("priority",1),r.getStringList("inherits"),permissions));
+            roles.put(id,new Role(id,r.getString("label",id),color,nameColor,chatColor,r.getInt("priority",1),r.getStringList("inherits"),permissions));
         }
         return new Configuration(new RoleCatalog(roles,yaml.getString("default-role","oyuncu")),yaml.getBoolean("manage-tab",true),yaml.getBoolean("manage-chat",true),yaml.getBoolean("manage-nametags",true),yaml);
     }

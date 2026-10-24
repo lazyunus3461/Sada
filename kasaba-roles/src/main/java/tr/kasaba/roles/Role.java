@@ -5,8 +5,9 @@ import java.util.Map;
 import java.util.Locale;
 import java.util.LinkedHashMap;
 
-record Role(String id, String label, String color, String nameColor, int priority,
+record Role(String id, String label, String color, String nameColor, String chatColor, int priority,
             List<String> inherits, Map<String, Boolean> permissions) {
+    Role(String id,String label,String color,String nameColor,int priority,List<String> inherits,Map<String,Boolean> permissions){this(id,label,color,nameColor,null,priority,inherits,permissions);}
     Role {
         id = normalizeId(id);
         if (label == null || label.isBlank() || label.length() > 48) throw new IllegalArgumentException("Rol etiketi 1–48 karakter olmalı");

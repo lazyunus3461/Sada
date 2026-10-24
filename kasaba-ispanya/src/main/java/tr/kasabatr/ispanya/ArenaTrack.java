@@ -29,5 +29,7 @@ final class ArenaTrack {
     int size(){return tiles.size();}
     Tile tile(int index){return tiles.get(Math.clamp(index,0,tiles.size()-1));}
     int shortcutDestination(int index){return shortcuts.getOrDefault(index,-1);}
+    List<Tile> tiles(){return tiles;}
+    Map<Integer,Integer> shortcuts(){return shortcuts;}
     record Tile(double x,double y,double z,String kind){Location location(World world){return new Location(world,x,y,z);}}
 }

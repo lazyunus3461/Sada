@@ -1,0 +1,2 @@
+src/main/resources/map-template/** -text whitespace=cr-at-eol
+src/main/resources/*.yml -text whitespace=cr-at-eol

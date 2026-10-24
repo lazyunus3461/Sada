@@ -1,0 +1,17 @@
+name: KasabaHapis
+version: 1.1.0
+main: tr.kasabatr.prison.KasabaHapisPlugin
+api-version: '1.21.10'
+author: KasabaTR
+description: Kalıcı cezalar ve bos dunyadaki hapishane
+depend: [KasabaHub, KasabaAuth]
+loadbefore: [Multiverse-Core]
+commands:
+  hapis:
+    aliases: [hapishane]
+    description: Oyuncuyu hapse atar, durumunu gorur veya serbest birakir
+    usage: /hapis <oyuncu> <dakika|60dk>
+permissions:
+  kasabatr.hapis.admin:
+    description: Hapis cezalarini yonetir
+    default: op

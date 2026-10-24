@@ -1,0 +1,43 @@
+KasabaTR Sunucu Paketi 1.2.0 — 24 Ekim 2026
+Paper 1.21.10 build 130, Java 21, Multiverse 5.3.2
+
+Değişen modüllerde 127 JUnit testi: 0 hata.
+Arena davranışı sunucu entegrasyonuyla doğrulandı; ayrı JUnit testi yok.
+Gerçek protokol bağlantıları ve localhost olay adaptörleri kullanıldı.
+Kontrol noktaları ve süreler kontrollü olaylarla ilerletildi; görsel insan oynanışı bu otomatik teste dahil değil.
+
+GEÇTİ: Separate horse/boat Hub buttons share one protected lobby and compass; main game page has no long game descriptions; stay-in-lobby leaves no room membership
+GEÇTİ: Two simultaneous real horse/boat races mount every player, anchor countdown, isolate private worlds and prohibit dismount/damage/building
+GEÇTİ: Both race types reject early finish, require six ordered checkpoints twice, announce results and return to common lobby; private worlds unload and original items restore
+GEÇTİ: Hub parties enter the race lobby and chosen room together; stay-in-lobby detaches a waiting player safely
+GEÇTİ: Imprisonment safely removes a live horse racer, restores original inventory and locks movement/teleport/commands/chat/build/mode; release returns to main lobby
+GEÇTİ: Native stale Hub callbacks cannot bypass prison; real-time expiry releases; ordinary players/Rehber cannot jail, Moderator can jail/release
+GEÇTİ: Arena recognizes a late-loaded lobby world without overwriting its saved configuration
+
+GEÇTİ: VIP shop clearly labels the product/duration/price and charges once; existing config migrates VIP tag gold, name aqua and chat yellow
+GEÇTİ: Spawn catches arrive directly in inventory once, only own fifteen fish sell for 0.75 Akce, rod is returned free and 24h timer starts
+GEÇTİ: Şans Yolu uses manual dice and displays bad-luck warning before a delayed, animated backwards move
+GEÇTİ: Red wait actually locks the next turn for a visible five-second countdown and refuses dice during the penalty
+GEÇTİ: Random yellow shortcut grants a real rod; explicit use crosses its built bridge, announces passage and consumes the rod
+GEÇTİ: Three missed rolls return to game lobby without automatic dice; next match randomizes all specials; results stay visible and return to game lobby after ten seconds
+GEÇTİ: Renk Kaçışı shrinks platform 32→24→16 and each colored square 4→3→2 after rounds three and six; safe positions and two lives work through seven rounds
+GEÇTİ: Six-player Vampire game gives all four unopposed active VIP role choices exactly, preserving one of each special role and two villagers
+GEÇTİ: Vampire vote pages update anonymous per-target totals live and preserve other players’ already-issued buttons while counts refresh
+GEÇTİ: BR VIP keeps three reserve hearts and normal starting armor; no elytra is granted or advertised
+
+PASS Restart preserves active sentence expiry and cell; authenticated race reconnect restores exactly the original items and cleans backup
+PASS Both embedded public maps survive restart and remain registered with Multiverse
+PASS Offline administrator release persists and returns to main lobby after next authentication
+PASS Actual one-minute sentence expires while offline and releases on authenticated reconnect
+PASS Active boat race stops without scheduling after disable; both clients recover original inventory on next authenticated start
+
+İki yarış aynı anda, en çok altı test istemcisi; ayrı maç dünyaları.
+Maç içindeyken durdurma, yeniden başlatma ve kayıt/giriş sonrası eşya iadesi.
+Gerçek bir dakikalık cezanın oyuncu çevrimdışıyken bitmesi test edildi.
+Yeni haritalar JAR içine yerleştirildi, kaynak dosyalar ile bayt eşitliği doğrulanır.
+ZIP yalnız üretim JAR’larıdır; test araçları, hesaplar, dünyaların çalışma verileri dahil değildir.
+Ana dünya, eski arena ayarları ve veri klasörleri pakete eklenmez/üzerine yazılmaz.
+Değişmeyen Auth/Akçe önceki sürümlerdir; bu sunucu testinde birlikte yüklendiler.
+
+PASS Captured normal/VIP island purchase buttons are blocked during prison before reservation or payment; jail closes old dialog and preserves adventure mode
+PASS Island update preserves normal 50-Akce one-plot cap, VIP two free plots and immediate creative mode

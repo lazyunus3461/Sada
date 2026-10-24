@@ -1,4 +1,4 @@
-# KasabaTR İspanya Adası 0.4.0
+# KasabaTR Şans Yolu 0.5.0
 
 Paper **1.21.10 / Java 21**. Gönderilen 0.3.1 oyunundaki iki zar, 135 kare,
 renk etkileri ve üç köprü korunarak KasabaTR merkezine uyarlanmıştır.
@@ -11,12 +11,11 @@ bakımı yapılabilir kaynak kodu bu modülde yeniden oluşturuldu.
 2. Tam sunucu ZIP'indeki `plugins` klasörünü mevcut sunucu `plugins` klasörüyle
    birleştir. Aynı eklentinin eski JAR'ını kaldır; veri klasörlerini silme.
    Eski `KasabaIspanya-0.3.1.jar` kalmamalı.
-3. Önceki Sunucu Paketi 1.0.0 zaten kuruluysa yalnız yeni
-   **`KasabaIspanya-0.4.0.jar`** eklemen yeterlidir. Bu sürüm
-   **KasabaHub 1.3.0 ve KasabaAuth 1.3.0** ile birlikte test edildi.
-4. Sunucuyu başlat. İlk kurulumda İspanya dünyası JAR'dan otomatik açılır.
+3. Paketteki güncel JAR’ları birlikte yükle. Bu sürüm
+   **KasabaHub 1.3.1 ve KasabaAuth 1.3.0** ile birlikte test edildi.
+4. Sunucuyu başlat. İlk kurulumda Şans Yolu dünyası JAR'dan otomatik açılır.
    Ayrı `.mca` veya `level.dat` taşıman ve `/mv import` yazman gerekmez.
-5. Oyunda **`/oyunlar` → İspanya Adası** seç. Pusulaya sağ tıkla; **Oyna** veya
+5. Oyunda **`/oyunlar` → Şans Yolu** seç. Pusulaya sağ tıkla; **Oyna** veya
    **Oda oluştur** seç. Arkadaşın aynı menüden oda numarana basabilir.
    En az 2 kişi olunca 15 saniye geri sayar. Oda sahibi **Maçı başlat** ile
    beklemeden başlayabilir.
@@ -36,6 +35,12 @@ Multiverse varsa ortak dünya kaydedilir; maç kopyaları Multiverse'e eklenmez.
 ile kaldırıp sunucuyu yeniden başlat; oyun kendi girişini kaydeder. Başka
 oyunların kayıtlarını silme.
 
+Menüde **Bu lobide kal** ile oda seçmeden bekleyebilirsin. Ayrıntılı oyun
+bilgisi burada gösterilir; ana `/oyunlar` menüsünde uzun açıklama bulunmaz.
+
+Yeni komut `/sansyolu`; aşağıdaki `/ispanya` komutlarının tamamı da çalışır.
+Veri klasörü **KasabaIspanya**, dünya adı **ispanya** olarak korunur.
+
 ## Komutlar
 
 Türkçe karakterli ve ASCII yazımlar kabul edilir: `oluştur/olustur`,
@@ -49,13 +54,13 @@ Türkçe karakterli ve ASCII yazımlar kabul edilir: `oluştur/olustur`,
 | `/ispanya katıl 101` | Örneğin 101 numaralı bekleyen odaya girer. |
 | `/ispanya başlat` | Oda sahibi, en az 2 oyuncuyla maçı başlatır. |
 | `/ispanya zar` | Sıra sendeyse iki zar atar; zar eşyasına sağ tık da aynıdır. |
-| `/ispanya lobi` | Mevcut odanı bırakır, ortak İspanya lobisine döner. |
-| `/ispanya çık` veya `/lobi` | İspanya oyunundan çıkar, normal eşya/modunu geri alır ve ana spawna döner. |
+| `/ispanya lobi` | Mevcut odanı bırakır, ortak Şans Yolu lobisine döner. |
+| `/ispanya çık` veya `/lobi` | Şans Yolu oyunundan çıkar, normal eşya/modunu geri alır ve ana spawna döner. |
 | `/ispanya yardım` | Renklerin ve maçın kısa açıklaması. |
 | `/ispanya bilgi` | Yüklü dünya adı, kare ve oda sayısı. |
 | `/ispanya bitir 101` | Yönetici 101 numaralı maçı ödülsüz durdurur. |
-| `/ispanya lobi ayarla` | Yönetici ortak İspanya dünyasında güvenli zeminde yeni lobi noktası belirler. |
-| `/ispanya düzenleme aç` | Yönetici ortak İspanya haritasında yapı düzenler. |
+| `/ispanya lobi ayarla` | Yönetici ortak Şans Yolu dünyasında güvenli zeminde yeni lobi noktası belirler. |
+| `/ispanya düzenleme aç` | Yönetici ortak Şans Yolu haritasında yapı düzenler. |
 | `/ispanya düzenleme kapat` | Yapı korumasını geri açar. |
 
 Yönetici yetkisi: `kasabatr.ispanya.admin`, varsayılan OP. Maç kopyasında
@@ -64,24 +69,27 @@ sonraki maçlar bu dünyadan kopyalanır.
 
 Grup için ana spawn/lobide `/grup oluştur`, `/grup davet Oyuncu`, davetli için
 `/grup katıl Lider` kullan. Ardından **grup lideri `/oyunlar` üzerinden**
-İspanya Adası'nı seçsin. Grup birlikte lobiye girer; odasını lider seçer.
+Şans Yolu'nı seçsin. Grup birlikte lobiye girer; odasını lider seçer.
 Güvenli lobide arkadaş/görünürlük araçları çalışır; aktif maçta kaldırılır.
 
 ## Maç akışı
 
 - Her oyuncu sırayla iki adet 1–6 zar atar. Toplam kadar otomatik ilerler;
   yol atlamak, hareket etmek, eşya bırakmak/toplamak ve hasar almak kapalıdır.
-- Zar için varsayılan süre 25 saniye. Süre dolunca otomatik zar atılır.
-- **Kırmızı:** rastgele sonraki tur bekleme veya 3 kare geri gitme.
+- Zar için varsayılan süre 25 saniye. Otomatik zar yoktur. Maç içinde üç kez
+  zar atmazsan yalnız Şans Yolu lobisine çıkarılırsın.
+- **Kırmızı:** rastgele sonraki tur 5 saniye zar atamadan bekleme veya 3 kare
+  geri gitme. Geri hareketten önce iki saniyelik kötü şans uyarısı gösterilir.
 - **Yeşil:** 3 kare ileri. **Mor:** rastgele 1–6 kare ileri/geri.
-- **Sarı:** 9→32, 54→79, 108→117 indeksli üç köprü kestirmesi.
-  Bunlar dosyadaki sıfırdan başlayan indekslerdir; ekrandaki kare numaraları bir fazladır.
+- **Sarı:** üç rastgele köprü kestirmesi. Sarıya gelince eline kestirme çubuğu
+  verilir. Sağ tıkla veya `/sansyolu kestirme` kullan; çubuk geçişten sonra silinir.
+- Renkli karelerin ve kestirmelerin konumları her maç yeniden karıştırılır.
 - **Siyah:** etkisiz. Yalnız durulan son karenin etkisi uygulanır;
   ilerlerken üzerinden geçilen kareler ve etki sonrası varılan yeni renk zincir oluşturmaz.
 - Bitişi aşan zar normalde bitişe ulaştırır. Tam sayı seçeneği config'den
   açılırsa fazla gelen zar yerinde bırakır.
 - Biten oyuncu sıralamaya yazılır; diğerleri devam eder. Herkes bitince veya
-  25 dakika dolunca sonuç açıklanır ve herkes ortak İspanya lobisine döner.
+  25 dakika dolunca sonuç açıklanır; 10 saniye sonra ortak Şans Yolu lobisine dönülür.
 - Süre dolduğunda önce bitirenler, sonra ilerlediği kare ve puanı yüksek olanlar sıralanır.
 - Oyuncu ayrılırsa sahibi gerekirse devredilir ve zar sırası düzeltilir.
   Diğer oyuncular devam eder. Son kişi çıkınca maç kopyası kaldırılır.

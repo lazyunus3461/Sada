@@ -46,7 +46,8 @@ roles:
   vip:
     label: VIP
     color: gold
-    name-color: white
+    name-color: aqua
+    chat-color: yellow
     priority: 300
     inherits: [oyuncu]
     permissions: {}

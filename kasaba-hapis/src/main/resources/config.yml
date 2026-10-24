@@ -1,0 +1,11 @@
+world-name: KasabaTR-Hapishane-Dunyasi-v1
+# Hub /lobi komutu normalde otomatik kullanilir. Komut baska bir eklenti
+# tarafindan engellenirse admin /hapis setlobi ile kesin geri donus noktasini ayarlar.
+lobby:
+  world: ''
+  x: 0.5
+  y: 65.0
+  z: 0.5
+  yaw: 0.0
+  pitch: 0.0
+max-minutes: 43200

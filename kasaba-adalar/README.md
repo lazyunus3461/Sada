@@ -67,3 +67,9 @@ Bu güncelleme ada edinirken para kesmez ve ada marketinde ürün/fiyat belirlem
 Önce `mvn -f pom.xml install`, sonra `mvn -f kasaba-hub/pom.xml install` ile yerel API bağımlılıklarını kur. `mvn -f kasaba-adalar/pom.xml verify` sekiz sahiplik/yerleşim testini çalıştırır. Hub'ın 17 mevcut birim testi de korunur. `scripts/build-world.py --input <orijinal-ada> --output <yeni-boş-klasör>` NumPy ve nbtlib kullanır; yalnızca verilen boş başlangıç şablonu içindir, girdiyi değiştirmez. `scripts/validate-world.py <dünya>` tüm 11.970 parçanın alt tabanını ve 300 doğma yüzeyini bağımsız olarak doğrular.
 
 Loopback Paper testleri: `scripts/integration/build-probe.sh`, `node scripts/integration/islands.cjs`; sunucuyu tamamen durdur/aç sonrası `node scripts/integration/restart.cjs`. `node scripts/integration/creative-mode.cjs` gerçek pusula/yerleşik sayfa tıklaması, yaratıcı modu iptal eden ve gecikmeli adventure uygulayan örnek dünya yöneticisi, sürekli gündüz/açık hava, önceki moda dönüş ve Arena izolasyonunu doğrular. Eski JAR ile `EXPECT_BROKEN=1` aynı yaratıcı mod hatasını yeniden üretir. `node scripts/integration/first-entry.cjs` gerçek Minecraft komut paketleriyle her giriş komutunu yalnızca bir kere gönderir; ilk dünya paketini, son istemci/sunucu modunu, yaratıcı envanteri ve uçuş iznini birlikte doğrular. İlk ada alımı, iptal edilen ışınlanmada envanter/mod geri alma ve hızlı çıkış da kapsanır. Eski 1.3.1 JAR ile `EXPECT_OLD_ENTRY=1` ilk dünya paketindeki survival değerini gösterir. Test yardımcıları üretim JAR'ı veya kurulum ZIP'ine alınmaz.
+
+## 1.4.1
+
+Hapis cezası olan oyuncunun önceden açtığı ada satın alma düğmesi
+kullanılamaz. Kontrol, rezervasyon ve Akçe işlemi başlamadan yapılır;
+ücretsiz VIP arsaları da bu denetime dahildir.

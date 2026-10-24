@@ -88,6 +88,7 @@ final class GameRoom {
         int n2 = Math.min(20, Math.max(n, this.plugin.getConfig().getInt("game.maximum-players", 20)));
         return this.phase == Phase.WAITING && this.members.size() >= n && this.members.size() <= n2 && this.members.size() >= this.vampireCount + (this.hunter ? 1 : 0) + (this.seer ? 1 : 0) + (this.doctor ? 1 : 0) + 1;
     }
+    boolean roleAllowed(Role role){return switch(role){case HUNTER->hunter;case SEER->seer;case DOCTOR->doctor;default->true;};}
 
     boolean add(Player player) {
         if (this.phase != Phase.WAITING || this.members.size() >= Math.clamp(this.plugin.getConfig().getInt("game.maximum-players", 20),6,20)) {
@@ -103,7 +104,7 @@ final class GameRoom {
         if (!this.members.remove(uUID)) {
             return;
         }
-        votes.remove(uUID);nightTargets.remove(uUID);nightTargets.values().removeIf(uUID::equals);
+        votes.remove(uUID);votes.values().removeIf(uUID::equals);nightTargets.remove(uUID);nightTargets.values().removeIf(uUID::equals);
         Player player = Bukkit.getPlayer(uUID);
         if (player != null) {
             this.bar.removePlayer(player);
@@ -161,6 +162,7 @@ final class GameRoom {
                 this.bar.addPlayer(player);
                 this.guide.attach(player);
                 this.plugin.tell(player, "Rolün: §d" + this.roles.get((Object)uUID).label + "§f. Başkalarına söylemek zorunda değilsin.");
+                Role wanted=preferences.get(uUID);if(wanted!=null){if(this.roles.get(uUID)==wanted)this.plugin.tell(player,"VIP tercihin uygulandı: "+wanted.label+".");else this.plugin.tell(player,"VIP tercihin "+wanted.label+" bu maçta "+(!roleAllowed(wanted)?"kapalı olduğu için verilemedi.":"aynı rolü isteyenler arasındaki kurada sana çıkmadı.")+" Sana verilen rol: "+this.roles.get(uUID).label+".");}
                 this.plugin.tell(player, GameText.purpose(this.roles.get(uUID)));
                 this.plugin.tell(player, "7. kutudaki görev pusulasına sağ tıkla, hedef seç ve yerdeki mavi okları izle. Okları yalnız sen görürsün. /vk rehber ile kuralları oku.");
                 if (this.roles.get(uUID) != Role.VAMPIRE) continue;
@@ -287,10 +289,12 @@ final class GameRoom {
         if (player != null) {
             this.plugin.tell(player, (String)(uUID2 == null ? "Pas oyu verildi." : this.name(uUID2) + " için oy verildi."));
         }
+        List<String> tally=new ArrayList<>();for(UUID target:members)if(alive.contains(target))tally.add(name(target)+": "+voteCount(target));tally.add("Pas: "+voteCount(null));announce("Oy toplamları • "+String.join(" | ",tally));plugin.refreshVotes(this);
         if (this.votes.size() >= this.alive.size()) {
             this.closeVote();
         }
     }
+    int voteCount(UUID target){return (int)votes.values().stream().filter(value->java.util.Objects.equals(value,target)).count();}
 
     private void closeVote() {
         if (this.phase != Phase.VOTE) {

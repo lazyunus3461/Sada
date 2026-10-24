@@ -1,0 +1,81 @@
+KASABA SUNUCU PAKETİ 1.2.0 — Paper 1.21.10 / Java 21
+
+KURULUM
+1) Sunucuyu durdur. plugins klasörünü ve dünyalarını yedekle.
+2) Aynı Kasaba eklentilerinin eski JAR dosyalarını kaldır. ZIP içindeki plugins
+   klasöründeki JAR'ları sunucunun plugins klasörüne koy.
+   Aynı eklentinin iki sürümü birlikte kalmasın. Veri klasörlerini, config'leri,
+   Akçe hesaplarını, ada sahipliklerini ve dünyalarını SİLME.
+3) Sunucuyu aç. /oyunlar yaz. At Yarışı ve Tekne Yarışı ayrı düğmelerde görünür.
+   İkisi aynı yarış lobisine gider; oradaki pusuladan ikisini de seçebilirsin.
+   Yarış ve hapishane haritaları otomatik kurulur; ayrıca dünya import etme.
+
+Bu ZIP toplam 13 eklentidir. Diğer Warp, Parkur, Multiverse gibi kendi
+kurulu eklentilerin yerinde kalır. Test eklentileri bu pakette YOKTUR.
+Mevcut KasabaIspanya veri klasörü ve ispanya dünya adı değişmez.
+Yeni oyun adı ŞANS YOLU'dur; /sansyolu ve eski /ispanya komutları çalışır.
+
+AT VE TEKNE YARIŞI
+- /yaris                         Ortak yarış seçim menüsü.
+- /yaris oluştur at              At yarışı odası kur.
+- /yaris oluştur tekne           Tekne yarışı odası kur.
+- /yaris odalar                  Açık odaları gör.
+- /yaris katıl 101               Arkadaşının örnek 101 numaralı odasına gir.
+- /yaris başlat                  Oda sahibi, en az 2 kişi olunca başlatır.
+- /yaris ayrıl                   Ortak yarış lobisine dön.
+- /lobi                          Ana spawna dön.
+2–5 oyuncu, iki tur, sırayla altı kontrol noktası. Aynı anda ayrı odalar
+oynanır. Hub grupları oda seçimine birlikte alınır. Sonuçtan sonra ortak
+lobisine dönülür. Oyun eşyaları asıl envantere karışmaz.
+
+HAPİSHANE
+- /hapis Redkit 60dk             Oyuncuyu 60 dakika hapse at.
+- /hapis durum Redkit            Yetkili oyuncunun kalan süresini görür.
+- /hapis bırak Redkit            Erken serbest bırak.
+- /hapis durum                   Cezalı oyuncu kendi kalan süresini görür.
+- /hapis setlobi                 İsteğe bağlı yedek dönüş yerini kaydet.
+Kurucu, Admin, Moderatör ve OP kullanabilir. Rehber kullanamaz.
+Oyundaysa önce güvenle oyundan çıkarılır. Ceza süresince hücre dışına
+çıkış, ışınlanma, sohbet, komutlar, pusulayla oyuna kaçış ve eşya/alan
+müdahalesi kapalıdır. Kimlik doğrulama ve ceza sorgulama açık kalır.
+Çıkıp girme veya sunucuyu kapatma cezayı silmez. Süre gerçek zamanlıdır;
+çevrimdışıyken de dolar. Süre bitince ana lobiye döner.
+
+SON İSTEKLERİN
+- Ana oyun listesindeki uzun açıklamalar kaldırıldı. Bilgiler oyunların
+  kendi menülerinde ve /rehber kitabında. Yarışlar ana listede iki ayrı ad.
+- VIP etiketi altın sarısı, oyuncu adı turkuaz, sohbet yazısı açık sarı.
+- Market ürününün VIP olduğu düğmede ve onay ekranında açıkça yazıyor.
+  3 / 7 / 15 / 30 gün: 40 / 75 / 145 / 250 Akçe. /vip ayrıcalık sayfası.
+- Arena pusulasında Lobi seçeneği var. Yeni JAR mevcut spawn kayıtlarını
+  silmez. Dünya geç yüklenirse kayıtlar tekrar okunur.
+  /arena durum → kayıt/dünya durumunu gör. /arena yenile → yeniden oku.
+  Dosya gerçekten silinmişse yedek gerekir; bu paket olmayan noktayı icat etmez.
+- Renk Kaçışı: ilk üç tur 32×32 alan/4×4 renk kareleri; 4–6. turlar
+  24×24/3×3; 7. turdan sonra 16×16/2×2. Alan ve kareler birlikte küçülür.
+- Şans Yolu, Renk Kaçışı ve yarış menülerinde Bu lobide kal düğmesi var.
+  Arena/BR/Vampir Köylü menülerinde de kapatıp bulunduğun yerde kalabilirsin.
+- Şans Yolu: zar otomatik atılmaz; maçta üç kez zar atlamada oyun lobisine
+  çıkarır. Kırmızı ceza gerçekten bekletir. Geri gitmeden önce uyarı çıkar,
+  hareket animasyonludur. Kırmızı/yeşil/mor/sarı ve kestirmeler her maç karışır.
+  Sarıda kestirme çubuğu gelir; sağ tık veya /sansyolu kestirme ile geç.
+  Geçince çubuk silinir. Maç bitince sonuçlar 10 sn görünür, oyun lobisine döner.
+- BR: VIP'e elitra verilmesi kaldırıldı. Diğer VIP ayrıcalıkları korunur.
+- Vampir Köylü: VIP rol tercihinde onay ve kapalı rol bilgisi. Rol adetleri
+  korunur; aynı rolü isteyen VIP'lerde kura. İki kişilik deneme yalnız
+  Vampir/Köylüdür; Kahin/Doktor/Avcı için normal, rolleri açık maç gerekir.
+  Oylamada hedeflerin kaç oy aldığı canlı görünür; kimin verdiği açıklanmaz.
+- Hapisteyken eski ada satın alma düğmesi arsa ayırmaz ve para çekmez.
+- Spawn balıkçılığı: kendi oltanla tutulan balık doğrudan envantere gelir.
+  /olta → ücretsiz olta (saatte bir). /sat balık → kendi balığını sat.
+  Tane 0,05 Akçe, 15 balıkta 0,75 Akçe; olta bedelsiz geri alınır.
+  15. satıştan sonra 24 saat kilidi başlar. Başkasının balığı satılmaz.
+
+ÖNCEKİ SİSTEMLER DE PAKETTE
+Akçe, arkadaşlar/grup/mesajlar, oyuncu gizleme, ada sistemi ve mevcut
+Arena/BR/Vampir Köylü oyunları dahildir. Normal arsa 50 Akçe/en fazla 1;
+VIP en fazla 2 ücretsiz arsa. 15 gün giriş yapılmayan adalar sıfırlanır.
+Aktif oyunda 15 dakika başına 0,20 Akçe; spawn/lobi/AFK/seyirci sayılmaz.
+
+TEST VE AYRINTILAR
+TEST-SONUCLARI.txt ve BELGELER klasörünü okuyabilirsin. Yüklemeyi sen yapacaksın.

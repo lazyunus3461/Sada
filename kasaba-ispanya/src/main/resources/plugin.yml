@@ -1,5 +1,5 @@
 name: KasabaIspanya
-version: 0.4.0
+version: 0.5.0
 main: tr.kasabatr.ispanya.KasabaIspanyaPlugin
 api-version: '1.21.10'
 author: KasabaTR
@@ -8,6 +8,7 @@ depend: [KasabaHub, KasabaAuth]
 loadbefore: [Multiverse-Core]
 commands:
   ispanya:
+    aliases: [sansyolu, şansyolu, sans]
     description: Ispanya Adasi oyun komutlari
     usage: /ispanya [olustur|katil|odalar|baslat|zar|cik]
 permissions:

@@ -1,0 +1,10 @@
+# Harita ilk açılışta JAR içinden otomatik kurulur; mevcut dünya korunur.
+template-world: KasabaTR-Yaris-Arenasi-v01
+min-players: 2
+max-players: 5
+countdown-seconds: 5
+laps: 2
+race-time-limit-seconds: 600
+results-seconds: 12
+max-concurrent-rooms: 8
+auto-open-menu-on-join: true

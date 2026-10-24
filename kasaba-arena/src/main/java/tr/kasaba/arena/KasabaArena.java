@@ -84,6 +84,8 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         hub.register(this,new ArenaGame());
         Bukkit.getScheduler().runTaskTimer(this,this::refreshScoreboards,40,Math.max(20,getConfig().getLong("ayarlar.skor-tahtasi-guncelleme-tik",40)));
         Bukkit.getScheduler().runTaskTimer(this,this::refreshCompasses,20,40);
+        // Multiverse may load the saved arena world after this plugin has enabled.
+        Bukkit.getScheduler().runTaskLater(this,this::loadLocations,40);
         for(Player p:Bukkit.getOnlinePlayers())recoverSnapshot(p);
     }
     @Override public void onDisable(){
@@ -93,7 +95,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
     }
     private final class ArenaGame implements HubGame {
         public GameInfo info(){return new GameInfo("arena","Arena","X Arena • beşer odalı 1v1 ve 2v2",1,20);}
-        public boolean available(){return valid(lobbySpawn);}
+        public boolean available(){if(!valid(lobbySpawn))loadLocations();return valid(lobbySpawn);}
         public boolean join(List<Player> team){
             if(!available()||team.isEmpty()||team.stream().anyMatch(p->places.containsKey(p.getUniqueId())))return false;
             Map<Player,Location> before=new LinkedHashMap<>();
@@ -118,12 +120,13 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         try{
             if(args.length==0){openMenu(p);return true;}String action=normalize(args[0]);
             if(action.equals("yardim")){tell(p,"/arena • /arena 1v1|2v2 • /arena oda oluştur|liste • /arena katıl <kod> • /arena xarena • /arena yetenek 1|2|3|4 • /arena lobi");return true;}
+            if(action.equals("yenile")){admin(p);if(!occupied.isEmpty())throw new IllegalArgumentException("Odalar boşalınca ayarları yenile.");reloadConfig();loadLocations();loadStats();tell(p,valid(lobbySpawn)?"Arena kayıtları yeniden okundu; lobi hazır.":"Kayıtlar korundu. Lobi dünyası yüklenmemiş veya spawns.lobi ayarı eksik. /arena durum ile kontrol et.");return true;}
+            if(action.equals("durum")){admin(p);Object raw=getConfig().get("spawns.lobi");tell(p,valid(lobbySpawn)?"Arena hazır • "+lobbySpawn.getWorld().getName()+" • "+lobbySpawn.getBlockX()+", "+lobbySpawn.getBlockY()+", "+lobbySpawn.getBlockZ():raw==null?"Lobi kaydı bulunamadı. plugins/KasabaArena/config.yml ve yedeğini kontrol et. Yeni JAR mevcut config'i silmez.":"Lobi kaydı dosyada var; dünya henüz yüklenmemiş veya konum geçersiz. /arena yenile kullan.");return true;}
             if(action.equals("lobi")&&args.length>1&&normalize(args[1]).equals("ayarla")){admin(p);writeLocation("spawns.lobi",p.getLocation());saveSettings();tell(p,"Arena güvenli lobi noktası ayarlandı.");return true;}
             if(action.equals("dogma")){spawnCommand(p,args);return true;}
             if(action.equals("bolge")){regionCommand(p,args);return true;}
             if(action.equals("kit")){kitCommand(p,args);return true;}
             if(action.equals("market")){marketCommand(p,args);return true;}
-            if(action.equals("yenile")){admin(p);if(!occupied.isEmpty())throw new IllegalArgumentException("Odalar boşalınca ayarları yenile.");reloadConfig();loadLocations();loadStats();tell(p,"Arena ayarları yenilendi.");return true;}
             if(!places.containsKey(p.getUniqueId()))throw new IllegalArgumentException("Önce /oyunlar git arena ile Arena lobisine gir.");
             switch(action){
                 case "xarena","x"->joinX(p);
@@ -158,6 +161,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         regions.clear();ConfigurationSection section=getConfig().getConfigurationSection("regions");if(section!=null)for(String key:section.getKeys(false)){ConfigurationSection r=section.getConfigurationSection(key);if(r!=null)try{regions.put(key,new Region(UUID.fromString(r.getString("world","")),r.getInt("minX"),r.getInt("maxX"),r.getInt("minY"),r.getInt("maxY"),r.getInt("minZ"),r.getInt("maxZ")));}catch(IllegalArgumentException ex){getLogger().warning("Geçersiz bölge: "+key);}}
     }
     private void saveSettings(){saveConfig();loadLocations();}
+    @EventHandler public void worldReady(org.bukkit.event.world.WorldLoadEvent e){Bukkit.getScheduler().runTask(this,this::loadLocations);}
     private void spawnCommand(Player p,String[] a){
         admin(p);if(a.length<2)throw new IllegalArgumentException("/arena doğma ekle xarena • /arena doğma ayarla 1v1|2v2 <1-5> kırmızı|mavi");String op=normalize(a[1]);
         if(a.length>2&&normalize(a[2]).equals("xarena")){
@@ -246,7 +250,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
 
             if(place!=Place.LOBBY)buttons.add(button("Arena lobisine dön",()->arenaLobby(p)));
         }
-        buttons.add(button("Lobi",()->hub.returnToLobby(p.getUniqueId())));buttons.add(button("Kapat",()->{}));List<DialogInput> inputs=place==Place.LOBBY?List.of(DialogInput.text("kod",Component.text("Özel oda kodu",NamedTextColor.WHITE)).maxLength(6).width(220).build()):List.of();show(p,"Kasaba • Arena",lines,inputs,buttons);
+        buttons.add(button("Lobi",()->hub.returnToLobby(p.getUniqueId())));buttons.add(button("Burada kal",()->{}));List<DialogInput> inputs=place==Place.LOBBY?List.of(DialogInput.text("kod",Component.text("Özel oda kodu",NamedTextColor.WHITE)).maxLength(6).width(220).build()):List.of();show(p,"Kasaba • Arena",lines,inputs,buttons);
     }
     private void loadX(Player p){combat.loadout(p);market.render(p);}
     private void marketCommand(Player p,String[] a){
@@ -257,7 +261,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         throw new IllegalArgumentException("/arena market • Yönetim: /arena market ekle <ad> <fiyat> <gün> [adet]");
     }
     private void showMarket(Player p){showMarket(p,0);}
-    private void showMarket(Player p,int requested){List<ArenaMarket.Product> products=market.products();int last=Math.max(0,(products.size()-1)/8),page=Math.clamp(requested,0,last);List<String> lines=new ArrayList<>(List.of("Satın alınanlar yalnızca X Arena'ya girince verilir. 1v1/2v2'de kullanılamaz.","Süreli eşyaların süresi gerçek zamanla işler; yenebilir eşyalarda kullanılan adet azalır.",market.balance(p)));List<Button> buttons=new ArrayList<>();if(products.isEmpty())lines.add("Henüz ürün eklenmedi. Yönetici elindeki eşyayı market ürünü olarak kaydedebilir.");for(int index=page*8;index<Math.min(products.size(),page*8+8);index++){ArenaMarket.Product product=products.get(index);lines.add(product.id()+": "+product.description());buttons.add(button(product.id()+" • "+product.price().toPlainString(),()->confirmProduct(p,product)));}if(page>0)buttons.add(button("Önceki",()->showMarket(p,page-1)));if(page<last)buttons.add(button("Sonraki",()->showMarket(p,page+1)));buttons.add(button("Geri",()->openMenu(p)));buttons.add(button("Kapat",()->{}));show(p,"Kasaba • X Arena Market",lines,List.of(),buttons);}
+    private void showMarket(Player p,int requested){List<ArenaMarket.Product> products=market.products();int last=Math.max(0,(products.size()-1)/8),page=Math.clamp(requested,0,last);List<String> lines=new ArrayList<>(List.of("Satın alınanlar yalnızca X Arena'ya girince verilir. 1v1/2v2'de kullanılamaz.","Süreli eşyaların süresi gerçek zamanla işler; yenebilir eşyalarda kullanılan adet azalır.",market.balance(p)));List<Button> buttons=new ArrayList<>();if(products.isEmpty())lines.add("Henüz ürün eklenmedi. Yönetici elindeki eşyayı market ürünü olarak kaydedebilir.");for(int index=page*8;index<Math.min(products.size(),page*8+8);index++){ArenaMarket.Product product=products.get(index);lines.add(product.id()+": "+product.description());buttons.add(button(product.id()+" • "+product.price().toPlainString(),()->confirmProduct(p,product)));}if(page>0)buttons.add(button("Önceki",()->showMarket(p,page-1)));if(page<last)buttons.add(button("Sonraki",()->showMarket(p,page+1)));buttons.add(button("Geri",()->openMenu(p)));buttons.add(button("Burada kal",()->{}));show(p,"Kasaba • X Arena Market",lines,List.of(),buttons);}
     private void confirmProduct(Player p,ArenaMarket.Product product){show(p,"Satın almayı onayla",List.of(product.id()+": "+product.description(),market.balance(p),"Bu ürün yalnızca X Arena'da kullanılır."),List.of(),List.of(button("Satın al • "+product.price().toPlainString(),()->{market.buy(p,product);showMarket(p);}),button("Vazgeç",()->showMarket(p))));}
     private void chooseRole(Player p,ArenaCharacter kind){Place place=places.get(p.getUniqueId());if(place!=Place.LOBBY&&place!=Place.XARENA)throw new IllegalArgumentException("Karakterler yalnızca X Arena içindir.");if(place==Place.XARENA&&!combat.mayChoose(p))throw new IllegalArgumentException("Karakterini öldükten sonra veya Arena lobisinde değiştir.");if(roles.getOrDefault(p.getUniqueId(),ArenaCharacter.WARRIOR)!=kind){roles.put(p.getUniqueId(),kind);if(place==Place.XARENA){loadX(p);combat.lockChoice(p);}}tell(p,"X Arena karakterin: "+kind.label);}
     private void showClasses(Player p){Place place=places.get(p.getUniqueId());if(place==Place.MATCH||place==Place.WAITING)throw new IllegalArgumentException("1v1/2v2 odalarında karakter ve beceri kullanılmaz.");List<Button> buttons=new ArrayList<>();for(ArenaCharacter kind:ArenaCharacter.values())buttons.add(button(kind.label,()->{chooseRole(p,kind);if(places.get(p.getUniqueId())==Place.XARENA)showSkills(p);else openMenu(p);}));buttons.add(button("Geri",()->openMenu(p)));show(p,"X Arena karakteri",List.of("Her karakterin dört bağımsız becerisi vardır; istediğin sırada kullan.","Beceriler 1–4, yakın dövüş silahı 5. yuvada. Zırh hasarı azaltır; dövüş dışında can yenilenir.","Karakterini lobide ve ölümden sonra değiştirebilirsin."),List.of(),buttons);}

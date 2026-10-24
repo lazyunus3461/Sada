@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-24",
+  "server": "Paper 1.21.10 build 130 / Java 21 / Multiverse 5.3.2",
+  "unit": {
+    "tests": 127,
+    "failures": 0,
+    "modules": {
+      "roles": {
+        "tests": 21,
+        "failures": 0
+      },
+      "hub": {
+        "tests": 17,
+        "failures": 0
+      },
+      "arena": {
+        "tests": 0,
+        "failures": 0
+      },
+      "sosyal": {
+        "tests": 3,
+        "failures": 0
+      },
+      "battle": {
+        "tests": 19,
+        "failures": 0
+      },
+      "vampir": {
+        "tests": 44,
+        "failures": 0
+      },
+      "renk": {
+        "tests": 4,
+        "failures": 0
+      },
+      "ispanya": {
+        "tests": 6,
+        "failures": 0
+      },
+      "yaris": {
+        "tests": 2,
+        "failures": 0
+      },
+      "hapis": {
+        "tests": 1,
+        "failures": 0
+      },
+      "adalar": {
+        "tests": 10,
+        "failures": 0
+      }
+    }
+  },
+  "races": {
+    "checks": [
+      "Separate horse/boat Hub buttons share one protected lobby and compass; main game page has no long game descriptions; stay-in-lobby leaves no room membership",
+      "Two simultaneous real horse/boat races mount every player, anchor countdown, isolate private worlds and prohibit dismount/damage/building",
+      "Both race types reject early finish, require six ordered checkpoints twice, announce results and return to common lobby; private worlds unload and original items restore",
+      "Hub parties enter the race lobby and chosen room together; stay-in-lobby detaches a waiting player safely",
+      "Imprisonment safely removes a live horse racer, restores original inventory and locks movement/teleport/commands/chat/build/mode; release returns to main lobby",
+      "Native stale Hub callbacks cannot bypass prison; real-time expiry releases; ordinary players/Rehber cannot jail, Moderator can jail/release",
+      "Arena recognizes a late-loaded lobby world without overwriting its saved configuration"
+    ],
+    "finalArtifacts": true
+  },
+  "features": {
+    "checks": [
+      "VIP shop clearly labels the product/duration/price and charges once; existing config migrates VIP tag gold, name aqua and chat yellow",
+      "Spawn catches arrive directly in inventory once, only own fifteen fish sell for 0.75 Akce, rod is returned free and 24h timer starts",
+      "Şans Yolu uses manual dice and displays bad-luck warning before a delayed, animated backwards move",
+      "Red wait actually locks the next turn for a visible five-second countdown and refuses dice during the penalty",
+      "Random yellow shortcut grants a real rod; explicit use crosses its built bridge, announces passage and consumes the rod",
+      "Three missed rolls return to game lobby without automatic dice; next match randomizes all specials; results stay visible and return to game lobby after ten seconds",
+      "Renk Kaçışı shrinks platform 32→24→16 and each colored square 4→3→2 after rounds three and six; safe positions and two lives work through seven rounds",
+      "Six-player Vampire game gives all four unopposed active VIP role choices exactly, preserving one of each special role and two villagers",
+      "Vampire vote pages update anonymous per-target totals live and preserve other players’ already-issued buttons while counts refresh",
+      "BR VIP keeps three reserve hearts and normal starting armor; no elytra is granted or advertised"
+    ],
+    "clients": 6
+  },
+  "restart": {
+    "checks": [
+      "Separate horse/boat Hub buttons share one protected lobby and compass; main game page has no long game descriptions; stay-in-lobby leaves no room membership",
+      "Two simultaneous real horse/boat races mount every player, anchor countdown, isolate private worlds and prohibit dismount/damage/building",
+      "Both race types reject early finish, require six ordered checkpoints twice, announce results and return to common lobby; private worlds unload and original items restore",
+      "Hub parties enter the race lobby and chosen room together; stay-in-lobby detaches a waiting player safely",
+      "Imprisonment safely removes a live horse racer, restores original inventory and locks movement/teleport/commands/chat/build/mode; release returns to main lobby",
+      "Native stale Hub callbacks cannot bypass prison; real-time expiry releases; ordinary players/Rehber cannot jail, Moderator can jail/release",
+      "Arena recognizes a late-loaded lobby world without overwriting its saved configuration"
+    ],
+    "restartPending": false,
+    "restartSentence": true,
+    "restartInventoryRecovery": true,
+    "multiverseRegistered": true,
+    "offlineRelease": true,
+    "offlineRealTimeExpiry": true
+  },
+  "shutdown": {
+    "cleanActiveRaceShutdown": true,
+    "restartInventory": true
+  },
+  "islands": {
+    "stalePrisonPurchasesBlocked": true,
+    "noPaymentOrReservation": true,
+    "normalAndVipPurchases": true,
+    "creativeAndLimits": true
+  }
+}

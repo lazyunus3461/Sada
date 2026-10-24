@@ -62,3 +62,11 @@ Bu oyun için ayrıca Akçe maç ödülü belirlenmedi. Mevcut aktif oynama sür
 ödülü sunucunun ortak sistemi tarafından uygulanır; seyirci süresi sayılmaz.
 Kaynaklar, birim testleri ve yalnız yerel sunucuya yönelik test araçları bu
 modüldedir. Test yardımcı JAR'ları sunucu paketine dahil değildir.
+
+## 1.1.0 değişiklikleri
+
+Hem oyun alanı hem renkli kareler küçülür: 1–3. turlarda 32×32 / 4×4,
+4–6. turlarda 24×24 / 3×3, 7. turdan sonra 16×16 / 2×2. Küçülen alan
+ortalanır; oyuncular güvenli şekilde yeni alanın içine yerleştirilir.
+**Bu lobide kal** menüyü kapatır, bekleyen oda üyeliğini bırakır ve oyun
+lobisinde tutar; ana spawna ışınlamaz.

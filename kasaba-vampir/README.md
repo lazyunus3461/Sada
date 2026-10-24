@@ -166,3 +166,11 @@ Süreler ve oyuncu sayıları `plugins/KasabaVampirKoylu/config.yml` içindedir.
 Depo kökünde önce `mvn install`, ardından `mvn -f kasaba-hub/pom.xml install`, son olarak `mvn -f kasaba-vampir/pom.xml verify` kullan. Java 21 gerekir. Kaynak ZIP tek başına derlenecekse önce KasabaAuth 1.3.0 ve KasabaHub 1.2.0 API JAR dosyalarını Maven yerel deposuna karşılık gelen `tr.kasaba:kasaba-auth:1.3.0` ve `tr.kasaba:kasaba-hub:1.2.0` koordinatlarıyla yükle. Paper API, KasabaHub ve KasabaAuth `provided` bağımlılıktır; JAR içine gömülmez. Netty taşıma sınıfları sunucudan sağlanır; ek bir protokol eklentisi kurmak gerekmez. Ekipman maskelemesi Paper 1.21.10 paketleriyle doğrulanır. Test adaptörü `scripts/integration` altındadır, yalnız 127.0.0.1 sunucuda açılır ve dağıtım paketine konmaz. Gerçek Paper/istemci test sonuçları dağıtımdaki `KasabaVampirKoylu-TEST-SONUCLARI.txt` dosyasındadır.
 
 Haritayı kaynaklardan yeniden üretmek için `pip install nbtlib numpy Pillow`, `python scripts/build-village.py`, `python scripts/build-three-villages.py` ve `python scripts/validate-three-villages.py` kullanılır. Dünya ZIP’i `python scripts/package-world.py` ile hazırlanır. Hazır dosyalar pakette olduğundan normal JAR derlemesinde Python gerekmez. Protokol testleri tam deponun `kasaba-arena/scripts/integration` ortak istemcisini kullanır.
+
+## 1.3.1
+
+VIP rol tercihi kaydedilince onay gösterilir. Odada kapalı olan roller
+işaretlenir; iki kişilik denemede yalnız Vampir/Köylü bulunur. Aynı rolü
+isteyen VIP’ler arasında kura çekilir ve rol adetleri korunur. Oylama
+menüsünde her hedefin toplamı canlı yenilenir; kimin kime oy verdiği
+açıklanmaz. Başka oyuncunun oyu, açık menünün düğmelerini geçersiz kılmaz.

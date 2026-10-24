@@ -1,0 +1,230 @@
+{
+  "world": "KasabaTR-Yaris-Arenasi-v01",
+  "minecraft": "1.21.10",
+  "style": "KasabaTR Yarış Festivali",
+  "generator": "void_superflat",
+  "lobby": {
+    "x": 0.5,
+    "y": 65.0,
+    "z": 0.5,
+    "yaw": 180.0,
+    "pitch": 0.0
+  },
+  "boat": {
+    "start_lanes": [
+      {
+        "x": -210.5,
+        "y": 65.0,
+        "z": 47.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -210.5,
+        "y": 65.0,
+        "z": 51.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -210.5,
+        "y": 65.0,
+        "z": 55.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -210.5,
+        "y": 65.0,
+        "z": 59.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": -210.5,
+        "y": 65.0,
+        "z": 63.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      }
+    ],
+    "checkpoints": [
+      {
+        "x": -145.0,
+        "y": 65.0,
+        "z": 55.0,
+        "radius": 12.0
+      },
+      {
+        "x": -88.0,
+        "y": 65.0,
+        "z": 0.0,
+        "radius": 12.0
+      },
+      {
+        "x": -145.0,
+        "y": 65.0,
+        "z": -55.0,
+        "radius": 12.0
+      },
+      {
+        "x": -235.0,
+        "y": 65.0,
+        "z": -55.0,
+        "radius": 12.0
+      },
+      {
+        "x": -292.0,
+        "y": 65.0,
+        "z": 0.0,
+        "radius": 12.0
+      },
+      {
+        "x": -235.0,
+        "y": 65.0,
+        "z": 55.0,
+        "radius": 12.0
+      }
+    ],
+    "finish": {
+      "x": -195.5,
+      "y": 65.0,
+      "z": 55.5,
+      "radius": 11.0
+    },
+    "spectator": {
+      "x": -190.0,
+      "y": 65.0,
+      "z": 31.0,
+      "yaw": 0.0,
+      "pitch": 0.0
+    },
+    "bounds": {
+      "min_x": -316,
+      "max_x": -64,
+      "min_z": -94,
+      "max_z": 94,
+      "min_y": 60,
+      "max_y": 106
+    },
+    "track_center": {
+      "x": -190,
+      "z": 0,
+      "half_straight": 47,
+      "inner_radius": 43,
+      "outer_radius": 67
+    },
+    "racing_surface_y": 64,
+    "surface": "source_water"
+  },
+  "horse": {
+    "start_lanes": [
+      {
+        "x": 170.5,
+        "y": 65.0,
+        "z": 47.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 170.5,
+        "y": 65.0,
+        "z": 51.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 170.5,
+        "y": 65.0,
+        "z": 55.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 170.5,
+        "y": 65.0,
+        "z": 59.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      },
+      {
+        "x": 170.5,
+        "y": 65.0,
+        "z": 63.5,
+        "yaw": -90.0,
+        "pitch": 0.0
+      }
+    ],
+    "checkpoints": [
+      {
+        "x": 235.0,
+        "y": 65.0,
+        "z": 55.0,
+        "radius": 12.0
+      },
+      {
+        "x": 292.0,
+        "y": 65.0,
+        "z": 0.0,
+        "radius": 12.0
+      },
+      {
+        "x": 235.0,
+        "y": 65.0,
+        "z": -55.0,
+        "radius": 12.0
+      },
+      {
+        "x": 145.0,
+        "y": 65.0,
+        "z": -55.0,
+        "radius": 12.0
+      },
+      {
+        "x": 88.0,
+        "y": 65.0,
+        "z": 0.0,
+        "radius": 12.0
+      },
+      {
+        "x": 145.0,
+        "y": 65.0,
+        "z": 55.0,
+        "radius": 12.0
+      }
+    ],
+    "finish": {
+      "x": 185.5,
+      "y": 65.0,
+      "z": 55.5,
+      "radius": 11.0
+    },
+    "spectator": {
+      "x": 190.0,
+      "y": 65.0,
+      "z": 70.0,
+      "yaw": 0.0,
+      "pitch": 0.0
+    },
+    "bounds": {
+      "min_x": 64,
+      "max_x": 316,
+      "min_z": -94,
+      "max_z": 94,
+      "min_y": 60,
+      "max_y": 106
+    },
+    "track_center": {
+      "x": 190,
+      "z": 0,
+      "half_straight": 47,
+      "inner_radius": 43,
+      "outer_radius": 67
+    },
+    "racing_surface_y": 64,
+    "surface": "flat_packed_mud"
+  },
+  "players_min": 2,
+  "players_max": 5,
+  "notes": "Checkpoint order is clockwise from southern start; finish counts only after all six checkpoints."
+}

@@ -1,0 +1,17 @@
+name: KasabaYaris
+version: 1.1.0
+main: tr.kasabatr.yaris.KasabaYarisPlugin
+api-version: '1.21.10'
+author: KasabaTR
+description: KasabaTR ortak tekne ve at yarisi arenasi
+depend: [KasabaHub, KasabaAuth]
+loadbefore: [Multiverse-Core]
+commands:
+  yaris:
+    aliases: [yarış]
+    description: Tekne ve at yarisi odalari
+    usage: /yaris
+permissions:
+  kasabatr.yaris.admin:
+    description: Yaris ayarlari yonetimi
+    default: op

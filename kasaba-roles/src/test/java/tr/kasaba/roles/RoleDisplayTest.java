@@ -32,4 +32,9 @@ class RoleDisplayTest {
         assertEquals(TextDecoration.State.NOT_SET,tag.children().getLast().decoration(TextDecoration.BOLD));
         assertEquals(TextDecoration.State.NOT_SET,rendered.children().getLast().decoration(TextDecoration.BOLD));
     }
+    @org.junit.jupiter.api.Test void vipTagNameAndMessageHaveDifferentColors(){
+        var vip=new Role("vip","VIP","gold","aqua","yellow",300,java.util.List.of(),java.util.Map.of());
+        var rendered=RoleDisplay.chat(vip,"Deneme",net.kyori.adventure.text.Component.text("Merhaba"));
+        var tag=rendered.children().get(0);org.junit.jupiter.api.Assertions.assertEquals(net.kyori.adventure.text.format.NamedTextColor.GOLD,tag.children().get(0).color());org.junit.jupiter.api.Assertions.assertEquals(net.kyori.adventure.text.format.NamedTextColor.AQUA,tag.children().get(1).color());org.junit.jupiter.api.Assertions.assertEquals(net.kyori.adventure.text.format.NamedTextColor.YELLOW,rendered.children().get(2).color());
+    }
 }

@@ -17,10 +17,10 @@ final class RoleDisplay {
 
     static Component chat(Role role, String playerName, Component message) {
         return Component.empty().append(tag(role, playerName))
-                .append(Component.text(" » ", NamedTextColor.GRAY)).append(message);
+                .append(Component.text(" » ", NamedTextColor.GRAY)).append((role.chatColor()==null?message:message.color(KasabaRoles.color(role.chatColor()))));
     }
     static Component chat(Role role,String playerName,Component message,Component clan) {
         return Component.empty().append(tag(role,playerName,clan))
-                .append(Component.text(" » ",NamedTextColor.GRAY)).append(message);
+                .append(Component.text(" » ",NamedTextColor.GRAY)).append((role.chatColor()==null?message:message.color(KasabaRoles.color(role.chatColor()))));
     }
 }
