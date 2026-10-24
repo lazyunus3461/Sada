@@ -74,3 +74,7 @@ lobisinde tutar; ana spawna ışınlamaz.
 ## 1.2.0 itme kartopları
 
 Her tur 1. kutuya 8 kartopu gelir; sağ tıkla atılır, iki saniye aralık vardır. İsabet rakibi iter; can götürmez. Farklı oda/tur, lobi veya seyirci etkilenmez. 5. kutudaki renk göstergesi korunur. Normal envantere taşınmaz.
+
+## 1.3.0
+
+Pusulaya envanterden tıklamak menüyü açar. Güvenli lobide **Oyun lobileri** ile doğrudan başka oyun lobisine geçilir. Devam eden normal maçı terk eden oyuncu Renk Kaçışı'na 15 dakika giremez; bekleme ve deneme odaları cezasızdır. Tamamen elenen seyirci oyundan ayrılabilir.

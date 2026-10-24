@@ -16,7 +16,7 @@ final class PlayerBackup {
     static void save(File folder,Player p)throws IOException{
         File target=file(folder,p.getUniqueId());if(target.exists())throw new IOException("Önceki eşya yedeği kurtarılmalı.");
         Files.createDirectories(target.toPath().getParent());var y=new YamlConfiguration();
-        y.set("inventory",Arrays.asList(p.getInventory().getContents()));y.set("held-slot",p.getInventory().getHeldItemSlot());y.set("game-mode",p.getGameMode().name());
+        y.set("collidable",p.isCollidable());y.set("inventory",Arrays.asList(p.getInventory().getContents()));y.set("held-slot",p.getInventory().getHeldItemSlot());y.set("game-mode",p.getGameMode().name());
         y.set("health",p.getHealth());y.set("food",p.getFoodLevel());y.set("saturation",p.getSaturation());y.set("exhaustion",p.getExhaustion());y.set("absorption",p.getAbsorptionAmount());
         y.set("level",p.getLevel());y.set("exp",p.getExp());y.set("total-exp",p.getTotalExperience());y.set("fire",p.getFireTicks());
         y.set("allow-flight",p.getAllowFlight());y.set("flying",p.isFlying());y.set("gravity",p.hasGravity());y.set("invulnerable",p.isInvulnerable());
@@ -31,7 +31,7 @@ final class PlayerBackup {
         GameMode mode=GameMode.valueOf(y.getString("game-mode","SURVIVAL"));Location point=y.getLocation("location");
         var effects=new ArrayList<PotionEffect>();for(Object effect:y.getList("effects",List.of())){if(!(effect instanceof PotionEffect pfx))throw new IllegalStateException("İksir yedeği bozuk.");effects.add(pfx);}
         if(teleport&&(point==null||point.getWorld()==null||!p.teleport(point)))throw new IllegalStateException("Önceki konuma dönülemedi.");
-        p.closeInventory();p.setItemOnCursor(null);p.getInventory().setContents(items);p.getInventory().setHeldItemSlot(Math.clamp(y.getInt("held-slot"),0,8));
+        p.closeInventory();p.setItemOnCursor(null);p.setCollidable(y.getBoolean("collidable",true));p.getInventory().setContents(items);p.getInventory().setHeldItemSlot(Math.clamp(y.getInt("held-slot"),0,8));
         p.setGameMode(mode);p.setFoodLevel(Math.clamp(y.getInt("food",20),0,20));
         p.setSaturation((float)Math.clamp(y.getDouble("saturation",5),0,20));p.setExhaustion((float)Math.max(0,y.getDouble("exhaustion")));
         p.setTotalExperience(Math.max(0,y.getInt("total-exp")));p.setLevel(Math.max(0,y.getInt("level")));p.setExp((float)Math.clamp(y.getDouble("exp"),0,1));p.setFireTicks(y.getInt("fire"));

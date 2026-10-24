@@ -1,0 +1,10 @@
+PASS Akçe earning page covers fishing, cumulative active play, daily limits; tagged compass opens from inventory
+PASS All six game lobby compasses open from inventory and switch directly through Oyun lobileri; original inventory returns
+PASS Conflicting Arena/race lobby moves only Arena lobby to dedicated safe world; room spawn records retained
+PASS Şans Yolu void rescue, private 15-second countdown, last-player win and 15-minute same-game ban; other games remain available
+PASS At Yarışı completes all checkpoints twice, safely returns every rider even after one cancelled return and gives no completion penalty
+PASS Tekne Yarışı completes all checkpoints twice, safely returns every rider even after one cancelled return and gives no completion penalty
+PASS Race edges slow instead of giving a shortcut; leaving bounds restores checkpoint; horse forfeit returns winner and bans only quitter
+PASS Invisible X Arena equipment is masked in real client packets, including forced swaps and bundles; own gear preserved and restored
+PASS X Arena regeneration starts after 10 seconds without received damage; an outgoing skill does not postpone it
+PASS BR chest density reduced by 20 percent through persisted migration, preserving 12-block spacing and 250×250 spread

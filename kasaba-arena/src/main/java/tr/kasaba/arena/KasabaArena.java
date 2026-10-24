@@ -85,13 +85,13 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         Bukkit.getScheduler().runTaskTimer(this,this::refreshScoreboards,40,Math.max(20,getConfig().getLong("ayarlar.skor-tahtasi-guncelleme-tik",40)));
         Bukkit.getScheduler().runTaskTimer(this,this::refreshCompasses,20,40);
         // Multiverse may load the saved arena world after this plugin has enabled.
-        Bukkit.getScheduler().runTaskLater(this,this::loadLocations,40);
+        Bukkit.getScheduler().runTaskLater(this,()->{loadLocations();separateRaceLobby();registerLobbyWorld();},40);
         for(Player p:Bukkit.getOnlinePlayers())recoverSnapshot(p);
     }
     @Override public void onDisable(){
         if(hub!=null)try{hub.unregister(this,"arena");}catch(RuntimeException ex){getLogger().log(Level.WARNING,"Arena merkezden çıkarılamadı.",ex);}
         for(Player p:Bukkit.getOnlinePlayers()){if(combat!=null)combat.clear(p);clearScoreboard(p);removeMenuCompass(p);restoreSnapshot(p);}
-        saveStats();saveSnapshots();
+        if(combat!=null)combat.shutdown();saveStats();saveSnapshots();
     }
     private final class ArenaGame implements HubGame {
         public GameInfo info(){return new GameInfo("arena","Arena","X Arena • beşer odalı 1v1 ve 2v2",1,20);}
@@ -105,6 +105,8 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
             }catch(RuntimeException ex){for(var entry:before.entrySet()){Player p=entry.getKey();places.remove(p.getUniqueId());restoreSnapshot(p);p.teleport(entry.getValue(),PlayerTeleportEvent.TeleportCause.PLUGIN);}getLogger().log(Level.WARNING,"Arena girişi geri alındı.",ex);return false;}
         }
         public boolean lobby(UUID id){return places.get(id)==Place.LOBBY||places.get(id)==Place.WAITING;}
+        public boolean penaltyEligible(UUID id){Match m=matches.get(id);return isEnabled()&&places.get(id)==Place.MATCH&&m!=null&&m.started&&!m.finished;}
+        public boolean containsMatch(UUID id,Location at){Match m=matches.get(id);return m==null||at.getWorld()==m.arena.red().getWorld()&&at.getX()>=Math.min(m.arena.red().getX(),m.arena.blue().getX())-48&&at.getX()<=Math.max(m.arena.red().getX(),m.arena.blue().getX())+48&&at.getZ()>=Math.min(m.arena.red().getZ(),m.arena.blue().getZ())-48&&at.getZ()<=Math.max(m.arena.red().getZ(),m.arena.blue().getZ())+48;}
         public void leave(UUID id){cleanupPlayer(id);}
     }
     private String normalize(String value){return value.toLowerCase(Locale.ROOT).replace('ı','i').replace('ş','s').replace('ç','c').replace('ğ','g').replace('ü','u').replace('ö','o');}
@@ -112,7 +114,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
     private int roomId(String raw){try{int id=Integer.parseInt(raw);if(id>=1&&id<=5)return id;}catch(NumberFormatException ignored){}throw new IllegalArgumentException("Oda numarası 1 ile 5 arasında olmalı.");}
     private void admin(Player p){if(!p.hasPermission("kasabaarena.yonet")&&!p.hasPermission("kasabaroles.admin"))throw new IllegalArgumentException("Arena yönetim yetkin yok.");}
     private void tell(Player p,String message){p.sendMessage(Component.text(message,NamedTextColor.YELLOW));}
-    private void requireLobby(Player p){if(places.get(p.getUniqueId())!=Place.LOBBY)throw new IllegalArgumentException("Önce /oyunlar git arena ile Arena lobisine gir.");}
+    private void requireLobby(Player p){hub.requireGameEntry(p.getUniqueId(),"arena");if(places.get(p.getUniqueId())!=Place.LOBBY)throw new IllegalArgumentException("Önce /oyunlar git arena ile Arena lobisine gir.");}
     private String kit(Player p){return "normal";}
     private void invalidatePage(Player p){pageTokens.remove(p.getUniqueId());p.closeDialog();}
     @Override public boolean onCommand(CommandSender sender,Command command,String label,String[] args){
@@ -151,6 +153,8 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
     private Location configuredLocation(String path){Object value=getConfig().get(path);if(value instanceof ConfigurationSection section)return readLocation(section);if(value instanceof Map<?,?> map)return readLocation(map);return null;}
     private void writeLocation(String path,Location l){getConfig().createSection(path,locationMap(l));}
     private void loadLocations(){
+        String lobbyWorld=getConfig().getString("spawns.lobi.worldName","");
+        if(Bukkit.getWorld(lobbyWorld)==null&&ownedLobbyWorld(lobbyWorld))Bukkit.createWorld(new WorldCreator(lobbyWorld).generator(new ArenaLobbyGenerator()).generateStructures(false));
         lobbySpawn=configuredLocation("spawns.lobi");xSpawns.clear();
         for(Object raw:getConfig().getList("spawns.xarena",List.of()))if(raw instanceof Map<?,?> map){Location at=readLocation(map);if(valid(at))xSpawns.add(at);}
         if(!getConfig().contains("odalar.1v1.1.kirmizi")&&getConfig().contains("spawns.1v1.kirmizi")){
@@ -160,8 +164,37 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         arenas.clear();for(String type:List.of("1v1","2v2"))for(int id=1;id<=5;id++){String path="odalar."+type+"."+id;Location red=configuredLocation(path+".kirmizi"),blue=configuredLocation(path+".mavi");if(valid(red)&&valid(blue)&&red.getWorld().equals(blue.getWorld())){ArenaRoom room=new ArenaRoom(type,id,red,blue);arenas.put(room.key(),room);}}
         regions.clear();ConfigurationSection section=getConfig().getConfigurationSection("regions");if(section!=null)for(String key:section.getKeys(false)){ConfigurationSection r=section.getConfigurationSection(key);if(r!=null)try{regions.put(key,new Region(UUID.fromString(r.getString("world","")),r.getInt("minX"),r.getInt("maxX"),r.getInt("minY"),r.getInt("maxY"),r.getInt("minZ"),r.getInt("maxZ")));}catch(IllegalArgumentException ex){getLogger().warning("Geçersiz bölge: "+key);}}
     }
+    private void separateRaceLobby(){
+        if(!valid(lobbySpawn))return;
+        org.bukkit.plugin.Plugin races=Bukkit.getPluginManager().getPlugin("KasabaYaris");if(races==null||!races.isEnabled())return;
+        var map=YamlConfiguration.loadConfiguration(new java.io.File(races.getDataFolder(),"race-map.yml"));
+        if(!lobbySpawn.getWorld().getName().equals(map.getString("world")))return;
+        double dx=lobbySpawn.getX()-map.getDouble("lobby.x"),dz=lobbySpawn.getZ()-map.getDouble("lobby.z");
+        if(dx*dx+dz*dz>80*80)return;
+        try{
+            java.nio.file.Files.copy(getDataFolder().toPath().resolve("config.yml"),getDataFolder().toPath().resolve("config-lobi-ayirma-"+System.currentTimeMillis()+".yml"));
+            String name="kasaba_arena_lobi";
+            if(java.nio.file.Files.exists(Bukkit.getWorldContainer().toPath().resolve(name))&&!ownedLobbyWorld(name))name+="_"+Long.toString(System.currentTimeMillis(),36);
+            World world=Bukkit.getWorld(name);
+            if(world==null)world=Bukkit.createWorld(new WorldCreator(name).generator(new ArenaLobbyGenerator()).generateStructures(false));
+            if(world==null)throw new IllegalStateException("Arena lobi dünyası açılamadı.");
+            java.nio.file.Files.writeString(world.getWorldFolder().toPath().resolve(".kasaba-arena-lobby"),"KasabaArena lobby v1");
+            for(int x=-18;x<=18;x++)for(int z=-18;z<=18;z++){
+                world.getBlockAt(x,79,z).setType((Math.abs(x)+Math.abs(z))%6==0?Material.POLISHED_ANDESITE:Material.STONE_BRICKS,false);
+                if(Math.abs(x)==18||Math.abs(z)==18)for(int y=80;y<=82;y++)world.getBlockAt(x,y,z).setType(Material.STONE_BRICK_WALL,false);
+            }
+            for(int x:new int[]{-12,12})for(int z:new int[]{-12,12}){for(int y=80;y<=84;y++)world.getBlockAt(x,y,z).setType(Material.POLISHED_DEEPSLATE,false);world.getBlockAt(x,85,z).setType(Material.SEA_LANTERN,false);}
+            world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);world.setTime(6000);world.setSpawnLocation(0,80,0);world.save();
+            writeLocation("spawns.lobi",new Location(world,0.5,80,0.5));saveSettings();registerLobbyWorld();
+            getLogger().info("Yarış lobisiyle çakışan Arena lobisi kasaba_arena_lobi dünyasına ayrıldı. Oda doğmaları ve bölgeler korundu.");
+        }catch(Exception e){getLogger().log(Level.SEVERE,"Arena lobisi ayrılamadı; mevcut doğma kayıtları korundu.",e);}
+    }
+    private boolean ownedLobbyWorld(String name){return name.matches("kasaba_arena_lobi(?:_[a-z0-9]+)?")&&java.nio.file.Files.isRegularFile(Bukkit.getWorldContainer().toPath().resolve(name).resolve(".kasaba-arena-lobby"));}
+    private void registerLobbyWorld(){if(valid(lobbySpawn)&&ownedLobbyWorld(lobbySpawn.getWorld().getName()))new MultiverseBridge(this).register(lobbySpawn.getWorld(),lobbySpawn);}
+    @Override public org.bukkit.generator.ChunkGenerator getDefaultWorldGenerator(String worldName,String id){return new ArenaLobbyGenerator();}
+    @EventHandler public void multiverseReady(org.bukkit.event.server.PluginEnableEvent event){if(event.getPlugin().getName().equals("Multiverse-Core"))Bukkit.getScheduler().runTask(this,this::registerLobbyWorld);}
     private void saveSettings(){saveConfig();loadLocations();}
-    @EventHandler public void worldReady(org.bukkit.event.world.WorldLoadEvent e){Bukkit.getScheduler().runTask(this,this::loadLocations);}
+    @EventHandler public void worldReady(org.bukkit.event.world.WorldLoadEvent e){Bukkit.getScheduler().runTask(this,()->{loadLocations();separateRaceLobby();registerLobbyWorld();});}
     private void spawnCommand(Player p,String[] a){
         admin(p);if(a.length<2)throw new IllegalArgumentException("/arena doğma ekle xarena • /arena doğma ayarla 1v1|2v2 <1-5> kırmızı|mavi");String op=normalize(a[1]);
         if(a.length>2&&normalize(a[2]).equals("xarena")){
@@ -238,7 +271,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
     private void joinX(Player p){requireLobby(p);if(xSpawns.isEmpty())throw new IllegalArgumentException("X Arena doğma noktaları ayarlanmamış.");invalidatePage(p);places.put(p.getUniqueId(),Place.XARENA);teleportRandom(p);loadX(p);updateScoreboard(p);tell(p,"X Arena: beceriler 1–4, yakın dövüş silahı 5. yuvada. Hazır olan her beceriyi istediğin sırada kullan. Okçu yayı 6. yuvada.");}
     private Location randomSpawn(Player p){int count=xSpawns.size(),previous=lastXSpawn.getOrDefault(p.getUniqueId(),-1),index=ThreadLocalRandom.current().nextInt(count);if(count>1&&index==previous)index=(index+1+ThreadLocalRandom.current().nextInt(count-1))%count;lastXSpawn.put(p.getUniqueId(),index);return xSpawns.get(index).clone();}
     private void teleportRandom(Player p){p.teleport(randomSpawn(p),PlayerTeleportEvent.TeleportCause.PLUGIN);p.setFallDistance(0);}
-    private void arenaLobby(Player p){detachRoom(p.getUniqueId());lobbySelf(p);}
+    private void arenaLobby(Player p){hub.abandon(p.getUniqueId());detachRoom(p.getUniqueId());lobbySelf(p);}
     private void lobbySelf(Player p){if(!places.containsKey(p.getUniqueId())||!valid(lobbySpawn))return;invalidatePage(p);places.put(p.getUniqueId(),Place.LOBBY);clearScoreboard(p);resetFighter(p,true);if(p.isDead())p.spigot().respawn();p.teleport(lobbySpawn,PlayerTeleportEvent.TeleportCause.PLUGIN);giveMenuCompass(p);}
     private void showRooms(Player p){List<String> lines=new ArrayList<>();for(String type:List.of("1v1","2v2"))for(int id=1;id<=5;id++){String key=type+"-"+id;Match m=occupied.get(key);lines.add(type+" oda "+id+": "+(!arenas.containsKey(key)?"Ayarlanmamış":m==null?(blockingMatch(arenas.get(key))==null?"Boş":"Ortak alan kullanımda"):m.code!=null?"Özel oda":m.started?"Maç sürüyor":m.players().size()+"/"+m.arena.capacity()+" oyuncu"));}show(p,"Arena odaları",lines,List.of(),List.of(button("1v1",()->joinPublic(p,"1v1")),button("2v2",()->joinPublic(p,"2v2")),button("Geri",()->openMenu(p))));}
     private void openMenu(Player p){
@@ -250,7 +283,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
 
             if(place!=Place.LOBBY)buttons.add(button("Arena lobisine dön",()->arenaLobby(p)));
         }
-        buttons.add(button("Lobi",()->hub.returnToLobby(p.getUniqueId())));buttons.add(button("Burada kal",()->{}));List<DialogInput> inputs=place==Place.LOBBY?List.of(DialogInput.text("kod",Component.text("Özel oda kodu",NamedTextColor.WHITE)).maxLength(6).width(220).build()):List.of();show(p,"Kasaba • Arena",lines,inputs,buttons);
+        if(place==Place.LOBBY||place==Place.WAITING)buttons.add(button("Oyun lobileri",()->hub.openGames(p.getUniqueId())));buttons.add(button("Lobi",()->hub.returnToLobby(p.getUniqueId())));buttons.add(button("Burada kal",()->{}));List<DialogInput> inputs=place==Place.LOBBY?List.of(DialogInput.text("kod",Component.text("Özel oda kodu",NamedTextColor.WHITE)).maxLength(6).width(220).build()):List.of();show(p,"Kasaba • Arena",lines,inputs,buttons);
     }
     private void loadX(Player p){combat.loadout(p);market.render(p);}
     private void marketCommand(Player p,String[] a){
@@ -276,7 +309,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
     private boolean canFight(Player a,Player b){if(safeLobby(a.getLocation())||safeLobby(b.getLocation()))return false;Place one=places.get(a.getUniqueId()),two=places.get(b.getUniqueId());if(one==Place.XARENA&&two==Place.XARENA)return true;Match m=matches.get(a.getUniqueId());return m!=null&&m==matches.get(b.getUniqueId())&&m.started&&!m.finished&&!m.paused&&!m.down.contains(a.getUniqueId())&&!m.down.contains(b.getUniqueId())&&!m.sameSide(a.getUniqueId(),b.getUniqueId());}
     private Player resolvePlayer(Entity entity){if(entity instanceof Player p)return p;if(entity instanceof Projectile projectile&&projectile.getShooter() instanceof Player p)return p;return null;}
     @EventHandler(priority=EventPriority.HIGHEST) public void interact(PlayerInteractEvent e){Player p=e.getPlayer();if(isMenu(e.getItem())){e.setCancelled(true);if(e.getHand()==org.bukkit.inventory.EquipmentSlot.HAND&&(e.getAction()==Action.RIGHT_CLICK_AIR||e.getAction()==Action.RIGHT_CLICK_BLOCK))openMenu(p);return;}if(isAbility(e.getItem())){e.setCancelled(true);if(e.getHand()==org.bukkit.inventory.EquipmentSlot.HAND&&(e.getAction()==Action.RIGHT_CLICK_AIR||e.getAction()==Action.RIGHT_CLICK_BLOCK))try{combat.useItem(p,e.getItem());}catch(IllegalArgumentException ex){tell(p,ex.getMessage());}return;}if(e.getAction()==Action.RIGHT_CLICK_BLOCK&&places.containsKey(p.getUniqueId())&&e.getClickedBlock()!=null&&e.getClickedBlock().getState() instanceof org.bukkit.inventory.InventoryHolder)e.setCancelled(true);}
-    @EventHandler(priority=EventPriority.HIGHEST) public void inventoryClick(InventoryClickEvent e){if(!(e.getWhoClicked() instanceof Player p))return;boolean special=isMenu(e.getCurrentItem())||isMenu(e.getCursor())||isAbility(e.getCurrentItem())||isAbility(e.getCursor());if(e.getHotbarButton()>=0){ItemStack hotbar=p.getInventory().getItem(e.getHotbarButton());special|=isAbility(hotbar)||isMenu(hotbar);}if(special||places.containsKey(p.getUniqueId())&&e.getView().getTopInventory().getType()!=InventoryType.CRAFTING)e.setCancelled(true);}
+    @EventHandler(priority=EventPriority.HIGHEST) public void inventoryClick(InventoryClickEvent e){if(!(e.getWhoClicked() instanceof Player p))return;tr.kasaba.hub.api.MenuClicks.open(this,e,this::isMenu,()->{if(places.containsKey(p.getUniqueId()))openMenu(p);});boolean special=isMenu(e.getCurrentItem())||isMenu(e.getCursor())||isAbility(e.getCurrentItem())||isAbility(e.getCursor());if(e.getHotbarButton()>=0){ItemStack hotbar=p.getInventory().getItem(e.getHotbarButton());special|=isAbility(hotbar)||isMenu(hotbar);}if(special||places.containsKey(p.getUniqueId())&&e.getView().getTopInventory().getType()!=InventoryType.CRAFTING)e.setCancelled(true);}
     @EventHandler(priority=EventPriority.HIGHEST) public void inventoryDrag(InventoryDragEvent e){if(isAbility(e.getOldCursor())||isMenu(e.getOldCursor())||e.getWhoClicked() instanceof Player p&&places.containsKey(p.getUniqueId())&&e.getView().getTopInventory().getType()!=InventoryType.CRAFTING)e.setCancelled(true);}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void swap(PlayerSwapHandItemsEvent e){if(isMenu(e.getMainHandItem())||isAbility(e.getMainHandItem())||isMenu(e.getOffHandItem())||isAbility(e.getOffHandItem()))e.setCancelled(true);}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void drop(PlayerDropItemEvent e){if(places.containsKey(e.getPlayer().getUniqueId())||isMenu(e.getItemDrop().getItemStack())||isAbility(e.getItemDrop().getItemStack()))e.setCancelled(true);}
@@ -299,7 +332,7 @@ public final class KasabaArena extends JavaPlugin implements Listener, CommandEx
         Bukkit.getScheduler().runTask(this,()->{if(!p.isOnline())return;Place now=places.get(p.getUniqueId());if(now==Place.XARENA){loadX(p);updateScoreboard(p);showClasses(p);}else if(now==Place.MATCH){Match m=matches.get(p.getUniqueId());if(m!=null&&m.down.contains(p.getUniqueId())){resetFighter(p,true);p.setGameMode(GameMode.SPECTATOR);}}else if(now==Place.LOBBY)giveMenuCompass(p);});}
     @EventHandler(priority=EventPriority.MONITOR) public void join(PlayerJoinEvent e){Bukkit.getScheduler().runTaskLater(this,()->{if(!places.containsKey(e.getPlayer().getUniqueId()))recoverSnapshot(e.getPlayer());},2);}
     @EventHandler(priority=EventPriority.MONITOR) public void quit(PlayerQuitEvent e){cleanupPlayer(e.getPlayer().getUniqueId());}
-    private void cleanupPlayer(UUID id){Player p=Bukkit.getPlayer(id);places.remove(id);detachRoom(id);pageTokens.remove(id);roles.remove(id);lastXSpawn.remove(id);if(p!=null){combat.clear(p);clearScoreboard(p);removeMenuCompass(p);restoreSnapshot(p);}}
+    private void cleanupPlayer(UUID id){if(hub!=null)hub.abandon(id);Player p=Bukkit.getPlayer(id);places.remove(id);detachRoom(id);pageTokens.remove(id);roles.remove(id);lastXSpawn.remove(id);if(p!=null){combat.clear(p);clearScoreboard(p);removeMenuCompass(p);restoreSnapshot(p);}}
     private void loadStats(){kills.clear();names.clear();ConfigurationSection k=getConfig().getConfigurationSection("stats.kills"),n=getConfig().getConfigurationSection("stats.names");if(k!=null)for(String key:k.getKeys(false))try{kills.put(UUID.fromString(key),k.getInt(key));}catch(IllegalArgumentException ignored){}if(n!=null)for(String key:n.getKeys(false))try{names.put(UUID.fromString(key),n.getString(key,"Oyuncu"));}catch(IllegalArgumentException ignored){}}
     private void saveStats(){for(UUID id:kills.keySet()){getConfig().set("stats.kills."+id,kills.get(id));getConfig().set("stats.names."+id,names.getOrDefault(id,"Oyuncu"));}saveConfig();}
     private void refreshScoreboards(){for(Player p:Bukkit.getOnlinePlayers())if(places.get(p.getUniqueId())==Place.XARENA)updateScoreboard(p);}

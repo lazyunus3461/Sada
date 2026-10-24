@@ -1,0 +1,110 @@
+{
+  "checks": [
+    "Akçe earning page covers fishing, cumulative active play, daily limits; tagged compass opens from inventory",
+    "All six game lobby compasses open from inventory and switch directly through Oyun lobileri; original inventory returns",
+    "Conflicting Arena/race lobby moves only Arena lobby to dedicated safe world; room spawn records retained",
+    "Şans Yolu void rescue, private 15-second countdown, last-player win and 15-minute same-game ban; other games remain available",
+    "At Yarışı completes all checkpoints twice, safely returns every rider even after one cancelled return and gives no completion penalty",
+    "Tekne Yarışı completes all checkpoints twice, safely returns every rider even after one cancelled return and gives no completion penalty",
+    "Race edges slow instead of giving a shortcut; leaving bounds restores checkpoint; horse forfeit returns winner and bans only quitter",
+    "Invisible X Arena equipment is masked in real client packets, including forced swaps and bundles; own gear preserved and restored",
+    "X Arena regeneration starts after 10 seconds without received damage; an outgoing skill does not postpone it",
+    "BR chest density reduced by 20 percent through persisted migration, preserving 12-block spacing and 250×250 spread",
+    "Re-entry ban remains after full server restart and authentication; admin reset restores access",
+    "Migrated wide jumps/water/slalom and connected boat course exist; horse collisions push both riders without damage",
+    "Boat movement also slows at track edges; alternate room type preserves its own re-entry penalty",
+    "Prison-forced removal is exempt from match penalty; remaining racer wins and leaves the private room safely",
+    "Disconnecting from an active race records a ban; reconnect restores account and cannot bypass it",
+    "Two-player BR match places the reduced number of usable chests with 12-block spacing and outdoor loot; abandoning blocks direct queue retry",
+    "Disconnecting from Vampir Köylü records the same-game ban before membership cleanup",
+    "Dedicated Arena lobby builds promptly; invisibility keeps the player hittable and restores equipment on death",
+    "Reduced live BR chest count and minimum spacing captured; administrator stop gives no abandonment penalty",
+    "Clean shutdown during active match is exempt; Arena dedicated world and unchanged BR density reload correctly",
+    "Final exact production JARs load together; guide inventory click, earning menu, X invisibility and persisted BR density pass"
+  ],
+  "lobbySeparation": {
+    "rooms": true,
+    "separated": true,
+    "saved": true
+  },
+  "countdown": {
+    "left": 15,
+    "title": "§6Şans Yolu §8• §aMaç başlıyor: §e15 saniye",
+    "viewers": [
+      "U4k5qw5B",
+      "U4k5qw5A"
+    ],
+    "deadline": 1792856040259
+  },
+  "edges": {
+    "middle": {
+      "speed": 0.225,
+      "x": 190,
+      "z": 55,
+      "velocity": 0
+    },
+    "edge": {
+      "speed": 0.135,
+      "x": 190,
+      "z": 64,
+      "velocity": 0
+    },
+    "reset": {
+      "speed": 0.135,
+      "x": 170.5,
+      "z": 47.5,
+      "velocity": 0
+    }
+  },
+  "invisibleEquipment": {
+    "packetCount": 1,
+    "hiddenSwitchAndBundle": true,
+    "ownInventoryPreserved": true,
+    "restored": true
+  },
+  "density": {
+    "perPlayer": 12.8,
+    "version": 1,
+    "spacing": 12,
+    "minimum": 192
+  },
+  "restartName": "U4k5qw5B",
+  "restartPenalty": "renk",
+  "penaltySurvivesRestart": true,
+  "obstacles": {
+    "jump": "OAK_LOG",
+    "jumpEnd": "OAK_LOG",
+    "water": "WATER",
+    "horseSlalom": "HAY_BLOCK",
+    "boatSlalom": "SMOOTH_SANDSTONE",
+    "oldJumpCleared": true,
+    "version": 2,
+    "boatRoute": true
+  },
+  "arenaCreationMs": 4549,
+  "dedicatedArenaWorld": "kasaba_arena_lobi_mvmkjv1p",
+  "battle": {
+    "chests": 192,
+    "minimumSpacing": 12,
+    "outdoor": 138
+  },
+  "shutdownNames": [
+    "U4Fkjh5hA",
+    "U4Fkjh5hB"
+  ],
+  "cleanShutdownNoPenalty": true,
+  "arenaRestart": true,
+  "densityPersisted": true,
+  "finalArtifactsSmoke": true,
+  "unit": {
+    "tests": 106,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "platform": {
+    "server": "Paper 1.21.10 build 130",
+    "java": "Temurin 21.0.9",
+    "scope": "Isolated loopback server, protocol clients and test-only event/position fixtures; user deploys separately"
+  }
+}

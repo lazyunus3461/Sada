@@ -122,3 +122,7 @@ Sonradan değiştirdiğin ganimetler **yeni maçların** sandıklarına yansır.
 ## Geliştirme ve doğrulama
 
 `mvn -f kasaba-battle/pom.xml verify` Java 21 ile derler. Dünya üretimi `scripts/build-map.py`, bağımsız okuma doğrulaması `scripts/validate-map.py`; Python paketleri `requirements-world.txt` içindedir. Orijinal dünya salt okunur girdidir. `scripts/integration` gerçek Paper üzerinde loopback protokol istemcileriyle test içindir; probe eklentileri dağıtılmaz. Çıkış/geri yükleme testleri için test sunucusunun ana Hub lobisini `/merkez lobi ayarla` ile hazırlamak gerekir; yalnızca BR lobisini ayarlamak ana lobinin yerine geçmez. Sandıklar yazmadan önce günlüğe alınır ve yeniden açılışta temizlenir; dış envanter atomik dosyalarla korunur.
+
+## 1.1.3
+
+Sandık yoğunluğu önceki ayarın %80'ine indirilir; 250×250 ganimet alanı ve en az 12 blok aralık korunur. Varsayılan hedef en az 192 sandık veya oyuncu başına 12,8 adettir; güvenli konum ve mesafe nedeniyle gerçek sayı daha az olabilir. `loot-density-version: 1` tek seferlik geçişi kaydeder; aktif maçlar değişmez. Lobi pusulası envanterden açılır; diğer oyun lobilerine doğrudan geçiş bulunur. Canlı oyuncu aktif maçı terk ederse BR'ye 15 dakika giriş cezası alır; elenenlerin çıkışı serbesttir.

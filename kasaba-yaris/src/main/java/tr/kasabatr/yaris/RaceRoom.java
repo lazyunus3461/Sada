@@ -45,6 +45,7 @@ final class RaceRoom {
     private int countdown;
     private int resultTicks;
     private long raceStartMillis;
+    private final Map<String,Long> bumps=new java.util.HashMap<>();
 
     RaceRoom(KasabaYarisPlugin kasabaYarisPlugin, int n, Mode mode, Player player) {
         this.plugin = kasabaYarisPlugin;
@@ -161,7 +162,7 @@ final class RaceRoom {
             return boat;
         }
         Horse horse = (Horse)this.world.spawnEntity(location, EntityType.HORSE);
-        horse.setAdult();
+        horse.setAdult();horse.setCollidable(true);
         horse.setTamed(true);
         horse.setOwner(player);
         horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
@@ -231,6 +232,11 @@ final class RaceRoom {
                 continue;
             }
             Location location = entity.getLocation();
+            CourseGeometry.Position track=CourseGeometry.at(mode==Mode.HORSE?190:-190,location.getX(),location.getZ());
+            if(Math.abs(track.lateral())>12.5){plugin.moveMount(entity,racer4.lastSafe);racer4.lastX=racer4.lastSafe.getX();if(tick%20==0)tell(player,"§eParkurun dışına çıktın; kontrol noktasına döndün.");continue;}
+            double edge=System.currentTimeMillis()-raceStartMillis<3000||Math.abs(track.lateral())<7?1:0.6;
+            if(mode==Mode.HORSE)((Horse)entity).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.225*track.speedScale()*edge);
+            else {Vector velocity=entity.getVelocity();double cap=0.36*track.speedScale()*edge,speed=Math.hypot(velocity.getX(),velocity.getZ());if(speed>cap){velocity.setX(velocity.getX()*cap/speed);velocity.setZ(velocity.getZ()*cap/speed);entity.setVelocity(velocity);}}
             if (location.getY() < 61.0 || location.getY() > 95.0) {
                 this.plugin.moveMount(entity,racer4.lastSafe);
                 racer4.lastX = racer4.lastSafe.getX();
@@ -271,6 +277,7 @@ final class RaceRoom {
             racer4.lastSafe = location.clone();
             RaceRoom.title(player, "§aTUR " + racer4.progress.lap(), "§fSonraki kontrol noktalarına git");
         }
+        if(mode==Mode.HORSE)bumpHorses();
         if (this.tick % 20L == 0L) {
             long l = (long)this.plugin.timeLimitSeconds() - (System.currentTimeMillis() - this.raceStartMillis) / 1000L;
             this.bar.setProgress(Math.max(0.0, Math.min(1.0, (double)l / (double)this.plugin.timeLimitSeconds())));
@@ -278,6 +285,18 @@ final class RaceRoom {
         }
         if (this.activePending() == 0) {
             this.showResults();
+        }
+    }
+
+    private void bumpHorses(){
+        List<Racer> active=racers.values().stream().filter(r->r.active&&!r.dnf&&r.finishMillis<0&&r.mount!=null&&r.mount.isValid()).toList();
+        for(int i=0;i<active.size();i++)for(int j=i+1;j<active.size();j++){
+            Racer a=active.get(i),b=active.get(j);String key=a.id+"/"+b.id;
+            if(tick-bumps.getOrDefault(key,-100L)<8)continue;
+            Vector delta=b.mount.getLocation().toVector().subtract(a.mount.getLocation().toVector());
+            if(Math.abs(delta.getY())>1.5)continue;delta.setY(0);double distance=delta.length();if(distance>=1.6)continue;
+            if(distance<0.01)delta=new Vector(0,0,1);else delta.multiply(1/distance);
+            Vector force=delta.multiply(0.11);a.mount.setVelocity(a.mount.getVelocity().subtract(force));b.mount.setVelocity(b.mount.getVelocity().add(force));bumps.put(key,tick);
         }
     }
 

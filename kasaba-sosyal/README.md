@@ -116,3 +116,7 @@ Hapis cezası olanlar eski menülerden oyun/mesaj/market işlemi yapamaz.
 ## 1.1.0 biriken aktiflik
 
 Oyunlar arasında ve yeniden girişte aktif süre saklanır: toplam 15 dakika 0,20 Akçe. Günlük en fazla beş ödül (1 Akçe). Türkiye saatine göre 00.00 yeni hak açar; yarım ilerleme korunur, sınır dolduktan sonra yeni süre birikmez. Yarış sürüşü, oyuncu girdisi ve oyun menüleri aktivite sayılır. Lobi/AFK/seyirci/hapis sayılmaz. Ödül işi ve günlük sayaç birlikte, atomik kaydedilir; kredi tekrarları tek ödeme verir.
+
+## 1.2.0
+
+`/kazanç` (`/kazanc`, `/akçebilgi`) Akçe kazanmayı anlatır. Spawn'da kendi tuttuğun balık başına 0,05 Akçe, 15 satışta 0,75 Akçe; 15. satıştan itibaren 24 saat bekleme. `/olta` saatte bir ücretsiz olta verir; `/sat balık` kendi balıklarını ve Kasaba oltasını satar. Oyunlar arasında biriken her 15 dakika aktif süre 0,20 Akçe, Türkiye takvim gününde en fazla 5 ödül / 1 Akçe. Spawn, lobiler, seyirci ve hareketsiz bekleme sayılmaz. Kazanç sayfası kalan süre ve günlük hakkı da gösterir. Envanterde görünürlük boyasına ve arkadaş simgesine tıklamak ilgili işlemi açar.

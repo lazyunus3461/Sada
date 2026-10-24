@@ -1,4 +1,4 @@
-# Kasaba Vampir Köylü 1.2.1
+# Kasaba Vampir Köylü 1.3.3
 
 Paper **1.21.10**, Java **21**, KasabaHub **1.2.0** ve KasabaAuth **1.3.0** için hazırlanmıştır. KasabaRoles ile çalışır. Kullanıcının gönderdiği 1.0.0 paketi ve birleşik harabe köy/lobi dünyası temel alınmıştır.
 
@@ -174,3 +174,7 @@ işaretlenir; iki kişilik denemede yalnız Vampir/Köylü bulunur. Aynı rolü
 isteyen VIP’ler arasında kura çekilir ve rol adetleri korunur. Oylama
 menüsünde her hedefin toplamı canlı yenilenir; kimin kime oy verdiği
 açıklanmaz. Başka oyuncunun oyu, açık menünün düğmelerini geçersiz kılmaz.
+
+## 1.3.3
+
+Lobi pusulası envanterden de açılır. Ortak lobi ve bekleme odasındaki **Oyun lobileri** diğer oyunlara doğrudan geçiş sağlar. Devam eden maçta hayatta olan oyuncu maçı terk ederse yalnız Vampir Köylü'ye 15 dakika giriş cezası alır. Bekleme odasından ayrılma, elenmiş oyuncunun çıkışı, normal bitiş ve zorunlu yönetici/cezaevi çıkışı cezasızdır.

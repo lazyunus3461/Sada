@@ -1,0 +1,6 @@
+PASS Re-entry ban remains after full server restart and authentication; admin reset restores access
+PASS Migrated wide jumps/water/slalom and connected boat course exist; horse collisions push both riders without damage
+PASS Boat movement also slows at track edges; alternate room type preserves its own re-entry penalty
+PASS Prison-forced removal is exempt from match penalty; remaining racer wins and leaves the private room safely
+PASS Disconnecting from an active race records a ban; reconnect restores account and cannot bypass it
+PASS Two-player BR match places the reduced number of usable chests with 12-block spacing and outdoor loot; abandoning blocks direct queue retry

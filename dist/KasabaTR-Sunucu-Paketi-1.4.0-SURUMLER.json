@@ -1,0 +1,80 @@
+{
+  "KasabaAuth": {
+    "version": "1.3.0",
+    "jar": "KasabaAuth-1.3.0.jar",
+    "bytes": 29695,
+    "sha256": "eaf45882c40c67c085bf459b02128a380630af379a1023d5d819a348ab11fdcb"
+  },
+  "KasabaHub": {
+    "version": "1.5.0",
+    "jar": "KasabaHub-1.5.0.jar",
+    "bytes": 74812,
+    "sha256": "2eb3986fcde0f02fd6b15b0c72333482ae483de051caf9227e80e20b8719c7a4"
+  },
+  "KasabaRoles": {
+    "version": "1.3.1",
+    "jar": "KasabaRoles-1.3.1.jar",
+    "bytes": 39714,
+    "sha256": "0381d3bf57eefd67dbe0a76db46712108afea3d9997c1af66a26822c1f019556"
+  },
+  "KasabaAkce": {
+    "version": "1.1.0",
+    "jar": "KasabaAkce-1.1.0.jar",
+    "bytes": 18733,
+    "sha256": "c092c779b42d63d9af85f55a202b4bdb8cc958a73b1f53154822e44303a69108"
+  },
+  "KasabaSosyal": {
+    "version": "1.2.0",
+    "jar": "KasabaSosyal-1.2.0.jar",
+    "bytes": 39955,
+    "sha256": "d0806a9e311d27f53b34160bf634cad8f8c89b0badf1d6bfa2c373d4d66e8546"
+  },
+  "KasabaArena": {
+    "version": "1.3.3",
+    "jar": "KasabaArena-1.3.3.jar",
+    "bytes": 95870,
+    "sha256": "9142d7aa784caa130d24f25b39bbf38037a3878ff182898e43fcee4ba2449996"
+  },
+  "KasabaAdalar": {
+    "version": "1.4.2",
+    "jar": "KasabaAdalar-1.4.2.jar",
+    "bytes": 965258,
+    "sha256": "2df01b96525518c45a43ee08b36b179e89d17b6f28add7749a6b27aa42f93b17"
+  },
+  "BattleRoyalePrototype": {
+    "version": "1.1.3",
+    "jar": "KasabaBattleRoyale-1.1.3.jar",
+    "bytes": 95724,
+    "sha256": "2d53adce300a8b0564ad76f0885542df772a7966df4c1fbc5be0dcb42fa6d286"
+  },
+  "KasabaVampirKoylu": {
+    "version": "1.3.3",
+    "jar": "KasabaVampirKoylu-1.3.3.jar",
+    "bytes": 487546,
+    "sha256": "d1bd919f2aa786ad410e24069ed663379abb2225a1881959934e6be8c9d2e4a9"
+  },
+  "KasabaIspanya": {
+    "version": "0.7.0",
+    "jar": "KasabaIspanya-0.7.0.jar",
+    "bytes": 127589,
+    "sha256": "23f2f2e22caf276a411f7de2ec39d4c11db6cbcc4717fbfc4b66eb4ccefc1301"
+  },
+  "KasabaRenk": {
+    "version": "1.3.0",
+    "jar": "KasabaRenk-1.3.0.jar",
+    "bytes": 44558,
+    "sha256": "9a27029d9e4ea9a9973e88fbb43a62741673825f14e6dbe711b8d091c1d74405"
+  },
+  "KasabaYaris": {
+    "version": "1.3.0",
+    "jar": "KasabaYaris-1.3.0.jar",
+    "bytes": 324127,
+    "sha256": "3c53c5d0214898edef8f6b53084d03b2af93ca173bc024cc14c508148eedc6f6"
+  },
+  "KasabaHapis": {
+    "version": "1.2.1",
+    "jar": "KasabaHapis-1.2.1.jar",
+    "bytes": 121397,
+    "sha256": "302cfa99267a3ce20d978ab9fe47dcb1baf64734582fcf8ca0f87ec3e1efa161"
+  }
+}

@@ -1,0 +1,2 @@
+PASS Server shutdown during a genuine active race gives no penalty and restores accounts on reconnect
+PASS Dedicated Arena world, safe spawn and saved registration survive restart without resetting match points

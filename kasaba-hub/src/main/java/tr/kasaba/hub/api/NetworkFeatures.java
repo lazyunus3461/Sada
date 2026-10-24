@@ -10,6 +10,7 @@ public interface NetworkFeatures {
     void socialMenu(Player player);
     void market(Player player);
     void vipInfo(Player player);
+    default void earnInfo(Player player){player.sendMessage("/olta • /sat balık • Aktif oyun: 15 dk = 0,20 Akçe, günlük 5 ödül.");}
     default void beforeGame(Player player){}
     boolean pay(Player player,BigDecimal amount,String transaction);
     boolean pay(java.util.UUID player,BigDecimal amount,String transaction);

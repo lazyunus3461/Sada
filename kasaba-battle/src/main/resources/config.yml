@@ -26,13 +26,15 @@ nadir-sandik-orani: 0.15
 # Şifa ve altın elma stratejik kalsın; yalnızca BR maçındaki doğal tokluk/barışçıl yenilemesi.
 dogal-can-yenileme: false
 
-# Büyük haritada az oyuncuyla da yeterli ganimet; eski sayının altına düşmez.
+# Önceki yoğunluğun %80’i; yeterli ganimet ve aralıklı sandıklar.
 yogun-ganimet:
-  asgari-sandik: 240
-  oyuncu-basina-sandik: 16
+  asgari-sandik: 192
+  oyuncu-basina-sandik: 12.8
 
 # Sandıklar arena merkezinde bu genişlikte kare alanda çıkar.
 sandik-dagitim-boyutu: 250
 
 sandik-asgari-mesafe: 12
 network-rules-version: 1
+
+loot-density-version: 1

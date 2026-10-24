@@ -1,0 +1,57 @@
+KasabaTR sunucu güncellemesi 1.4.0 — Paper 1.21.10 / Java 21
+
+KURULUM
+1. Sunucuyu durdur; plugins klasörünün ve dünyaların yedeğini al.
+2. ZIP içindeki plugins JAR'larını yükle. Aynı eklentinin eski sürüm JAR'ını kaldır; her eklentiden yalnız bir JAR kalsın.
+3. Eklentilerin veri klasörlerini, config dosyalarını veya dünyaları SİLME. Spawn, oda doğmaları, bölgeler, oyuncu eşyaları ve para kayıtları korunur.
+4. Sunucuyu aç. /reload kullanma. Yeni harita veya başka eklenti indirmek gerekmez.
+
+YENİ / DÜZELTİLENLER
+- Şans Yolu: korkuluklu lobi, düşeni geri alma; yalnız oda üyelerine görünen 15 saniyelik sayım; son kalan kazanır, 3 saniyede oyun lobisine döner.
+- Başlayan maçı terk edene o oyuna 15 dakika giriş cezası. Bekleyen oda, normal bitiş, elenmiş seyirci, yönetici durdurması, hapse alma ve sunucu kapanışı cezasızdır. X Arena sürekli PvP olduğu için normal çıkışına ceza uygulanmaz.
+- Tüm oyun lobilerinin pusulasında Oyun lobileri: ana spawna gitmeden diğer oyun lobilerini seç.
+- Menü pusulaları ve sosyal simgeler envanterde sol/sağ tıklamayla da çalışır.
+- At/Tekne: daha geniş engeller, zikzak kapılar, sığ su; kenar kestirmesini engelleme, viraj yol uzunluğunu dengeleme; atların hasarsız çarpışması.
+- İki tur bitişinde oyuncuların lobiye dönüşleri ayrı ayrı yapılır; bir ışınlanma engellenirse diğerleri takılmaz ve yeniden denenir.
+- Arena lobisi yarış lobisiyle aynı yerdeyse ayrı dünya oluşturulur. Yalnız lobi kaydı değiştirilir; config'in önceki hali yedeklenir. 1v1/2v2 ve X Arena doğmaları korunur.
+- X Arena: hasar almayalı 10 saniye geçtiğinde 2 saniyede yarım kalp. Saldırmak bu süreyi uzatmaz. Yeni hasar sayacı başlatır.
+- X Arena görünmezliğinde zırh ve iki eldeki eşya da rakibe görünmez; gerçek envanter değişmez; görünmezlik bitince geri görünür.
+- BR: sandık sayısı önceki yoğunluğa göre yaklaşık %20 azaldı. Güvenli ve aralıklı 250×250 dağılım sürer.
+- Akçe nasıl kazanılır sayfası; kişisel aktif süre ve günlük hak bilgileri.
+
+OYUNCU KOMUTLARI
+/oyunlar                  Oyun lobilerini seç (güvenli lobilerde).
+/lobi                     Ana spawna dön; başlayan maçı terk etmek ceza verebilir.
+/oyunceza                 Kalan oyun giriş cezalarını gör.
+/kazanç                   Balık ve aktiflik Akçe kazancını öğren.
+/akçe                     Bakiye.
+/olta                     Saatte bir ücretsiz Kasaba oltası.
+/sat balık                Kendi tuttuğun balıkları ve Kasaba oltasını sat.
+/arena                    Arena menüsü.
+/yaris                    At/Tekne seç ve açık odalara bak.
+/yaris oluştur at|tekne    İstediğin türde oda oluştur.
+/yaris katıl 101           Örnek odaya katıl.
+/yaris başlat              En az 2 kişiyle oda sahibi başlatır.
+/yaris ayrıl               Yarış odasından ortak yarış lobisine dön.
+/sansyolu                 Şans Yolu odaları.
+/sansyolu oluştur         Yeni oda.
+/sansyolu katıl 101        Örnek odaya gir.
+/sansyolu zar              Sıra sendeyken zar at.
+/sansyolu lobi             Şans Yolu ortak lobisi.
+/br • /vk • /renk          İlgili oyun menüsü.
+
+YÖNETİCİ
+/oyunceza kaldır Oyuncu            Tüm oyun giriş cezalarını kaldır.
+/oyunceza kaldır Oyuncu at         Yalnız At Yarışı cezasını kaldır.
+Diğer adlar: tekne, sansyolu, renk, arena, br, vk.
+/arena durum                      Mevcut Arena lobi kaydını kontrol et.
+/arena yenile                     Kayıtları yeniden oku; mevcut doğmaları silmez.
+/arena lobi ayarla                 Durduğun yeri Arena lobisi yap.
+
+AKÇE KAZANCI
+- Spawn'da kendi tuttuğun her balık 0,05 Akçe; 15 balık = 0,75 Akçe.
+- Başkasının verdiği balık satılmaz. 15. satıştan sonra 24 saatlik sayaç başlar.
+- Farklı oyunlarda aktif oynadığın süreler toplanır: her 15 dakika 0,20 Akçe.
+- Türkiye takvim gününde en fazla 5 aktiflik ödülü (1 Akçe).
+- Spawn/lobi, seyirci veya hareketsiz bekleme sayılmaz.
+- /kazanç kişisel ilerlemeyi ve kalan günlük hakkı gösterir.

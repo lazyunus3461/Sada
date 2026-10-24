@@ -31,7 +31,7 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
         catch(Exception e){getLogger().log(Level.SEVERE,"Şans Yolu oyunu açılamadı; mevcut dünya ve veriler korunuyor.",e);Bukkit.getPluginManager().disablePlugin(this);return;}
         Objects.requireNonNull(getCommand("ispanya")).setTabCompleter(this);Bukkit.getPluginManager().registerEvents(this,this);
         Bukkit.getScheduler().runTaskTimer(this,()->{for(GameRoom room:List.copyOf(rooms.values()))try{room.tick();}catch(RuntimeException e){getLogger().log(Level.SEVERE,"Şans Yolu odası durduruldu.",e);finish(room,"Oda hatası nedeniyle lobiye dönüldü.",false);}},20,20);
-        Bukkit.getOnlinePlayers().forEach(this::recover);getLogger().info("Şans Yolu 0.4.0 hazır: /oyunlar → Şans Yolu; ortak lobi ve 3 eşzamanlı 2–4 kişilik oda.");
+        Bukkit.getScheduler().runTaskTimer(this,this::rescueLobby,2,2);Bukkit.getOnlinePlayers().forEach(this::recover);getLogger().info("Şans Yolu 0.4.0 hazır: /oyunlar → Şans Yolu; ortak lobi ve 3 eşzamanlı 2–4 kişilik oda.");
     }
     private void migrate(){
         if(getConfig().getInt("color-effects-version",0)<3){for(String kind:List.of("red","green","yellow","purple"))if(getConfig().getString("tile-effects."+kind,"none").equals("none"))getConfig().set("tile-effects."+kind,switch(kind){case "red"->"bad_luck";case "green"->"advance:3";case "yellow"->"shortcut";default->"random";});if(getConfig().getString("tile-effects.red","").equals("back:3"))getConfig().set("tile-effects.red","bad_luck");getConfig().set("color-effects-version",3);saveConfig();}
@@ -41,6 +41,8 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
     @Override public GameInfo info(){return new GameInfo("ispanya","Şans Yolu","Zar yarışı • 2–4 kişilik odalar • 3 eşzamanlı maç",1,4);}
     @Override public boolean available(){return instances!=null&&instances.templateReady()&&!disabling;}
     @Override public boolean lobby(UUID id){GameRoom room=membership.get(id);return sessions.containsKey(id)&&(room==null||!room.active&&!room.closing);}
+    @Override public boolean penaltyEligible(UUID id){GameRoom r=membership.get(id);return !disabling&&r!=null&&r.active&&!r.closing&&!r.ending&&!r.finished.contains(id);}
+    @Override public boolean containsMatch(UUID id,Location at){GameRoom r=membership.get(id);return r==null||at.getWorld()==r.world;}
     boolean auth(Player p){AuthState state=Bukkit.getServicesManager().load(AuthState.class);return state!=null&&state.authenticated(p.getUniqueId());}
     void ready(Player p){if(!auth(p))throw new IllegalArgumentException("Önce hesabına giriş yap.");if(!sessions.containsKey(p.getUniqueId()))throw new IllegalArgumentException("Önce /oyunlar üzerinden Şans Yolu'na gir.");}
     int minimum(){return Math.clamp(getConfig().getInt("min-players",2),2,4);}int maximum(){return Math.clamp(getConfig().getInt("max-players",4),minimum(),4);}
@@ -54,10 +56,10 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
             for(Player p:team)Bukkit.getScheduler().runTaskLater(this,()->{if(p.isOnline()&&lobby(p.getUniqueId()))menu(p);},2);return true;
         }catch(Exception e){for(Player p:prepared)leave(p.getUniqueId());getLogger().log(Level.WARNING,"İspanya grup girişi geri alındı.",e);return false;}
     }
-    @Override public void leave(UUID id){
+    @Override public void leave(UUID id){hub.abandon(id);
         Session session=sessions.remove(id);if(screens!=null)screens.clear(id);editors.remove(id);GameRoom room=membership.remove(id);if(room!=null&&!room.closing)room.remove(id);
         Player p=Bukkit.getPlayer(id);if(p!=null&&room!=null)room.restoreBoard(p);
-        if(session!=null&&p!=null&&!quitting.contains(id))try{PlayerBackup.restore(getDataFolder(),p,true);}catch(RuntimeException e){getLogger().log(Level.SEVERE,"İspanya eşya yedeği korunuyor: "+id,e);p.kick(net.kyori.adventure.text.Component.text("İspanya eşya yedeğin kurtarılamadı. Yöneticiye haber ver."));}
+        if(session!=null&&p!=null&&!quitting.contains(id))try{PlayerBackup.restore(getDataFolder(),p,!hub.transferring(id));}catch(RuntimeException e){getLogger().log(Level.SEVERE,"İspanya eşya yedeği korunuyor: "+id,e);p.kick(net.kyori.adventure.text.Component.text("İspanya eşya yedeğin kurtarılamadı. Yöneticiye haber ver."));}
     }
     private boolean enter(Player p){if(!auth(p))throw new IllegalArgumentException("Önce hesabına giriş yap.");if(sessions.containsKey(p.getUniqueId()))return true;if(hub.playing(p.getUniqueId()))throw new IllegalArgumentException("Önce /lobi ile mevcut oyundan çık.");Bukkit.dispatchCommand(p,"oyunlar git ispanya");return sessions.containsKey(p.getUniqueId());}
     void teleport(Player p,Location point){if(p==null)throw new IllegalArgumentException("Oyuncu çevrimdışı.");teleporting.add(p.getUniqueId());try{if(!p.teleport(point,PlayerTeleportEvent.TeleportCause.PLUGIN))throw new IllegalStateException("Işınlanma başka bir eklenti tarafından engellendi.");p.setFallDistance(0);}finally{teleporting.remove(p.getUniqueId());}}
@@ -75,13 +77,13 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
         if(players.size()>1&&!players.getFirst().getUniqueId().equals(leader.getUniqueId()))throw new IllegalArgumentException("Odayı grup lideri seçmeli.");return players;
     }
     private void queue(Player p,Integer roomId,boolean create){
-        List<Player> team=party(p);GameRoom room=null;
+        List<Player> team=party(p);for(Player member:team)hub.requireGameEntry(member.getUniqueId(),"ispanya");GameRoom room=null;
         if(roomId!=null){room=rooms.get(roomId);if(room==null||room.active||room.closing||room.members.size()+team.size()>maximum())throw new IllegalArgumentException("Oda dolu, başlamış veya kapanmış.");}
         else if(!create&&getConfig().getBoolean("auto-join-open-room",true))room=rooms.values().stream().filter(r->!r.active&&!r.closing&&r.members.size()+team.size()<=maximum()).findFirst().orElse(null);
         if(room==null){if(rooms.size()>=Math.clamp(getConfig().getInt("max-rooms",3),1,10))throw new IllegalArgumentException("Bütün odalar dolu; biraz sonra tekrar dene.");room=new GameRoom(this,nextRoom++,p.getUniqueId());rooms.put(room.id,room);}
-        for(Player member:team){room.members.add(member.getUniqueId());membership.put(member.getUniqueId(),room);screens.clear(member.getUniqueId());member.closeDialog();tell(member,"Oda "+room.id+" • "+room.members.size()+"/"+maximum()+" kişi. En az "+minimum()+" oyuncuda geri sayım başlar.");}for(Player member:team)menu(member);
+        for(Player member:team){room.members.add(member.getUniqueId());membership.put(member.getUniqueId(),room);screens.clear(member.getUniqueId());member.closeDialog();room.bar.addPlayer(member);tell(member,"Oda "+room.id+" • "+room.members.size()+"/"+maximum()+" kişi. En az "+minimum()+" oyuncuda geri sayım başlar.");}for(Player member:team)menu(member);
     }
-    private void gameLobby(Player p){ready(p);GameRoom room=membership.remove(p.getUniqueId());if(room!=null){room.remove(p.getUniqueId());room.restoreBoard(p);}prepare(p,instances.lobby(),false);}
+    private void gameLobby(Player p){ready(p);hub.abandon(p.getUniqueId());GameRoom room=membership.remove(p.getUniqueId());if(room!=null){room.remove(p.getUniqueId());room.restoreBoard(p);}prepare(p,instances.lobby(),false);}
     void inactiveLobby(Player p){gameLobby(p);tell(p,"Maçta 3 kez zar atmadığın için Şans Yolu lobisine döndün.");}
     void giveShortcut(Player p){p.getInventory().setItem(0,item(Material.BLAZE_ROD,"§eKestirme çubuğu • Sağ tıkla",shortcutKey));p.getInventory().setHeldItemSlot(0);}
     void removeShortcut(Player p){for(int slot=0;slot<p.getInventory().getSize();slot++){ItemStack i=p.getInventory().getItem(slot);if(i!=null&&i.hasItemMeta()&&i.getItemMeta().getPersistentDataContainer().has(shortcutKey))p.getInventory().setItem(slot,null);}p.getInventory().setHeldItemSlot(4);}
@@ -98,7 +100,7 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
         lines.add("İki zar at, kare kare ilerle ve bitişe ulaş. Odalar 2–4 kişiliktir.");
         if(own!=null){lines.add("Odan: "+own.id+" • "+own.members.size()+"/"+maximum()+" • "+(own.active?"Oynanıyor":"Oyuncu bekleniyor"));if(own.active){buttons.add(new GameScreens.Button("Zar at",()->{if(!own.roll(p.getUniqueId(),false))tell(p,"Zar sırası sende değil.");}));}else if(own.owner.equals(p.getUniqueId())||p.hasPermission("kasabatr.ispanya.admin"))buttons.add(new GameScreens.Button("Maçı başlat",()->{try{own.start();}catch(IOException e){tell(p,e.getMessage());}}));buttons.add(new GameScreens.Button("Şans Yolu lobisi",()->gameLobby(p)));}
         else{buttons.add(new GameScreens.Button("Oyna",()->queue(p,null,false)));buttons.add(new GameScreens.Button("Oda oluştur",()->queue(p,null,true)));for(GameRoom room:rooms.values()){lines.add("Oda "+room.id+" • "+room.members.size()+"/"+maximum()+" • "+(room.active?"Oynanıyor":"Bekliyor"));if(!room.active)buttons.add(new GameScreens.Button("Oda "+room.id,()->queue(p,room.id,false)));}}
-        buttons.add(new GameScreens.Button("Nasıl oynanır?",()->help(p)));buttons.add(new GameScreens.Button(safe?"Bu lobide kal":"Oyuna dön",()->stay(p)));buttons.add(new GameScreens.Button("Ana spawna dön",()->hub.returnToLobby(p.getUniqueId())));screens.show(p,"Şans Yolu • Odalar",lines,buttons,safe);
+        if(safe)buttons.add(new GameScreens.Button("Oyun lobileri",()->hub.openGames(p.getUniqueId())));buttons.add(new GameScreens.Button("Nasıl oynanır?",()->help(p)));buttons.add(new GameScreens.Button(safe?"Bu lobide kal":"Oyuna dön",()->stay(p)));buttons.add(new GameScreens.Button("Ana spawna dön",()->hub.returnToLobby(p.getUniqueId())));screens.show(p,"Şans Yolu • Odalar",lines,buttons,safe);
     }
     private void help(Player p){screens.show(p,"Şans Yolu • Nasıl oynanır?",List.of("Sıran geldiğinde iki zar atarsın; toplamı kadar otomatik ilerlersin. Zar atmazsan sıra geçer; maçta 3 kez atlamada oyun lobisine dönersin.","Kırmızı: bir tur bekle veya 3 kare geri. Yeşil: 3 kare ileri.","Sarı: kestirme çubuğunu sağ tıklayarak köprüden geç. Mor: rastgele 1–6 kare ileri veya geri. Siyah: etkisiz.","Renkler ve üç kestirme her maç yeniden yerleştirilir. Kötü şans etkisi açıklanır, sonra hareket edilir.","Son kareye ulaşanlar sırayla bitirir; diğer oyuncular devam eder. Süre dolunca bitirenler, ardından ilerleme ve puana göre sıralama açıklanır.","/sansyolu zar • /sansyolu lobi: oda bırak • /lobi: ana spawn"),List.of(new GameScreens.Button("Odalar",()->menu(p))),false);}
     void tell(CommandSender sender,String text){sender.sendMessage(tr.kasaba.hub.api.MenuStyle.title("[Şans Yolu] ").append(tr.kasaba.hub.api.MenuStyle.line(text)));}
@@ -130,11 +132,12 @@ public final class KasabaIspanyaPlugin extends JavaPlugin implements HubGame,Lis
     private boolean editing(Player p){return p.getWorld()==instances.publicWorld&&editors.contains(p.getUniqueId())&&p.hasPermission("kasabatr.ispanya.admin")&&(!membership.containsKey(p.getUniqueId())||!membership.get(p.getUniqueId()).active);}
     @EventHandler(priority=EventPriority.HIGHEST,ignoreCancelled=true) public void teleport(PlayerTeleportEvent e){if(sessions.containsKey(e.getPlayer().getUniqueId())&&!teleporting.contains(e.getPlayer().getUniqueId()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void move(PlayerMoveEvent e){GameRoom room=membership.get(e.getPlayer().getUniqueId());if(room!=null&&room.active&&!teleporting.contains(e.getPlayer().getUniqueId())&&!(e instanceof PlayerTeleportEvent)&&e.hasChangedPosition())e.setCancelled(true);}
+    private void rescueLobby(){if(instances==null||instances.publicWorld==null)return;Location safe=instances.lobby();for(Player p:instances.publicWorld.getPlayers())if(auth(p)&&!editors.contains(p.getUniqueId())&&p.getY()<safe.getY()-2){GameRoom r=membership.get(p.getUniqueId());if(r==null||!r.active){teleport(p,safe);p.setVelocity(new org.bukkit.util.Vector());p.setFallDistance(0);}}}
     @EventHandler(ignoreCancelled=true) public void breaking(BlockBreakEvent e){if(instances.managed(e.getBlock().getWorld())&&!editing(e.getPlayer()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void placing(BlockPlaceEvent e){if(instances.managed(e.getBlock().getWorld())&&!editing(e.getPlayer()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void dropping(PlayerDropItemEvent e){if(sessions.containsKey(e.getPlayer().getUniqueId()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void pickup(EntityPickupItemEvent e){if(e.getEntity() instanceof Player p&&sessions.containsKey(p.getUniqueId()))e.setCancelled(true);}
-    @EventHandler(ignoreCancelled=true) public void click(InventoryClickEvent e){if(sessions.containsKey(e.getWhoClicked().getUniqueId()))e.setCancelled(true);}
+    @EventHandler(ignoreCancelled=true) public void click(InventoryClickEvent e){if(e.getWhoClicked() instanceof Player p)tr.kasaba.hub.api.MenuClicks.open(this,e,i->i!=null&&i.hasItemMeta()&&i.getItemMeta().getPersistentDataContainer().has(compassKey),()->{if(sessions.containsKey(p.getUniqueId())&&auth(p))menu(p);});if(sessions.containsKey(e.getWhoClicked().getUniqueId()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void drag(InventoryDragEvent e){if(sessions.containsKey(e.getWhoClicked().getUniqueId()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void swap(PlayerSwapHandItemsEvent e){if(sessions.containsKey(e.getPlayer().getUniqueId()))e.setCancelled(true);}
     @EventHandler(ignoreCancelled=true) public void hunger(FoodLevelChangeEvent e){if(sessions.containsKey(e.getEntity().getUniqueId()))e.setCancelled(true);}

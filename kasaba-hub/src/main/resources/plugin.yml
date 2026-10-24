@@ -1,5 +1,5 @@
 name: KasabaHub
-version: 1.4.0
+version: 1.5.0
 main: tr.kasaba.hub.KasabaHub
 api-version: '1.21.10'
 author: Kasaba
@@ -7,6 +7,9 @@ description: Kasaba oyun merkezi, yerleşik sayfalar, ortak lobi ve arkadaş gru
 depend: [KasabaAuth]
 softdepend: [KasabaRoles]
 commands:
+  oyunceza:
+    description: Kalan oyun cezalarını gör; yönetici cezayı kaldırabilir.
+    usage: /oyunceza veya /oyunceza kaldır Oyuncu [oyun]
   rehber:
     aliases: [bilgi]
     description: Kasaba oyunlarının bilgi kitabını aç.

@@ -39,19 +39,21 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     private DestinationStore destinations;
     private Map<String,DestinationStore.Destination> savedGames=Map.of();
     private LobbyItems items;
-    private boolean storageFailed;
+    private boolean storageFailed,stopping,penaltyStorageReady;private MatchPenalties penalties;private final Set<UUID> forcedLeaves=new HashSet<>(),transferring=new HashSet<>();
 
     @Override public void onEnable(){
         saveDefaultConfig();store=new LobbyStore(getDataFolder().toPath().resolve("lobi.yml"));destinations=new DestinationStore(getDataFolder().toPath().resolve("oyunlar.yml"));
-        try{settings=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));lobby=store.load();replaceDestinations(destinations.load());}
+        penalties=new MatchPenalties(getDataFolder().toPath().resolve("mac-cezalari.properties"));
+        try{penalties.load();penaltyStorageReady=true;settings=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));lobby=store.load();replaceDestinations(destinations.load());}
         catch(IOException e){storageFailed=true;getLogger().log(Level.SEVERE,"Hub ayarları okunamadı; dosyalar korundu. Düzeltip /merkez yenile kullan.",e);}
         items=new LobbyItems(this);Bukkit.getPluginManager().registerEvents(this,this);Bukkit.getPluginManager().registerEvents(new LobbyProtection(this),this);Bukkit.getPluginManager().registerEvents(items,this);
-        for(String name:List.of("merkez","oyunlar","grup","lobi","rehber"))Objects.requireNonNull(getCommand(name)).setTabCompleter(this);
+        for(String name:List.of("merkez","oyunlar","grup","lobi","rehber","oyunceza"))Objects.requireNonNull(getCommand(name)).setTabCompleter(this);
         Bukkit.getServicesManager().register(HubApi.class,this,this,ServicePriority.Normal);
         Bukkit.getScheduler().runTaskTimer(this,parties::prune,100,100);
+        Bukkit.getScheduler().runTaskTimer(this,()->{try{if(penaltyStorageReady)penalties.save();}catch(IOException e){getLogger().log(Level.WARNING,"Maç cezası dosyası kaydedilemedi; bellek kaydı korunuyor.",e);}},1200,1200);
         Bukkit.getScheduler().runTaskTimer(this,()->Bukkit.getOnlinePlayers().forEach(items::refresh),1,20);
     }
-    @Override public void onDisable(){
+    @Override public void onDisable(){stopping=true;try{if(penaltyStorageReady)penalties.save();}catch(IOException e){getLogger().log(Level.SEVERE,"Maç cezaları kaydedilemedi.",e);}
         Set<UUID> ownedPages=Set.copyOf(pages.keySet());pages.clear();travel.clear();navigation.clear();editors.clear();Bukkit.getServicesManager().unregisterAll(this);
         for(UUID id:new ArrayList<>(playing.keySet()))detach(id);games.clear();
         if(items!=null)Bukkit.getOnlinePlayers().forEach(items::forget);
@@ -78,9 +80,10 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     private void free(Player p){if(gameplay(p.getUniqueId()))throw new IllegalArgumentException("Önce /lobi ile oyundan çık.");free(parties.party(p.getUniqueId()));}
     private void invite(Player p,String name){free(p);Player target=online(name);free(target);PartyBook.Party group=parties.invite(p.getUniqueId(),target.getUniqueId(),settings.capacity(),settings.invitation());tell(target,p.getName()+" seni grubuna davet etti. /grup katıl "+p.getName()+" • "+settings.invitation()+" saniye");tell(p,"Grup daveti gönderildi: "+target.getName());}
     @Override public boolean onCommand(CommandSender s,Command cmd,String label,String[] a){
+        if(cmd.getName().equals("oyunceza"))return penaltyCommand(s,a);
         try{
             if(cmd.getName().equals("merkez")&&a.length>0&&verb(a[0]).equals("yenile")){
-                if(!admin(s))throw new IllegalArgumentException("Yönetim yetkin yok.");HubSettings next=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));LobbyStore.Point point=store.load();replaceDestinations(destinations.load());settings=next;lobby=point;storageFailed=false;lobbyRevision++;travel.clear();Bukkit.getOnlinePlayers().forEach(items::refresh);tell(s,"Merkez ayarları, oyun girişleri ve lobi yenilendi. Gruplar korunuyor.");return true;
+                if(!admin(s))throw new IllegalArgumentException("Yönetim yetkin yok.");HubSettings next=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));LobbyStore.Point point=store.load();replaceDestinations(destinations.load());if(!penaltyStorageReady){penalties.load();penaltyStorageReady=true;}settings=next;lobby=point;storageFailed=false;lobbyRevision++;travel.clear();Bukkit.getOnlinePlayers().forEach(items::refresh);tell(s,"Merkez ayarları, oyun girişleri ve lobi yenilendi. Gruplar korunuyor.");return true;
             }
             Player p=player(s);ready(p);
             switch(cmd.getName()){
@@ -110,6 +113,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
         }catch(IllegalArgumentException e){tell(s,e.getMessage());}catch(IOException e){getLogger().log(Level.SEVERE,"Hub dosyası işlemi başarısız; mevcut veri korundu.",e);tell(s,"Dosya okunamadı/kaydedilemedi; değişiklik uygulanmadı.");}
         return true;
     }
+    private boolean penaltyCommand(CommandSender sender,String[] args){try{if(sender instanceof Player actor)ready(actor);if(!penaltyStorageReady)throw new IllegalArgumentException("Maç cezası kaydı okunamadı; önce dosyayı düzeltip /merkez yenile kullan.");if(args.length==0&&sender instanceof Player p){var active=penalties.active(p.getUniqueId(),System.currentTimeMillis());if(active.isEmpty())tell(p,"Oyun giriş cezan yok.");else active.forEach((game,left)->tell(p,(games.containsKey(game)?games.get(game).info().name():game)+" • "+((left+59999)/60000)+" dakika kaldı."));return true;}if(!admin(sender))throw new IllegalArgumentException("Bu işlem için yetkin yok.");if(args.length<2||!verb(args[0]).equals("kaldir"))throw new IllegalArgumentException("/oyunceza kaldır Oyuncu [oyun]");var target=Bukkit.getOfflinePlayer(args[1]);String game=args.length<3?null:switch(verb(args[2])){case "sansyolu","sans"->"ispanya";case "at"->"atyarisi";case "tekne"->"tekneyarisi";case "br"->"battle";case "vk"->"vampirkoylu";default->verb(args[2]);};int count=penalties.clear(target.getUniqueId(),game);tell(sender,"Kaldırılan oyun cezası: "+count);}catch(Exception e){tell(sender,e.getMessage()==null?"Ceza işlemi tamamlanamadı.":e.getMessage());}return true;}
     private LobbyStore.Point currentPoint(Player p){Location l=p.getLocation();return new LobbyStore.Point(p.getWorld().getUID(),p.getWorld().getName(),l.getX(),l.getY(),l.getZ(),l.getYaw(),l.getPitch());}
     private final class DestinationGame implements HubGame {
         private final DestinationStore.Destination destination;
@@ -183,7 +187,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     }
     private Button button(String label,Runnable action){return new Button(label,response->action.run());}
     private Button close(){return button("Kapat",()->{});}
-    private void showMain(Player p){PartyBook.Party group=parties.party(p.getUniqueId());show(p,"Kasaba • Oyun Merkezi",List.of("Arkadaşlarınla buluş, grubunu kur ve oyunlara birlikte katıl.","Çevrimiçi: "+Bukkit.getOnlinePlayers().size()+" • Grubun: "+(group==null?"Yok":group.members().size()+" kişi"),games.isEmpty()?"İlk oyun yakında. Şimdilik lobide arkadaşlarınla buluşabilirsin.":"Oyunlar sayfasından hazır bir oyun seç."),List.of(),List.of(button("Oyunlar",()->showGames(p,0)),button("Arkadaşlar",()->{var network=NetworkFeatures.get();if(network==null)showGroup(p);else network.socialMenu(p);}),button("Grubum",()->showGroup(p)),button("VIP satın al",()->{var network=NetworkFeatures.get();if(network==null)tell(p,"Market şu anda açılmıyor.");else network.market(p);}),button("VIP özellikleri",()->{var network=NetworkFeatures.get();if(network!=null)network.vipInfo(p);}),button("Lobiye dön",()->returnLobby(p,false)),close()));}
+    private void showMain(Player p){PartyBook.Party group=parties.party(p.getUniqueId());show(p,"Kasaba • Oyun Merkezi",List.of("Arkadaşlarınla buluş, grubunu kur ve oyunlara birlikte katıl.","Çevrimiçi: "+Bukkit.getOnlinePlayers().size()+" • Grubun: "+(group==null?"Yok":group.members().size()+" kişi"),games.isEmpty()?"İlk oyun yakında. Şimdilik lobide arkadaşlarınla buluşabilirsin.":"Oyunlar sayfasından hazır bir oyun seç."),List.of(),List.of(button("Oyunlar",()->showGames(p,0)),button("Arkadaşlar",()->{var network=NetworkFeatures.get();if(network==null)showGroup(p);else network.socialMenu(p);}),button("Grubum",()->showGroup(p)),button("Akçe nasıl kazanılır?",()->{var network=NetworkFeatures.get();if(network!=null)network.earnInfo(p);}),button("VIP satın al",()->{var network=NetworkFeatures.get();if(network==null)tell(p,"Market şu anda açılmıyor.");else network.market(p);}),button("VIP özellikleri",()->{var network=NetworkFeatures.get();if(network!=null)network.vipInfo(p);}),button("Lobiye dön",()->returnLobby(p,false)),close()));}
     private void showGroup(Player p){
         if(!socialArea(p.getUniqueId()))throw new IllegalArgumentException("Grup menüsü yalnız spawn ve lobilerde açılır.");
         PartyBook.Party group=parties.party(p.getUniqueId());List<String> lines=new ArrayList<>();List<Button> buttons=new ArrayList<>();
@@ -198,15 +202,15 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     private void showGames(Player p,int requested){
         List<Entry> entries=new ArrayList<>(games.values());int last=Math.max(0,(entries.size()-1)/8),page=Math.clamp(requested,0,last);List<String> lines=new ArrayList<>();List<Button> buttons=new ArrayList<>();
         if(entries.isEmpty())lines.add("Oyunlar yakında! Henüz oynanabilir bir oyun eklenmedi.");
-        else{for(int i=page*8;i<Math.min(entries.size(),page*8+8);i++){Entry entry=entries.get(i);GameInfo info=entry.info();buttons.add(button(info.name()+(available(entry)?"":" • Bakımda"),()->join(p,entry)));}}
+        else{for(int i=page*8;i<Math.min(entries.size(),page*8+8);i++){Entry entry=entries.get(i);GameInfo info=entry.info();buttons.add(button(info.name()+(available(entry)?"":" • Bakımda")+(penalties.remaining(p.getUniqueId(),info.id(),System.currentTimeMillis())>0?" • "+((penalties.remaining(p.getUniqueId(),info.id(),System.currentTimeMillis())+59999)/60000)+" dk ceza":""),()->join(p,entry)));}}
         if(page>0)buttons.add(button("Önceki",()->showGames(p,page-1)));if(page<last)buttons.add(button("Sonraki",()->showGames(p,page+1)));buttons.add(button("Merkeze dön",()->showMain(p)));buttons.add(close());show(p,"Kasaba • Oyunlar",lines,List.of(),buttons);
     }
     private void join(Player p,Entry entry){
         ready(p);if(games.get(entry.info().id())!=entry||!available(entry))throw new IllegalArgumentException("Bu oyun şu anda hazır değil.");
         PartyBook.Party group=parties.party(p.getUniqueId());if(group!=null)parties.leader(p.getUniqueId());List<UUID> ids=group==null?List.of(p.getUniqueId()):java.util.stream.Stream.concat(java.util.stream.Stream.of(p.getUniqueId()),group.members().stream().filter(id->!id.equals(p.getUniqueId()))).toList();
         if(ids.size()<entry.info().minimum()||ids.size()>entry.info().maximum())throw new IllegalArgumentException("Bu oyun "+entry.info().minimum()+"–"+entry.info().maximum()+" kişilik grup kabul ediyor.");
-        List<Player> team=new ArrayList<>();for(UUID id:ids){Player member=Bukkit.getPlayer(id);if(member==null)throw new IllegalArgumentException("Gruptaki bir oyuncu ayrıldı.");ready(member);if(gameplay(id))throw new IllegalArgumentException("Gruptaki bir oyuncu zaten oyunda.");team.add(member);}
-        for(UUID id:ids)if(playing(id))detach(id);
+        List<Player> team=new ArrayList<>();for(UUID id:ids){Player member=Bukkit.getPlayer(id);if(member==null)throw new IllegalArgumentException("Gruptaki bir oyuncu ayrıldı.");ready(member);requireGameEntry(id,entry.info().id());if(gameplay(id))throw new IllegalArgumentException("Gruptaki bir oyuncu zaten oyunda.");team.add(member);}
+        for(UUID id:ids)if(playing(id)){transferring.add(id);try{detach(id);}finally{transferring.remove(id);}}
         ids.forEach(id->playing.put(id,entry));
         for(Player member:team){if(NetworkFeatures.get()!=null)NetworkFeatures.get().beforeGame(member);items.remove(member);pages.remove(member.getUniqueId());travel.remove(member.getUniqueId());navigation.put(member.getUniqueId(),++sequence);member.closeDialog();}
         if(entry.game() instanceof DestinationGame destination){joinDestination(List.copyOf(team),entry,destination);return;}
@@ -250,14 +254,20 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
         Bukkit.getScheduler().runTaskLater(this,()->{if(!finished[0]){finished[0]=true;rejectDestination(team,entry,"Oyun bölgesi zamanında hazırlanamadı; tekrar dene.");}},200);
     }
     private void rejectDestination(List<Player> team,Entry entry,String message){for(Player member:team){if(playing.get(member.getUniqueId())==entry)detach(member.getUniqueId());if(member.isOnline()){items.refresh(member);tell(member,message);}}}
-    private void detach(UUID id){Entry entry=playing.remove(id);if(entry!=null&&entry.owner().isEnabled())try{entry.game().leave(id);}catch(RuntimeException e){getLogger().log(Level.WARNING,"Oyun çıkışı başarısız: "+entry.info().id(),e);}}
+    private void detach(UUID id){abandon(id);Entry entry=playing.remove(id);if(entry!=null&&entry.owner().isEnabled())try{entry.game().leave(id);}catch(RuntimeException e){getLogger().log(Level.WARNING,"Oyun çıkışı başarısız: "+entry.info().id(),e);}}
     private void mainThread(){if(!Bukkit.isPrimaryThread())throw new IllegalStateException("Hub API ana iş parçacığından kullanılmalı.");}
     @Override public void register(Plugin owner,HubGame game){mainThread();Objects.requireNonNull(owner);Objects.requireNonNull(game);if(!owner.isEnabled())throw new IllegalArgumentException("Oyun eklentisi etkin değil.");GameInfo info=Objects.requireNonNull(game.info());if(games.containsKey(info.id()))throw new IllegalArgumentException("Bu oyun kimliği zaten kayıtlı; komutla eklenmiş giriş varsa önce /oyunlar sil "+info.id());games.put(info.id(),new Entry(owner,game,info));}
-    @Override public void unregister(Plugin owner,String id){mainThread();Entry entry=games.get(id);if(entry==null)return;if(entry.owner()!=owner)throw new IllegalArgumentException("Başka eklentinin oyunu kaldırılamaz.");games.remove(id);for(UUID player:new ArrayList<>(playing.keySet()))if(playing.get(player)==entry)returnToLobby(player);}
+    @Override public void unregister(Plugin owner,String id){mainThread();Entry entry=games.get(id);if(entry==null)return;if(entry.owner()!=owner)throw new IllegalArgumentException("Başka eklentinin oyunu kaldırılamaz.");games.remove(id);for(UUID player:new ArrayList<>(playing.keySet()))if(playing.get(player)==entry)returnToLobbyForced(player);}
     @Override public boolean mainLobby(UUID id){Player p=Bukkit.getPlayer(id);return p!=null&&authenticated(p)&&!playing.containsKey(id)&&inLobby(p.getLocation());}
     @Override public boolean socialArea(UUID id){Player p=Bukkit.getPlayer(id);if(p==null||!authenticated(p))return false;if(mainLobby(id))return true;Entry entry=playing.get(id);return entry!=null&&entry.game().lobby(id);}
     @Override public boolean playing(UUID player){mainThread();return playing.containsKey(player);}
     @Override public void returnToLobby(UUID id){mainThread();Player p=Bukkit.getPlayer(id);if(p!=null&&authenticated(p))returnLobby(p,false);else detach(id);}
+    @Override public void abandon(UUID id){mainThread();Entry entry=playing.get(id);if(stopping||Bukkit.isStopping()||forcedLeaves.contains(id)||entry==null||!entry.owner().isEnabled()||!entry.game().penaltyEligible(id))return;try{if(penalties.ban(id,entry.game().penaltyKey(id),System.currentTimeMillis())){Player p=Bukkit.getPlayer(id);if(p!=null)tell(p,"Maçı yarıda bıraktın: bu oyuna 15 dakika giremezsin.");}}catch(IOException e){getLogger().log(Level.SEVERE,"Maç cezası bellekte korundu; disk kaydı yeniden denenecek.",e);}}
+    @Override public void requireGameEntry(UUID id,String game){mainThread();long left=penalties.remaining(id,game,System.currentTimeMillis());if(left>0){long seconds=(left+999)/1000;throw new IllegalArgumentException("Bu oyunu yarıda bıraktın. Yeniden girişe "+seconds/60+" dk "+seconds%60+" sn var.");}}
+    @Override public void returnToLobbyForced(UUID id){forcedLeaves.add(id);try{returnToLobby(id);}finally{forcedLeaves.remove(id);}}
+    @Override public boolean transferring(UUID id){return transferring.contains(id);}
+    @Override public void openGames(UUID id){mainThread();Player p=Bukkit.getPlayer(id);if(p==null)return;ready(p);if(!socialArea(id))throw new IllegalArgumentException("Oyun lobilerini güvenli lobideyken seçebilirsin.");showGames(p,0);}
+    @EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true) public void escaped(PlayerTeleportEvent e){UUID id=e.getPlayer().getUniqueId();Entry entry=playing.get(id);if(entry==null||!entry.game().penaltyEligible(id))return;Bukkit.getScheduler().runTask(this,()->{Player p=Bukkit.getPlayer(id);if(p!=null&&playing.get(id)==entry&&entry.game().penaltyEligible(id)&&!entry.game().containsMatch(id,p.getLocation())){abandon(id);returnToLobbyForced(id);}});}
     private Location validate(LobbyStore.Point point){
         World world=Bukkit.getWorld(point.world());if(world==null)throw new IllegalArgumentException("Lobi dünyası yüklü değil.");Location target=new Location(world,point.x(),point.y(),point.z(),point.yaw(),point.pitch());
         if(target.getY()<world.getMinHeight()||target.getY()>=world.getMaxHeight()||!world.getWorldBorder().isInside(target))throw new IllegalArgumentException("Lobi konumu dünya sınırları dışında.");return target;

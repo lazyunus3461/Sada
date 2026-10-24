@@ -99,3 +99,7 @@ Ana lobide oyun pusulasının yanında geçici yazılı kitap verilir. Sağ tık
 ## 1.4.0 ortak menü renkleri
 
 `MenuStyle` geri/çıkışları kırmızı, başlatma/onayları yeşil, bilgiyi sarı, VIP/ücretleri altın yapar. Sekiz oyunun ayrı rengi vardır. Başlık, açıklama, sayı ve süreler ayırt edilir. Yeni oyun JAR’larını bu Hub sürümüyle birlikte yükle.
+
+## 1.5.0
+
+Güvenli oyun lobileri arasında doğrudan pusula geçişi ve envanterden menü eşyası açma desteği. `/kazanç` sayfası ana menüdedir. Başlayan maçı terk eden oyuncunun o oyuna girişini 15 dakika engeller; `mac-cezalari.properties` atomik saklanır ve yeniden başlatmada korunur. Bekleme, normal bitiş, tamamen elenen oyuncu, zorunlu hapis/yönetici çıkışı ve sunucu kapanışı cezasızdır. Sürekli X Arena bu cezanın dışındadır. `/oyunceza` durum; `/oyunceza kaldır Oyuncu [at|tekne|sansyolu|renk|arena|br|vk]` yönetici sıfırlamasıdır. Bozuk ceza dosyası üzerine yazılmaz; düzeltildikten sonra `/merkez yenile` yeniden okur.

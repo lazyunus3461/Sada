@@ -302,7 +302,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
         UUID uUID = player.getUniqueId();
         if (this.hub != null) {
             try {
-                this.hub.returnToLobby(uUID);
+                this.hub.returnToLobbyForced(uUID);
             }
             catch (RuntimeException runtimeException) {
                 this.getLogger().warning("Hub lobi dönüşü: " + runtimeException.getMessage());
@@ -503,7 +503,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
         object = this.sentences.get(uUID);
         if (player != null && object == null && this.hub != null && this.hub.playing(uUID)) {
             try {
-                this.hub.returnToLobby(uUID);
+                this.hub.returnToLobbyForced(uUID);
             }
             catch (RuntimeException runtimeException) {
                 this.tell(commandSender, "Mevcut oyundan güvenle çıkılamadı: " + runtimeException.getMessage());

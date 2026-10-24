@@ -1,6 +1,6 @@
-# Kasaba At ve Tekne Yarışı 1.2.0
+# Kasaba At ve Tekne Yarışı 1.3.0
 
-Paper 1.21.10 / Java 21. KasabaHub 1.4.0 ve KasabaAuth gerektirir.
+Paper 1.21.10 / Java 21. KasabaHub 1.5.0 ve KasabaAuth gerektirir.
 Gönderilen 1.0.0 yarış paketi sunucu altyapısına uyarlandı. Harita JAR içindedir;
 ilk açılışta `KasabaTR-Yaris-Arenasi-v01` dünyası otomatik kurulur. Var olan
 dünya ve ayarların üzerine yazılmaz.
@@ -36,3 +36,9 @@ koy ve aç. Veri klasörlerini/dünyaları silme. Haritayı ayrıca çıkartman 
 ## 1.2.0
 
 Pusulada At/Tekne seçimi önce o türün açık odalarını gösterir. **Oda oluştur** ile bilerek oda açılır. At parkuruna çit, saman slalomu ve sığ su; tekne parkuruna geçilebilir adacıklar eklendi. Her maç ayrı kopyadır. Başlamış/geri sayımdaki yarışta son kişi kalırsa kazanır ve üç saniye sonra yarış lobisine döner. İlk girişteki otomatik menü, seçilen oda sayfasını yeniden açıp kapatmaz.
+
+## 1.3.0
+
+İki tur bitince binekten inme ve lobiye dönüş her oyuncu için ayrı yürütülür; engellenen ışınlanma yeniden denenir. Orta zorlukta tam genişlikte kütük atlamaları, saman zikzakları, sığ su ve tekne adacık geçitleri vardır. Önceki engellerin yalnız eklentinin yönettiği ayak izleri temiz şablondan yenilenir; dünyayı silmek gerekmez. Pist kenarı yavaşlatır, dışarı çıkmak son kontrol noktasına döndürür. Virajlarda iç/dış yol uzunluğuna göre hız dengelenir. Atlar hasarsız biçimde birbirini itebilir. Güvenli pusuladan başka oyun lobisine doğrudan geçilir; pusulaya envanterde sol/sağ tıklamak da menüyü açar.
+
+Başlamış veya başlangıç sayımına geçmiş yarıştan ayrılmak, bağlantıyı kesmek ya da dışarı ışınlanmak o yarış türü için 15 dakika giriş cezası verir. Bekleme odası, normal bitiş, yönetici/cezaevi zorunlu çıkışı ve sunucu kapanışı ceza vermez. `/oyunceza` kalan cezayı gösterir; yönetici `/oyunceza kaldır Oyuncu at` veya `tekne` kullanabilir.

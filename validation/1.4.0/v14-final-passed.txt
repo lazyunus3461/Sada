@@ -1,0 +1,3 @@
+PASS Disconnecting from Vampir Köylü records the same-game ban before membership cleanup
+PASS Dedicated Arena lobby builds promptly; invisibility keeps the player hittable and restores equipment on death
+PASS Reduced live BR chest count and minimum spacing captured; administrator stop gives no abandonment penalty

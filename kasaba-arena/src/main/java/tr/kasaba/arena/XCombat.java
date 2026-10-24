@@ -22,6 +22,7 @@ import java.util.function.Consumer;
 final class XCombat implements Listener {
     private record Intent(UUID attacker,double damage) {}
     private final JavaPlugin plugin;
+    private final InvisibleEquipment invisibleEquipment;
     private final Predicate<Player> active;
     private final Function<Player,ArenaCharacter> character;
     private final Function<Player,Double> marketBonus;
@@ -29,6 +30,7 @@ final class XCombat implements Listener {
     private final Map<UUID,long[]> cooldowns=new HashMap<>();
     private final Map<UUID,Long> sharedUntil=new HashMap<>();
     private final Map<UUID,Long> warCry=new HashMap<>(),shields=new HashMap<>(),protection=new HashMap<>(),lastMelee=new HashMap<>(),lastCombat=new HashMap<>();
+    private final Map<UUID,Long> lastDamaged=new HashMap<>(),lastRegen=new HashMap<>();
     private final Map<UUID,Integer> lives=new HashMap<>();
     private final Map<UUID,Intent> intents=new HashMap<>();
     private final Map<UUID,Set<BukkitTask>> tasks=new HashMap<>();
@@ -39,20 +41,23 @@ final class XCombat implements Listener {
         this.plugin=plugin;this.active=active;this.character=character;
         this.marketBonus=marketBonus;
         abilityKey=new NamespacedKey(plugin,"arena-ability");weaponKey=new NamespacedKey(plugin,"x-weapon");arrowDamageKey=new NamespacedKey(plugin,"x-arrow-damage");arrowLifeKey=new NamespacedKey(plugin,"x-arrow-life");
+        invisibleEquipment=new InvisibleEquipment(plugin,this::active);
         Bukkit.getPluginManager().registerEvents(this,plugin);
         Bukkit.getScheduler().runTaskTimer(plugin,()->{for(Player p:Bukkit.getOnlinePlayers())if(active(p))updateSkills(p);},10,10);
-        Bukkit.getScheduler().runTaskTimer(plugin,()->{long now=System.currentTimeMillis();for(Player p:Bukkit.getOnlinePlayers())if(active(p)&&lastCombat.getOrDefault(p.getUniqueId(),0L)+8000<=now&&p.getHealth()<Math.min(20,maxHealth(p)))heal(p,1);},40,40);
+        Bukkit.getScheduler().runTaskTimer(plugin,this::regenerate,10,10);
     }
     boolean active(Player p){return p.isOnline()&&!p.isDead()&&active.test(p);}
     boolean mayChoose(Player p){return mayChoose.contains(p.getUniqueId());}
     void lockChoice(Player p){mayChoose.remove(p.getUniqueId());}
     void clear(Player p) {
-        UUID id=p.getUniqueId();lives.merge(id,1,Integer::sum);cooldowns.remove(id);lastCombat.remove(id);sharedUntil.remove(id);warCry.remove(id);shields.remove(id);protection.remove(id);lastMelee.remove(id);intents.remove(id);mayChoose.remove(id);
+        invisibleEquipment.clear(p);
+        UUID id=p.getUniqueId();lives.merge(id,1,Integer::sum);cooldowns.remove(id);lastCombat.remove(id);lastDamaged.remove(id);lastRegen.remove(id);sharedUntil.remove(id);warCry.remove(id);shields.remove(id);protection.remove(id);lastMelee.remove(id);intents.remove(id);mayChoose.remove(id);
         for(BukkitTask task:tasks.getOrDefault(id,Set.of()))task.cancel();tasks.remove(id);
         for(Projectile projectile:projectiles.getOrDefault(id,Set.of()))projectile.remove();projectiles.remove(id);
         for(int slot=0;slot<p.getInventory().getSize();slot++)if(temporary(p.getInventory().getItem(slot)))p.getInventory().setItem(slot,null);
         if(temporary(p.getItemOnCursor()))p.setItemOnCursor(null);
     }
+    void shutdown(){invisibleEquipment.close();}
     boolean temporary(ItemStack item){return item!=null&&item.hasItemMeta()&&(item.getItemMeta().getPersistentDataContainer().has(abilityKey)||item.getItemMeta().getPersistentDataContainer().has(weaponKey));}
     void loadout(Player p) {
         clear(p);p.getInventory().clear();p.getInventory().setArmorContents(new ItemStack[4]);p.getInventory().setItemInOffHand(null);p.setItemOnCursor(null);
@@ -69,7 +74,7 @@ final class XCombat implements Listener {
             item.editMeta(meta->{meta.displayName(Component.text((skill+1)+" • "+spec.name(),NamedTextColor.GOLD));meta.lore(List.of(Component.text(spec.description(),NamedTextColor.GRAY),Component.text("Bekleme: "+tr.kasaba.hub.api.NetworkFeatures.cooldown(p,spec.cooldownSeconds())+" saniye",NamedTextColor.YELLOW),Component.text("Sağ tık veya /arena yetenek "+(skill+1),NamedTextColor.AQUA)));meta.getPersistentDataContainer().set(abilityKey,PersistentDataType.STRING,kind.name()+":"+(skill+1));});
             p.getInventory().setItem(index,item);
         }
-        p.getInventory().setHeldItemSlot(4);lastCombat.put(p.getUniqueId(),System.currentTimeMillis());mayChoose.add(p.getUniqueId());protect(p);updateSkills(p);
+        p.getInventory().setHeldItemSlot(4);lastCombat.put(p.getUniqueId(),System.currentTimeMillis());lastDamaged.put(p.getUniqueId(),System.currentTimeMillis());lastRegen.put(p.getUniqueId(),System.currentTimeMillis());mayChoose.add(p.getUniqueId());protect(p);updateSkills(p);
     }
     private ItemStack weapon(Material type,String label){ItemStack item=new ItemStack(type);item.editMeta(meta->{meta.displayName(Component.text(label,NamedTextColor.WHITE));meta.setUnbreakable(true);meta.getPersistentDataContainer().set(weaponKey,PersistentDataType.BYTE,(byte)1);});return item;}
     private ItemStack armor(Material type){ItemStack item=weapon(type,"X Arena • Koruyucu Zırh");item.addUnsafeEnchantment(org.bukkit.enchantments.Enchantment.PROTECTION,2);return item;}
@@ -171,6 +176,8 @@ final class XCombat implements Listener {
         if(tr.kasaba.hub.api.NetworkFeatures.isVip(victim))desired*=0.8;
         setFinalDamage(e,desired);
     }
+    private void regenerate(){long now=System.currentTimeMillis();for(Player p:Bukkit.getOnlinePlayers())if(active(p)&&!p.isDead()&&now-lastDamaged.getOrDefault(p.getUniqueId(),now)>=10000&&now-lastRegen.getOrDefault(p.getUniqueId(),0L)>=2000&&p.getHealth()<Math.min(20,maxHealth(p))){heal(p,1);lastRegen.put(p.getUniqueId(),now);}}
+    @EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true) public void receivedDamage(EntityDamageEvent e){if(e.getEntity() instanceof Player p&&active(p)&&(e.getFinalDamage()>0||e.isApplicable(EntityDamageEvent.DamageModifier.ABSORPTION)&&e.getDamage(EntityDamageEvent.DamageModifier.ABSORPTION)<0)){long now=System.currentTimeMillis();lastDamaged.put(p.getUniqueId(),now);lastRegen.put(p.getUniqueId(),now+8000);}}
     private boolean temporaryAbility(ItemStack item){return item!=null&&item.hasItemMeta()&&item.getItemMeta().getPersistentDataContainer().has(abilityKey);}
     private void updateSkills(Player p){UUID id=p.getUniqueId();long now=System.currentTimeMillis();long[] times=cooldowns.getOrDefault(id,new long[4]);List<String> status=new ArrayList<>();for(int index=0;index<4;index++){ItemStack item=p.getInventory().getItem(index);long ready=Math.max(times[index],sharedUntil.getOrDefault(id,0L));boolean available=ready<=now;if(temporaryAbility(item))item.editMeta(meta->meta.setEnchantmentGlintOverride(available));status.add((index+1)+": "+(available?"HAZIR":((ready-now+999)/1000)+" sn"));}tell(p,String.join(" • ",status));}
     @SuppressWarnings("deprecation") private void setFinalDamage(EntityDamageEvent event,double damage){event.setDamage(damage);for(EntityDamageEvent.DamageModifier modifier:EntityDamageEvent.DamageModifier.values())if(modifier!=EntityDamageEvent.DamageModifier.BASE&&modifier!=EntityDamageEvent.DamageModifier.ABSORPTION&&event.isApplicable(modifier))event.setDamage(modifier,0);if(event.isApplicable(EntityDamageEvent.DamageModifier.ABSORPTION))event.setDamage(EntityDamageEvent.DamageModifier.ABSORPTION,-Math.min(((Player)event.getEntity()).getAbsorptionAmount(),damage));}

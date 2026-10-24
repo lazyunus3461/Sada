@@ -66,6 +66,7 @@ final class LobbyItems implements Listener {
     }
     @EventHandler(priority = EventPriority.HIGHEST) public void click(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player p)) return;
+        tr.kasaba.hub.api.MenuClicks.open(hub,e,this::marked,()->{if(hub.menuItemAllowed(p)){if(guide(e.getCurrentItem()))hub.openGuide(p);else hub.openItemMenu(p);}});
         boolean swap = e.getHotbarButton() >= 0 && marked(p.getInventory().getItem(e.getHotbarButton()));
         if (e.getClick() == ClickType.SWAP_OFFHAND) swap |= marked(p.getInventory().getItemInOffHand());
         if (marked(e.getCurrentItem()) || marked(e.getCursor()) || swap) e.setCancelled(true);

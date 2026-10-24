@@ -183,3 +183,7 @@ Bu komut ürünü satış listesinden kaldırır; önceden satın alınan ürün
 | `/lobi` | Arena'dan tamamen çık, Hub ana lobisine dön |
 
 Yönetim komutları `kasabaarena.yonet`, KasabaRoles yönetimi veya OP gerektirir. Yerel regresyon ve yeniden başlatma testi: `bash kasaba-arena/scripts/integration/build-probe.sh`, ardından yalnızca test sunucusunda `node kasaba-arena/scripts/integration/regression.cjs`. Sunucuyu tamamen yeniden başlatıp `node kasaba-arena/scripts/integration/restart.cjs` çalıştır. Yalnızca loopback test sunucusunu kullan; fixture JAR üretim paketine konmaz.
+
+## 1.3.3
+
+X Arena'da son alınan hasardan 10 saniye sonra her 2 saniyede yarım kalp yenilenir; saldırmak veya beceri kullanmak bu sayacı uzatmaz. Görünmezlik sırasında zırh ve iki eldeki eşyalar rakiplere gizlenir; kendi envanteri korunur. Süre bitince ve çıkışta görünüm geri gelir. Yarış lobisiyle çakışan Arena lobi konumu ayrı `kasaba_arena_lobi` dünyasına taşınır; oda doğmaları ve bölge kayıtları korunur, eski config yedeklenir. `/arena lobi ayarla` ile kendi yerini yine seçebilirsin. Lobi pusulası envanterden açılır ve diğer oyun lobilerine geçiş içerir. Başlamış 1v1/2v2 maçını terk etmek Arena'ya 15 dakika giriş cezası verir; sürekli X Arena'dan çıkış cezasızdır.

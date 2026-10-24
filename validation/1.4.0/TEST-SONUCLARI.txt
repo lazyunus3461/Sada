@@ -1,0 +1,42 @@
+Paper 1.21.10 build 130 / Java 21 — loopback test sunucusu.
+Kullanıcının gerçek sunucusuna yükleme yapılmadı.
+
+Değişen dokuz modülün 106 birim testi geçti. Arena davranışı iki gerçek
+Minecraft protokol bağlantısı ve yalnız testteki olay/konum yardımcılarıyla sınandı.
+Birim kapsamı: ceza süresi ve diskte korunması, oyun/oyuncu ayrımı,
+bozuk dosyayı koruma, pist geometrisi/viraj hızı, tur-kapı akışı,
+ganimet ve yedek kalp kuralları, rol/görev kuralları, aktiflik/hapis süreleri.
+
+Canlı kontroller (ayrıntılar BELGELER/test-results.json):
+- Pusulayı E envanterinden açma, altı oyun lobisinden doğrudan diğerine geçiş,
+  normal eşya yedeğinin geri gelmesi, kazanç rehberi ve bilgi kitabı.
+- Şans Yolu lobisinin altına düşüşte geri alma; 15 saniyelik geri sayımın
+  yalnız o oda üyelerine görünmesi; son oyuncunun kazanıp lobiye dönmesi.
+- Yarıda bırakma, bağlantı kesme, doğrudan tekrar kuyruk denemesi ve sunucu
+  yeniden açılmasıyla cezanın aşılamaması; diğer oyunlara erişim sürmesi.
+- Bekleme ve normal bitiş cezasız; yöneticinin cezayı kaldırması, hapse
+  zorunlu çıkarma ve aktif yarışta sunucu kapanışının cezasız olması.
+- At ve tekne için altı kapının iki tur boyunca gerçek tur algılayıcısıyla
+  geçilmesi; bitişte herkesin biniksiz lobiye dönmesi. Bir oyuncunun ilk
+  dönüşünü başka dinleyici engellediğinde tekrar denenmesi.
+- Yeni engellerin varlığı, eski engellerin ayak izlerinin temizlenmesi,
+  tekne yolunun kapılara bağlı olması, atların birbirini iki yana itmesi,
+  at/tekne kenar hız sınırı ve pist dışından kontrol noktasına dönüş.
+- Arena/Yarış çakışmasında yalnız lobi konumunun ayrılması, maç doğmalarının
+  korunması, boş dünyada uzun doğal spawn araması olmaması; yeni Arena
+  dünyasının yeniden yüklenip Multiverse ile de erişilebilmesi.
+- X Arena görünmezliğinde rakibin aldığı gerçek ekipman paketlerinin boş
+  olması; eşya değişimi ve paket demetinin de gizlenmesi; gerçek envanterin
+  korunması; süre bitimi, lobiye çıkış ve ölümde görünümün geri gelmesi.
+  Görünmez oyuncu halen vurulabilir, varlığı diğer istemciden silinmez.
+- X Arena son hasardan 10 saniye önce yenilenmez, sonra yarım kalp yenilenir;
+  arada beceri kullanmak sayacı ertelemez, alınan yeni hasar baştan saydırır.
+- İki kişilik yönetici BR denemesinde 192 sandık, en yakın çift 12 blok,
+  138 dış alan sandığı. Sandık açma çalışır; yoğunluk yeniden başlatmada
+  tekrar azaltılmaz. Her maç rastgele dağılım nedeniyle adet/konum değişebilir.
+
+Paket kontrolü: 13 üretim JAR'ı test sunucusundaki dosyalarla byte byte
+karşılaştırılır. Test yardımcıları, hesap dosyaları ve çalışan sunucu dünyaları
+ZIP'e eklenmez. Gömülü kaynak haritalar korunur. JAR ve ZIP bütünlüğü ve SHA256
+manifesti kontrol edilir. Oyun içi insan kontrollü tam parkur sürüşü yapılmadı;
+orta zorluk ve sürüş hissi oyuncu testiyle değerlendirilebilir.

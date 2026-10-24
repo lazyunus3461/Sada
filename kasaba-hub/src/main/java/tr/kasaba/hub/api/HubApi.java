@@ -12,4 +12,9 @@ public interface HubApi {
     default boolean socialArea(UUID player){return mainLobby(player);}
     default boolean gameplay(UUID player){return playing(player)&&!socialArea(player);}
     void returnToLobby(UUID player);
+    default void returnToLobbyForced(UUID player){returnToLobby(player);}
+    default void abandon(UUID player){}
+    default void requireGameEntry(UUID player,String game){}
+    default void openGames(UUID player){}
+    default boolean transferring(UUID player){return false;}
 }
