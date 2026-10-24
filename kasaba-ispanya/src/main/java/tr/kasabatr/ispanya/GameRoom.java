@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
 
 final class GameRoom {
-    final KasabaIspanyaPlugin plugin;final int id;
+    final UUID resultId=UUID.randomUUID();final KasabaIspanyaPlugin plugin;final int id;
     final LinkedHashSet<UUID> members=new LinkedHashSet<>();
     final Map<UUID,Integer> positions=new LinkedHashMap<>(),points=new LinkedHashMap<>(),skippedTurns=new HashMap<>(),missedRolls=new HashMap<>();
     final List<UUID> finished=new ArrayList<>();final Map<UUID,Scoreboard> previousBoards=new HashMap<>();

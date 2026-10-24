@@ -1,0 +1,70 @@
+KasabaTR 1.5.0 — Paper 1.21.10 / Java 21
+
+KURULUM
+1. Sunucuyu durdur ve mevcut plugins/dünya dosyalarının yedeğini al.
+2. ZIP içindeki plugins JAR'larını yükle. Aynı eklentinin eski JAR'ını kaldır;
+   her eklentiden yalnız bir sürüm kalsın.
+3. Veri klasörlerini, config dosyalarını, oyuncu/para/ada kayıtlarını ve
+   dünyaları SİLME. Yeniden başlat; /reload kullanma.
+4. Yeni yarış dünyası JAR içinden otomatik kurulur. Dünya ZIP'i ayrıca gerekmez.
+
+YARIŞLAR
+- At ve tekne lobisi ortaktır ve kapalıdır; pistlere yürüyerek girilemez.
+- İki pistin merkezi arasında 740 blok var. Pist genişliği 14 blok.
+- İç/dış duvarlar bütün viraj boyunca kapalı; açık köşeden kestirme yok.
+- İlk tekne engeli başlangıçtan yaklaşık 95 blok ileridedir. Diğer engeller
+  düzlüklere ve virajlara dağıtıldı; başlangıca yığılmadı.
+- Varsayılan eski dünya yerine KasabaTR-Yaris-Arenasi-v02 kullanılır.
+  Eski v01 dünya silinmez. Önceki config ve race-map dosyaları
+  plugins/KasabaYaris içinde .before-spaced-v2 uzantısıyla yedeklenir.
+- Özel adla kurduğun yarış dünyaları otomatik değiştirilmez.
+
+RENK KAÇIŞI
+- Lobi cam korkuluklu; dışına/altına kaçan oyuncu güvenli yere alınır.
+- Yanlış renkten veya kartopuyla düşen kişi anında ışınlanmaz. Düşüşü
+  görür; yaklaşık 12 blok aşağı indikten sonra gözlem noktasına döner.
+- Düşüş sürerken yeni tur başlamaz, hak yalnız bir kez gider.
+
+BATTLE ROYALE
+- Mevcut lobi noktası korunarak erzak çadırları, paraşütlü ikmal paleti,
+  kasalar, uyarı şeritleri ve aydınlatmadan oluşan hazırlık kampı yapılır.
+- Savaş adası, oda doğmaları, sandık dağılımı ve koruma kayıtları korunur.
+
+BİLGİ YAZILARI VE İLK 5 TABLOLARI
+- Arena, At Yarışı, Tekne Yarışı, Battle Royale, Şans Yolu, Renk Kaçışı
+  ve Vampir Köylü lobilerinde renkli bilgi yazıları bulunur.
+- Arena tablosu X Arena öldürmelerini gösterir. Önceki toplamlar korunur.
+- Diğer altı tablonun ölçütü galibiyettir. At/Tekne ortak lobide ayrı
+  tablolara sahiptir. BR ve VK kazanan takım/taraf üyelerini sayar.
+- Yeni galibiyet kayıtları bu güncellemeden itibaren tutulur; eski
+  eklentilerde kaydı bulunmayan geçmiş galibiyetler uydurulmaz.
+- Yönetici denemesi, iptal, kapanış ve berabere sonuç puan vermez.
+- Tablolarda ilk 5 yer her zaman görünür; henüz oyuncu yoksa — yazar.
+- Adanı Yap tercihin doğrultusunda liderliğin dışındadır.
+- Kayıt plugins/KasabaHub/liderlik.properties içinde kalıcıdır.
+  Yeniden başlatmak skorları silmez. Aynı maç iki kez sayılmaz.
+
+KOMUTLAR
+/oyunlar                   Oyun lobilerini seç.
+/yaris                     At/Tekne seç; açık odaları gör.
+/yaris oluştur at          At yarışı odası aç.
+/yaris oluştur tekne       Tekne yarışı odası aç.
+/yaris katıl 101           Örnek odaya gir.
+/yaris başlat              En az 2 kişiyle oda sahibi başlatır.
+/yaris ayrıl               Ortak yarış lobisine dön.
+/renk                      Renk Kaçışı odaları.
+/renk oda 1                Odaya gir; 1–3 oda vardır.
+/renk başlat               En az 2 kişiyle başlat.
+/renk lobi                 Renk ortak lobisine dön.
+/br                        Battle Royale menüsü.
+/vk                        Vampir Köylü menüsü.
+/sansyolu                  Şans Yolu menüsü.
+/arena                     Arena menüsü.
+/lobi                      Ana spawna dön.
+/kazanç                    Balık/aktiflik Akçe kazancını öğren.
+/oyunceza                  Kalan oyun giriş cezasını gör.
+/oyunceza kaldır Oyuncu    Yönetici: ceza sıfırla.
+
+Önceki 1.4.0 düzeltmeleri de var: X Arena görünmez ekipmanları,
+10 saniye hasarsız can yenileme, iki tur sonrası güvenli dönüş,
+yarıda bırakmaya 15 dakika ceza ve lobiler arasında pusula geçişi.

@@ -1,0 +1,136 @@
+{
+  "checks": [
+    "All seven competitive games register colored information banners and five-place leaderboards; Adanı Yap is excluded",
+    "Managed race layout migrates to separate wide courses, preserves old world and keeps lobby visitors out of both tracks",
+    "At Yarışı completes two laps on the new course, returns both riders and records exactly one win",
+    "Tekne Yarışı completes two laps on the new course, returns both riders and records exactly one win",
+    "Chance Path keeps its existing lobby style and records the last-player victory in its persistent top five",
+    "Renk lobby is guarded; falling stays visible below the board before observer return, consumes one life and yields a real winner",
+    "Battle Royale camp remains playable and the winning team is counted once after actual elimination",
+    "Arena imports prior kill totals and new X Arena kills update its lobby leaderboard",
+    "Normal six-player VK faction wins reach the top five without exposing roles in lobby information",
+    "Final exact JARs reload together; all seven leaderboards and the new race world survive restart"
+  ],
+  "layout": {
+    "boatStart": -445.5,
+    "lobbySide": "POLISHED_DEEPSLATE",
+    "horseStart": 295.5,
+    "world": "KasabaTR-Yaris-Arenasi-v02",
+    "lobbyRoof": "SEA_LANTERN",
+    "oldWorldExists": true,
+    "version": 3
+  },
+  "visibleFall": true,
+  "stats": {
+    "arena": [
+      {
+        "score": 1,
+        "name": "U4Fkjh5hB"
+      },
+      {
+        "score": 1,
+        "name": "U5Qtvi49A"
+      }
+    ],
+    "battle": [
+      {
+        "score": 1,
+        "name": "U5PtslhjB"
+      },
+      {
+        "score": 1,
+        "name": "U5Qtvi49A"
+      }
+    ],
+    "vampirkoylu": [
+      {
+        "score": 1,
+        "name": "U5Qtvi49A"
+      },
+      {
+        "score": 1,
+        "name": "U5Qtvi49B"
+      },
+      {
+        "score": 1,
+        "name": "U5tvi49C"
+      },
+      {
+        "score": 1,
+        "name": "U5tvi49D"
+      },
+      {
+        "score": 1,
+        "name": "U5tvi49F"
+      }
+    ],
+    "ispanya": [
+      {
+        "score": 1,
+        "name": "U5tpg2pA"
+      }
+    ],
+    "renk": [
+      {
+        "score": 1,
+        "name": "U5PtslhjA"
+      }
+    ],
+    "atyarisi": [
+      {
+        "score": 1,
+        "name": "U5tpg2pA"
+      }
+    ],
+    "tekneyarisi": [
+      {
+        "score": 1,
+        "name": "U5tpg2pA"
+      }
+    ]
+  },
+  "names": [
+    "U5Qtvi49A",
+    "U5Qtvi49B"
+  ],
+  "restart": true,
+  "finalLayout": {
+    "world": "KasabaTR-Yaris-Arenasi-v02",
+    "boatStart": -445.5,
+    "horseStart": 295.5,
+    "oldWorldExists": true,
+    "version": 3,
+    "lobbyRoof": "SEA_LANTERN",
+    "lobbySide": "POLISHED_DEEPSLATE",
+    "borderSize": 1200
+  },
+  "finalArtifactsSmoke": true,
+  "map": {
+    "boat": {
+      "reachable_with_3_by_3_clearance": 10354,
+      "all_six_checkpoints": true,
+      "interior_shortcut": false
+    },
+    "horse": {
+      "reachable_with_3_by_3_clearance": 10712,
+      "all_six_checkpoints": true,
+      "interior_shortcut": false
+    },
+    "lobby": {
+      "enclosed": true,
+      "connected_to_courses": false,
+      "walkable": 2455
+    }
+  },
+  "unit": {
+    "tests": 102,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "platform": {
+    "server": "Paper 1.21.10 build 130",
+    "java": "Temurin 21.0.9",
+    "scope": "Isolated loopback protocol clients with test-only event/position fixtures; no user deployment"
+  }
+}

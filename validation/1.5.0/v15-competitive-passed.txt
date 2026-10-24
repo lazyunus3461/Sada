@@ -1,0 +1,3 @@
+PASS Battle Royale camp remains playable and the winning team is counted once after actual elimination
+PASS Arena imports prior kill totals and new X Arena kills update its lobby leaderboard
+PASS Normal six-player VK faction wins reach the top five without exposing roles in lobby information

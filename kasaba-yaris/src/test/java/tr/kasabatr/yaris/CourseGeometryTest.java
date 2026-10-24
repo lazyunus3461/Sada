@@ -15,4 +15,10 @@ class CourseGeometryTest {
   assertTrue(Math.abs(CourseGeometry.at(190,270,0).lateral())>12.5);
   assertTrue(Math.abs(CourseGeometry.at(190,190,64).lateral())>7);
  }
+ @Test void widenedCoursesHaveContinuousBendsAndASeparatedInterior(){
+  for(double center:new double[]{-370,370}){
+   for(double theta=0;theta<Math.PI*2;theta+=.05){double bend=center+(Math.cos(theta)>=0?90:-90);double x=bend+Math.cos(theta)*80,z=Math.sin(theta)*80;assertEquals(0,CourseGeometry.at(center,90,80,80,x,z).lateral(),.00001);}
+   assertTrue(Math.abs(CourseGeometry.at(center,90,80,80,center,0).lateral())>8);
+  }
+ }
 }

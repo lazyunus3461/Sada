@@ -17,4 +17,7 @@ public interface HubApi {
     default void requireGameEntry(UUID player,String game){}
     default void openGames(UUID player){}
     default boolean transferring(UUID player){return false;}
+    default void presentLobby(Plugin owner,String game,org.bukkit.Location spawn,String title,java.util.List<String> lines,String metric){}
+    default void recordGameResult(Plugin owner,String game,UUID match,java.util.Collection<UUID> winners){}
+    default void setGameScore(Plugin owner,String game,UUID player,String name,long score){}
 }

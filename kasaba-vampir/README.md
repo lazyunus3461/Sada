@@ -178,3 +178,7 @@ açıklanmaz. Başka oyuncunun oyu, açık menünün düğmelerini geçersiz kı
 ## 1.3.3
 
 Lobi pusulası envanterden de açılır. Ortak lobi ve bekleme odasındaki **Oyun lobileri** diğer oyunlara doğrudan geçiş sağlar. Devam eden maçta hayatta olan oyuncu maçı terk ederse yalnız Vampir Köylü'ye 15 dakika giriş cezası alır. Bekleme odasından ayrılma, elenmiş oyuncunun çıkışı, normal bitiş ve zorunlu yönetici/cezaevi çıkışı cezasızdır.
+
+## 1.3.4
+
+Ortak lobiye renkli oyun bilgisi ve galibiyet ilk 5 tablosu eklendi. Normal maçta kazanan tarafın oyunda kalan üyeleri birer galibiyet alır; doktor/kahin/avcı köylü tarafındadır. Yönetici denemesi, iptal ve kapanış puan vermez. Gizli roller tabloda yayımlanmaz.

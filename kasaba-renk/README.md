@@ -78,3 +78,7 @@ Her tur 1. kutuya 8 kartopu gelir; sağ tıkla atılır, iki saniye aralık vard
 ## 1.3.0
 
 Pusulaya envanterden tıklamak menüyü açar. Güvenli lobide **Oyun lobileri** ile doğrudan başka oyun lobisine geçilir. Devam eden normal maçı terk eden oyuncu Renk Kaçışı'na 15 dakika giremez; bekleme ve deneme odaları cezasızdır. Tamamen elenen seyirci oyundan ayrılabilir.
+
+## 1.4.0
+
+Lobiye cam korkuluklar ve düşeni geri alan sınır koruması eklendi. Yanlış renkten düşen veya kartopuyla atılan kişi anında ışınlanmaz: düşüşü görür, yaklaşık 12 blok aşağı indikten sonra gözlem noktasına alınır. Düşüş beklerken hak yalnız bir kez eksilir ve yeni tur başlamaz. Lobi bilgi yazısı ve galibiyet ilk 5 tablosu vardır; yönetici denemeleri puan vermez.

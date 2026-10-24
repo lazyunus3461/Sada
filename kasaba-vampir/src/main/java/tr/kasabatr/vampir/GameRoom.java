@@ -717,10 +717,12 @@ final class GameRoom {
         return player == null ? uUID.toString().substring(0, 8) : player.getName();
     }
 
+    private final UUID resultId=UUID.randomUUID();
     void finish(Boolean bl, String string) {
         if (this.phase == Phase.FINISHED) {
             return;
         }
+        if(bl!=null&&!demo&&startingPlayers>=4)plugin.result(resultId,members.stream().filter(id->(roles.get(id)==Role.VAMPIRE)==bl).toList());
         this.phase = Phase.FINISHED;
         this.announce("§6Maç bitti: " + string);
         for (Corpse corpse : this.corpses.values()) {

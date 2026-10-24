@@ -87,7 +87,7 @@ TabExecutor {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();screens=new GameScreens(this);
-        try{EmbeddedWorld.install(this,getConfig().getString("template-world"));}catch(Exception e){getLogger().log(java.util.logging.Level.SEVERE,"Yarış haritası kurulamadı; mevcut veriler korunuyor.",e);Bukkit.getPluginManager().disablePlugin(this);return;}
+        try{RaceLayout.prepare(this);EmbeddedWorld.install(this,getConfig().getString("template-world"));}catch(Exception e){getLogger().log(java.util.logging.Level.SEVERE,"Yarış haritası kurulamadı; mevcut veriler korunuyor.",e);Bukkit.getPluginManager().disablePlugin(this);return;}
         this.menuItemKey = new NamespacedKey(this, "race_menu");
         File file = new File(this.getDataFolder(), "race-map.yml");
         if (!file.isFile()) {
@@ -123,7 +123,8 @@ TabExecutor {
                 this.getLogger().severe("Harita yüklenemedi: " + runtimeException.getMessage());
             }
         }
-        RaceObstacles.install(this,Bukkit.getWorld(this.map.worldName));
+        if(getConfig().getInt("layout-version",0)>=3){World publicTrack=Bukkit.getWorld(map.worldName);if(publicTrack!=null){publicTrack.getWorldBorder().setCenter(.5,.5);publicTrack.getWorldBorder().setSize(1200);}}
+        if(getConfig().getInt("layout-version",0)<3)RaceObstacles.install(this,Bukkit.getWorld(this.map.worldName));
         this.hub = Bukkit.getServicesManager().load(HubApi.class);
         if (this.hub == null) {
             this.getLogger().severe("KasabaHub API bulunamadı.");
@@ -140,9 +141,11 @@ TabExecutor {
             return;
         }
         Bukkit.getPluginManager().registerEvents(this, this);
+        presentLobbies();
         this.getCommand("yaris").setExecutor(this);
         this.getCommand("yaris").setTabCompleter(this);
         Bukkit.getScheduler().runTaskTimer((Plugin)this, () -> {
+            for(Player p:Bukkit.getOnlinePlayers())if(lobby(p.getUniqueId())&&p.getWorld()==Bukkit.getWorld(map.worldName)&&!insideLobby(p.getLocation())){p.setVelocity(new org.bukkit.util.Vector());p.setFallDistance(0);teleportInternal(p,safeLobbyPoint(p.getWorld()));}
             for (RaceRoom raceRoom : List.copyOf(this.rooms.values())) {
                 try{raceRoom.tick();}catch(RuntimeException ex){getLogger().log(java.util.logging.Level.SEVERE,"Yarış odası güvenle kapatılıyor: "+raceRoom.id,ex);closeRoom(raceRoom);}
             }
@@ -317,6 +320,10 @@ TabExecutor {
         }
         throw new IllegalStateException("Yarış lobisinde güvenli zemin bulunamadı.");
     }
+
+    private boolean insideLobby(Location at){Location center=map.lobby.at(at.getWorld());double halfX=getConfig().getInt("layout-version",0)>=3?26:11,halfZ=getConfig().getInt("layout-version",0)>=3?22:11;return Math.abs(at.getX()-center.getX())<=halfX&&Math.abs(at.getZ()-(getConfig().getInt("layout-version",0)>=3?.5:center.getZ()))<=halfZ&&at.getY()>=center.getY()-1&&at.getY()<=center.getY()+10;}
+    private void presentLobbies(){World world=Bukkit.getWorld(map.worldName);if(world==null||hub==null)return;Location spawn=map.lobby.at(world);hub.presentLobby(this,GAME_ID,spawn.clone().add(14,0,-16),"AT YARIŞI",List.of("§ePusuladan açık odaları seç §8• §b2–5 kişi","§7İki tur §8• §aAtlama, su ve zikzak geçişler"),"GALİBİYET");hub.presentLobby(this,BOAT_ID,spawn.clone().add(-14,0,-16),"TEKNE YARIŞI",List.of("§ePusuladan açık odaları seç §8• §b2–5 kişi","§7İki tur §8• §bŞamandıralar ve geniş su parkuru"),"GALİBİYET");}
+    void result(UUID match,Mode mode,UUID winner){hub.recordGameResult(this,mode==Mode.BOAT?BOAT_ID:GAME_ID,match,List.of(winner));}
 
     private void prepareLobby(Player player, World world) {
         if(tr.kasaba.hub.api.NetworkFeatures.get()!=null)tr.kasaba.hub.api.NetworkFeatures.get().beforeGame(player);screens.clear(player.getUniqueId());player.closeDialog();player.setItemOnCursor(null);player.setAbsorptionAmount(0);player.setGravity(true);player.setFlying(false);player.setAllowFlight(false);

@@ -126,3 +126,7 @@ Sonradan değiştirdiğin ganimetler **yeni maçların** sandıklarına yansır.
 ## 1.1.3
 
 Sandık yoğunluğu önceki ayarın %80'ine indirilir; 250×250 ganimet alanı ve en az 12 blok aralık korunur. Varsayılan hedef en az 192 sandık veya oyuncu başına 12,8 adettir; güvenli konum ve mesafe nedeniyle gerçek sayı daha az olabilir. `loot-density-version: 1` tek seferlik geçişi kaydeder; aktif maçlar değişmez. Lobi pusulası envanterden açılır; diğer oyun lobilerine doğrudan geçiş bulunur. Canlı oyuncu aktif maçı terk ederse BR'ye 15 dakika giriş cezası alır; elenenlerin çıkışı serbesttir.
+
+## 1.2.0
+
+Mevcut BR lobi doğma noktası korunarak koruma alanının içine hazırlık kampı eklenir: erzak çadırları, ikmal paraşütü, ahşap kasalar, uyarı şeritleri ve aydınlatma. Oyun alanına/ganimete dokunulmaz. Renkli bilgi yazısı ve galibiyet ilk 5 tablosu bulunur; kazanan takımın bütün üyelerine birer galibiyet yazılır. Yönetici durdurması ve berabere bitiş puan vermez.

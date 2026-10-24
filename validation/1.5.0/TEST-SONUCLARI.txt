@@ -1,0 +1,43 @@
+KasabaTR 1.5.0 doğrulama — Paper 1.21.10 build 130 / Java 21.
+İzole yerel test sunucusu; kullanıcının gerçek sunucusuna yükleme yapılmadı.
+
+Değişen yedi modülün 102 birim testi geçti. Yeni liderlik deposunda oyun
+ayrımı, takım üyelerinin sayılması, aynı maçın tekrar işlenmemesi, diskte
+korunma, kararlı ilk 5 sıralama ve bozuk dosyayı koruma test edildi.
+
+Yeni yarış dünyası için kaynak blok verisi üzerinde:
+- İç/dış duvarların kapattığı pistte üç blok genişliğinde güvenli geçişle
+  altı kontrol noktasının hepsine erişim doğrulandı (her iki pist).
+- İç bölgeden kestirme bulunmadı. Kapalı lobinin yürünebilir bölümü
+  pistlere bağlı değil. Yarış pistleri 740 blok aralıklı.
+- İlk tekne engeli başlangıçtan yaklaşık 95 blok sonra.
+
+Gerçek Minecraft protokol bağlantıları ve yalnız teste ait olay/konum
+araçlarıyla canlı kontroller:
+- Yedi oyunun bilgi kartları ve ilk 5 tabloları göründü; Adanı Yap hariç.
+- Varsayılan yarış dünyası v02'ye geçti; v01 dünya ve ayar yedekleri korundu.
+  Zorla pist tarafına alınan lobi ziyaretçisi güvenli lobiye geri döndü.
+- At ve tekne için altı kontrol noktası iki tur boyunca gerçek tur
+  algılayıcısıyla işlendi; oyuncular lobiye döndü, bir galibiyet yazıldı.
+  Aynı maç sonucu yeniden gönderilince ikinci kez sayılmadı.
+- Şans Yolu son kalan oyuncunun galibiyetini yazdı.
+- Renk lobisinin altına/dışına alınan oyuncu geri döndü. Oyuncu y=75'te
+  hâlâ düşüşte kaldı; y=67'ye indikten ve asgari süre geçtikten sonra gözlem
+  noktasına döndü. İki ayrı turdaki iki hata sonunda kalan oyuncu kazandı.
+- BR kampı yüklendi; gerçek öldürücü hasarla elenen oyuncunun ardından
+  kazanan takımın galibiyeti doğru tabloya yazıldı.
+- X Arena'da öldürme eski kayıtlarla birleşip Arena tablosuna yansıdı.
+- Altı kişilik normal VK maçının kazanan köylü tarafı gerçek bitiş akışından
+  geçirildi; kazanan üyeler birer galibiyet aldı. Gizli roller tabloda yok.
+- Tam yeniden başlatmada yedi sıralama aynı kaldı; beş sıra ve bilgi
+  kartları yeniden göründü. Yeni pist dünyası ve dünya sınırı doğrulandı.
+
+Sınırlar: Protokol istemcileriyle tur/oda ve düşüş akışı test edildi;
+insanın klavye ile tam parkuru sürmesi ve zorluk hissi değerlendirmesi
+bu ortamda yapılmadı. VK sonucu test aracıyla normal bitiş koşuluna
+getirildi; altı kişinin baştan sona sosyal tartışması simüle edilmedi.
+
+Dağıtım: 13 üretim JAR'ı, test sunucusundaki dosyalarla birebir
+karşılaştırılır; JAR/ZIP CRC ve SHA256 manifesti doğrulanır. Test eklentileri,
+oyuncu kayıtları ve çalışan sunucu dünyaları pakete konmaz. Yeni yönetilen
+harita JAR içindedir; eski yüklenen harita kaynakları da korunur.

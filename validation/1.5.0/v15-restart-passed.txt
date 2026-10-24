@@ -1,0 +1,1 @@
+PASS All seven lifetime rankings survive restart; five places and colored information banners reappear without duplicate cards

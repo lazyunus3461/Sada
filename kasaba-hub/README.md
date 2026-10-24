@@ -103,3 +103,7 @@ Ana lobide oyun pusulasının yanında geçici yazılı kitap verilir. Sağ tık
 ## 1.5.0
 
 Güvenli oyun lobileri arasında doğrudan pusula geçişi ve envanterden menü eşyası açma desteği. `/kazanç` sayfası ana menüdedir. Başlayan maçı terk eden oyuncunun o oyuna girişini 15 dakika engeller; `mac-cezalari.properties` atomik saklanır ve yeniden başlatmada korunur. Bekleme, normal bitiş, tamamen elenen oyuncu, zorunlu hapis/yönetici çıkışı ve sunucu kapanışı cezasızdır. Sürekli X Arena bu cezanın dışındadır. `/oyunceza` durum; `/oyunceza kaldır Oyuncu [at|tekne|sansyolu|renk|arena|br|vk]` yönetici sıfırlamasıdır. Bozuk ceza dosyası üzerine yazılmaz; düzeltildikten sonra `/merkez yenile` yeniden okur.
+
+## 1.6.0
+
+Yedi rekabetçi oyun için renkli bilgi yazıları ve kalıcı ilk 5 liderlik tablosu. `liderlik.properties` oyun başına kayıt tutar; maç kimliği tekrar işlense de galibiyet iki kez yazılmaz. Eşit skorda isim sırasına göre kararlı sıralama vardır. Tablolar yalnız lobilerdedir ve geçici maç kopyalarına taşınmaz. Adanı Yap kullanıcı tercihiyle liderliğin dışındadır. Galibiyetler bu güncellemeden itibaren sayılır; Arena'nın önceki öldürme toplamları korunur.

@@ -39,10 +39,12 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     private DestinationStore destinations;
     private Map<String,DestinationStore.Destination> savedGames=Map.of();
     private LobbyItems items;
+    private LeaderboardStore leaderboards;private LobbyDisplays lobbyDisplays;private boolean leaderboardReady;
     private boolean storageFailed,stopping,penaltyStorageReady;private MatchPenalties penalties;private final Set<UUID> forcedLeaves=new HashSet<>(),transferring=new HashSet<>();
 
     @Override public void onEnable(){
         saveDefaultConfig();store=new LobbyStore(getDataFolder().toPath().resolve("lobi.yml"));destinations=new DestinationStore(getDataFolder().toPath().resolve("oyunlar.yml"));
+        leaderboards=new LeaderboardStore(getDataFolder().toPath().resolve("liderlik.properties"));try{leaderboards.load();leaderboardReady=true;}catch(IOException e){getLogger().log(Level.SEVERE,"Liderlik kaydı bozuk; oyunlar açık, dosya korunuyor.",e);}lobbyDisplays=new LobbyDisplays(leaderboards);
         penalties=new MatchPenalties(getDataFolder().toPath().resolve("mac-cezalari.properties"));
         try{penalties.load();penaltyStorageReady=true;settings=HubSettings.read(getDataFolder().toPath().resolve("config.yml"));lobby=store.load();replaceDestinations(destinations.load());}
         catch(IOException e){storageFailed=true;getLogger().log(Level.SEVERE,"Hub ayarları okunamadı; dosyalar korundu. Düzeltip /merkez yenile kullan.",e);}
@@ -50,10 +52,12 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
         for(String name:List.of("merkez","oyunlar","grup","lobi","rehber","oyunceza"))Objects.requireNonNull(getCommand(name)).setTabCompleter(this);
         Bukkit.getServicesManager().register(HubApi.class,this,this,ServicePriority.Normal);
         Bukkit.getScheduler().runTaskTimer(this,parties::prune,100,100);
+        Bukkit.getScheduler().runTaskTimer(this,lobbyDisplays::refresh,40,40);
+        Bukkit.getScheduler().runTaskTimer(this,()->{try{if(leaderboardReady)leaderboards.save();}catch(IOException e){getLogger().log(Level.SEVERE,"Liderlik kaydı yeniden denenecek.",e);}},1200,1200);
         Bukkit.getScheduler().runTaskTimer(this,()->{try{if(penaltyStorageReady)penalties.save();}catch(IOException e){getLogger().log(Level.WARNING,"Maç cezası dosyası kaydedilemedi; bellek kaydı korunuyor.",e);}},1200,1200);
         Bukkit.getScheduler().runTaskTimer(this,()->Bukkit.getOnlinePlayers().forEach(items::refresh),1,20);
     }
-    @Override public void onDisable(){stopping=true;try{if(penaltyStorageReady)penalties.save();}catch(IOException e){getLogger().log(Level.SEVERE,"Maç cezaları kaydedilemedi.",e);}
+    @Override public void onDisable(){stopping=true;if(lobbyDisplays!=null)lobbyDisplays.close();try{if(leaderboardReady)leaderboards.save();}catch(IOException e){getLogger().log(Level.SEVERE,"Liderlik kaydı saklanamadı.",e);}try{if(penaltyStorageReady)penalties.save();}catch(IOException e){getLogger().log(Level.SEVERE,"Maç cezaları kaydedilemedi.",e);}
         Set<UUID> ownedPages=Set.copyOf(pages.keySet());pages.clear();travel.clear();navigation.clear();editors.clear();Bukkit.getServicesManager().unregisterAll(this);
         for(UUID id:new ArrayList<>(playing.keySet()))detach(id);games.clear();
         if(items!=null)Bukkit.getOnlinePlayers().forEach(items::forget);
@@ -257,7 +261,7 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     private void detach(UUID id){abandon(id);Entry entry=playing.remove(id);if(entry!=null&&entry.owner().isEnabled())try{entry.game().leave(id);}catch(RuntimeException e){getLogger().log(Level.WARNING,"Oyun çıkışı başarısız: "+entry.info().id(),e);}}
     private void mainThread(){if(!Bukkit.isPrimaryThread())throw new IllegalStateException("Hub API ana iş parçacığından kullanılmalı.");}
     @Override public void register(Plugin owner,HubGame game){mainThread();Objects.requireNonNull(owner);Objects.requireNonNull(game);if(!owner.isEnabled())throw new IllegalArgumentException("Oyun eklentisi etkin değil.");GameInfo info=Objects.requireNonNull(game.info());if(games.containsKey(info.id()))throw new IllegalArgumentException("Bu oyun kimliği zaten kayıtlı; komutla eklenmiş giriş varsa önce /oyunlar sil "+info.id());games.put(info.id(),new Entry(owner,game,info));}
-    @Override public void unregister(Plugin owner,String id){mainThread();Entry entry=games.get(id);if(entry==null)return;if(entry.owner()!=owner)throw new IllegalArgumentException("Başka eklentinin oyunu kaldırılamaz.");games.remove(id);for(UUID player:new ArrayList<>(playing.keySet()))if(playing.get(player)==entry)returnToLobbyForced(player);}
+    @Override public void unregister(Plugin owner,String id){mainThread();Entry entry=games.get(id);if(entry==null)return;if(entry.owner()!=owner)throw new IllegalArgumentException("Başka eklentinin oyunu kaldırılamaz.");games.remove(id);if(lobbyDisplays!=null)lobbyDisplays.remove(id);for(UUID player:new ArrayList<>(playing.keySet()))if(playing.get(player)==entry)returnToLobbyForced(player);}
     @Override public boolean mainLobby(UUID id){Player p=Bukkit.getPlayer(id);return p!=null&&authenticated(p)&&!playing.containsKey(id)&&inLobby(p.getLocation());}
     @Override public boolean socialArea(UUID id){Player p=Bukkit.getPlayer(id);if(p==null||!authenticated(p))return false;if(mainLobby(id))return true;Entry entry=playing.get(id);return entry!=null&&entry.game().lobby(id);}
     @Override public boolean playing(UUID player){mainThread();return playing.containsKey(player);}
@@ -265,6 +269,10 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
     @Override public void abandon(UUID id){mainThread();Entry entry=playing.get(id);if(stopping||Bukkit.isStopping()||forcedLeaves.contains(id)||entry==null||!entry.owner().isEnabled()||!entry.game().penaltyEligible(id))return;try{if(penalties.ban(id,entry.game().penaltyKey(id),System.currentTimeMillis())){Player p=Bukkit.getPlayer(id);if(p!=null)tell(p,"Maçı yarıda bıraktın: bu oyuna 15 dakika giremezsin.");}}catch(IOException e){getLogger().log(Level.SEVERE,"Maç cezası bellekte korundu; disk kaydı yeniden denenecek.",e);}}
     @Override public void requireGameEntry(UUID id,String game){mainThread();long left=penalties.remaining(id,game,System.currentTimeMillis());if(left>0){long seconds=(left+999)/1000;throw new IllegalArgumentException("Bu oyunu yarıda bıraktın. Yeniden girişe "+seconds/60+" dk "+seconds%60+" sn var.");}}
     @Override public void returnToLobbyForced(UUID id){forcedLeaves.add(id);try{returnToLobby(id);}finally{forcedLeaves.remove(id);}}
+    private void ownsGame(Plugin owner,String game){mainThread();Entry entry=games.get(game);if(entry==null||entry.owner()!=owner)throw new IllegalArgumentException("Bu oyunun liderliğini yalnız kendi eklentisi yönetebilir.");}
+    @Override public void presentLobby(Plugin owner,String game,Location spawn,String title,List<String> lines,String metric){ownsGame(owner,game);if(spawn!=null&&spawn.getWorld()!=null)lobbyDisplays.present(game,spawn,title,lines,metric);}
+    @Override public void recordGameResult(Plugin owner,String game,UUID match,Collection<UUID> winners){ownsGame(owner,game);if(!leaderboardReady||stopping||Bukkit.isStopping())return;Map<UUID,String> names=new LinkedHashMap<>();for(UUID id:winners){String name=Bukkit.getOfflinePlayer(id).getName();names.put(id,name==null?"Oyuncu"+id.toString().substring(0,8):name);}try{leaderboards.result(game,match,names);lobbyDisplays.refresh();}catch(IOException e){getLogger().log(Level.SEVERE,"Liderlik bellekte saklandı; disk kaydı yeniden denenecek.",e);}}
+    @Override public void setGameScore(Plugin owner,String game,UUID player,String name,long score){ownsGame(owner,game);if(leaderboardReady){leaderboards.total(game,player,name,score);lobbyDisplays.refresh();}}
     @Override public boolean transferring(UUID id){return transferring.contains(id);}
     @Override public void openGames(UUID id){mainThread();Player p=Bukkit.getPlayer(id);if(p==null)return;ready(p);if(!socialArea(id))throw new IllegalArgumentException("Oyun lobilerini güvenli lobideyken seçebilirsin.");showGames(p,0);}
     @EventHandler(priority=EventPriority.MONITOR,ignoreCancelled=true) public void escaped(PlayerTeleportEvent e){UUID id=e.getPlayer().getUniqueId();Entry entry=playing.get(id);if(entry==null||!entry.game().penaltyEligible(id))return;Bukkit.getScheduler().runTask(this,()->{Player p=Bukkit.getPlayer(id);if(p!=null&&playing.get(id)==entry&&entry.game().penaltyEligible(id)&&!entry.game().containsMatch(id,p.getLocation())){abandon(id);returnToLobbyForced(id);}});}

@@ -1,0 +1,5 @@
+PASS All seven competitive games register colored information banners and five-place leaderboards; Adanı Yap is excluded
+PASS Managed race layout migrates to separate wide courses, preserves old world and keeps lobby visitors out of both tracks
+PASS At Yarışı completes two laps on the new course, returns both riders and records exactly one win
+PASS Tekne Yarışı completes two laps on the new course, returns both riders and records exactly one win
+PASS Chance Path keeps its existing lobby style and records the last-player victory in its persistent top five

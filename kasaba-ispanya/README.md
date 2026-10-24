@@ -124,3 +124,7 @@ konmaz. Gerçekleştirilen kontroller ve sınırları dağıtımdaki test kaydı
 ## 0.7.0
 
 Bekleme meydanının kenarları korkulukla kapalıdır; altına düşen oyuncu güvenli doğmaya geri alınır. Oda yeterli kişiye ulaşınca 15 saniyelik geri sayım yalnız o oda üyelerine üst çubukta görünür. Son kişi kaldığında kazanır ve üç saniye sonra Şans Yolu lobisine döner. Aktif maçı terk eden kişi yalnız bu oyuna 15 dakika giremez; ceza sunucu yeniden başlasa da devam eder. Bekleyen odadan ayrılmak ve normal bitiş cezasızdır. Güvenli pusulada **Oyun lobileri** bulunur; pusula envanterde tıklanınca da açılır.
+
+## 0.8.0
+
+Mevcut bilgi yazısı ortak görsel düzenle korunur ve yanına galibiyet ilk 5 tablosu gelir. Normal bitiş/son kalan oyuncu galibiyeti tek kez yazılır. Eski kalıcı yazılar yüklenince temizlenir; kopya yazılar birikmez.

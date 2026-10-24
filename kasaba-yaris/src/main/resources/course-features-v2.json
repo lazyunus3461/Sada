@@ -1,0 +1,95 @@
+[
+  {
+    "mode": "horse",
+    "kind": "jump",
+    "x": 380,
+    "z": 80,
+    "bendAngle": null
+  },
+  {
+    "mode": "horse",
+    "kind": "jump",
+    "x": 0,
+    "z": 0,
+    "bendAngle": 45
+  },
+  {
+    "mode": "horse",
+    "kind": "water",
+    "x": 405,
+    "z": -80,
+    "bendAngle": null
+  },
+  {
+    "mode": "horse",
+    "kind": "slalom",
+    "x": 335,
+    "z": -80,
+    "bendAngle": null
+  },
+  {
+    "mode": "horse",
+    "kind": "slalom",
+    "x": 305,
+    "z": -80,
+    "bendAngle": null
+  },
+  {
+    "mode": "horse",
+    "kind": "jump",
+    "x": 0,
+    "z": 0,
+    "bendAngle": 205
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": [
+      -350,
+      80
+    ],
+    "side": -1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": 45,
+    "side": 1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": -45,
+    "side": -1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": [
+      -345,
+      -80
+    ],
+    "side": 1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": [
+      -425,
+      -80
+    ],
+    "side": -1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": 225,
+    "side": 1
+  },
+  {
+    "mode": "boat",
+    "kind": "island",
+    "point": 135,
+    "side": -1
+  }
+]

@@ -45,6 +45,7 @@ final class RaceRoom {
     private int countdown;
     private int resultTicks;
     private long raceStartMillis;
+    private final UUID resultId=UUID.randomUUID();
     private final Map<String,Long> bumps=new java.util.HashMap<>();
 
     RaceRoom(KasabaYarisPlugin kasabaYarisPlugin, int n, Mode mode, Player player) {
@@ -110,7 +111,7 @@ final class RaceRoom {
             throw new IllegalStateException("En az " + this.plugin.minimum() + " oyuncu gerekli");
         }
         this.world = this.plugin.instances().create(this.id, this.plugin.map());
-        RaceObstacles.build(this.world,this.mode);
+        if(plugin.getConfig().getInt("layout-version",0)<3)RaceObstacles.build(this.world,this.mode);
         RaceMap.Course course = this.plugin.map().course(this.mode);
         int n = 0;
         try {
@@ -232,9 +233,9 @@ final class RaceRoom {
                 continue;
             }
             Location location = entity.getLocation();
-            CourseGeometry.Position track=CourseGeometry.at(mode==Mode.HORSE?190:-190,location.getX(),location.getZ());
-            if(Math.abs(track.lateral())>12.5){plugin.moveMount(entity,racer4.lastSafe);racer4.lastX=racer4.lastSafe.getX();if(tick%20==0)tell(player,"§eParkurun dışına çıktın; kontrol noktasına döndün.");continue;}
-            double edge=System.currentTimeMillis()-raceStartMillis<3000||Math.abs(track.lateral())<7?1:0.6;
+            CourseGeometry.Position track=CourseGeometry.at(course,location.getX(),location.getZ());
+            if(Math.abs(track.lateral())>(plugin.getConfig().getInt("layout-version",0)>=3?8:12.5)){plugin.moveMount(entity,racer4.lastSafe);racer4.lastX=racer4.lastSafe.getX();if(tick%20==0)tell(player,"§eParkurun dışına çıktın; kontrol noktasına döndün.");continue;}
+            double edge=System.currentTimeMillis()-raceStartMillis<3000||Math.abs(track.lateral())<(plugin.getConfig().getInt("layout-version",0)>=3?4.5:7)?1:0.6;
             if(mode==Mode.HORSE)((Horse)entity).getAttribute(Attribute.MOVEMENT_SPEED).setBaseValue(0.225*track.speedScale()*edge);
             else {Vector velocity=entity.getVelocity();double cap=0.36*track.speedScale()*edge,speed=Math.hypot(velocity.getX(),velocity.getZ());if(speed>cap){velocity.setX(velocity.getX()*cap/speed);velocity.setZ(velocity.getZ()*cap/speed);entity.setVelocity(velocity);}}
             if (location.getY() < 61.0 || location.getY() > 95.0) {
@@ -325,6 +326,7 @@ final class RaceRoom {
             return;
         }
         this.state = State.RESULTS;
+        if(raceStartMillis>0&&racers.size()>=2){List<Racer> ranking=ranking();if(!ranking.isEmpty()&&ranking.getFirst().finishMillis>=0&&!ranking.getFirst().dnf)plugin.result(resultId,mode,ranking.getFirst().id);}
         this.resultTicks = this.plugin.resultsSeconds() * 20;
         if (this.bar != null) {
             this.bar.setColor(BarColor.GREEN);

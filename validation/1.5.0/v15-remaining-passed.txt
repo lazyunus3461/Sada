@@ -1,0 +1,1 @@
+PASS Renk lobby is guarded; falling stays visible below the board before observer return, consumes one life and yields a real winner

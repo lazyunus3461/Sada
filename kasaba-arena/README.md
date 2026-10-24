@@ -187,3 +187,7 @@ Yönetim komutları `kasabaarena.yonet`, KasabaRoles yönetimi veya OP gerektiri
 ## 1.3.3
 
 X Arena'da son alınan hasardan 10 saniye sonra her 2 saniyede yarım kalp yenilenir; saldırmak veya beceri kullanmak bu sayacı uzatmaz. Görünmezlik sırasında zırh ve iki eldeki eşyalar rakiplere gizlenir; kendi envanteri korunur. Süre bitince ve çıkışta görünüm geri gelir. Yarış lobisiyle çakışan Arena lobi konumu ayrı `kasaba_arena_lobi` dünyasına taşınır; oda doğmaları ve bölge kayıtları korunur, eski config yedeklenir. `/arena lobi ayarla` ile kendi yerini yine seçebilirsin. Lobi pusulası envanterden açılır ve diğer oyun lobilerine geçiş içerir. Başlamış 1v1/2v2 maçını terk etmek Arena'ya 15 dakika giriş cezası verir; sürekli X Arena'dan çıkış cezasızdır.
+
+## 1.3.4
+
+Lobiye renkli bilgi yazısı ve X Arena öldürmeleri ilk 5 tablosu eklendi. Önceki öldürme kayıtları içe aktarılır; diğer oyunların yeni galibiyet kayıtlarıyla karıştırılmaz.

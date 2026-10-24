@@ -1,0 +1,17 @@
+{
+  "boat": {
+    "reachable_with_3_by_3_clearance": 10354,
+    "all_six_checkpoints": true,
+    "interior_shortcut": false
+  },
+  "horse": {
+    "reachable_with_3_by_3_clearance": 10712,
+    "all_six_checkpoints": true,
+    "interior_shortcut": false
+  },
+  "lobby": {
+    "enclosed": true,
+    "connected_to_courses": false,
+    "walkable": 2455
+  }
+}

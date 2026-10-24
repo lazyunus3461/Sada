@@ -56,7 +56,7 @@ final class WorldInstances {
                 @Override
                 public FileVisitResult preVisitDirectory(Path path3, BasicFileAttributes basicFileAttributes) throws IOException {
                     Path path22 = path.relativize(path3);
-                    if (!path22.toString().isEmpty() && (path22.getName(0).toString().equals("playerdata") || path22.getName(0).toString().equals("stats") || path22.getName(0).toString().equals("advancements"))) {
+                    if (!path22.toString().isEmpty() && (path22.getName(0).toString().equals("entities") || path22.getName(0).toString().equals("playerdata") || path22.getName(0).toString().equals("stats") || path22.getName(0).toString().equals("advancements"))) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     Files.createDirectories(path2.resolve(path22), new FileAttribute[0]);
