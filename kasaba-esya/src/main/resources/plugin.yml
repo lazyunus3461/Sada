@@ -1,0 +1,18 @@
+name: KasabaEsya
+version: 1.3.0
+main: tr.kasabatr.esya.KasabaEsyaPlugin
+api-version: '1.21.10'
+depend: [KasabaHub, KasabaAuth]
+softdepend: [KasabaSosyal]
+loadbefore: [Multiverse-Core]
+description: KasabaTR üç haritalı Eşya Saklambacı
+commands:
+  esya:
+    description: Eşya Saklambacı menüsü ve oyun komutları
+    aliases: [eşya, esyasaklambaci]
+    usage: /esya
+permissions:
+  kasaba.esya.play:
+    default: true
+  kasaba.esya.admin:
+    default: op

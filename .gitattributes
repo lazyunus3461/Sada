@@ -1,0 +1,2 @@
+# Preserve uploaded world metadata byte-for-byte, including its Windows line endings.
+kasaba-esya/src/main/resources/map-template/**/prop-map.json -text whitespace=trailing-space,space-before-tab,cr-at-eol

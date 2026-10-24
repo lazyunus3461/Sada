@@ -1,0 +1,47 @@
+KasabaTR 1.6.0 / KasabaEsya 1.3.0 — doğrulama özeti
+
+Ortam: Java 21.0.9, Paper 1.21.10 build 130, Multiverse-Core 5.3.2;
+KasabaTR'nin 14 üretim eklentisiyle ayrı, yalnız loopback test sunucusu.
+Canlı kullanıcının sunucusuna yükleme yapılmadı.
+
+Birim testleri: 27 başarılı, 0 başarısız, 0 hata.
+KasabaHub: 24; KasabaEsya: 3.
+
+Protokol/gerçek Paper akışı: 8 ayrı oyuncu, normal 4 kişilik maçlar ve
+aynı anda üç ayrı 2 kişilik yönetici denemesi. Ek yeniden bağlantılar yapıldı.
+- Dokuz oyun kartı ilk sayfada, Eşya Saklambacı otomatik kayıtlı.
+- Lobiye girince otomatik sıraya almama; lobide kalma ve envanterden pusula.
+- Üç dünya şablonunun otomatik kurulması, gerçek kopyalarının açılması,
+  güvenli doğmalar ve 84/72/72 rastgele yem yerleşimleri.
+- Oyuncuya görünen başlama sayımı, ebe/saklanan dağılımı, ayrı maç dünyası.
+- Blok kırma, hasar, oyun modu, uçuş, sınır dışına hareket, dışarı ışınlanma
+  ve maçta yabancı komutların engellenmesi.
+- Mevcut ve yeni katılan oyunculara gerçek saklanan modelinin gizlenmesi;
+  yakındaki eşya hitbox'ının istemciye gönderilmesi.
+- Türkçe kılık ekranı, kılık değişim süresi ve eski ekran yanıtının reddi.
+- Duvar arkasından yakalamanın reddi, yanlış tahminde yavaşlık.
+- Gerçek use_entity sağ ve sol tık paketleriyle yakalama ve ebe dönüşümü.
+- İlk ebe galibiyeti, yakalanan yardımcıya bedelsiz galibiyet yazılmaması;
+  süre dolunca hayatta kalan saklananlara galibiyet yazılması.
+- Sonuç sonrası aynı oyun lobisine dönüş; eşya varlıkları ve geçici dünya temizliği.
+- Üç eşzamanlı oda, harita havuzunun üç şablonu kapsaması, dördüncü odanın
+  beklemesi, denemelerde liderlik puanı yazılmaması.
+- Ana spawna uğramadan Renk Kaçışı lobisine geçiş; eşya ve çarpışma durumunun iadesi.
+- Grup lideriyle toplu sıra/giriş ve grubu birlikte sıradan çıkarma.
+- Aktif maçı bırakınca 15 dk yalnız bu oyuna giriş engeli; bekleme/deneme/sonuç istisnası.
+- Çıkıp yeniden girişte, hesap doğrulandıktan sonra envanter yedeği kurtarma.
+- Temiz sunucu yeniden başlatması; galibiyet kalıcılığı, çevrimdışı yedeğin
+  kurtarılması, tüm kartlar ve Arena gidiş-dönüş uyumu.
+
+Süre sınırları test yardımcısında saat alanları ilerletilerek sınandı; üretim
+ayarları kısaltılmadı. Gerçek bağlantı, Paper olayları, tıklama paketleri ve
+üretim JAR'ları kullanıldı. Test yardımcıları yalnız loopback bağlantısına açıktır
+ve dağıtılan ZIP/JAR dosyalarının hiçbirine dahil edilmez.
+
+Görsel Minecraft istemcisinde canlı sunucunun diğer üçüncü parti eklentileriyle
+son kullanıcı denemesi ayrıca kullanıcıya aittir. Bu çalışma sunucu dosyalarına
+uzaktan kurulum veya kamuya açık yük testi yapmaz.
+
+Diğer 12 oyun/altyapı JAR'ı önceki 1.5.0 paketiyle byte byte aynıdır.
+Mevcut config ve dünya klasörleri dağıtıma konmadı; kullanıcı kayıtları sıfırlanmaz.
+Dosya CRC/SHA256 ve gömülü üç haritanın özgün varlıkları paketlemede doğrulanır.

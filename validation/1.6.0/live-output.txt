@@ -1,0 +1,24 @@
+ENTER ESwvkksB
+ENTER ESwvkksC
+ENTER ESwvkksD
+PASS Main compass first page, stay in lobby, inventory compass and social area {}
+PASS All 3 embedded maps cloned, safe spawns and randomized decoys validated {}
+PASS 15-second room countdown, 4-player normal match, private world and match protections {"map":"KasabaTR-Esya-Saklambaci-Muze-v01","guards":{"command":true,"teleport":true,"damage":true,"flight":true,"mode":true,"break":true,"move":true}}
+PASS Real hiders hidden from current and newly joining players; prop hitboxes remain visible {}
+PASS Turkish 6-disguise dialog, 20-second cooldown and stale callback rejection {}
+PASS Blocked-through-wall capture, wrong-guess slowdown and native right-click capture {}
+PASS Native left-click capture {}
+PASS Seeker victory scored once, converted helper gets no free win, five-second return to game lobby and entity/world cleanup {}
+PASS Hunting timeout awards surviving hiders and returns to same game lobby {}
+ENTER ESwvkksE
+ENTER ESwvkksF
+ENTER ESwvkksG
+ENTER ESwvkksH
+PASS Three concurrent practice matches rotate all maps, fourth room waits, practice adds no leaderboard score {}
+PASS Direct lobby-to-lobby transfer and original inventory/collision restore {}
+ENTER ESwvkksA
+PASS Party enters together, only leader queues, cancel removes the whole party {}
+PASS Active departure blocks reentry for 15 minutes; completed, waiting and practice players may reenter {}
+ENTER ESwvkksB
+PASS Disconnect recovery waits for authentication and restores the original inventory {}
+ALL PASS 14

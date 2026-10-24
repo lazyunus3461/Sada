@@ -1,0 +1,99 @@
+{
+  "checks": [
+    {
+      "name": "Main compass first page, stay in lobby, inventory compass and social area"
+    },
+    {
+      "name": "All 3 embedded maps cloned, safe spawns and randomized decoys validated"
+    },
+    {
+      "name": "15-second room countdown, 4-player normal match, private world and match protections",
+      "map": "KasabaTR-Esya-Saklambaci-Muze-v01",
+      "guards": {
+        "command": true,
+        "teleport": true,
+        "damage": true,
+        "flight": true,
+        "mode": true,
+        "break": true,
+        "move": true
+      }
+    },
+    {
+      "name": "Real hiders hidden from current and newly joining players; prop hitboxes remain visible"
+    },
+    {
+      "name": "Turkish 6-disguise dialog, 20-second cooldown and stale callback rejection"
+    },
+    {
+      "name": "Blocked-through-wall capture, wrong-guess slowdown and native right-click capture"
+    },
+    {
+      "name": "Native left-click capture"
+    },
+    {
+      "name": "Seeker victory scored once, converted helper gets no free win, five-second return to game lobby and entity/world cleanup"
+    },
+    {
+      "name": "Hunting timeout awards surviving hiders and returns to same game lobby"
+    },
+    {
+      "name": "Three concurrent practice matches rotate all maps, fourth room waits, practice adds no leaderboard score"
+    },
+    {
+      "name": "Direct lobby-to-lobby transfer and original inventory/collision restore"
+    },
+    {
+      "name": "Party enters together, only leader queues, cancel removes the whole party"
+    },
+    {
+      "name": "Active departure blocks reentry for 15 minutes; completed, waiting and practice players may reenter"
+    },
+    {
+      "name": "Disconnect recovery waits for authentication and restores the original inventory"
+    },
+    {
+      "name": "Clean server restart, offline snapshot recovery, persistent scores, nine first-page games and Arena round-trip compatibility"
+    }
+  ],
+  "maps": [
+    "KasabaTR-Esya-Saklambaci-Muze-v01",
+    "KasabaTR-Esya-Saklambaci-Oyuncakci-v02",
+    "KasabaTR-Esya-Saklambaci-Oyuncakci-v02",
+    "KasabaTR-Esya-Saklambaci-Muze-v01",
+    "KasabaTR-Esya-Saklambaci-Akvaryum-v01"
+  ],
+  "started": "2026-10-24T21:28:59.115Z",
+  "restartUser": "ESwvkksC",
+  "scoresBeforeRestart": [
+    "esyasaklambaci/0327bd4c-7aac-36b6-9747-b0ae652ecda7=1\\:ESwtqimC",
+    "esyasaklambaci/0cc124c3-7d21-3691-ac5f-d3768cac492c=1\\:ESwso9uD",
+    "esyasaklambaci/145aec42-200e-30c1-8656-fc3b06752d67=1\\:ESwop8eC",
+    "esyasaklambaci/14d5bc74-2c76-30db-8ea8-65fe560f2d20=1\\:ESwso9uC",
+    "esyasaklambaci/5827bfaf-765c-38a6-8904-bdaabb698c05=1\\:ESwtqimD",
+    "esyasaklambaci/6fc4ecaa-df5b-3ee7-9342-2b605b251d2a=1\\:ESwvkksC",
+    "esyasaklambaci/72fba6dc-badc-3e00-a6c5-3c6b53715c00=1\\:ESwvkksA",
+    "esyasaklambaci/77502108-587a-3e0d-91b5-bb742879d161=2\\:ESwop8eD",
+    "esyasaklambaci/77ee2141-755f-3539-a45a-776bcbbabffd=1\\:ESwvkksD",
+    "esyasaklambaci/80ec4247-21ea-3c47-adff-f191608829b7=1\\:ESwso9uB",
+    "esyasaklambaci/b3dff82a-393b-3e5b-ba51-e806c5e09e46=2\\:ESwtqimB",
+    "esyasaklambaci/cb56644b-294c-362c-b2d6-46770c368f1e=1\\:ESwvkksB",
+    "esyasaklambaci/d49b8404-de02-3f9e-a9c6-a97d884ef694=1\\:ESwop8eA",
+    "esyasaklambaci/seen=84451600-931a-4980-be2d-6c86c3aaf69b,fb2fed88-f759-462d-8dd6-96999bcfa6ca,280b81a3-cb19-4cfb-a371-eb0b885c07f1,7f6fc7f4-6169-4d19-910f-52b9c9465505,ca76d41f-911c-429e-b9e5-1642488c26ef,e24c921f-a89b-44ab-a1c6-82e339431b28,374dac02-34cb-4b0e-8244-59efcdb59766"
+  ],
+  "finished": "2026-10-24T21:29:40.487Z",
+  "players": 8,
+  "paper": "1.21.10 build 130",
+  "productionPlugins": 14,
+  "restart": true,
+  "finalArtifactsSmoke": true,
+  "unit": {
+    "tests": 27,
+    "failures": 0,
+    "errors": 0
+  },
+  "artifactHashes": {
+    "KasabaHub-1.6.1.jar": "b4676e5fbf9e21ce16cd1f20bc4417f12a8701ffbb4b594f02523399296314c0",
+    "KasabaEsya-1.3.0.jar": "40a18f19aa99885db1991e1a64edfaacfae9e2c1c169aee82e374c28044d3428"
+  }
+}

@@ -1,0 +1,6 @@
+template-worlds:
+  - KasabaTR-Esya-Saklambaci-Oyuncakci-v02
+  - KasabaTR-Esya-Saklambaci-Muze-v01
+  - KasabaTR-Esya-Saklambaci-Akvaryum-v01
+countdown-seconds: 15
+max-concurrent-rooms: 3

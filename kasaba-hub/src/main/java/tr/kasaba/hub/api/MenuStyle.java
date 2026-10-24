@@ -17,6 +17,7 @@ public final class MenuStyle {
         if(s.contains("kapat")||s.contains("geri")||s.contains("don")||s.contains("vazgec")||s.contains("iptal")||s.contains("ayril")||s.startsWith("cik")||s.contains(" cik")||s.contains("dagit")||s.startsWith("sil ")||s.equals("sil")||s.contains("lobi")||s.equals("burada kal"))return NamedTextColor.RED;
         if(s.contains("ceza")||s.contains("bakim")||s.contains("kapali")||s.contains("dolu")||s.contains("kilit"))return NamedTextColor.DARK_GRAY;
         if(s.equals("adani yap"))return TextColor.fromHexString("#8EF0AF");
+        if(s.equals("esya saklambaci"))return TextColor.fromHexString("#FFC48C");
         if(s.equals("arena"))return TextColor.fromHexString("#FF8080");
         if(s.equals("at yarisi"))return TextColor.fromHexString("#B6F27D");
         if(s.equals("tekne yarisi"))return TextColor.fromHexString("#72DDFF");

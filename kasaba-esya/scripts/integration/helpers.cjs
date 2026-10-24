@@ -1,0 +1,4 @@
+const assert=require('node:assert/strict');
+const base=require('../../../scripts/integration/followup/helpers.cjs');
+async function player(name){const b=await base.player(name);b.c.write('custom_payload',{channel:'minecraft:register',data:Buffer.from('kasaba_test:esya')});b.ep=async op=>{let mark=b.log.length;b.c.write('custom_payload',{channel:'kasaba_test:esya',data:Buffer.from(op)});let e=await b.wait(e=>b.msg(e)==='esya-probe:done:'+op||b.msg(e).startsWith('esya-probe:error:'),mark,45000);assert(!b.msg(e).startsWith('esya-probe:error:'),b.msg(e));return mark;};b.ej=async(op='STATE',key='state')=>{const mark=await b.ep(op);let e=await b.wait(e=>b.msg(e).startsWith('esya-probe:'+key+':'),mark);return JSON.parse(b.msg(e).slice(('esya-probe:'+key+':').length));};b.es=()=>b.ej();return b;}
+module.exports={...base,player};

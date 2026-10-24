@@ -1,15 +1,15 @@
-# KasabaHub 1.2.0
+# KasabaHub 1.6.1
 
 Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merkezi için ana eklenti. Ortak lobi, Minecraft'ın **yerleşik sayfa arayüzü**, geçici arkadaş grupları ve sonraki oyun eklentileri için bağlantı sağlar. Bu sürümde mini oyun kuralları bulunmaz. Yönetici oyun giriş noktalarını `/oyunlar ekle` ile kaydedebilir; boş oyun listesi **Oyunlar yakında** gösterir.
 
 ## Kurulum
 
-[KasabaHub kurulum ZIP'ini indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaHub-Kurulum.zip)
+[Eşya Saklambacı + Hub güncelleme ZIP'ini indir](../dist/KasabaEsya-KasabaTR-Hazir-Paket-1.3.0.zip). Bu güncelleme dokuz oyun kartını ilk sayfada gösterir, Eşya Saklambacı rengini ve rehber sayfasını ekler. Mevcut oyun/dünya kayıtlarını değiştirmez.
 
 1. Sunucuyu durdur. Mevcut eklenti veri klasörlerini yedekle. Güncellemede eski KasabaHub JAR'ını `plugins` dışına çıkar; `plugins/KasabaHub` klasörünü koru.
-2. Eski KasabaAuth JAR'ını `plugins` dışına taşı. Yeni modelde kullanılmayacak KasabaKlan/KasabaWarp ve başka lobi yöneticilerinin JAR'larını da dışarı taşı. **Veri klasörlerini silme.**
-3. ZIP'teki **KasabaAuth-1.3.0.jar** ve **KasabaHub-1.2.0.jar** dosyalarını `plugins` içine koy. Mevcut KasabaRoles kalabilir; roller/renkler korunur. Test Probe dosyaları kurulmaz.
-4. Sunucuyu aç, hesabına giriş yap. Güvenli lobi platformunda Kurucu/OP olarak **`/merkez lobi ayarla`** yaz.
+2. KasabaAuth 1.3.0 gereklidir. Mevcut Auth ve diğer oyun JAR'larını koru; aynı eklentinin farklı sürümlerini birlikte bırakma. **Veri klasörlerini silme.**
+3. Güncelleme ZIP'indeki **KasabaHub-1.6.1.jar** ve yeni oyun için **KasabaEsya-1.3.0.jar** dosyalarını `plugins` içine koy. Tam 1.6.0 paketinde Auth ve diğer oyunlar da vardır. Test Probe dosyaları kurulmaz.
+4. Sunucuyu aç, hesabına giriş yap. Lobi ilk kez kuruluyorsa güvenli platformda Kurucu/OP olarak **`/merkez lobi ayarla`** yaz; mevcut lobi zaten kayıtlıysa yeniden ayarlama.
 5. `/lobi` ile dönüşü, `/merkez` ile ana sayfayı, `/oyunlar` ile oyun sayfasını dene.
 
 KasabaAuth hesabı/şifresi aynı kalır. 1.3.0, doğrulama sonrası bir olay ve salt okunur durum servisi ekler. Hub bu olayı dinleyip oyuncuyu doğrulama **bittikten sonra** lobiye taşır; kayıt sayfasını atlamaz. Auth'ın kayıt yeri giriş sırasında kullanılmaya devam eder; aynı yerde olmasını istersen lobi platformunda `/kayityeri ayarla` da kullanabilirsin. Hub yoksa Auth'ın önceki kayıt yeri davranışı korunur.

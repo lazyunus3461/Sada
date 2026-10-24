@@ -1,5 +1,9 @@
 # Kasaba oyun merkezi
 
+## Eşya Saklambacı — sunucu paketi 1.6.0
+
+Yeni [KasabaEsya 1.3.0](kasaba-esya/README.md), üç gömülü harita, ayrı maç dünyaları, Türkçe yerel ekranlar, grup/sıra akışı ve ilk beş liderliğiyle KasabaTR merkezine bağlanır. Oyun `/oyunlar` listesinde otomatik görünür. Yalnız iki JAR içeren [ekleme paketi](dist/KasabaEsya-KasabaTR-Hazir-Paket-1.3.0.zip), KasabaEsya 1.3.0 ve KasabaHub 1.6.1 içerir; diğer oyunların JAR'ları ve kayıtları korunur. [Tam 14 eklentili paket](dist/KasabaTR-Sunucu-Paketi-1.6.0.zip) ve [doğrulama kayıtları](validation/1.6.0/) ayrıca bulunur.
+
 ## Güncel tam sunucu paketi: 1.3.0
 
 [Hazır ZIP’i indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaTR-Sunucu-Paketi-1.3.0.zip) · [Kurulum ve komutlar](validation/1.3.0/KURULUM-VE-KOMUTLAR.txt) · [Testler](validation/1.3.0/TEST-SONUCLARI.txt). Paper 1.21.10 / Java 21 için 13 eklenti.

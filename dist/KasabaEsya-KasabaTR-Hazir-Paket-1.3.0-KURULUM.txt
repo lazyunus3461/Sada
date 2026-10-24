@@ -1,0 +1,45 @@
+KASABATR — EŞYA SAKLAMBACI EKLEME PAKETİ 1.3.0
+Paper 1.21.10 / Java 21. Mevcut KasabaAuth ve KasabaTR altyapısına eklenir.
+
+KURULUM
+1. Sunucuyu durdur ve plugins/dünya klasörlerini yedekle.
+2. ZIP içindeki plugins klasöründen KasabaHub-1.6.1.jar ve KasabaEsya-1.3.0.jar dosyalarını sunucunun plugins klasörüne koy.
+3. Aynı klasördeki eski KasabaHub ve eski KasabaEsya JAR'larını kaldır. Veri/config/dünya klasörlerini SİLME. Diğer oyun JAR'larını değiştirmek gerekmez.
+4. Sunucuyu başlat. /reload kullanma.
+5. /oyunlar > Eşya Saklambacı. Üç harita otomatik kurulur; /mv import veya /oyunlar ekle gerekmez.
+
+Tam 1.6.0 sunucu ZIP'ini kullanıyorsan 14 JAR içerir: bu sürümde değişen yalnız KasabaHub ve yeni KasabaEsya'dır; diğer 12 JAR önceki 1.5.0 paketiyle aynıdır. Dosyaları aynı adlı eklentiden iki sürüm kalmayacak şekilde koy. Mevcut oyuncu ve arena kayıtlarını koru.
+
+OYUNCU
+/esya          Lobi ve pusula menüsü
+/esya oyna     Sıraya gir (grup varsa lider yazar)
+/esya kılık    Maçta eşya kılığı seç
+/esya durum    Oda/sıra bilgisi
+/esya lobi     Aynı oyunun lobisine dön
+/esya çık      Ana spawna dön (/lobi de olur)
+/esya yardım   Kurallar
+
+İKİ KİŞİ TEST
+İkiniz /esya, ardından ikiniz /esya oyna yazın.
+Yönetici sıradayken /esya deneme yazsın.
+Deneme galibiyet yazmaz, çıkış cezası vermez. Normal maç hâlâ en az 4 kişidir.
+
+YÖNETİCİ
+/esya başlat                   Sıradaki 4–12 kişiyle normal maçı başlat
+/esya testharita                Oda yokken 3 haritayı ve yem/doğmaları test et (konsol da kullanabilir)
+/esya düzenleme aç|kapat        Oyun dışında ortak şablon haritalarını düzenleme izni
+/oyunceza kaldır Oyuncu esyasaklambaci   Bu oyuna giriş cezasını kaldır
+
+KISA KURALLAR
+4–12 kişi, 15 sn başlama sayımı, 20 sn saklanma, 4 dk arama.
+Oyuncakçı / Müze / Akvaryum; varsayılan 3 eşzamanlı oda, her oda ayrı dünya kopyası.
+Lobiye geldiğin anda sıraya girmezsin: Oyna veya Bu lobide kal seç.
+Pusula envanterden de açılır. Kılık değişimi 20 sn, yanlış tahmin 3 sn yavaşlık verir.
+Yakalanan ebe olur. Ebeler herkesin bulunmasıyla; saklananlar süre dolunca kazanır.
+İlk ebeler veya maç sonunda saklanmaya devam edenler ilk 5 tablosuna galibiyet alır.
+5 sn sonuç ekranından sonra aynı oyun lobisine dönülür.
+Normal aktif maçı yarım bırakan bu oyuna 15 dk giremez; bekleme/deneme cezasızdır.
+
+Harita dosyaları JAR'ın içindedir. Eksik dünyalar kurulur, mevcut dünyaların üzerine yazılmaz.
+Üretim paketinde test yardımcısı eklentisi bulunmaz.
+Ayrıntılı komut ve teknik bilgi: BELGELER/esya-KILAVUZ.md
