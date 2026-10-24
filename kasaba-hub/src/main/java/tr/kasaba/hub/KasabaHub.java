@@ -177,9 +177,9 @@ public final class KasabaHub extends JavaPlugin implements Listener,TabCompleter
                 if(!p.isOnline()||!Objects.equals(pages.get(p.getUniqueId()),token))return;
                 try{ready(p);pages.remove(p.getUniqueId());navigation.put(p.getUniqueId(),++sequence);p.closeDialog();button.action().run(response);}catch(IllegalArgumentException e){tell(p,e.getMessage());}
             });
-        },ClickCallback.Options.builder().uses(1).lifetime(Duration.ofMinutes(2)).build());actions.add(ActionButton.create(text(button.label(),NamedTextColor.AQUA),null,150,click));}
-        List<DialogBody> body=lines.stream().<DialogBody>map(line->DialogBody.plainMessage(text(line,NamedTextColor.GRAY),320)).toList();
-        p.showDialog(Dialog.create(builder->builder.empty().base(DialogBase.builder(text(title,NamedTextColor.GOLD)).canCloseWithEscape(true).pause(false).afterAction(DialogBase.DialogAfterAction.NONE).body(body).inputs(inputs).build()).type(DialogType.multiAction(actions).columns(2).build())));
+        },ClickCallback.Options.builder().uses(1).lifetime(Duration.ofMinutes(2)).build());actions.add(ActionButton.create(tr.kasaba.hub.api.MenuStyle.button(button.label()),null,150,click));}
+        List<DialogBody> body=lines.stream().<DialogBody>map(line->DialogBody.plainMessage(tr.kasaba.hub.api.MenuStyle.line(line),320)).toList();
+        p.showDialog(Dialog.create(builder->builder.empty().base(DialogBase.builder(tr.kasaba.hub.api.MenuStyle.title(title)).canCloseWithEscape(true).pause(false).afterAction(DialogBase.DialogAfterAction.NONE).body(body).inputs(inputs).build()).type(DialogType.multiAction(actions).columns(2).build())));
     }
     private Button button(String label,Runnable action){return new Button(label,response->action.run());}
     private Button close(){return button("Kapat",()->{});}

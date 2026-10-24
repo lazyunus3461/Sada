@@ -1,6 +1,6 @@
-# Kasaba At ve Tekne Yarışı 1.1.0
+# Kasaba At ve Tekne Yarışı 1.2.0
 
-Paper 1.21.10 / Java 21. KasabaHub 1.3.1 ve KasabaAuth gerektirir.
+Paper 1.21.10 / Java 21. KasabaHub 1.4.0 ve KasabaAuth gerektirir.
 Gönderilen 1.0.0 yarış paketi sunucu altyapısına uyarlandı. Harita JAR içindedir;
 ilk açılışta `KasabaTR-Yaris-Arenasi-v01` dünyası otomatik kurulur. Var olan
 dünya ve ayarların üzerine yazılmaz.
@@ -32,3 +32,7 @@ Multiverse listesine eklenmez; ortak dünya Multiverse ile kaydedilir.
 
 Kurulum: Sunucuyu durdur, eski KasabaYaris JAR'ını kaldır, yeni JAR'ı plugins'e
 koy ve aç. Veri klasörlerini/dünyaları silme. Haritayı ayrıca çıkartman gerekmez.
+
+## 1.2.0
+
+Pusulada At/Tekne seçimi önce o türün açık odalarını gösterir. **Oda oluştur** ile bilerek oda açılır. At parkuruna çit, saman slalomu ve sığ su; tekne parkuruna geçilebilir adacıklar eklendi. Her maç ayrı kopyadır. Başlamış/geri sayımdaki yarışta son kişi kalırsa kazanır ve üç saniye sonra yarış lobisine döner. İlk girişteki otomatik menü, seçilen oda sayfasını yeniden açıp kapatmaz.

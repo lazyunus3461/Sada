@@ -1,4 +1,4 @@
-# KasabaTR Şans Yolu 0.5.0
+# KasabaTR Şans Yolu 0.6.0
 
 Paper **1.21.10 / Java 21**. Gönderilen 0.3.1 oyunundaki iki zar, 135 kare,
 renk etkileri ve üç köprü korunarak KasabaTR merkezine uyarlanmıştır.
@@ -12,7 +12,7 @@ bakımı yapılabilir kaynak kodu bu modülde yeniden oluşturuldu.
    birleştir. Aynı eklentinin eski JAR'ını kaldır; veri klasörlerini silme.
    Eski `KasabaIspanya-0.3.1.jar` kalmamalı.
 3. Paketteki güncel JAR’ları birlikte yükle. Bu sürüm
-   **KasabaHub 1.3.1 ve KasabaAuth 1.3.0** ile birlikte test edildi.
+   **KasabaHub 1.4.0 ve KasabaAuth 1.3.0** ile birlikte test edildi.
 4. Sunucuyu başlat. İlk kurulumda Şans Yolu dünyası JAR'dan otomatik açılır.
    Ayrı `.mca` veya `level.dat` taşıman ve `/mv import` yazman gerekmez.
 5. Oyunda **`/oyunlar` → Şans Yolu** seç. Pusulaya sağ tıkla; **Oyna** veya
@@ -116,3 +116,7 @@ ortak dünyada hem maçlarda kullanılır. Yalnız eklentinin kendi işaretli
 Kaynak, birim testleri ve yalnız yerel test sunucusu için hazırlanan
 entegrasyon yardımcıları bu modüldedir. Test yardımcı JAR'ları üretim paketine
 konmaz. Gerçekleştirilen kontroller ve sınırları dağıtımdaki test kaydındadır.
+
+## 0.6.0 ayrı lobi
+
+İlk açılışta mevcut oyun yolundan ayrı, zar temalı bekleme meydanı boş alanda yapılır. Pusula ve lobi dönüşü buraya bağlanır; eski config önceden yedeklenir. Dünya sınırı lobiyi kapsar. Yeni meydan için dünya dosyası indirmen gerekmez. Menüler ortak renk düzenini kullanır.

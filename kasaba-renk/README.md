@@ -70,3 +70,7 @@ Hem oyun alanı hem renkli kareler küçülür: 1–3. turlarda 32×32 / 4×4,
 ortalanır; oyuncular güvenli şekilde yeni alanın içine yerleştirilir.
 **Bu lobide kal** menüyü kapatır, bekleyen oda üyeliğini bırakır ve oyun
 lobisinde tutar; ana spawna ışınlamaz.
+
+## 1.2.0 itme kartopları
+
+Her tur 1. kutuya 8 kartopu gelir; sağ tıkla atılır, iki saniye aralık vardır. İsabet rakibi iter; can götürmez. Farklı oda/tur, lobi veya seyirci etkilenmez. 5. kutudaki renk göstergesi korunur. Normal envantere taşınmaz.

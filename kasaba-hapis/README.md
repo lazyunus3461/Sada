@@ -1,6 +1,6 @@
-# Kasaba Hapishane 1.1.0
+# Kasaba Hapishane 1.2.0
 
-Paper 1.21.10 / Java 21, KasabaHub 1.3.1 ve KasabaAuth.
+Paper 1.21.10 / Java 21, KasabaHub 1.4.0 ve KasabaAuth.
 Gönderilen hapishane haritası JAR içindedir. İlk açılışta
 `KasabaTR-Hapishane-Dunyasi-v1` dünyası otomatik kurulur; mevcut dünya korunur.
 
@@ -29,5 +29,9 @@ bir rol izni güncellemede açılmaz. Yetkiyi elle vermek için:
 `/rol yetki moderator kasabatr.hapis.admin ver`
 
 Kurulum: Sunucuyu durdur, eski KasabaHapis JAR'ını kaldır, yenisini plugins'e
-koy ve aç. KasabaHub 1.3.1 ve KasabaRoles 1.3.1 de paketle birlikte güncellenmeli.
+koy ve aç. KasabaHub 1.4.0 ve KasabaRoles 1.3.1 de paketle birlikte güncellenmeli.
 Mevcut plugins veri klasörlerini veya dünyaları silme.
+
+## 1.2.0 süre göstergesi
+
+Kırmızı üst çubuk yalnız cezalı oyuncuya kalan gün/saat/dakika/saniyeyi gösterir. Gerçek zamanlı süre yeniden giriş ve yeniden başlatmada korunur. Serbest kalınca ve bağlantı kesilince çubuk temizlenir.

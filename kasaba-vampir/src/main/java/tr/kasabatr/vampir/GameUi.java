@@ -15,12 +15,7 @@ final class GameUi {
     static Component title(String text){return Component.text(text,NamedTextColor.GOLD).decorate(TextDecoration.BOLD);}
 
     static Component button(String label){
-        NamedTextColor color=COLORS.get(label);
-        if(color==null)color=label.equals("Kapat")||label.equals("Geri")?NamedTextColor.GRAY
-            :label.startsWith("✓")?NamedTextColor.GREEN
-            :label.contains("Diziyi")?NamedTextColor.LIGHT_PURPLE
-            :label.equals("Pas")?NamedTextColor.YELLOW:NamedTextColor.AQUA;
-        return Component.text(label,color);
+        NamedTextColor color=COLORS.get(label);return color==null?tr.kasaba.hub.api.MenuStyle.button(label):Component.text(label,color);
     }
 
     private static Component sequence(String text){

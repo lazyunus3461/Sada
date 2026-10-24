@@ -95,3 +95,7 @@ Bulutta `bash kasaba-hub/scripts/cloud-build.sh`; Auth'ı yerel Maven'e kurar ve
 Ana lobide oyun pusulasının yanında geçici yazılı kitap verilir. Sağ tık veya `/rehber` (`/bilgi`) on sayfalık rehberi açar: arena girişi, 1v1/2v2, özel oda kodu, X Arena, bağımsız beceriler, altı karakter, adalar, arkadaş izinleri ve Akçe. `/rehber` oyun içindeyken envantere eşya eklemeden sanal kitabı açar. Oyunlara geçişte iki geçici eşya da kaldırılır; dolu envanterde gerçek eşyalar değiştirilmez. Varsayılan yuvalar pusula için 9, kitap için 8'dir; doluysa boş yuva kullanılır.
 
 [KasabaAdalar](../kasaba-adalar/README.md) kuruluysa Oyunlar sayfasındaki Adanı Yap girişi eklenti tarafından otomatik kaydedilir. İlk tıklama ada edinmez; adası olmayan oyuncu `/ada al` uyarısı görür.
+
+## 1.4.0 ortak menü renkleri
+
+`MenuStyle` geri/çıkışları kırmızı, başlatma/onayları yeşil, bilgiyi sarı, VIP/ücretleri altın yapar. Sekiz oyunun ayrı rengi vardır. Başlık, açıklama, sayı ve süreler ayırt edilir. Yeni oyun JAR’larını bu Hub sürümüyle birlikte yükle.

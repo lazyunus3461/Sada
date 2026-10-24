@@ -1,5 +1,5 @@
 name: KasabaYaris
-version: 1.1.0
+version: 1.2.0
 main: tr.kasabatr.yaris.KasabaYarisPlugin
 api-version: '1.21.10'
 author: KasabaTR

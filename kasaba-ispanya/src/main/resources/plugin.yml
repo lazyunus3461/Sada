@@ -1,5 +1,5 @@
 name: KasabaIspanya
-version: 0.5.0
+version: 0.6.0
 main: tr.kasabatr.ispanya.KasabaIspanyaPlugin
 api-version: '1.21.10'
 author: KasabaTR

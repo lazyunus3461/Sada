@@ -1,0 +1,91 @@
+KASABA SUNUCU PAKETİ 1.3.0 — Paper 1.21.10 / Java 21
+
+KURULUM
+1. Sunucuyu durdur. plugins klasörünü ve dünyalarını yedekle.
+2. Paketteki eklentilerin eski JAR sürümlerini kaldır; ZIP'in plugins
+   klasöründeki dosyaları sunucunun plugins klasörüne koy.
+   plugins/plugins oluşturma. Aynı eklentinin iki JAR'ı kalmasın.
+3. Sunucuyu aç. Veri klasörlerini, config'leri, dünyaları, para ve arsa
+   kayıtlarını SİLME. Arena spawnlarını yeniden ayarlaman gerekmiyor.
+
+Bu paket önceki sürümün tamamıdır: 13 üretim eklentisi içerir.
+Mevcut Warp, Parkur, Multiverse gibi diğer eklentilerin yerinde kalır.
+Sunucuna yüklemeyi sen yapacaksın.
+
+YENİ MENÜ RENKLERİ
+- Ana oyun listesindeki sekiz oyunun renkleri birbirinden farklı.
+- Kapat / Geri / Merkeze dön / Lobi: kırmızı.
+- Başlat / Oda oluştur / Katıl / Onayla: yeşil.
+- Açık odalar ve sayfalama: turkuaz.
+- Bilgi ve yardım: sarı. VIP ve ücretler: altın.
+- Başlıklar belirgin, açıklamalar ve sayı/süreler farklı tonlarda.
+Arena, BR, Vampir Köylü, Adalar, Şans Yolu, Renk Kaçışı, Yarış,
+VIP/arkadaş/grup sayfaları aynı renk düzenini kullanır.
+Kayıt/giriş sayfasındaki yeşil giriş ve kırmızı ayrılma korunur.
+
+ŞANS YOLU LOBİSİ
+Yeni, zar temalı ayrı bir bekleme meydanı otomatik yapılır.
+Pusula girişi buraya götürür; mevcut oyun yolu korunur.
+Eski lobi config'i güncellenmeden önce yedeklenir.
+Dünya sınırı yeni lobiyi içine alacak şekilde genişler.
+Dünya ve veri klasörü adları yine ispanya / KasabaIspanya'dır.
+/sansyolu → menü; /sansyolu oluştur; /sansyolu katıl 101;
+/sansyolu başlat; /sansyolu zar; /sansyolu kestirme.
+Eski /ispanya komutları çalışır. Zar otomatik atılmaz; üç kez
+atlamada oyun lobisine çıkar. Kestirme çubuğu sağ tıkla kullanılır.
+
+AT VE TEKNE YARIŞI
+/oyunlar üzerinden At Yarışı veya Tekne Yarışı ortak yarış lobisine götürür.
+Oradaki pusulada At / Tekne düğmesine basınca hemen oda AÇILMAZ.
+Önce o türe ait açık odalar, Oda oluştur ve Nasıl oynanır seçenekleri çıkar.
+İlk giriş sayfası, seçtiğin oda listesini tekrar kapatmaz.
+
+/yaris                       Ortak seçim menüsü.
+/yaris odalar                Bütün açık odaları gör.
+/yaris oluştur at            Bilerek yeni at yarışı odası aç.
+/yaris oluştur tekne         Bilerek yeni tekne odası aç.
+/yaris katıl 101             Örnek 101 numaralı odaya katıl.
+/yaris başlat                Oda sahibi, en az iki kişiyle başlatır.
+/yaris ayrıl                 Yarış lobisine dön.
+/lobi                        Ana spawna dön.
+
+At parkurunda atlanabilir çitler, saman slalomu ve sığ su geçişi var.
+Teknede adacık/şamandıralar etrafından dönülür; çarpmak hız kaybettirir.
+Her engelde geçilebilir açıklık bırakılır. Su havuzu kenarları kapalıdır.
+Her maç kendi dünya kopyasında; 2–5 kişi, iki tur, sıralı altı kontrol noktası.
+At/tekne toplam sekiz oda açılabilir. Son yarışçı kaldığında KAZANDIN yazar,
+üç saniye sonra ortak yarış lobisine döner. Bekleyen tek kişilik oda kazanmaz.
+
+RENK KAÇIŞI KARTOPLARI
+/renk → menü; /renk oda 1; /renk başlat.
+Her tur 1. kutuya 8 itme kartopu gelir. Sağ tıkla atılır; iki saniye aralık var.
+Rakibe isabet ederse geri iter; can götürmez. Kaçırılabilir.
+Yalnız aynı odanın, aynı turdaki aktif oyuncularına işler.
+Lobi, seyirci veya başka oda etkilenmez. Kartopları dışarı taşınmaz.
+Renk bloğu 5. kutuda; iki hata hakkı ve daralan alan devam eder.
+
+HAPİSHANE SÜRE GÖSTERGESİ
+Ceza alan oyuncunun ekranının üstünde kırmızı bir çubuk görünür.
+Kalan saat/dakika/saniye her güncellemede azalır; uzun cezalarda gün de yazar.
+Bu çubuğu yalnız cezalı oyuncu görür. Çıkıp girme ve sunucu yeniden
+başlatma süreyi sıfırlamaz; serbest kalınca çubuk kaldırılır.
+/hapis Oyuncu 60dk; /hapis durum Oyuncu; /hapis bırak Oyuncu.
+Cezalı oyuncu kendi süresi için /hapis durum kullanabilir.
+
+BİRİKEN AKTİFLİK ÖDÜLÜ
+15 dakika toplam aktif oyun → 0,20 Akçe.
+Örnek: 3 dk yarış + 7 dk arena + 5 dk başka oyun = bir ödül.
+Oyun değiştirince, çıkıp girince veya sunucu kapanınca biriken süre korunur.
+Günlük en fazla 5 ödül, yani 1,00 Akçe kazanılır.
+Günlük hak Türkiye saatine göre 00.00'da yenilenir. Önceden biriken yarım
+ilerleme saklanır; günlük sınır dolduktan sonra yeni süre birikmez.
+Spawn, lobiler, seyirciler, hapishane ve AFK süreleri sayılmaz.
+Yarış sürüşü, hareket, savaş ve oyun menüsü kullanımı aktiflik sayılır.
+Ödül mesajı günlük 1/5, 2/5 gibi kaçıncı ödülde olduğunu gösterir.
+
+ÖNCEKİ DÜZELTMELER KORUNDU
+VIP etiketi altın, isim turkuaz, mesaj açık sarı. Ana market açıkça VIP satar.
+Arena geç dünya yüklemesini tanır; /arena durum ve /arena yenile çalışır.
+BR VIP'e elitra vermez. Vampir Köylü rol tercihleri/kura ve gizli oy toplamları,
+spawn balıklarının doğrudan envantere gelmesi, ada/para kayıtları korunur.
+Ayrıntılar ve test sonuçları BELGELER klasöründedir.

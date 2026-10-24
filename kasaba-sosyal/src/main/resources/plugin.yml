@@ -1,5 +1,5 @@
 name: KasabaSosyal
-version: 1.0.1
+version: 1.1.0
 main: tr.kasaba.social.KasabaSocial
 api-version: '1.21.10'
 depend: [KasabaHub, KasabaAuth, KasabaAkce, KasabaRoles]

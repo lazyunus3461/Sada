@@ -1,5 +1,5 @@
 name: KasabaHapis
-version: 1.1.0
+version: 1.2.0
 main: tr.kasabatr.prison.KasabaHapisPlugin
 api-version: '1.21.10'
 author: KasabaTR

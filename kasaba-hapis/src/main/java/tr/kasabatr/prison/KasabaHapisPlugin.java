@@ -72,6 +72,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
     private final Map<UUID, PendingReturn> pendingReturns = new ConcurrentHashMap<UUID, PendingReturn>();
     private final Set<UUID> internalTeleports = new HashSet<UUID>();
     private final Set<UUID> authReady=new HashSet<>();
+    private final Map<UUID,org.bukkit.boss.BossBar> clocks=new java.util.HashMap<>();
     private boolean storageReady;
     private World prison;
     private HubApi hub;
@@ -126,6 +127,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
 
     @Override
     public void onDisable() {
+        clocks.values().forEach(org.bukkit.boss.BossBar::removeAll);clocks.clear();
         Bukkit.getServicesManager().unregisterAll(this);
         if (this.dataFile == null||!storageReady) {
             return;
@@ -152,7 +154,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
 
     private void loadData()throws Exception{
         if(!dataFile.isFile())return;YamlConfiguration data=new YamlConfiguration();data.load(dataFile);
-        ConfigurationSection section=data.getConfigurationSection("sentences");if(section!=null)for(String key:section.getKeys(false)){UUID id=UUID.fromString(key);String path="sentences."+key+".";long expiry=data.getLong(path+"expires-at");int cell=data.getInt(path+"cell");if(expiry<1||cell<0||cell>=16)throw new IllegalArgumentException("Geçersiz ceza: "+key);sentences.put(id,new Sentence(id,data.getString(path+"name",key),expiry,cell,mode(data.getString(path+"original-mode"))));}
+        ConfigurationSection section=data.getConfigurationSection("sentences");if(section!=null)for(String key:section.getKeys(false)){UUID id=UUID.fromString(key);String path="sentences."+key+".";long expiry=data.getLong(path+"expires-at");int cell=data.getInt(path+"cell");if(expiry<1||cell<0||cell>=16)throw new IllegalArgumentException("Geçersiz ceza: "+key);Sentence sentence=new Sentence(id,data.getString(path+"name",key),expiry,cell,mode(data.getString(path+"original-mode")));sentence.startedAt=data.getLong(path+"started-at",System.currentTimeMillis());sentences.put(id,sentence);}
         section=data.getConfigurationSection("pending-returns");if(section!=null)for(String key:section.getKeys(false)){String path="pending-returns."+key+".";pendingReturns.put(UUID.fromString(key),new PendingReturn(data.getString(path+"name",key),mode(data.getString(path+"original-mode"))));}
     }
     private void saveData() throws IOException {
@@ -165,7 +167,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
         for (Sentence object : this.sentences.values()) {
             string = "sentences." + String.valueOf(object.id) + ".";
             yamlConfiguration.set(string + "name", object.name);
-            yamlConfiguration.set(string + "expires-at", object.expiresAt);
+            yamlConfiguration.set(string + "expires-at", object.expiresAt);yamlConfiguration.set(string+"started-at",object.startedAt);
             yamlConfiguration.set(string + "cell", object.cell);
             yamlConfiguration.set(string + "original-mode", object.originalMode == null ? "" : object.originalMode.name());
         }
@@ -264,6 +266,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
             this.teleportInternal(player, this.cellLocation(sentence.cell));
         }
         player.setFlying(false);player.setAllowFlight(false);player.setFoodLevel(20);
+        var bar=clocks.computeIfAbsent(player.getUniqueId(),id->Bukkit.createBossBar("",org.bukkit.boss.BarColor.RED,org.bukkit.boss.BarStyle.SOLID));long remaining=Math.max(0,sentence.expiresAt-System.currentTimeMillis());bar.setTitle("§c§lHAPİS §8• §eKalan: §f"+PrisonClock.remaining(remaining));bar.setProgress(Math.clamp(remaining/(double)Math.max(1,sentence.expiresAt-sentence.startedAt),0,1));bar.addPlayer(player);
     }
 
     private void tick() {
@@ -358,6 +361,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
             this.getLogger().severe("Serbest bırakma kaydedilemedi: " + iOException.getMessage());
             return false;
         }
+        var oldBar=clocks.remove(uUID);if(oldBar!=null)oldBar.removeAll();
         if (player != null && player.isOnline()&&authenticated(player)) {
             if (sentence.originalMode != null) {
                 player.setGameMode(sentence.originalMode);
@@ -559,7 +563,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
     @Override public org.bukkit.generator.ChunkGenerator getDefaultWorldGenerator(String name,String id){return new EmptyWorldGenerator();}
     @EventHandler public void multiverse(org.bukkit.event.server.PluginEnableEvent e){if(e.getPlugin().getName().equals("Multiverse-Core"))Bukkit.getScheduler().runTask(this,()->new MultiverseBridge(this).register(prison,prison.getSpawnLocation()));}
     @EventHandler public void onJoin(PlayerJoinEvent e){authReady.remove(e.getPlayer().getUniqueId());}
-    @EventHandler public void onQuit(org.bukkit.event.player.PlayerQuitEvent e){authReady.remove(e.getPlayer().getUniqueId());}
+    @EventHandler public void onQuit(org.bukkit.event.player.PlayerQuitEvent e){authReady.remove(e.getPlayer().getUniqueId());var bar=clocks.remove(e.getPlayer().getUniqueId());if(bar!=null)bar.removeAll();}
     @EventHandler(priority=EventPriority.HIGHEST) public void verified(tr.kasaba.auth.api.PlayerAuthenticatedEvent e){Bukkit.getScheduler().runTask(this,()->arrival(e.getPlayer()));}
     private void arrival(Player p){if(!p.isOnline()||!authenticated(p))return;authReady.add(p.getUniqueId());if(pendingReturns.containsKey(p.getUniqueId())){finishPending(p);return;}Sentence sentence=sentences.get(p.getUniqueId());if(sentence==null)return;if(System.currentTimeMillis()>=sentence.expiresAt)release(sentence.id,"Cezan bitti.");else{p.closeDialog();p.closeInventory();enforce(p,sentence);tell(p,"Hapis cezan devam ediyor. /hapis durum");}}
     private static String norm(String s){return s.toLowerCase(Locale.ROOT).replace('ı','i').replace('ş','s').replace('ç','c').replace('ğ','g').replace('ü','u').replace('ö','o');}
@@ -724,6 +728,7 @@ TabExecutor, tr.kasaba.hub.api.GameAccessGuard {
         final String name;
         final long expiresAt;
         final int cell;
+        long startedAt=System.currentTimeMillis();
         GameMode originalMode;
 
         Sentence(UUID uUID, String string, long l, int n, GameMode gameMode) {

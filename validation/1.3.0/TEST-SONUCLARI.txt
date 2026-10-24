@@ -1,0 +1,31 @@
+KasabaTR 1.3.0 — 24 Ekim 2026
+Paper 1.21.10 build 130 / Java 21 / Multiverse 5.3.2
+
+Güncellenen modüllerde 112 JUnit testi, 0 hata.
+Birim testleri: menü renklerinin anlamları, sekiz ayrı oyun rengi, aktif sürenin birleşmesi,
+günlük beş ödül sınırı, Türkiye gece yarısı ve yarım ilerleme, ceza saat biçimi.
+
+Gerçek Minecraft protokol istemcileri ve yalnız localhost olay adaptörleri kullanıldı.
+75 dakika beklemek yerine aktiflik süreleri kontrollü adımlarla ilerletildi.
+Kartopu gerçek sunucu nesnesi olarak atıldı ve isabet edip itmesi doğrulandı.
+Yarış güzergâhları haritadaki bloklar üzerinden dolaşılarak bağlantı kontrolünden geçti.
+Görsel insan oynanışı bu otomatik testin parçası değildir.
+
+GEÇTİ: Eight Hub games have distinct colors; main and all six game menus use red navigation/close controls, colored play/info text and working native callbacks
+GEÇTİ: Dedicated dice-themed Şans Yolu plaza is safe and used by compass; horse fences/water and boat slalom exist with connected routes through every checkpoint
+GEÇTİ: Private red prison bossbar shows a decreasing real remaining time and is removed on release
+GEÇTİ: Tagged snowballs really spawn/hit, push without health damage, consume one ball with a two-second cooldown, reject other rooms and do not leak into Hub inventory
+GEÇTİ: 3 minutes of Renk + 7 of X Arena + 5 of race grant 0.20 Akce; five cumulative daily rewards pay exactly 1.00 and additional play cannot exceed the cap
+GEÇTİ: Last horse racer wins by withdrawal, sees the win message and returns to the race lobby in three seconds; idle lobby time does not accrue
+GEÇTİ: Boat last-player victory also works during countdown and cleans the private match world
+
+PASS Daily claims/carry/balance and private prison countdown survive server restart and authentication
+PASS Restart cannot bypass daily cap; explicit room creation and forfeit win still work
+PASS Direct open-room command is not overwritten by join popup; explicit boat creation, mounting, forfeit and lobby cleanup pass
+
+Dünya kopyaları maç sonunda temizlendi. Günlük sınır ve birikim yeniden açılışta korundu.
+Yeni lobi yeniden açılışta çoğaltılmadı; üç bilgilendirme yazısı ve güvenli zemin korundu.
+Paket yalnız üretim JAR’larını içerir. Deneme hesapları, kişisel veriler ve test araçları eklenmez.
+Auth, Akçe ve Roles önceki sürümlerdir; bu sunucuda birlikte kullanıldılar.
+
+Son slalom kontrolü: ortadaki düz hat her iki parkurda da engelle kesildi; sağ-sol geçişlerle tüm kontrol noktaları bağlantılı kaldı. Yeni JAR ile tekne odası/maç/son kalan oyuncu akışı tekrar geçti.

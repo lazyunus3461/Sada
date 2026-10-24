@@ -1,12 +1,12 @@
 # Kasaba oyun merkezi
 
-## Güncel tam sunucu paketi: 1.2.0
+## Güncel tam sunucu paketi: 1.3.0
 
-[Hazır ZIP’i indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaTR-Sunucu-Paketi-1.2.0.zip) · [Kurulum ve komutlar](validation/1.2.0/KURULUM-VE-KOMUTLAR.txt) · [Test kayıtları](validation/1.2.0/TEST-SONUCLARI.txt). Paper 1.21.10 / Java 21 için 13 eklenti.
+[Hazır ZIP’i indir](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaTR-Sunucu-Paketi-1.3.0.zip) · [Kurulum ve komutlar](validation/1.3.0/KURULUM-VE-KOMUTLAR.txt) · [Testler](validation/1.3.0/TEST-SONUCLARI.txt). Paper 1.21.10 / Java 21 için 13 eklenti.
 
-Yeni [at/tekne yarışları](kasaba-yaris/README.md) ana oyun listesinde iki ayrı düğmedir; ortak yarış lobisinde ikisi de pusuladan seçilir. [Hapishane](kasaba-hapis/README.md) mevcut oyunlardan güvenli çıkış, kalıcı süre ve rol yetkileriyle bağlıdır. Haritaları JAR içinde otomatik kurulur. VIP etiketi altın, oyuncu adı turkuaz, sohbet metni açık sarı. Ana oyun listesi sadeleştirildi; kurallar oyunların kendi menülerinde.
+Tüm menülerde işlem türüne göre ortak renkler; sekiz oyun için ayrı, açık renkler. Şans Yolu’na otomatik yapılan zar temalı lobi. At/tekne yarışına geçilebilir engeller ve önce açık odaları gösteren seçim sayfası. Son yarışçı kazanınca üç saniyede yarış lobisine döner. Renk Kaçışı’nda hasarsız itme kartopları; hapiste yalnız cezalı oyuncunun gördüğü kalan süre çubuğu.
 
-Şans Yolu (eski İspanya) manuel zar, rastgele kareler/kestirmeler ve gecikmeli lobi dönüşü; Renk Kaçışı daralan alan/kareler; BR elitra kaldırma, gizli oy toplamları, balığın doğrudan envantere gelmesi ve geç yüklenen arena dünyası düzeltmeleri dahildir. **Mevcut veri klasörlerini ve dünyalarını silme.** Aşağıdaki eski tekil bağlantılar geçmiş sürümlerdir; güncel toplu kurulum için üstteki 1.2.0 paketini kullan.
+Aktif oyun süreleri birleşir: toplam 15 dakika 0,20 Akçe, Türkiye gününde en fazla beş ödül. Birikim ve günlük sayaç yeniden girişte korunur. Önceki VIP, sosyal, ada, Arena, BR ve Vampir Köylü düzeltmeleri pakettedir. **JAR’ları birlikte güncelle; mevcut ayar/veri klasörlerini ve dünyalarını silme.** Aşağıdaki eski tekil bağlantılar geçmiş sürümlerdir.
 
 **Yeni: [KasabaBattleRoyale](kasaba-battle/README.md)** — aynı dünyada üç savaş adası, ortak lobi, Solo/İkili/Dörtlü, 10–20 oyuncu, evlerde ve dışarıda yer değiştiren normal/nadir sandıklar ve büyülü ganimet. BR 1.0.3 az oyuncuyla da 240, 20 oyuncuyla 320 sandığı merkezdeki 250×250 alana yayar; oyunculara tahta kılıç ve kahverengi deri zırh verir. İki/üç süresiz sarı kalp yiyeceğinin toplam çıkma ihtimali %30. Konum göstergesi/isim gizleme ve görünen daralan alan korunur. [Mevcut BR için yalnızca JAR güncellemesi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaBattleRoyale-Guncelleme.zip). [Dünya + BR kurulum paketi](https://github.com/lazyunus3461/Sada/raw/refs/heads/main/dist/KasabaBattleRoyale-Kurulum.zip). X Arena 1.2.1 yetenekleri hedef olmadan da kullanılır; ıskalanabilir ve boşa atılınca bekleme süresi harcanır.
 

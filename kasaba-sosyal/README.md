@@ -112,3 +112,7 @@ menülerindedir. VIP satın alma düğmeleri ürünün VIP olduğunu açıkça y
 VIP etiketi altın, adı turkuaz, sohbet mesajı açık sarıdır. Kendi oltanla
 spawn’da tuttuğun balık yere düşmeden doğrudan envantere eklenir.
 Hapis cezası olanlar eski menülerden oyun/mesaj/market işlemi yapamaz.
+
+## 1.1.0 biriken aktiflik
+
+Oyunlar arasında ve yeniden girişte aktif süre saklanır: toplam 15 dakika 0,20 Akçe. Günlük en fazla beş ödül (1 Akçe). Türkiye saatine göre 00.00 yeni hak açar; yarım ilerleme korunur, sınır dolduktan sonra yeni süre birikmez. Yarış sürüşü, oyuncu girdisi ve oyun menüleri aktivite sayılır. Lobi/AFK/seyirci/hapis sayılmaz. Ödül işi ve günlük sayaç birlikte, atomik kaydedilir; kredi tekrarları tek ödeme verir.

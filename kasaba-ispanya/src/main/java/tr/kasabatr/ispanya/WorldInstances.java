@@ -28,6 +28,7 @@ final class WorldInstances {
         publicWorld=Bukkit.getWorld(name);if(publicWorld==null)publicWorld=load(name,false);
         if(publicWorld==null)throw new IOException("İspanya dünyası yüklenemedi.");
         for(int i=0;i<plugin.track().size();i++)if(!safe(plugin.track().tile(i).location(publicWorld)))throw new IOException("Harita yolu ile dünya uyuşmuyor: kare "+(i+1)+". Mevcut dünya korunuyor.");
+        LobbyBuilder.ensure(plugin,publicWorld);
         Location lobby=lobby();if(!safe(lobby))throw new IOException("İspanya lobi zemini güvenli değil; /ispanya lobi ayarla için konumu kontrol et.");
         configure(publicWorld,false);publicWorld.setSpawnLocation(lobby);new MultiverseBridge(plugin).register(publicWorld,lobby);clearStaleCopies();
     }
@@ -57,7 +58,7 @@ final class WorldInstances {
     private World load(String name,boolean match){return Bukkit.createWorld(new WorldCreator(name).generator(new EmptyWorldGenerator()).generateStructures(false));}
     private void configure(World world,boolean match){
         world.setAutoSave(!match);world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE,false);world.setGameRule(GameRule.DO_WEATHER_CYCLE,false);world.setGameRule(GameRule.DO_MOB_SPAWNING,false);world.setGameRule(GameRule.RANDOM_TICK_SPEED,0);world.setGameRule(GameRule.DO_FIRE_TICK,false);world.setGameRule(GameRule.KEEP_INVENTORY,true);world.setGameRule(GameRule.LOCATOR_BAR,false);
-        world.setTime(1000);world.setStorm(false);world.setThundering(false);world.getWorldBorder().setCenter(.5,.5);world.getWorldBorder().setSize(125);world.setSpawnLocation(new Location(world,.5,65,34.5));
+        world.setTime(1000);world.setStorm(false);world.setThundering(false);world.getWorldBorder().setCenter(.5,.5);world.getWorldBorder().setSize(match?125:2*Math.max(130,Math.abs(plugin.getConfig().getDouble("lobby.z",92.5))+24));world.setSpawnLocation(new Location(world,.5,65,34.5));
     }
     void close(World world){
         if(!copies.contains(world))return;

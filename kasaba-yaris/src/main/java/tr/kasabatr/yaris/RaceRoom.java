@@ -89,6 +89,7 @@ final class RaceRoom {
             this.announce("§e" + racer.name + " §fayrıldı. Oda sahibi: §e" + this.ownerName());
         } else if (this.state == State.RACING || this.state == State.COUNTDOWN) {
             this.announce("§e" + racer.name + " §7yarıştan ayrıldı.");
+            if(activeCount()==1){winByForfeit();return;}
             if (this.state == State.RACING && this.activePending() == 0) {
                 this.showResults();
             }
@@ -108,6 +109,7 @@ final class RaceRoom {
             throw new IllegalStateException("En az " + this.plugin.minimum() + " oyuncu gerekli");
         }
         this.world = this.plugin.instances().create(this.id, this.plugin.map());
+        RaceObstacles.build(this.world,this.mode);
         RaceMap.Course course = this.plugin.map().course(this.mode);
         int n = 0;
         try {
@@ -296,6 +298,8 @@ final class RaceRoom {
         }
         return n;
     }
+
+    private void winByForfeit(){for(Racer racer:racers.values())if(racer.active){racer.dnf=false;if(racer.finishMillis<0)racer.finishMillis=raceStartMillis==0?0:Math.max(0,System.currentTimeMillis()-raceStartMillis);Player p=Bukkit.getPlayer(racer.id);if(p!=null){title(p,"§a§lKAZANDIN!","§eDiğer yarışçılar ayrıldı • Lobiye 3 sn");tell(p,"§aKazandın! §e3 saniye sonra yarış lobisine döneceksin.");}}showResults();resultTicks=60;}
 
     private void showResults() {
         if (this.state == State.RESULTS || this.state == State.CLOSED) {

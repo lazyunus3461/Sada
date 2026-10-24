@@ -71,7 +71,7 @@ TabExecutor {
     private static final String GAME_ID = "atyarisi";
     private static final String BOAT_ID="tekneyarisi";
     private GameScreens screens;
-    private final Set<UUID> quitting=new HashSet<>();
+    private final Set<UUID> quitting=new HashSet<>(),entryMenuSeen=new HashSet<>();
     private final Map<UUID,List<UUID>> entryTeams=new HashMap<>();
     private final Map<Integer, RaceRoom> rooms = new LinkedHashMap<Integer, RaceRoom>();
     private final Map<UUID, RaceRoom> membership = new HashMap<UUID, RaceRoom>();
@@ -123,6 +123,7 @@ TabExecutor {
                 this.getLogger().severe("Harita yüklenemedi: " + runtimeException.getMessage());
             }
         }
+        RaceObstacles.install(this,Bukkit.getWorld(this.map.worldName));
         this.hub = Bukkit.getServicesManager().load(HubApi.class);
         if (this.hub == null) {
             this.getLogger().severe("KasabaHub API bulunamadı.");
@@ -232,7 +233,7 @@ TabExecutor {
             if (this.getConfig().getBoolean("auto-open-menu-on-join", true)) {
                 Bukkit.getScheduler().runTaskLater((Plugin)this, () -> {
                     for (Player player : arrayList) {
-                        if (!player.isOnline() || !this.visitors.contains(player.getUniqueId())) continue;
+                        if (!player.isOnline() || !this.visitors.contains(player.getUniqueId())||entryMenuSeen.contains(player.getUniqueId())||membership.containsKey(player.getUniqueId())) continue;
                         this.showMain(player);
                     }
                 }, 10L);
@@ -260,7 +261,7 @@ TabExecutor {
             if (raceRoom != null) {
                 raceRoom.remove(uUID);
             }
-            this.visitors.remove(uUID);
+            this.visitors.remove(uUID);entryTeams.remove(uUID);entryMenuSeen.remove(uUID);
         }
     }
 
@@ -270,7 +271,7 @@ TabExecutor {
         if (raceRoom != null) {
             raceRoom.remove(uUID);
         }
-        this.visitors.remove(uUID);entryTeams.remove(uUID);screens.clear(uUID);
+        this.visitors.remove(uUID);entryTeams.remove(uUID);entryMenuSeen.remove(uUID);screens.clear(uUID);
         player.closeDialog();player.closeInventory();
         if (!quitting.contains(uUID)&&PlayerBackup.exists(this.getDataFolder(), uUID)) {
             try {
@@ -369,12 +370,13 @@ TabExecutor {
     }
 
     private void showMain(Player p){
-        ready(p);RaceRoom own=membership.get(p.getUniqueId());boolean safe=lobby(p.getUniqueId());List<GameScreens.Button> buttons=new ArrayList<>();
-        if(own==null){buttons.add(new GameScreens.Button("At Yarışı",()->createRoom(p,Mode.HORSE)));buttons.add(new GameScreens.Button("Tekne Yarışı",()->createRoom(p,Mode.BOAT)));buttons.add(new GameScreens.Button("Açık odalar",()->showRooms(p)));}
+        ready(p);entryMenuSeen.add(p.getUniqueId());RaceRoom own=membership.get(p.getUniqueId());boolean safe=lobby(p.getUniqueId());List<GameScreens.Button> buttons=new ArrayList<>();
+        if(own==null){buttons.add(new GameScreens.Button("At Yarışı",()->showMode(p,Mode.HORSE)));buttons.add(new GameScreens.Button("Tekne Yarışı",()->showMode(p,Mode.BOAT)));buttons.add(new GameScreens.Button("Açık odalar",()->showRooms(p)));}
         else{if(own.state==RaceRoom.State.WAITING&&own.owner.equals(p.getUniqueId()))buttons.add(new GameScreens.Button("Maçı başlat",()->startRoom(p)));buttons.add(new GameScreens.Button("Odadan ayrıl",()->leaveRoom(p)));}
         buttons.add(new GameScreens.Button(safe?"Bu lobide kal":"Yarışa dön",()->{if(own!=null&&own.state==RaceRoom.State.WAITING)leaveRoom(p);screens.clear(p.getUniqueId());p.closeDialog();}));buttons.add(new GameScreens.Button("Ana spawna dön",()->hub.returnToLobby(p.getUniqueId())));
         screens.show(p,"Kasaba • At ve Tekne Yarışı",List.of("İki oyun aynı seçim lobisini kullanır. At veya tekne odası seç.","2–5 kişi • İki tur • Altı kontrol noktasını sırayla geç.",own==null?"Bir oda seçmeden lobide bekleyebilirsin.":"Odan: "+own.id+" • "+own.mode.title),buttons,safe);
     }
+    private void showMode(Player p,Mode mode){ready(p);List<GameScreens.Button> buttons=new ArrayList<>();for(RaceRoom room:rooms.values())if(room.mode==mode&&room.state==RaceRoom.State.WAITING&&room.racers.size()<maximum())buttons.add(new GameScreens.Button("Oda "+room.id+" • "+room.racers.size()+"/"+maximum()+" • Katıl",()->joinRoom(p,room.id)));buttons.add(new GameScreens.Button("Oda oluştur",()->createRoom(p,mode)));buttons.add(new GameScreens.Button("Nasıl oynanır?",()->screens.show(p,mode.title+" • Bilgi",List.of("İki tur ve altı kontrol noktası. Sırayla tüm kapılardan geç.",mode==Mode.HORSE?"Engelleri atla veya boşluğundan geç; saman slalomuna ve sığ suya dikkat et.":"Şamandıralardan ve adacıklardan yön değiştirerek geç; çarparsan hız kaybedersin.","Son yarışçı kalırsan kazanırsın; üç saniye sonra yarış lobisine dönersin."),List.of(new GameScreens.Button("Geri",()->showMode(p,mode))),true)));buttons.add(new GameScreens.Button("Geri",()->showMain(p)));buttons.add(new GameScreens.Button("Bu lobide kal",()->{}));screens.show(p,mode.title+" • Odalar",List.of("Önce açık bir oda seç veya yeni oda oluştur.","2–5 kişi • İki tur • Engelli parkur"),buttons,true);}
     private void showRooms(Player p){ready(p);List<GameScreens.Button> buttons=new ArrayList<>();for(RaceRoom room:rooms.values())if(room.state==RaceRoom.State.WAITING&&room.racers.size()<maximum())buttons.add(new GameScreens.Button("Oda "+room.id+" • "+room.mode.title+" • "+room.racers.size()+"/5",()->joinRoom(p,room.id)));buttons.add(new GameScreens.Button("Geri",()->showMain(p)));buttons.add(new GameScreens.Button("Bu lobide kal",()->{}));screens.show(p,"Yarışlar • Açık Odalar",List.of("Başlamamış bir odayı seç. Aynı anda farklı maçlar oynanabilir."),buttons,true);}
     private void createRoom(Player player, Mode mode) {
         if (!this.visitors.contains(player.getUniqueId())) {
@@ -750,7 +752,7 @@ TabExecutor {
     @Override public org.bukkit.generator.ChunkGenerator getDefaultWorldGenerator(String name,String id){return new EmptyWorldGenerator();}
     @Override public boolean lobby(UUID id){RaceRoom room=membership.get(id);return visitors.contains(id)&&(room==null||room.state==RaceRoom.State.WAITING);}
     private boolean authenticated(Player p){var auth=Bukkit.getServicesManager().load(tr.kasaba.auth.api.AuthState.class);return auth!=null&&auth.authenticated(p.getUniqueId());}
-    void ready(Player p){if(!authenticated(p)||!visitors.contains(p.getUniqueId()))throw new IllegalArgumentException("Önce yarış lobisine gir.");}
+    void ready(Player p){if(!authenticated(p)||!visitors.contains(p.getUniqueId()))throw new IllegalArgumentException("Önce yarış lobisine gir.");entryMenuSeen.add(p.getUniqueId());}
     private static String norm(String s){return s.toLowerCase(Locale.ROOT).replace('ı','i').replace('ş','s').replace('ç','c').replace('ğ','g').replace('ü','u').replace('ö','o');}
     private List<Player> team(Player leader){List<UUID> ids=entryTeams.getOrDefault(leader.getUniqueId(),List.of(leader.getUniqueId()));List<Player> players=ids.stream().filter(visitors::contains).map(Bukkit::getPlayer).toList();if(players.isEmpty()||players.stream().anyMatch(java.util.Objects::isNull))throw new IllegalArgumentException("Gruptaki biri ayrıldı.");if(!players.getFirst().equals(leader))throw new IllegalArgumentException("Odayı grup lideri seçmeli.");for(Player p:players)if(membership.containsKey(p.getUniqueId()))throw new IllegalArgumentException("Gruptaki herkes önce /yaris ayrıl ile odasından çıksın.");return players;}
     void moveMount(Entity mount,Location target){for(Entity rider:mount.getPassengers())internalTeleports.add(rider.getUniqueId());try{if(!mount.teleport(target,org.bukkit.event.player.PlayerTeleportEvent.TeleportCause.PLUGIN,io.papermc.paper.entity.TeleportFlag.EntityState.RETAIN_PASSENGERS))throw new IllegalStateException("Binek taşınamadı.");}finally{for(Entity rider:mount.getPassengers())internalTeleports.remove(rider.getUniqueId());}}

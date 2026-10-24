@@ -1,0 +1,107 @@
+{
+  "checks": [
+    "Eight Hub games have distinct colors; main and all six game menus use red navigation/close controls, colored play/info text and working native callbacks",
+    "Dedicated dice-themed Şans Yolu plaza is safe and used by compass; horse fences/water and boat slalom exist with connected routes through every checkpoint",
+    "Private red prison bossbar shows a decreasing real remaining time and is removed on release",
+    "Tagged snowballs really spawn/hit, push without health damage, consume one ball with a two-second cooldown, reject other rooms and do not leak into Hub inventory",
+    "3 minutes of Renk + 7 of X Arena + 5 of race grant 0.20 Akce; five cumulative daily rewards pay exactly 1.00 and additional play cannot exceed the cap",
+    "Last horse racer wins by withdrawal, sees the win message and returns to the race lobby in three seconds; idle lobby time does not accrue",
+    "Boat last-player victory also works during countdown and cleans the private match world"
+  ],
+  "names": [
+    "U3gdifvA",
+    "U3gdifvB",
+    "U3gdifvC",
+    "U3gdifvD",
+    "U3gdifvE",
+    "U3gdifvF"
+  ],
+  "activityName": "U3gdifvA",
+  "activityUUID": "1c98e86c-ce50-3ea3-b911-de6831d4a19e",
+  "carry": 10249,
+  "prisonName": "U3gdifvC",
+  "prisonUUID": "9d126663-b856-3ba9-90f4-1fd981f2bd37",
+  "map": {
+    "horseFence": "OAK_FENCE",
+    "horseWater": "WATER",
+    "boatIsland": "SMOOTH_SANDSTONE",
+    "boatCenterWall": "SMOOTH_SANDSTONE",
+    "horseCenterWall": "HAY_BLOCK",
+    "lobby": [
+      0.5,
+      66,
+      92.5
+    ],
+    "lobbyFloor": "QUARTZ_BLOCK",
+    "holograms": 0,
+    "horseRoute": true,
+    "boatRoute": true
+  },
+  "gameColors": [
+    "#8EF0AF",
+    "#FF8080",
+    "#B6F27D",
+    "#FFD166",
+    "#D6A2FF",
+    "#9DBBFF",
+    "#72DDFF",
+    "#FF9CCC"
+  ],
+  "restartActivity": true,
+  "restartPrisonClock": true,
+  "restartCap": true,
+  "restartModes": true,
+  "raceMenu": {
+    "directMenuStable": true,
+    "explicitBoatRoom": true,
+    "forfeit": true
+  },
+  "unit": {
+    "tests": 112,
+    "failures": 0,
+    "modules": {
+      "hub": {
+        "tests": 19,
+        "failures": 0
+      },
+      "arena": {
+        "tests": 0,
+        "failures": 0
+      },
+      "battle": {
+        "tests": 19,
+        "failures": 0
+      },
+      "adalar": {
+        "tests": 10,
+        "failures": 0
+      },
+      "vampir": {
+        "tests": 44,
+        "failures": 0
+      },
+      "ispanya": {
+        "tests": 6,
+        "failures": 0
+      },
+      "renk": {
+        "tests": 4,
+        "failures": 0
+      },
+      "yaris": {
+        "tests": 2,
+        "failures": 0
+      },
+      "hapis": {
+        "tests": 2,
+        "failures": 0
+      },
+      "sosyal": {
+        "tests": 6,
+        "failures": 0
+      }
+    }
+  },
+  "date": "2026-10-24",
+  "server": "Paper 1.21.10 build 130 / Java 21 / Multiverse 5.3.2"
+}
