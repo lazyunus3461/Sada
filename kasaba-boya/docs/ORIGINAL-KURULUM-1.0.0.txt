@@ -1,0 +1,48 @@
+KASABATR BOYA SAVASI 1.0.0
+========================
+
+İçerik
+-------
+KasabaBoya-1.0.0.jar: Paper eklentisi
+KasabaTR-Boya-Savasi-Lobi-v01: Oyuna özel bekleme lobisi
+KasabaTR-Boya-Savasi-Arena-v01: Maç arenası
+Boya-Savasi-*-Onizleme.png: Haritaların üstten şematik önizlemeleri
+
+Kurulum
+-------
+1. Sunucuyu durdur. Paper 1.21.10, Java 21, KasabaHub 1.2.0 ve onun
+   KasabaAuth 1.3.0 bağımlılığı kurulu olmalı.
+2. JAR dosyasını sunucunun plugins klasörüne koy.
+3. İki dünya klasörünü, plugins ve world klasörleriyle aynı seviyedeki
+   sunucu ana dizinine koy. Dünya klasörü adlarını değiştirme.
+4. Sunucuyu yeniden başlat. Konsolda "Boya Savaşı hazır" satırını gör.
+5. Oyuncular /oyunlar menüsünden Boya Savaşı'na girer. Alternatif:
+   /boya katil. /boya cik ile ayrılırlar. /boya durum bilgi verir.
+
+Oyun
+----
+Oyuncular önce ayrı Boya Savaşı lobisinde bekler. En az 4 kişi olunca
+15 saniyelik geri sayım başlar. Maç 4-12 kişiyle, eşit kırmızı ve mavi
+takımlarla oynanır. Maç 180 saniyedir. Oyuncular boya tabancasını sağ
+tıklayıp kartopu fırlatır. Kartopu belirlenmiş beyaz beton zemine
+değdiğinde onu takım rengine boyar. Rakibe isabet kısa süreli yavaşlatır.
+Süre sonunda daha fazla boyalı alana sahip takım kazanır. Zemin temizlenir,
+oyuncular yeni maç için oyun lobisine döner. Eşyalar ve önceki konum,
+oyundan ayrıldıklarında geri yüklenir. Oyun dünyaları blok kırmaya/koymaya
+kapalıdır. İstemci modu veya kaynak paketi gerekmez.
+
+Sunucu yöneticisi /boya baslat ile en az 4 oyuncu varsa geri sayımı
+beklemeden maçı başlatabilir. Süre ve bazı sınırlar plugins/KasabaBoya/
+config.yml dosyasındadır; değiştirdikten sonra sunucuyu yeniden başlat.
+
+Önemli
+------
+İlk kurulumda aynı adlı eski Boya Savaşı dünya klasörleri varsa önce
+yedekle; yeni dünyaları mevcut klasörlerin üstüne karıştırarak kopyalama.
+Haritalar kendi boş dünyalarındadır. Sunucunun ana lobi dünyasını
+değiştirmezler. Kaynak ZIP geliştiriciler içindir, kurulumu için gerekli
+değildir.
+
+Doğrulama: Paper 1.21.10 test sunucusunda KasabaAuth 1.3.0 ve
+KasabaHub 1.2.0 ile açılış, iki dünyanın yüklenmesi ve oyun kaydı
+doğrulandı. Gerçek oyuncularla tam maç bu ortamda oynanmadı.

@@ -1,0 +1,59 @@
+{
+  "checks": [
+    {
+      "name": "Ten-game compass first page, separate automatic lobby/arena, stay button, safe spawns and 4376 validated paint cells"
+    },
+    {
+      "name": "Normal four-player countdown, balanced teams, private match world, protection and dim personal HUD",
+      "guards": {
+        "teleport": true,
+        "command": true,
+        "break": true,
+        "mode": true,
+        "fly": true,
+        "damage": true
+      }
+    },
+    {
+      "name": "Real use-item launches paint snowball, hits 13 allowed cells, repeat hits add no area and original arena stays white"
+    },
+    {
+      "name": "Opponent snowball takes the same real area; old team count decreases instead of duplicating points"
+    },
+    {
+      "name": "Enemy hit slows briefly without health damage; teammates are not slowed"
+    },
+    {
+      "name": "Team result counts once in leaderboard and returns everyone to game lobby after result; no automatic requeue or leftover effects/world"
+    },
+    {
+      "name": "Three clean concurrent rooms, isolated paint/projectiles, fourth waits and two-player practice awards no wins"
+    },
+    {
+      "name": "Hub party enters together, leader controls queue and cancellation without splitting the group across rooms"
+    },
+    {
+      "name": "Direct cross-lobby navigation restores inventory; normal match abandonment blocks only Boya for 15 minutes"
+    },
+    {
+      "name": "Disconnect recovery restores inventory after authentication and preserves the live personal HUD"
+    },
+    {
+      "name": "Clean restart restores offline inventory, removes all private match copies and preserves the ten-game compass and bright lobby HUD"
+    }
+  ],
+  "started": "2026-10-25T06:56:43.435Z",
+  "restartUser": "PAh5orwC",
+  "finished": "2026-10-25T06:57:27.285Z",
+  "players": 8,
+  "paper": "1.21.10 build 130",
+  "productionPlugins": 16,
+  "restart": true,
+  "finalArtifactsSmoke": true,
+  "artifactHashes": {
+    "KasabaBoya-1.1.0.jar": "011b4b27017d0af0d082a7d632f2720fdc33e221fa88deccebb73e4f6991e7d1",
+    "KasabaHub-1.6.2.jar": "1d4da4e583206791ed888da226f1e2f837bd674df438ac0adccd9cac6b235ef9",
+    "KasabaBilgi-1.0.0.jar": "e18711811bfa30779bb57bd46c288cb92b289dfbfae9554d167b1ad737d3fcec",
+    "KasabaRoles-1.3.2.jar": "4ebd1725c40451c9d97fe985f345704190900d44313f27d978adaac8ee1b0dca"
+  }
+}

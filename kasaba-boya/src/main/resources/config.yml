@@ -1,0 +1,9 @@
+lobby-world: KasabaTR-Boya-Savasi-Lobi-v01
+arena-world: KasabaTR-Boya-Savasi-Arena-v01
+minimum-players: 4
+maximum-players: 12
+max-concurrent-rooms: 3
+countdown-seconds: 15
+match-seconds: 180
+shot-cooldown-ticks: 6
+shot-splash-radius: 2

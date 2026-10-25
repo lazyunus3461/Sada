@@ -1,4 +1,6 @@
-# KasabaHub 1.6.1
+# KasabaHub 1.6.2
+
+1.6.2, Boya Savaşı için oyun kartı rengi ve rehber sayfası ekler. On oyun ilk sayfaya sığar; mevcut dünya/lobi ayarları değiştirilmez. [Güncel birleşik paket](../dist/KasabaTR-Boya-ve-Bilgi-Hazir-Paket-1.1.0.zip) Hub, Boya ve bilgi tablosu güncellemesini içerir.
 
 Paper **1.21.10 / Java 21** üzerinde arkadaşlarla oynanan Minecraft oyun merkezi için ana eklenti. Ortak lobi, Minecraft'ın **yerleşik sayfa arayüzü**, geçici arkadaş grupları ve sonraki oyun eklentileri için bağlantı sağlar. Bu sürümde mini oyun kuralları bulunmaz. Yönetici oyun giriş noktalarını `/oyunlar ekle` ile kaydedebilir; boş oyun listesi **Oyunlar yakında** gösterir.
 

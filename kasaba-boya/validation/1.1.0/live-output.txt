@@ -1,0 +1,11 @@
+PASS Ten-game compass first page, separate automatic lobby/arena, stay button, safe spawns and 4376 validated paint cells {}
+PASS Normal four-player countdown, balanced teams, private match world, protection and dim personal HUD {"guards":{"teleport":true,"command":true,"break":true,"mode":true,"fly":true,"damage":true}}
+PASS Real use-item launches paint snowball, hits 13 allowed cells, repeat hits add no area and original arena stays white {}
+PASS Opponent snowball takes the same real area; old team count decreases instead of duplicating points {}
+PASS Enemy hit slows briefly without health damage; teammates are not slowed {}
+PASS Team result counts once in leaderboard and returns everyone to game lobby after result; no automatic requeue or leftover effects/world {}
+PASS Three clean concurrent rooms, isolated paint/projectiles, fourth waits and two-player practice awards no wins {}
+PASS Hub party enters together, leader controls queue and cancellation without splitting the group across rooms {}
+PASS Direct cross-lobby navigation restores inventory; normal match abandonment blocks only Boya for 15 minutes {}
+PASS Disconnect recovery restores inventory after authentication and preserves the live personal HUD {}
+ALL PASS 10

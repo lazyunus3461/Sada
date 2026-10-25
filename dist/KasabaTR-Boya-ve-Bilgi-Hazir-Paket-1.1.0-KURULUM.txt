@@ -1,0 +1,49 @@
+KASABATR — BOYA SAVAŞI + BİLGİ TABLOSU HAZIR PAKET 1.1.0
+Paper 1.21.10 / Java 21
+
+İÇERİK
+KasabaBoya-1.1.0.jar — Yeni oyun, iki gömülü dünya, üç eşzamanlı oda.
+KasabaHub-1.6.2.jar — Yeni oyun pusulası kaydı, renk ve rehber.
+KasabaBilgi-1.0.0.jar — Canlı bilgi tablosu; lobide okunaklı, oyunda soluk.
+KasabaRoles-1.3.2.jar — Bilgi tablosuna gerçek rütbe sağlayan güncelleme.
+
+KURULUM
+1. Sunucuyu tamamen durdur; plugins ve dünya klasörlerini yedekle.
+2. Eski KasabaHub/KasabaRoles ve varsa KasabaBoya/KasabaBilgi JAR'larını çıkar.
+3. Bu ZIP'in plugins klasöründeki DÖRT JAR'ı sunucunun plugins klasörüne koy.
+4. Veri, ayar ve dünya klasörlerini SİLME. Diğer oyunlar, Auth ve Akçe kalır.
+5. Sunucuyu başlat. /reload kullanma. /oyunlar > Boya Savaşı seç.
+
+Dünya kopyalamak, /mv import, /oyunlar ekle veya spawn komutu gerekmez.
+Ayrı lobi ve arena eksikse otomatik kurulur; mevcut haritalar üzerine yazılmaz.
+Her maç ayrı kopyadadır; üç maç birbirinin boyasına ve oyuncusuna etki etmez.
+
+İKİ KİŞİ TEST
+İkiniz de /boya yazın, sonra ikiniz de /boya oyna yazın.
+Yönetici sıradayken /boya deneme yazsın. Galibiyet yazmaz, çıkış cezası üretmez.
+Normal maç en az 4, en fazla 12 kişi; eşit takımlar ve 3 dakika süre.
+Boya tabancasını sağ tıkla; rakibin boyası geri alınabilir.
+
+KOMUTLAR
+/boya              Lobi veya pusula menüsü
+/boya oyna         Sıraya gir; grup varsa lider yazar
+/boya durum        Oda/sıra bilgisi
+/boya lobi         Boya lobisine dön
+/boya çık          Ana spawna dön (/lobi de olur)
+/boya başlat       Yönetici: normal maçı sıradakilerle hemen başlat
+/boya deneme       Yönetici: sırada tam iki kişiyle test
+/boya testharita   Yönetici/konsol: oda yokken harita ve doğmaları doğrula
+/boya düzenleme aç|kapat   Yönetici: oyunun dışındayken şablon düzenleme izni
+/oyunceza kaldır Oyuncu boyasavasi   Bu oyunun çıkış cezasını kaldır
+
+Pusula envanterden de açılır. Lobiye geldiğinde otomatik sıraya alınmazsın.
+Sonuçtan 5 saniye sonra aynı oyun lobisine dönersin. Oyna seçmeden yeni maç yok.
+Normal maçı yarıda bırakan yalnız Boya Savaşı'na 15 dk giremez.
+
+BİLGİ TABLOSU
+Oyuncu, gerçek rütbe, Akçe, klan, kalıcı toplam süre.
+play.kasabatr.com / dc: kasabatr / ig: kasabatrminecraft
+MS ve kırmızı satır sayıları yok. Klan eklentisi/üyelik yoksa Yok görünür.
+/tablo aç ve /tablo kapat (spawn/lobide). /bilgi bilgi kitabını açmaya devam eder.
+Gerçek arka plan saydamlığı oyuncunun Minecraft ayarıdır; oyun içi görünüm
+soluk yazı ve daha küçük düzenle hafifletilir. Ek mod/kaynak paketi gerekmez.

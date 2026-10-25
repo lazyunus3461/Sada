@@ -1,0 +1,31 @@
+{
+  "archive": "KasabaTR-Boya-ve-Bilgi-Hazir-Paket-1.1.0.zip",
+  "bytes": 277427,
+  "sha256": "e37f9dd37eac92990ca47538304b8fd5051f93f8880e62677abf0b4d4195c808",
+  "plugins": {
+    "KasabaBoya": {
+      "version": "1.1.0",
+      "jar": "KasabaBoya-1.1.0.jar",
+      "bytes": 121705,
+      "sha256": "011b4b27017d0af0d082a7d632f2720fdc33e221fa88deccebb73e4f6991e7d1"
+    },
+    "KasabaHub": {
+      "version": "1.6.2",
+      "jar": "KasabaHub-1.6.2.jar",
+      "bytes": 87883,
+      "sha256": "1d4da4e583206791ed888da226f1e2f837bd674df438ac0adccd9cac6b235ef9"
+    },
+    "KasabaBilgi": {
+      "version": "1.0.0",
+      "jar": "KasabaBilgi-1.0.0.jar",
+      "bytes": 22968,
+      "sha256": "e18711811bfa30779bb57bd46c288cb92b289dfbfae9554d167b1ad737d3fcec"
+    },
+    "KasabaRoles": {
+      "version": "1.3.2",
+      "jar": "KasabaRoles-1.3.2.jar",
+      "bytes": 39944,
+      "sha256": "4ebd1725c40451c9d97fe985f345704190900d44313f27d978adaac8ee1b0dca"
+    }
+  }
+}

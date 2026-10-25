@@ -1,0 +1,27 @@
+{
+  "inputs": [
+    {
+      "name": "KasabaTR-Boya-Savasi-TAM-PAKET-v1.0.0.zip",
+      "bytes": 87398,
+      "sha256": "b29de98628ff87602da8e55d7ec800b424dd9ea6f5dc67d8ba118549fd91d35a"
+    },
+    {
+      "name": "KasabaTR-Boya-Savasi-KAYNAK-v1.0.0.zip",
+      "bytes": 69364,
+      "sha256": "33752481517176fb2de9720945b00234139ca27a220cc73b7a75e566616fddf9"
+    }
+  ],
+  "embeddedFiles": {
+    "KasabaTR-Boya-Savasi-Lobi-v01/level.dat": "43321bebb6fac437178db70f5e5612b52996bfa5477179d7fdfd7c41504294dd",
+    "KasabaTR-Boya-Savasi-Arena-v01/level.dat": "cb3c2a57818571fa14f38119ba860ccbaeecae2d96fd77673b7babaabb434369",
+    "KasabaTR-Boya-Savasi-Arena-v01/paintable.txt": "dd6b1d7ad243a54691c95c4c0cf5bb48367d9161595829befe8ff1111069b7e2",
+    "KasabaTR-Boya-Savasi-Lobi-v01/region/r.-1.0.mca": "13c9f44a85a6814a2a4a59c43da6be6887e1336e4efae840dd02a1e967c0d2ae",
+    "KasabaTR-Boya-Savasi-Lobi-v01/region/r.0.0.mca": "d93cbd2f103350cf7697e6190f2deb5920942c9d02aec3a48f94f2eebf4ddd29",
+    "KasabaTR-Boya-Savasi-Lobi-v01/region/r.-1.-1.mca": "271244a2cbc356a0cc6c5e2dbfbd00e0fa32e2705ad9d2841f1e8e758c1bbccd",
+    "KasabaTR-Boya-Savasi-Lobi-v01/region/r.0.-1.mca": "96a37257ead2f516c28ee96301920e414d2afeafd984d13fc108b184efbea37e",
+    "KasabaTR-Boya-Savasi-Arena-v01/region/r.-1.0.mca": "b7ef1ab8ef34bbb6fa90d4f5f637ea27f812a03bfa2725990ccc0fbd1559b4d2",
+    "KasabaTR-Boya-Savasi-Arena-v01/region/r.0.0.mca": "5c5753f4b9a0907674125a72e077a06fba04a4c1e2b5a6ab1c8d65a528f7b138",
+    "KasabaTR-Boya-Savasi-Arena-v01/region/r.-1.-1.mca": "f3d3a17c09b5eab79c581fd1b39acc7ba654816558079828eeec06ce913bcb5c",
+    "KasabaTR-Boya-Savasi-Arena-v01/region/r.0.-1.mca": "8c0ca5c95ffb0411646c7b060afd033f3dbcd5b71b5695193812f760f4e471d3"
+  }
+}

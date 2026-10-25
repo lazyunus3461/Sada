@@ -1,0 +1,8 @@
+package tr.kasabatr.boya;
+import java.util.*;import org.junit.jupiter.api.Test;import static org.junit.jupiter.api.Assertions.*;
+class BoyaRulesTest {
+ List<UUID> group(int n){List<UUID> ids=new ArrayList<>();for(int i=0;i<n;i++)ids.add(UUID.randomUUID());return ids;}
+ @Test void wholeGroupsOnlyAndEvenSides(){var a=group(7);var b=group(6);var c=group(1);assertEquals(b,BoyaRules.batch(List.of(a,b),12));var result=BoyaRules.batch(List.of(a,b,c),12);assertEquals(8,result.size());assertTrue(result.containsAll(a)&&result.containsAll(c));assertFalse(result.stream().anyMatch(b::contains));assertTrue(BoyaRules.batch(List.of(group(3)),12).isEmpty());}
+ @Test void rejectsRepeatedMembersAndDoesNotOverfill(){var a=group(4);assertThrows(IllegalArgumentException.class,()->BoyaRules.batch(List.of(a,a),12));assertThrows(IllegalArgumentException.class,()->BoyaRules.batch(List.of(group(13)),12));assertEquals(12,BoyaRules.batch(List.of(group(6),group(6),group(2)),12).size());}
+ @Test void repaintTransfersRealAreaAndUnlistedTilesStayUntouched(){Set<PaintMap.Tile> tiles=new HashSet<>();for(int x=-3;x<=3;x++)for(int z=-3;z<=3;z++)tiles.add(new PaintMap.Tile(x,79,z));var grid=new PaintGrid(tiles);var centre=new PaintMap.Tile(0,79,0);assertEquals(13,grid.splash(centre,PaintTeam.RED,2).size());assertEquals(0,grid.splash(centre,PaintTeam.RED,2).size());assertEquals(13,grid.count(PaintTeam.RED));grid.splash(centre,PaintTeam.BLUE,2);assertEquals(0,grid.count(PaintTeam.RED));assertEquals(13,grid.count(PaintTeam.BLUE));assertEquals(PaintTeam.BLUE,grid.winner());assertEquals(0,grid.splash(new PaintMap.Tile(0,83,0),PaintTeam.RED,2).size());assertEquals(13,grid.owners.size());}
+}

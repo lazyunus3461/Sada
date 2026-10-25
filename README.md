@@ -1,5 +1,9 @@
 # Kasaba oyun merkezi
 
+## Boya Savaşı 1.1.0 + bilgi tablosu
+
+[Güncel dört JAR'lı hazır ZIP](dist/KasabaTR-Boya-ve-Bilgi-Hazir-Paket-1.1.0.zip): Boya 1.1.0, Hub 1.6.2, Bilgi 1.0.0 ve Roles 1.3.2. İki dünya otomatik kurulur, üç maç ayrı kopyalarda çalışır. Pusula veya `/boya` ile lobi; `/boya oyna` ile sıra. İki kişi test için ikisi sıraya girdikten sonra yönetici `/boya deneme` kullanır. [Oyun ve kurulum kılavuzu](kasaba-boya/README.md), [test kayıtları](kasaba-boya/validation/1.1.0/).
+
 ## KasabaTR bilgi tablosu 1.0.0
 
 [Hazır ZIP](dist/KasabaTR-Bilgi-Tablosu-1.0.0.zip), KasabaBilgi 1.0.0 ve KasabaRoles 1.3.2 içerir. Lobide okunaklı, oyunda soluk/kompakt oyuncu, rütbe, Akçe, klan, toplam süre ve sunucu/sosyal adresleri gösterilir. X Arena ve Şans Yolu bilgileri korunur; BR isim gizleme takımları değiştirilmez. [Kurulum ve saydamlık sınırları](kasaba-bilgi/README.md), [doğrulama](kasaba-bilgi/validation/1.0.0/). Eski Roles JAR'ını çıkar, yeni iki JAR'ı koy ve veri klasörlerini koru.
