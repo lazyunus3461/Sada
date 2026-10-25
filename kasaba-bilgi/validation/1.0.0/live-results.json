@@ -1,0 +1,47 @@
+{
+  "checks": [
+    {
+      "name": "Personal bright lobby HUD only after authentication, all requested fields and links, no latency or numeric row counters"
+    },
+    {
+      "name": "Live exact Akçe, historical playtime and private per-player values without replacing the Bukkit board"
+    },
+    {
+      "name": "Kurucu, Rehber, VIP, default rank and temporary VIP priority follow actual services; optional clan changes live"
+    },
+    {
+      "name": "Existing game sidebar is retained and merged; toggle restores it and role teams stay on their original board"
+    },
+    {
+      "name": "X Arena top-five sidebar coexists with compact dim information; game scoreboard remains stable and lobby colors return"
+    },
+    {
+      "name": "Shared Şans Yolu match board still shows game positions and each player receives only their own balance/profile"
+    },
+    {
+      "name": "Battle Royale shares its hidden-name team unchanged while dim HUD and personal balances remain visible"
+    },
+    {
+      "name": "Esya active match dims the same panel, then finished match restores the bright isolated lobby display"
+    },
+    {
+      "name": "Disable/re-enable removes the client overlay, restores the native sidebar and keeps the exact Bukkit board"
+    },
+    {
+      "name": "Clean restart retains bank, assigned role and historical playtime; bright isolated Esya lobby remains reachable"
+    }
+  ],
+  "started": "2026-10-25T06:30:03.315Z",
+  "restartUser": "HBg7e44A",
+  "statTicks": 904801,
+  "finished": "2026-10-25T06:30:33.834Z",
+  "players": 2,
+  "paper": "1.21.10 build 130",
+  "productionPlugins": 15,
+  "restart": true,
+  "finalArtifactsSmoke": true,
+  "artifactHashes": {
+    "KasabaBilgi-1.0.0.jar": "e18711811bfa30779bb57bd46c288cb92b289dfbfae9554d167b1ad737d3fcec",
+    "KasabaRoles-1.3.2.jar": "4ebd1725c40451c9d97fe985f345704190900d44313f27d978adaac8ee1b0dca"
+  }
+}

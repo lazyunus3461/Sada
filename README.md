@@ -1,5 +1,9 @@
 # Kasaba oyun merkezi
 
+## KasabaTR bilgi tablosu 1.0.0
+
+[Hazır ZIP](dist/KasabaTR-Bilgi-Tablosu-1.0.0.zip), KasabaBilgi 1.0.0 ve KasabaRoles 1.3.2 içerir. Lobide okunaklı, oyunda soluk/kompakt oyuncu, rütbe, Akçe, klan, toplam süre ve sunucu/sosyal adresleri gösterilir. X Arena ve Şans Yolu bilgileri korunur; BR isim gizleme takımları değiştirilmez. [Kurulum ve saydamlık sınırları](kasaba-bilgi/README.md), [doğrulama](kasaba-bilgi/validation/1.0.0/). Eski Roles JAR'ını çıkar, yeni iki JAR'ı koy ve veri klasörlerini koru.
+
 ## Eşya Saklambacı 1.3.1 — ayrı lobi
 
 Bekleme alanı oyun haritalarından tamamen ayrı `KasabaTR-Esya-Lobi-v01` dünyasına taşındı. Lobide haritalar görünmez; pusula girişi ve maç sonu dönüşü yeni alana gider. [Güncel kurulum ZIP'i](dist/KasabaEsya-KasabaTR-Hazir-Paket-1.3.1.zip), [tek JAR](dist/KasabaEsya-1.3.1.jar) ve [test kayıtları](kasaba-esya/validation/1.3.1/) burada. Mevcut kurulumda yalnız eski KasabaEsya JAR'ını değiştir; dünya ve ayar klasörlerini koru.

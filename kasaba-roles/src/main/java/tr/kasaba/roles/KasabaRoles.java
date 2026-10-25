@@ -67,6 +67,7 @@ public final class KasabaRoles extends JavaPlugin implements Listener, TabComple
     }
     private Role assigned(String name){return configuration.catalog().get(assignments.getOrDefault(Role.playerKey(name),configuration.catalog().defaultRole().id()));}
     private Role role(String name){Role current=assigned(name);Player player=Bukkit.getPlayerExact(name);Role vip=configuration.catalog().get("vip");return player!=null&&vip!=null&&vipTerms!=null&&vipTerms.until(player.getUniqueId())>System.currentTimeMillis()&&current.priority()<vip.priority()?vip:current;}
+    @Override public Component rank(Player p){Role role=role(p.getName());return Component.text(role.label(),color(role.color()));}
     @Override public boolean vip(Player p){Role role=assigned(p.getName());return role.id().equals("vip")||Boolean.TRUE.equals(configuration.catalog().permissions(role.id()).get("kasaba.vip"))||vipUntil(p.getUniqueId())>System.currentTimeMillis();}
     @Override public boolean guide(Player p){return Boolean.TRUE.equals(configuration.catalog().permissions(assigned(p.getName()).id()).get("kasaba.fly"));}
     @Override public long vipUntil(UUID id){return vipTerms==null?0:vipTerms.until(id);}

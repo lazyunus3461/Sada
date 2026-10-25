@@ -1,0 +1,10 @@
+PASS Personal bright lobby HUD only after authentication, all requested fields and links, no latency or numeric row counters {}
+PASS Live exact Akçe, historical playtime and private per-player values without replacing the Bukkit board {}
+PASS Kurucu, Rehber, VIP, default rank and temporary VIP priority follow actual services; optional clan changes live {}
+PASS Existing game sidebar is retained and merged; toggle restores it and role teams stay on their original board {}
+PASS X Arena top-five sidebar coexists with compact dim information; game scoreboard remains stable and lobby colors return {}
+PASS Shared Şans Yolu match board still shows game positions and each player receives only their own balance/profile {}
+PASS Battle Royale shares its hidden-name team unchanged while dim HUD and personal balances remain visible {}
+PASS Esya active match dims the same panel, then finished match restores the bright isolated lobby display {}
+PASS Disable/re-enable removes the client overlay, restores the native sidebar and keeps the exact Bukkit board {}
+ALL PASS 9

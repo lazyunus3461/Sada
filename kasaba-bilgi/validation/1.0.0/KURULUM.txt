@@ -1,0 +1,23 @@
+KASABATR BİLGİ TABLOSU 1.0.0 — Paper 1.21.10 / Java 21
+
+1. Sunucuyu durdur.
+2. plugins içindeki eski KasabaRoles JAR'ını çıkar.
+3. ZIP'teki KasabaRoles-1.3.2.jar ve KasabaBilgi-1.0.0.jar dosyalarını plugins içine koy.
+4. Sunucuyu aç. Kayıt/giriş tamamlanınca tablo otomatik görünür.
+
+Dünya, config ve oyuncu kayıt klasörlerini silme. Mevcut roller ve bakiyeler korunur.
+Diğer eklentileri yeniden yüklemek veya spawn/arena konumu ayarlamak gerekmez.
+Aynı eklentiden iki sürüm bırakma; /reload kullanma.
+
+Lobilerde mat renkli ve okunaklı; aktif oyunda daha küçük, soluk ve ayraçsız.
+Oyuncu / rütbe / Akçe / klan / toplam süre canlı okunur. MS gösterilmez.
+play.kasabatr.com / dc: kasabatr / ig: kasabatrminecraft
+
+/tablo kapat — Kişisel paneli bu oturum için kapatır, varsa oyun tablosunu geri gösterir.
+/tablo aç — Kişisel paneli yeniden açar.
+Bu komutları spawn/lobide kullanabilirsin. /bilgi hâlâ bilgi kitabını açar.
+
+Minecraft'ın gerçek sağ tablo arka plan saydamlığı oyuncunun istemci ayarına bağlıdır.
+Eklenti oyun içindeki görünümü yazıları soldurup düzeni küçülterek hafifletir.
+Klan sistemi kurulu değilse Klan: Yok görünür. Süre, kalıcı toplam çevrimiçi süredir;
+Akçe aktiflik ödülü sayacı değildir.

@@ -1,5 +1,7 @@
 # KasabaRoles 1.2.0
 
+1.3.2, sağ bilgi tablosu için `RoleAccess.rank(Player)` metodu ekler. Gerçek atanmış rol ve geçici VIP önceliği okunur; rol dosyaları ve mevcut API metotları değişmez. [Bilgi tablosu paketi](../dist/KasabaTR-Bilgi-Tablosu-1.0.0.zip) güncel Roles JAR'ını içerir.
+
 Paper **1.21.10**, Java **21** için Kasaba'nın bağımsız rol eklentisi. LuckPerms veya TAB gerekmez. KasabaAuth ile birlikte çalışabilir. Oyuncuya verilen rol kaydedilir; yeniden bağlanınca ve sunucu yeniden başlayınca korunur.
 
 TAB listesinde ve oyuncunun kafasının üstünde renkli, kalın rol etiketi görünür: **[Kurucu] Redkit**. Sohbet biçimi **[Kurucu] Redkit » mesaj** olur. Rol sırası yüksek olan TAB'da üstte görünür. Rol verildiğinde veya adı/rengi değiştiğinde üç görünüm de güncellenir.

@@ -1,0 +1,13 @@
+name: KasabaBilgi
+version: 1.0.0
+main: tr.kasaba.bilgi.KasabaBilgi
+api-version: '1.21.10'
+depend: [KasabaHub, KasabaAuth, KasabaAkce, KasabaRoles]
+softdepend: [KasabaSosyal]
+author: KasabaTR
+description: Canlı oyuncu bilgileri, lobide renkli ve oyunda soluk sağ bilgi tablosu.
+commands:
+  kasababilgi:
+    aliases: [tablo]
+    description: Kişisel bilgi tablosunu açar veya kapatır.
+    usage: /tablo aç|kapat

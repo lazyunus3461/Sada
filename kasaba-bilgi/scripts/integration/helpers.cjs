@@ -1,0 +1,11 @@
+const assert=require('node:assert/strict');
+const base=require('../../../kasaba-esya/scripts/integration/helpers.cjs');
+const req=require('node:module').createRequire(require('node:path').resolve(__dirname,'../../../scripts/integration/package.json')),nbt=req('prismarine-nbt');
+function simple(c){return c?nbt.simplify(c):null;}
+function text(c){c=c?.type?simple(c):c;return typeof c==='string'?c:Array.isArray(c)?c.map(text).join(''):(c?.text||'')+(c?.extra||[]).map(text).join('');}
+async function player(name){let b=await base.player(name);b.c.write('custom_payload',{channel:'minecraft:register',data:Buffer.from('kasaba_test:bilgi')});b.bp=async op=>{const mark=b.log.length;b.c.write('custom_payload',{channel:'kasaba_test:bilgi',data:Buffer.from(op)});const e=await b.wait(e=>b.msg(e)==='bilgi-probe:done:'+op||b.msg(e).startsWith('bilgi-probe:error:'),mark,45000);assert(!b.msg(e).startsWith('bilgi-probe:error:'),b.msg(e));return mark;};b.bs=async()=>{const mark=await b.bp('STATE'),e=await b.wait(e=>b.msg(e).startsWith('bilgi-probe:state:'),mark);return JSON.parse(b.msg(e).slice('bilgi-probe:state:'.length));};
+ let cursor=0,objective=null,title=null,rows=new Map(),blank=null;
+ b.hud=()=>{for(let e of b.log.slice(cursor)){let p=e.p;if(e.name==='scoreboard_display_objective'&&p.position===1)objective=p.name;if(e.name==='scoreboard_objective'&&p.name==='kasaba_bilgi'){if(p.action===1){rows.clear();title=null;}else{title=text(p.displayText);blank=p.number_format;}}if(e.name==='scoreboard_score'&&p.scoreName==='kasaba_bilgi')rows.set(p.itemName,{value:p.value,text:text(p.display_name),color:simple(p.display_name)?.color,blank:p.number_format,component:simple(p.display_name)});if(e.name==='reset_score'&&p.objective_name==='kasaba_bilgi')rows.delete(p.entity_name);}cursor=b.log.length;return{objective,title,blank,rows:[...rows.values()].sort((a,b)=>b.value-a.value),lines:[...rows.values()].sort((a,b)=>b.value-a.value).map(r=>r.text)};};return b;
+}
+async function hudUntil(b,predicate,timeout=12000){const end=Date.now()+timeout;let s;while(Date.now()<end){s=b.hud();if(predicate(s))return s;await base.delay(100);}throw Error('HUD timeout '+JSON.stringify(s));}
+module.exports={...base,player,hudUntil,text,simple};

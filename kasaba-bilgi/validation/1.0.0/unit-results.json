@@ -1,0 +1,19 @@
+{
+  "summary": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0
+  },
+  "modules": {
+    "kasaba-roles": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-bilgi": {
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "archive": "KasabaTR-Bilgi-Tablosu-1.0.0.zip",
+  "bytes": 64446,
+  "sha256": "f2939ad6484c77799023fa3fe68395bd80f0d07727614b3421ae14c4b35479be",
+  "plugins": {
+    "KasabaBilgi": {
+      "version": "1.0.0",
+      "jar": "KasabaBilgi-1.0.0.jar",
+      "bytes": 22968,
+      "sha256": "e18711811bfa30779bb57bd46c288cb92b289dfbfae9554d167b1ad737d3fcec"
+    },
+    "KasabaRoles": {
+      "version": "1.3.2",
+      "jar": "KasabaRoles-1.3.2.jar",
+      "bytes": 39944,
+      "sha256": "4ebd1725c40451c9d97fe985f345704190900d44313f27d978adaac8ee1b0dca"
+    }
+  }
+}
