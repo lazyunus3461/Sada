@@ -1,0 +1,18 @@
+name: KasabaTac
+version: 1.1.0
+main: tr.kasabatr.tac.KasabaTacPlugin
+api-version: '1.21.10'
+author: KasabaTR
+depend: [KasabaHub, KasabaAuth]
+softdepend: [KasabaSosyal]
+loadbefore: [Multiverse-Core]
+commands:
+  tac:
+    aliases: [taç, lanetlitac]
+    description: Lanetli Taç menüsü ve oda işlemleri
+    usage: /tac
+permissions:
+  kasaba.tac.play:
+    default: true
+  kasaba.tac.admin:
+    default: op

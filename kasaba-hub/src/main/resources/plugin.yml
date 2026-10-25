@@ -1,5 +1,5 @@
 name: KasabaHub
-version: 1.6.2
+version: 1.6.3
 main: tr.kasaba.hub.KasabaHub
 api-version: '1.21.10'
 author: Kasaba

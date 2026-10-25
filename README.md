@@ -1,5 +1,9 @@
 # Kasaba oyun merkezi
 
+## Lanetli Taç 1.1.0 + saklambaç uçuşu + dar bilgi tablosu
+
+[Güncel beş JAR’lı hazır ZIP](dist/KasabaTR-Lanetli-Tac-ve-Duzeltmeler-1.1.0.zip): Tac 1.1.0, Hub 1.6.3, Esya 1.3.2, Bilgi 1.0.1 ve Roles 1.3.2. Lanetli Taç ayrı lobisiyle otomatik kurulur; normal 6–16 kişi, 4 dakika, üç eşzamanlı oda. İki kişi sıraya girdikten sonra yönetici `/tac deneme` yazabilir. Eşya Saklambacı'nda saklananlar yavaş uçuş ve bitişik bloğa otomatik hizalama kullanır; ebede/lobide uçuş kapanır. Sağ bilgi tablosunda süre ve uzun satırlar kısaltılır, X Arena öldürme sayıları korunur. [Kısa kurulum](kasaba-tac/validation/1.1.0/KURULUM-VE-KOMUTLAR.txt), [oyun kılavuzu](kasaba-tac/README.md), [testler](kasaba-tac/validation/1.1.0/). Veri ve dünya klasörlerini koru; aynı eklentinin eski JAR'ını yenisiyle değiştir. Aşağıdaki paketler önceki sürümlerdir.
+
 ## Boya Savaşı 1.1.0 + bilgi tablosu
 
 [Güncel dört JAR'lı hazır ZIP](dist/KasabaTR-Boya-ve-Bilgi-Hazir-Paket-1.1.0.zip): Boya 1.1.0, Hub 1.6.2, Bilgi 1.0.0 ve Roles 1.3.2. İki dünya otomatik kurulur, üç maç ayrı kopyalarda çalışır. Pusula veya `/boya` ile lobi; `/boya oyna` ile sıra. İki kişi test için ikisi sıraya girdikten sonra yönetici `/boya deneme` kullanır. [Oyun ve kurulum kılavuzu](kasaba-boya/README.md), [test kayıtları](kasaba-boya/validation/1.1.0/).

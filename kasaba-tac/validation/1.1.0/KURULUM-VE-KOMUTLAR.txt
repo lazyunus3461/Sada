@@ -1,0 +1,43 @@
+KASABATR — LANETLİ TAÇ + SAKLAMBAÇ UÇUŞU + DAR BİLGİ TABLOSU
+Paper 1.21.10 / Java 21. Yüklemeyi sen yapacaksın.
+
+1) SUNUCUYU DURDUR. plugins ve dünya klasörlerinin yedeğini al.
+2) plugins içindeki eski KasabaHub, KasabaEsya, KasabaBilgi ve varsa KasabaTac JAR'larını kaldır. Veri klasörlerini SİLME.
+3) Bu ZIP'in plugins klasöründeki beş JAR'ı sunucunun plugins klasörüne koy. KasabaRoles 1.3.2 zaten aynıysa yeniden değiştirmen gerekmez. Her eklentiden tek JAR kalsın. Diğer oyun JAR'larına dokunma.
+4) Sunucuyu yeniden başlat. Dünya/lobi kendiliğinden kurulur. /reload, /mv import veya spawn komutu gerekmez. Eski ayarlar ve doğmalar korunur.
+
+LANETLİ TAÇ
+/oyunlar -> Lanetli Taç veya /tac
+Lobide bekleyebilirsin; Oyna seçmeden sıraya alınmazsın.
+/tac oyna : sıraya gir (grupta lider tüm grubu alır).
+/tac durum : oda ve sıra bilgisi.
+/tac lobi : Taç lobisine dön.
+/lobi : ana spawn.
+/tac yardım : kurallar.
+Normal 6-16 kişi / 20 sn sayım / 4 dk maç / aynı anda 3 oda.
+Tacı taşı, saniyede 1 puan al. Yaklaşarak kap. Devirden sonra 2,5 sn koruma.
+Kapılar 30 sn değişir; oyuncunun üzerine kapanmaz.
+En yüksek puan kazanır. Sonuçtan 5 sn sonra oyun lobisi.
+Normal aktif maçı terk edene o oyuna 15 dk giriş cezası.
+
+İKİ KİŞİYLE DENEME
+İkiniz de /tac yazın, ikiniz de /tac oyna yazın.
+Yönetici /tac deneme yazsın. Denemede galibiyet/çıkış cezası yok.
+Yönetici normal maç: /tac başlat (en az 6 kişi).
+Yetkiler: kasaba.tac.admin / kasaba.tac.play
+
+EŞYA SAKLAMBACI
+Saklanırken iki kez zıpla: yavaş uçuş açılır.
+Zıpla yüksel, eğil alçal. Zeminden en fazla 3 blok yükselebilirsin.
+Bir bloğun yanında kısa süre dur: kılığın aynı seviyeye ve blok ızgarasına hizalanır.
+Duvar/çatı içine girilmez. Ebede, maç sonu ve lobide uçuş kapanır.
+/esya -> menü, /esya oyna -> sıra, /esya kılık -> kılık seç.
+
+SAĞ BİLGİ TABLOSU
+Uzun süre/isimler paneli büyütmez. Süre örneği: 2g 13sa.
+Bilgiler, bağlantılar ve X Arena öldürme sayıları korunur.
+Lobide renkli, oyunda soluk görünür.
+/tablo kapat ve /tablo aç.
+Yazı boyutu Minecraft GUI ölçeğine, arka planın saydamlığı oyuncunun istemci ayarına bağlıdır.
+
+ZIP'teki kılavuzlarda tam komutlar ve test sonuçları bulunur.

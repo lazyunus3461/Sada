@@ -19,7 +19,7 @@ final class PlayerBackup {
         y.set("collidable",p.isCollidable());y.set("inventory",Arrays.asList(p.getInventory().getContents()));y.set("held-slot",p.getInventory().getHeldItemSlot());y.set("game-mode",p.getGameMode().name());
         y.set("health",p.getHealth());y.set("food",p.getFoodLevel());y.set("saturation",p.getSaturation());y.set("exhaustion",p.getExhaustion());y.set("absorption",p.getAbsorptionAmount());
         y.set("level",p.getLevel());y.set("exp",p.getExp());y.set("total-exp",p.getTotalExperience());y.set("fire",p.getFireTicks());
-        y.set("allow-flight",p.getAllowFlight());y.set("flying",p.isFlying());y.set("gravity",p.hasGravity());y.set("invulnerable",p.isInvulnerable());
+        y.set("fly-speed",p.getFlySpeed());y.set("allow-flight",p.getAllowFlight());y.set("flying",p.isFlying());y.set("gravity",p.hasGravity());y.set("invulnerable",p.isInvulnerable());
         y.set("effects",new ArrayList<>(p.getActivePotionEffects()));y.set("location",p.getLocation());
         Path tmp=target.toPath().resolveSibling(target.getName()+".tmp");y.save(tmp.toFile());
         try{Files.move(tmp,target.toPath(),StandardCopyOption.ATOMIC_MOVE);}catch(AtomicMoveNotSupportedException e){Files.move(tmp,target.toPath());}
@@ -35,7 +35,7 @@ final class PlayerBackup {
         p.setGameMode(mode);p.setFoodLevel(Math.clamp(y.getInt("food",20),0,20));
         p.setSaturation((float)Math.clamp(y.getDouble("saturation",5),0,20));p.setExhaustion((float)Math.max(0,y.getDouble("exhaustion")));
         p.setTotalExperience(Math.max(0,y.getInt("total-exp")));p.setLevel(Math.max(0,y.getInt("level")));p.setExp((float)Math.clamp(y.getDouble("exp"),0,1));p.setFireTicks(y.getInt("fire"));
-        p.setAllowFlight(y.getBoolean("allow-flight"));p.setFlying(y.getBoolean("flying")&&p.getAllowFlight());p.setGravity(y.getBoolean("gravity",true));p.setInvulnerable(y.getBoolean("invulnerable"));p.setFallDistance(0);
+        p.setFlySpeed((float)Math.clamp(y.getDouble("fly-speed",.1),-1,1));p.setAllowFlight(y.getBoolean("allow-flight"));p.setFlying(y.getBoolean("flying")&&p.getAllowFlight());p.setGravity(y.getBoolean("gravity",true));p.setInvulnerable(y.getBoolean("invulnerable"));p.setFallDistance(0);
         for(var effect:p.getActivePotionEffects())p.removePotionEffect(effect.getType());effects.forEach(p::addPotionEffect);
         p.setHealth(Math.clamp(y.getDouble("health",20),.1,p.getMaxHealth()));p.setAbsorptionAmount(Math.max(0,y.getDouble("absorption")));
         try{Files.delete(target.toPath());}catch(IOException e){throw new IllegalStateException("Yedek tamamlandı fakat dosya kaldırılamadı.",e);}return true;

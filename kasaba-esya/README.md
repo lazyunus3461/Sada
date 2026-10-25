@@ -1,11 +1,11 @@
-# KasabaTR Eşya Saklambacı 1.3.1
+# KasabaTR Eşya Saklambacı 1.3.2
 
-Paper **1.21.10**, Java **21**, KasabaAuth **1.3.0** ve KasabaHub **1.6.1** için hazırlandı. KasabaSosyal varsa lobi arkadaş/grup/görünürlük araçları ve aktif oyun süresi mevcut sistemden çalışır. Multiverse-Core 5.3.2 ile ortak haritalar otomatik kaydedilir; Multiverse zorunlu değildir.
+Paper **1.21.10**, Java **21**, KasabaAuth **1.3.0** ve KasabaHub **1.6.3** için hazırlandı. KasabaSosyal varsa lobi arkadaş/grup/görünürlük araçları ve aktif oyun süresi mevcut sistemden çalışır. Multiverse-Core 5.3.2 ile ortak haritalar otomatik kaydedilir; Multiverse zorunlu değildir.
 
 ## Kurulum
 
 1. Sunucuyu tamamen durdur. Mevcut `plugins` ve dünya klasörlerinin yedeğini al.
-2. Hazır paketin `plugins` klasöründeki **KasabaHub-1.6.1.jar** ve **KasabaEsya-1.3.1.jar** dosyalarını sunucunun `plugins` klasörüne koy. Eski KasabaHub ve KasabaEsya JAR'larını kaldır; aynı eklentiden iki sürüm bırakma.
+2. Hazır paketin `plugins` klasöründeki **KasabaHub-1.6.3.jar** ve **KasabaEsya-1.3.2.jar** dosyalarını sunucunun `plugins` klasörüne koy. Eski KasabaHub ve KasabaEsya JAR'larını kaldır; aynı eklentiden iki sürüm bırakma.
 3. Sunucuyu başlat. Dünya yüklemek, `/mv import` veya `/oyunlar ekle` yazmak gerekmez. JAR, eksik olan üç oyun haritasını ve ayrı lobi dünyasını ilk açılışta kurar. Mevcut dünya ve ayar klasörlerinin üzerine yazmaz.
 4. `/oyunlar` → **Eşya Saklambacı**. İlk gelişte yalnız lobi açılır. **Oyna** seçince sıraya girilir; **Bu lobide kal** sıradan çıkarır.
 
@@ -18,6 +18,7 @@ Mevcut Kasaba oyunlarını, para/rol kayıtlarını veya lobi/arena doğmaların
 - 4–7 oyuncuda bir, 8–12 oyuncuda iki ilk ebe. Bulunan oyuncu ebeye dönüşüp kalanları arar.
 - Oyuncakçı, Müze, Akvaryum sırayla karıştırılmış havuzdan gelir. Aynı harita havuz bitmeden tekrar seçilmez. Varsayılan en fazla **3 eşzamanlı maç** vardır; her maç ayrı dünya kopyasında çalışır.
 - Haritaya uygun altı eşya kılığı seçilebilir. Kılık değiştirmenin bekleme süresi **20 saniye**. Gerçek oyuncu modeli diğer oyunculara gizlenir, hareket eden eşya görünür.
+- Saklananlar iki kez zıplayarak yavaş uçuş açar; zıpla yüksel, eğil alçal. Ana zeminin en fazla 3 blok üstüne çıkılır. Bir bloğun yanında hareketsiz durunca uygun boş hücrede aynı blok seviyesine ve ızgarasına otomatik hizalanır; duvar/çatı içine girilemez. Ebe olunca, maç bitince ve lobide uçuş kapanır. Eski uçuş hızı oyun çıkışında geri yüklenir.
 - Ebe şüpheli eşyaya sağ veya sol tıklar. Gerçek oyuncu yakalanır; yanlış tahminde **3 saniye yavaşlık**, tahminler arasında **1,2 saniye** bekleme vardır. Duvar arkasından veya erişim dışından yakalama kabul edilmez.
 - 45 saniyede bir ebeye yaklaşık 8 blokluk bölge ipucu verilir.
 - Herkes bulunursa maçta kalan **ilk ebeler**; süre biterse **hâlâ saklanan oyuncular** galibiyet alır. Sonradan yakalanıp ebeye dönüşenler bu sonuçtan ücretsiz galibiyet kazanmaz. Lobide ilk **5** galibiyet tablosu vardır.
@@ -64,4 +65,4 @@ Lobi `KasabaTR-Esya-Lobi-v01` adlı ayrı bir boşluk dünyasındadır. Bekleyen
 
 `plugins/KasabaEsya/config.yml` üç şablonun adını, `countdown-seconds: 15` ve `max-concurrent-rooms: 3` ayarlarını içerir. Eski 1.2.0 ayarı ve envanter kurtarma kayıtları korunur. Bozuk kayıt varsa üzeri yazılmaz ve yöneticiye günlükte hata gösterilir.
 
-Kaynak yüklemelerinin belgeleri ve önizlemeleri `docs/` içindedir; eski kurulum metni 1.2.0 davranışını anlatır. Bu README 1.3.1'ın güncel kılavuzudur.
+Kaynak yüklemelerinin belgeleri ve önizlemeleri `docs/` içindedir; eski kurulum metni 1.2.0 davranışını anlatır. Bu README 1.3.2'ın güncel kılavuzudur.

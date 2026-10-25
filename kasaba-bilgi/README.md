@@ -1,6 +1,6 @@
-# KasabaBilgi 1.0.0
+# KasabaBilgi 1.0.1
 
-Paper **1.21.10**, Java **21**, KasabaHub 1.6.1, KasabaAuth 1.3.0, KasabaAkce 1.1.0 ve KasabaRoles **1.3.2** için canlı sağ bilgi tablosu. Kaynak paketi, oyuncu modu, LuckPerms veya TAB gerektirmez.
+Paper **1.21.10**, Java **21**, KasabaHub 1.6.3, KasabaAuth 1.3.0, KasabaAkce 1.1.0 ve KasabaRoles **1.3.2** için canlı sağ bilgi tablosu. Kaynak paketi, oyuncu modu, LuckPerms veya TAB gerektirmez.
 
 Gösterilen bilgiler: oyuncu adı, gerçek sunucu rütbesi, Akçe bakiyesi, varsa klan etiketi, toplam sunucuda geçirilen süre, `play.kasabatr.com`, `dc: kasabatr`, `ig: kasabatrminecraft`. Gecikme/MS alanı ve sağdaki kırmızı satır sayaçları yoktur.
 
@@ -8,7 +8,7 @@ Gösterilen bilgiler: oyuncu adı, gerçek sunucu rütbesi, Akçe bakiyesi, vars
 
 1. Sunucuyu tamamen durdur; `plugins` klasörünü yedekle.
 2. Eski **KasabaRoles JAR'ını** kaldır ve **KasabaRoles-1.3.2.jar** koy. `plugins/KasabaRoles` klasörünü koru; mevcut rol isimleri, renkleri, yetkileri ve oyuncu atamaları aynı kalır.
-3. **KasabaBilgi-1.0.0.jar** dosyasını `plugins` içine ekle. İki JAR da hazır ZIP'tedir. Aynı eklentiden farklı sürümleri birlikte bırakma.
+3. **KasabaBilgi-1.0.1.jar** dosyasını `plugins` içine ekle. İki JAR da hazır ZIP'tedir. Aynı eklentiden farklı sürümleri birlikte bırakma.
 4. Sunucuyu başlat. Kayıt/giriş bittikten sonra tablo otomatik görünür. Dünya aktarmak veya konum ayarlamak gerekmez. `/reload` kullanma.
 
 `/tablo kapat` ve `/tablo aç` kişisel paneli mevcut oturumda kapatıp açar. `/kasababilgi` de kullanılabilir. Bazı oyunlar maç sırasında ek komutları kısıtladığından bu seçimi spawn/lobide yap. Bilgi kitabının mevcut `/bilgi` komutu korunur.
@@ -16,6 +16,8 @@ Gösterilen bilgiler: oyuncu adı, gerçek sunucu rütbesi, Akçe bakiyesi, vars
 ## Görünüm
 
 Spawn ve oyun lobilerinde mat altın başlık, mavi oyuncu simgesi, mor rütbe simgesi, altın Akçe, yeşil klan ve turkuaz süre simgesi vardır. Rütbenin değeri mevcut rol rengini kullanır. Adres, Discord ve Instagram farklı renklerle ayrılır.
+
+Tablo genişliği uzun süre metinleriyle büyümez: `2g 13sa`, `12sa 34dk` gibi en fazla iki süre birimi gösterilir. Uzun oyuncu/rütbe/klan ve maç satırları varsayılan Minecraft yazı tipine göre kısaltılır. Instagram satırında boşluk kaldırılır; hesap adı değişmez. Yazı boyutu oyuncunun GUI ölçeğine bağlıdır; eklenti yalnız metin genişliğini azaltır.
 
 Aktif oyunda başlık küçülür, kalın yazı ve ayraçlar kaldırılır, boş satırlar azalır; yazılar koyu gri/mavi tonlara geçer. Akçe, klan, süre ve bağlantılar korunur. X Arena'nın ilk beş öldürme satırı ve Şans Yolu'nun kare/puan sıralaması aynı panelde gösterilir. Ortak maç tablosunu kullanan oyuncular da kendi bakiye ve profil bilgilerini görür.
 
@@ -33,6 +35,6 @@ Aktif oyunda başlık küçülür, kalın yazı ve ayraçlar kaldırılır, boş
 
 ## Derleme ve test
 
-Java 21/Maven ile önce repo kökündeki Auth, sonra Roles, Akçe ve Hub, son olarak `mvn -f kasaba-bilgi/pom.xml install` çalıştırılır. Sonuç `target/KasabaBilgi-1.0.0.jar` dosyasıdır. Netty/Paper ve Kasaba servisleri sağlanan bağımlılıklardır; JAR içine başka eklentiler gömülmez.
+Java 21/Maven ile önce repo kökündeki Auth, sonra Roles, Akçe ve Hub, son olarak `mvn -f kasaba-bilgi/pom.xml install` çalıştırılır. Sonuç `target/KasabaBilgi-1.0.1.jar` dosyasıdır. Netty/Paper ve Kasaba servisleri sağlanan bağımlılıklardır; JAR içine başka eklentiler gömülmez.
 
-`validation/1.0.0` test sonuçlarını içerir. `scripts/integration/BilgiProbe.java` yalnız özel loopback test sunucusu içindir; üretim sunucusuna veya ZIP'e konmaz.
+Önceki temel doğrulama `validation/1.0.0`, bu sürümün dar düzen ve canlı regresyonu `../kasaba-tac/validation/1.1.0` altındadır. `scripts/integration/BilgiProbe.java` yalnız özel loopback test sunucusu içindir; üretim sunucusuna veya ZIP'e konmaz.

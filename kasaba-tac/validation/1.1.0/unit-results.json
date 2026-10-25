@@ -1,0 +1,72 @@
+{
+  "suites": [
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.LeaderboardStoreTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.PartyBookTest",
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.MatchPenaltiesTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.LobbyStoreTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.MenuStyleTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-hub",
+      "suite": "tr.kasaba.hub.DestinationStoreTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-esya",
+      "suite": "tr.kasabatr.esya.EsyaRulesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-bilgi",
+      "suite": "tr.kasaba.bilgi.PanelViewTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "module": "kasaba-tac",
+      "suite": "tr.kasabatr.tac.CrownRulesTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "summary": {
+    "tests": 34,
+    "failures": 0,
+    "errors": 0
+  }
+}

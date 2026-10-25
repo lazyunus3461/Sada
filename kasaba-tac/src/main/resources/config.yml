@@ -1,0 +1,8 @@
+world: KasabaTR-Lanetli-Tac-Satosu-v01
+min-players: 6
+max-players: 16
+auto-start-seconds: 20
+max-concurrent-rooms: 3
+match-seconds: 240
+gate-seconds: 30
+tag-cooldown-millis: 2500

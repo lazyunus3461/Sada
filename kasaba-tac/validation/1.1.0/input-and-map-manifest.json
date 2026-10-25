@@ -1,0 +1,47 @@
+{
+  "inputs": [
+    {
+      "file": "KasabaTR-Lanetli-Tac-TAM-PAKET-v1.0.0.zip",
+      "bytes": 133128,
+      "sha256": "b425bca9af302ed46b339ec4cbdae65cd4cd24efd16e6dbea240fe1a62cf6162"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-KAYNAK-v1.0.0.zip",
+      "bytes": 24832,
+      "sha256": "4b802f243ac7182eec4b8f5d408125026ab441a9ddf84968c827f4c6b1b80f14"
+    }
+  ],
+  "assets": [
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/crown-map.json",
+      "bytes": 3540,
+      "sha256": "d72375cbff33490671e5fd42500510360845076bcfce578aec6bad612c527773"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/level.dat",
+      "bytes": 874,
+      "sha256": "c3be3da1fbf6e6c467046b9defe6d727def7cf2c4bfe15284a69fd6c44f67c2f"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/region/r.-1.-1.mca",
+      "bytes": 57344,
+      "sha256": "f45321171976f695f6027e28760c56f037af9c322e9bdd245cfd085add876daa"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/region/r.-1.0.mca",
+      "bytes": 81920,
+      "sha256": "c0593e3053a660c562d69d98dcef32273e71afda281c86d8f0c2401cdbd3a2ed"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/region/r.0.-1.mca",
+      "bytes": 57344,
+      "sha256": "c9ca7379a2545f21fc75ab8b8cfbd73ec5f98f70e3e38fc809d3ec248ee8d847"
+    },
+    {
+      "file": "KasabaTR-Lanetli-Tac-Satosu-v01/region/r.0.0.mca",
+      "bytes": 81920,
+      "sha256": "25f21f2fa70adca6d2429164496e1ee69f8ac6c81f8c9c724ab404ee13502b88"
+    }
+  ],
+  "change": "Two region files normalized: four block palette entries minecraft:chain -> minecraft:iron_chain for Paper 1.21.10. All other supplied world assets unchanged."
+}

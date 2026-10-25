@@ -1,0 +1,63 @@
+{
+  "checks": [
+    {
+      "name": "Eleven-game compass, separate protected crown lobby, stay button, inventory preserved and compact HUD"
+    },
+    {
+      "name": "Normal six-player countdown, private castle, gameplay/quiet HUD, compass and protection"
+    },
+    {
+      "name": "Proximity crown transfer, cooldown, old helmet/glow removal and timed score"
+    },
+    {
+      "name": "Rotating shortcut gates stay open on occupied cells and never modify permanent castle"
+    },
+    {
+      "name": "Result scored once, top list, five-second game-lobby return, no requeue or leftover private world"
+    },
+    {
+      "name": "Three isolated practice castles, independent gate state, fourth room waits and practice awards no wins"
+    },
+    {
+      "name": "Party admission, leader-only queue and whole-group cancellation"
+    },
+    {
+      "name": "Cross-lobby navigation, original inventory restore and 15-minute normal-match abandonment penalty"
+    },
+    {
+      "name": "Native hider flight, automatic adjacent-block grid alignment, wall/height limits, no seeker flight and clean lobby exit",
+      "guards": {
+        "roof": true,
+        "flightCancelled": false,
+        "wall": true
+      }
+    },
+    {
+      "name": "Authentication-gated disconnect recovery restores original items"
+    },
+    {
+      "name": "Clean restart restores offline inventory, preserves eleven-game compass and both crown lobby boards; old chain ID now renders IRON_CHAIN"
+    },
+    {
+      "name": "Exact final Esya JAR: native hover, grid alignment, wall/ceiling and height-start guards, capture removes flight and lobby restores inventory"
+    },
+    {
+      "name": "Final hub update retains Arena and Boya lobby entry and inventory round-trip"
+    }
+  ],
+  "started": "2026-10-25T14:30:31.282Z",
+  "restartUser": "TAxd9wzE",
+  "finished": "2026-10-25T14:31:14.128Z",
+  "players": 8,
+  "paper": "1.21.10 build 130",
+  "productionPlugins": 17,
+  "restart": true,
+  "finalArtifactsSmoke": true,
+  "artifactHashes": {
+    "KasabaTac-1.1.0.jar": "252cb3af6440cc562cb746db3ef9c5c5e10e740f27fe2e5a3528dd4e4dd892bb",
+    "KasabaHub-1.6.3.jar": "89344346f25ee417acb50ff46e685361d58c37a3374aafd0a68d88e398068324",
+    "KasabaBilgi-1.0.1.jar": "c48abd6417609155f99e7165dd1751871c436928039355739689891fd76dc333",
+    "KasabaEsya-1.3.2.jar": "09b01c731118802c9ea2f52852fee14977e6cd18dcde6397b7ab838b5edf7740",
+    "KasabaRoles-1.3.2.jar": "4ebd1725c40451c9d97fe985f345704190900d44313f27d978adaac8ee1b0dca"
+  }
+}

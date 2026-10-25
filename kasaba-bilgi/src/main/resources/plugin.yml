@@ -1,5 +1,5 @@
 name: KasabaBilgi
-version: 1.0.0
+version: 1.0.1
 main: tr.kasaba.bilgi.KasabaBilgi
 api-version: '1.21.10'
 depend: [KasabaHub, KasabaAuth, KasabaAkce, KasabaRoles]
