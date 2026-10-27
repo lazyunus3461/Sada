@@ -1,0 +1,8 @@
+caee8177e7b6d356b840e7530d292a967dbdfd3fef1a096e6dd6d244d4534109  KasabaAuth-1.4.1.jar
+bea6679f38e608e28b20e71391c3ea7ca0462e700f44e3a712d2aa5380cce63e  KasabaHub-1.9.3.jar
+1f5faa75c8edc55b801a2d826267f00b521762cf565ec5e5244dec54f788526d  KasabaBilgi-1.0.4.jar
+f8934a79340a72cab476d54a497445958ae7efe6caf5107ffecd8fa0f9616266  KasabaParkur-1.0.0.jar
+dd624e82191d0ba5638ef37269d0dc6c18ba8ec6c7dd946764e4ae2745b7f2fa  KasabaGozcu-1.0.0.jar
+25a6fbd7930840c30f5f055583b6892dfdf91aaf1cdc1cdb620b573caab35358  KasabaTR-Parkur-Gozcu-Panel-IP-1.0.0.zip
+4ae8ea4e1fd5413637f6df21c54462dc46dc8c3cd5881e203aabab7d789d541c  KasabaTR-Parkur-Gozcu-Panel-IP-1.0.0-KURULUM.md
+f6b9db1eb228ad83866af8cb25c0ad98f06020c117dd6b291dca1b6d73e722fe  KasabaTR-Parkur-Gozcu-Panel-IP-1.0.0-TEST.json

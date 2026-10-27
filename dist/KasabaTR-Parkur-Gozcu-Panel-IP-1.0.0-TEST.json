@@ -1,0 +1,227 @@
+{
+  "unit": {
+    "kasaba-auth": {
+      "tests": 30,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-hub": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-bilgi": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-parkur": {
+      "tests": 11,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-gozcu": {
+      "tests": 8,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "native": {
+    "started": "2026-10-27T11:04:59.171Z",
+    "checks": [
+      {
+        "name": "Compass entry is a shared safe lobby with no queue or match"
+      },
+      {
+        "0": "▸ P10kwnqcA",
+        "1": "♛ Oyuncu",
+        "2": "◈ 0",
+        "3": "⚑ Yok",
+        "4": "⌛ 0dk 13sn",
+        "name": "Native sidebar has only five compact coloured rows"
+      },
+      {
+        "name": "Three difficulties play independently and immediately in one world"
+      },
+      {
+        "name": "P10kwnqcA",
+        "id": "9339c623-2b21-3c4c-8aca-dc90327a357d",
+        "best": [
+          1,
+          0,
+          0
+        ],
+        "current": [
+          1,
+          0,
+          0
+        ],
+        "reached": 1793099116381
+      },
+      {
+        "name": "Skipping checkpoints and external teleports cannot award progress"
+      },
+      {
+        "name": "Fall is visibly delayed before returning to saved checkpoint",
+        "drop": 13.251162463998497,
+        "milliseconds": 1167
+      },
+      {
+        "name": "Intentional low Slime section is not treated as an accidental fall"
+      },
+      {
+        "name": "PvP, breaking, placement and item drop stay protected",
+        "break": true,
+        "place": true,
+        "damage": true,
+        "drop": true
+      },
+      {
+        "name": "One player restarting/testing does not alter other players"
+      },
+      {
+        "name": "Replaying a completed stage cannot farm leaderboard levels"
+      },
+      {
+        "name": "Free exit restores inventory and allows immediate return without a quit penalty"
+      },
+      {
+        "name": "Ordinary players cannot access staff reports"
+      },
+      {
+        "name": "Actual client attack packets create a repeated Reach suspicion; only OP and Kurucu are notified",
+        "kind": "REACH",
+        "evidence": "Hedef P10kwnqcB; göz-hitbox 7.70 blok, toleranslı sınır 3.76. Bu istemci saldırı denemesidir.",
+        "samples": 5
+      },
+      {
+        "name": "Ordinary short-range attacks do not create Reach reports"
+      },
+      {
+        "name": "A stale report action cannot start observation after staff permission is removed"
+      },
+      {
+        "name": "Non-OP Kurucu can inspect invisibly; target and other staff cannot see the observer"
+      },
+      {
+        "name": "Stopping observation restores mode, inventory and visibility"
+      },
+      {
+        "name": "Review status is saved without punishing the player"
+      },
+      {
+        "name": "Revoking Kurucu permission safely ends active observation"
+      },
+      {
+        "name": "Target logout restores the invisible observer safely"
+      },
+      {
+        "name": "Staff observation can enter an active parkour without joining or affecting progress"
+      },
+      {
+        "name": "Prepared persistent progress and offline inventory recovery for restart verification",
+        "b": "P10kwnqcB",
+        "d": "P10kwnqcD",
+        "record": "a4aeeed5-c689-4b0d-9858-ae713049c305",
+        "expectedB": "DIAMOND:5",
+        "expectedD": "GOLD_INGOT:7",
+        "modeB": "SURVIVAL",
+        "modeD": "SURVIVAL"
+      }
+    ],
+    "limits": "Protocol clients plus loopback fixtures. Gate fixtures validate server logic and real map support; not a claim that humans played all 300 stages.",
+    "passed": true
+  },
+  "restart": {
+    "checks": [
+      {
+        "name": "Restart and offline recovery restore both parkour and observation inventories, modes and flight state"
+      },
+      {
+        "name": "Saved difficulty and checkpoint resume after a real server restart"
+      },
+      {
+        "name": "Staff report and reviewed status persist and remain accessible to OP"
+      },
+      {
+        "name": "Native IP commands show registered accounts, keep inspection read-only, enforce staff access and set total capacities 3/4/5",
+        "registered": 309,
+        "maximum": 5
+      },
+      {
+        "0": "▸ P10kwnqcB",
+        "1": "♛ Oyuncu",
+        "2": "◈ 0",
+        "3": "⚑ Yok",
+        "4": "⌛ 0dk 42sn",
+        "name": "Five-row compact personal panel stays separate and compact after restart"
+      }
+    ],
+    "started": "2026-10-27T11:09:08.562Z",
+    "passed": true
+  },
+  "world": {
+    "routes": 3,
+    "stages_per_route": 100,
+    "total_stages": 300,
+    "checkpoints": 303,
+    "chunks": 1577,
+    "regions": 8,
+    "blocks": 1879639,
+    "patterns": {
+      "kolay/logs": 6,
+      "kolay/water": 6,
+      "kolay/bridge": 14,
+      "kolay/steps": 7,
+      "kolay/vines": 8,
+      "kolay/balance": 7,
+      "kolay/slime": 7,
+      "kolay/zigzag": 7,
+      "kolay/ascent": 10,
+      "kolay/ruins": 7,
+      "kolay/ladder": 7,
+      "kolay/scaffold": 7,
+      "kolay/crawl": 7,
+      "orta/logs": 8,
+      "orta/scaffold": 6,
+      "orta/water": 7,
+      "orta/honey": 8,
+      "orta/steps": 7,
+      "orta/vines": 7,
+      "orta/bridge": 7,
+      "orta/balance": 7,
+      "orta/ascent": 10,
+      "orta/zigzag": 7,
+      "orta/crawl": 7,
+      "orta/ruins": 7,
+      "orta/slime": 7,
+      "orta/ladder": 5,
+      "zor/logs": 9,
+      "zor/ruins": 6,
+      "zor/ladder": 7,
+      "zor/scaffold": 7,
+      "zor/water": 7,
+      "zor/honey": 7,
+      "zor/steps": 7,
+      "zor/vines": 7,
+      "zor/ascent": 10,
+      "zor/balance": 7,
+      "zor/slime": 7,
+      "zor/zigzag": 7,
+      "zor/bridge": 7,
+      "zor/crawl": 5
+    },
+    "world_zip_bytes": 1142832
+  },
+  "physical_audit": {
+    "checkpoints_with_support_and_headroom": 303,
+    "ordered_gates_checked": 1748,
+    "ordinary_jump_transitions_checked": 735,
+    "scope": "Actual exported Anvil blocks and conservative ordinary-jump dimensions. Special mechanics and all 300 stages still need a human playthrough."
+  },
+  "limits": [
+    "Only isolated Paper 1.21.10 and protocol test clients; live server not accessed.",
+    "Not every one of the 300 stages has been completed by a human. Special mechanics need in-game playtesting.",
+    "Suspicion reports are not cheat verdicts. Native minigame movement is exempt; no automatic punishment."
+  ]
+}
