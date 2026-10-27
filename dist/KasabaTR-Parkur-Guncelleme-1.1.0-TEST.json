@@ -1,0 +1,109 @@
+{
+  "unit": {
+    "kasaba-parkur": {
+      "tests": 21,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-bilgi": {
+      "tests": 4,
+      "failures": 0,
+      "errors": 0
+    },
+    "kasaba-hub": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0
+    }
+  },
+  "native": {
+    "started": "2026-10-27T12:11:52.179Z",
+    "checks": [
+      {
+        "0": "▸ Oyuncu: P10kw…",
+        "1": "♛ Rütbe: Oyuncu",
+        "2": "",
+        "3": "◈ Akçe: 0,00",
+        "4": "⚑ Klan: Yok",
+        "5": "",
+        "6": "⌛ Süre: 1dk 18sn",
+        "7": "",
+        "8": "──────────────",
+        "9": "play.kasabatr.com",
+        "10": "dc: kasabatr",
+        "11": "ig:kasabatrminecraft",
+        "name": "Restored labelled coloured sidebar and contacts are visible in lobby"
+      },
+      {
+        "name": "All three routes start from zero; game sidebar retains full labels"
+      },
+      {
+        "name": "Intermediate blocks and checkpoints need not be touched in sequence"
+      },
+      {
+        "name": "P10kwnqcB",
+        "player": "3dd4f127-6136-3567-8914-bbf9c873b2b2",
+        "difficulty": "KOLAY",
+        "millis": 120176,
+        "achieved": 1793103125065
+      },
+      {
+        "name": "Standing at finish does not repeatedly award or change finish time"
+      },
+      {
+        "name": "Fastest personal times rank first and difficulties have independent boards"
+      },
+      {
+        "name": "Slower retries preserve personal best without duplicate leaderboard entries"
+      },
+      {
+        "name": "Lobby has three timed top-five boards"
+      },
+      {
+        "name": "A visible fall from late in the route returns to the absolute start and resets the whole clock",
+        "drop": 13.251162463998483,
+        "elapsedAfterReset": 44
+      },
+      {
+        "name": "Designed slime descent does not cause an accidental restart"
+      },
+      {
+        "name": "Feather command restarts the entire route and timer"
+      },
+      {
+        "name": "External teleport cannot create a ranked finish"
+      },
+      {
+        "name": "Administrator practice cannot create a ranked finish"
+      },
+      {
+        "name": "Exit restores items and re-entry starts from zero instead of saved progress"
+      }
+    ],
+    "scope": "Isolated real Paper and protocol clients. Loopback fixtures position players and inject elapsed clock values; not a human run of all 300 stages.",
+    "passed": true
+  },
+  "restart": {
+    "checks": [
+      {
+        "name": "A disconnected parkour player recovers inventory and exits the old run after a real restart"
+      },
+      {
+        "name": "Personal best times and fastest-first ranking survive restart"
+      },
+      {
+        "name": "Re-entry begins at zero with a new clock while finished-time boards are restored"
+      },
+      {
+        "name": "Restored labelled sidebar persists after restart"
+      }
+    ],
+    "started": "2026-10-27T12:14:14.810Z",
+    "passed": true
+  },
+  "limits": [
+    "Isolated Paper 1.21.10; live server not accessed.",
+    "Protocol clients use private loopback fixtures for test locations and clock values. No claim of a human playthrough of all 300 stages."
+  ],
+  "preserved": "Existing map, auth config and old checkpoint file retained. Checkpoint data is no longer read or written by the plugin."
+}

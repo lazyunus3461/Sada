@@ -1,0 +1,6 @@
+e32067a6b0d492f526b62520091b2245dd25a416b3ef36523b90fc30e0066538  KasabaParkur-1.1.0.jar
+560ab4d669efbecce347b332e7f58fdac7efd0669c2e3583f609b86837311727  KasabaBilgi-1.0.5.jar
+ca9527dadf6d660ca8a2ef3c02454c6ed8ba140b122a072b4e6da652bcfc7cdb  KasabaHub-1.9.4.jar
+a19e7baab3719ba260afec567be70ac3a3584fdc0665f9bf09fbb8a5ebe0f3d1  KasabaTR-Parkur-Guncelleme-1.1.0.zip
+7e1ad0d8b0e3523a5a962e099e4c9ae9d873bd69bf10d2ba1be53d0f46f969c9  KasabaTR-Parkur-Guncelleme-1.1.0-KURULUM.md
+6d482db4f4635b8450cb978efa2ad09d348a39308ca99526ba4219e6af0b9c02  KasabaTR-Parkur-Guncelleme-1.1.0-TEST.json
