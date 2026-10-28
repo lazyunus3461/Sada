@@ -1,0 +1,831 @@
+{
+  "scope": "OP cooldown bypass and game-menu layout correction. Current changed-module tests are separate from historical 1.2.0 validation. Protocol UI/callback checks are not a visual game-client screenshot.",
+  "unit": {
+    "kasaba-hub": {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-skyblock": {
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native": {
+    "native": {
+      "scope": "Actual local Paper1.21.10/Java21, authenticated synthetic client and real commands/menu callbacks. Existing future cooldown injected by private loopback fixture.",
+      "checks": [
+        "An ordinary player with an existing future 24-hour cooldown is denied island creation",
+        "OP creates a fully built island immediately despite the previously stored cooldown",
+        "OP cannot create a second simultaneous island or bypass existing membership",
+        "The real island archive confirmation preserves structures and returns OP to lobby",
+        "OP can recreate immediately after leaving an island, with no 24-hour test lock",
+        "The existing Kurucu/admin permission also bypasses cooldown without OP"
+      ],
+      "passed": true
+    },
+    "menu": {
+      "scope": "Actual loopback Paper1.21.10 with native dialog packets and authenticated client callbacks. Protocol layout/callback validation, not a visual Minecraft screenshot.",
+      "checks": [
+        "Every game page has one separate 310-wide Skyblock entry and paired 150-wide game buttons; first-aid is not a separate game",
+        "The ordinary Parkur game button still enters the actual game",
+        "An outdated Skyblock header callback cannot enter after changing pages",
+        "Clicking the featured Skyblock entry performs the real guarded Hub transition",
+        "The featured entry cannot be replayed after leaving Skyblock"
+      ],
+      "pages": 1,
+      "passed": true
+    },
+    "reset-command": {
+      "scope": "Actual local Paper1.21.10, real /sb <name> 24saatkaldir dispatch as player and console, including an offline target and an active Parkur world.",
+      "checks": [
+        "Normal players cannot clear the stored cooldown, including their own",
+        "The exact nick-first command clears OP’s own cooldown from another game world without changing game, inventory or balance",
+        "OP clears an offline named player’s actual stored wait",
+        "Repeated clearing is harmless and idempotent",
+        "The same command works from the actual server console",
+        "After removal a normal player can immediately create a real island",
+        "Unknown player names are rejected without altering the island"
+      ],
+      "passed": true
+    }
+  },
+  "artifacts": {
+    "KasabaHub-1.12.1.jar": "edc7d897a1a1e44519e07b73ad8c80e11cff2d5c50d60ef124ede5e0982ed451",
+    "KasabaSkyblock-1.1.1.jar": "b54a1ab318718009b86087260bb3903ea76d31f462cbaec2fb23ab839198d99d"
+  },
+  "historical_1.2.0": {
+    "skyblock": {
+      "scope": "Local Paper 1.21.10 / Java 21, existing KasabaTR plugins and authenticated synthetic Minecraft protocol clients. Not installed on the live server.",
+      "unit": {
+        "kasaba-roles": {
+          "tests": 33,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "kasaba-hub": {
+          "tests": 28,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "kasaba-skyblock": {
+          "tests": 12,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        },
+        "kasaba-evcil": {
+          "tests": 14,
+          "failures": 0,
+          "errors": 0,
+          "skipped": 0
+        }
+      },
+      "limits": [
+        "No high-concurrency load test, real visual game-client recording or disk-failure injection.",
+        "Previews are rendered from actual server block faces, not Minecraft client screenshots.",
+        "Four accessible user recordings were re-examined through frames and full-screen HUD/menu observations; two uploads above 32 MiB could not be transferred. Not represented as ten watched YouTube videos."
+      ],
+      "native": {
+        "started": "2026-10-28T14:43:30.744Z",
+        "scope": "Isolated Paper 1.21.10 with three real Minecraft protocol clients. Private loopback fixture supplies observation, synthetic inventory, quest counters and shortened minion clock; natural water/lava flow and native block breaking are checked separately. No live server access.",
+        "checks": [
+          {
+            "name": "Automatic plugin startup succeeds with Paper SQLite; one full-width Skyblock entry is first and the standalone First Aid button is absent"
+          },
+          {
+            "name": "100×100 starter island and contextual guide appear; lobby and Skyblock inventory, ender chest and XP persist separately",
+            "island": 1
+          },
+          {
+            "name": "Independent islands share exactly one world, are 2048 blocks apart, and reject outsider teleporting and block breaking"
+          },
+          {
+            "name": "Friend invitation shares protected building and team state; configured player invisibility also applies to the invited member"
+          },
+          {
+            "name": "Normal shop atomically buys and sells exact stacks; repeating a sale without items never credits money"
+          },
+          {
+            "name": "One shared quest pays the island bank exactly once across two members; only the owner can withdraw"
+          },
+          {
+            "name": "Player-market escrow transfers the exact item stack, price and 5% tax once; duplicate purchase cannot replay"
+          },
+          {
+            "name": "Minion setup consumes materials and island funds; one coal fuels bounded production, and collected output cannot be collected twice"
+          },
+          {
+            "name": "Island XP and common funds gate generator upgrades; the level-gated spawner market opens"
+          },
+          {
+            "name": "A real inventory-menu click is cancelled as an item move, purchases the spawner atomically and supports protected placement and return on breaking"
+          },
+          {
+            "name": "Actual vanilla water/lava flow creates a weighted generator block; native Survival block breaking advances mining exactly once",
+            "generated": "COBBLESTONE"
+          },
+          {
+            "name": "Progression guide remains accessible with detailed stages; /sor points to the in-game Skyblock First Aid guide"
+          },
+          {
+            "name": "Removing a member immediately evicts them to the safe entrance and removes island access; reinvitation works"
+          },
+          {
+            "name": "A solo island owner can explicitly archive their island, immediately join a friend and cannot farm fresh starter islands during the 24-hour cooldown"
+          },
+          {
+            "name": "Leaving Skyblock restores the lobby profile and permits normal entry to the existing Arena"
+          }
+        ],
+        "passed": true,
+        "island": 1,
+        "x": 2048,
+        "z": 2048,
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "access": {
+        "checks": [
+          {
+            "name": "Expanded market provides 9 working paged categories with unique products, positive prices and buy/sell separation",
+            "categories": {
+              "0": 44,
+              "1": 128,
+              "2": 129,
+              "3": 186,
+              "4": 22,
+              "5": 40,
+              "6": 13,
+              "7": 11,
+              "8": 13
+            },
+            "products": 586
+          },
+          {
+            "name": "Owner toggles a real member block-break permission; member cannot change it and the owner keeps access"
+          },
+          {
+            "name": "Explicit visitor invitation enters only the host island with a 100-block border, preserves the visitor's own island and denies default building and bank withdrawal"
+          },
+          {
+            "name": "Visitor permission toggles are enforced immediately, independently of permanent member permissions"
+          },
+          {
+            "name": "Owner revocation ejects the visitor; temporary cooperative invitation permits work without changing permanent island membership"
+          },
+          {
+            "name": "Expiry removes temporary cooperative access and returns the player safely to their own island"
+          }
+        ],
+        "scope": "Actual local Paper protocol clients; GUI permission changes and access enforcement. Private fixture advances only the guest expiry clock.",
+        "passed": true,
+        "visitorIsland": 3,
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "economy": {
+        "passed": true,
+        "checks": [
+          "The final runtime pays exactly 10 Altın per emerald rather than the earlier unsafe 175-Altın villager-trade resale.",
+          "Buying a copper block costs 250 Altın, above the 54 Altın resale of its nine copper ingots. Exact wallet deltas are verified through real commands."
+        ],
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "deliveries": {
+        "checks": [
+          "Daily delivery consumes exactly 128 of 130 supplied items, saves completion and credits the shared bank exactly once",
+          "A partial weekly delivery consumes 64 items and saves progress without paying the unfinished contract",
+          "A confirmed daily reroll charges exactly 100 Altın, chooses a different unfinished contract and preserves the completed one",
+          "Monthly contracts expose the 12,800-item target, save partial delivery and open the labelled monthly menu"
+        ],
+        "scope": "Local Paper commands and actual inventory GUI; the private fixture supplies synthetic material stacks.",
+        "passed": true,
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "premium": {
+        "checks": [
+          {
+            "name": "Original floating city, fountain, copper windmill and balloon are present; all eight unique NPCs load and open their real menus",
+            "clock": "LIGHTNING_ROD",
+            "npcs": [
+              "guide",
+              "island",
+              "shop",
+              "workshop",
+              "missions",
+              "seal",
+              "support",
+              "top"
+            ],
+            "balloon": "WHITE_WOOL",
+            "fountain": "WATER",
+            "mill": "OXIDIZED_CUT_COPPER"
+          },
+          {
+            "name": "Console credit fulfilment is idempotent by transaction ID; repeating a successful external order cannot add credit twice"
+          },
+          {
+            "name": "VIP provider failure preserves one paid pending order; retry activates the exact 30-day lease without charging or giving gifts twice"
+          },
+          {
+            "name": "Usta and Mimar purchases apply timed VIP+ and VIP Ultra ranks, reject a lower active tier and grant no administrator permission"
+          },
+          {
+            "name": "VIP flight requires an authorised island; real damaged equipment is repaired, and the tier-3 daily gift pays once"
+          },
+          {
+            "name": "Credit gift reception can be disabled; an accepted transfer conserves the exact balances and appears in the recipient history"
+          },
+          {
+            "name": "The Mühür merchant rejects a full inventory without debiting tokens and atomically delivers the selected original reward bundle"
+          }
+        ],
+        "scope": "Local Paper production APIs and real protocol clients; synthetic fixture grants test balances, fills inventory and temporarily fails the VIP provider.",
+        "passed": true,
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "vipguard": {
+        "passed": true,
+        "checks": [
+          "A permanent VIP Ultra assignment blocks buying the same package even when an older timed lease is also present and the wallet has enough credit.",
+          "Removing the temporary fixture assignment preserves the separately purchased VIP Ultra expiry and gives no administrator rights."
+        ],
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "feedback": {
+        "scope": "Actual local Paper 1.21.10 upgrade with authenticated Minecraft protocol clients; private loopback fixture supplies item stacks, native block breaks, deterministic tree rolls and observations. No visual game-client recording.",
+        "checks": [
+          "The /warp sb lobi shortcut also enters Skyblock safely from the network lobby",
+          "The actual /market shortcut opens the Skyblock market on a private island",
+          "Repeated quantity clicks accumulate to 98 without charging; explicit confirmation buys exactly 98 items once",
+          "A naturally spawned island item goes directly into the authorised player inventory",
+          "A full inventory saves seven emeralds in durable personal storage; re-entry and repeated collection cannot lose or duplicate them",
+          "A qualifying living tree falls at a successful roll, shows a temporary falling-block display and delivers exactly six logs to inventory",
+          "The unsuccessful 25-percent branch breaks one log; player-built log structures never trigger automatic felling",
+          "The named island guide can be called beside its owner, hidden and shown again",
+          "The task book separates five careers and daily/weekly tasks, with explicit instructions, remaining counts and reward destinations",
+          "The actual sidebar, TAB header and boss bar show Skyblock balances, island upgrades and the current task",
+          "/warp sb lobi and named NPC warps land beside their actual town destinations",
+          "Seven surrounding mountain ridges and eight interactive town NPCs exist; natural nightmare spawning is disabled",
+          "The nightmare is available as an owned cosmetic pet on a private island with AI, targeting and sunlight burning disabled",
+          "An authenticated OP can edit the town directly without leaving Skyblock, has no island border, and returns safely when editing ends; ordinary players cannot enable editing",
+          "The ready annex is a real water/lava generator; breaking its naturally formed contact block advances mining once"
+        ],
+        "passed": true,
+        "island": 1,
+        "guide": {
+          "id": 1,
+          "z": 2048.5,
+          "y": 96,
+          "x": 2050.5
+        },
+        "city": {
+          "npcCount": 8,
+          "floor": "STONE_BRICKS",
+          "heights": [
+            181,
+            190,
+            184,
+            172,
+            165,
+            182,
+            170
+          ],
+          "backup": false
+        },
+        "skyblock_jar_sha256": "84b596efb5fdcb5ab946444541b6a9d41a100c4ba9a5729d40b7a42557612d81"
+      },
+      "nightmare": {
+        "scope": "Authenticated local Minecraft protocol client, actual pet confirmation callback and payment; private loopback fixture replays entity load/target/damage events for legacy hostile phantoms.",
+        "checks": [
+          "The new nightmare is bought through the actual /evcil kabus confirmation for exactly 10 Akçe; replaying the old confirmation cannot charge twice.",
+          "The owned nightmare cannot target or harm players and stays valid as a cosmetic pet.",
+          "Legacy hostile phantoms are removed on chunk entity load, cannot acquire a target, and cannot damage a Skyblock player."
+        ],
+        "passed": true
+      },
+      "founder": {
+        "passed": true,
+        "checks": [
+          "Founder rank/badge and live TAB use the new gold palette, player name is ivory and the shared chat preview uses the neutral message colour; administrator permission is retained."
+        ],
+        "rendered": {
+          "admin": true,
+          "tab": "{\"extra\":[{\"color\":\"#E5B85C\",\"extra\":[{\"color\":\"#EBC984\",\"text\":\"✦ \"},{\"bold\":true,\"color\":\"#E5B85C\",\"text\":\"KURUCU\"}],\"text\":\"\"},{\"color\":\"#65758A\",\"text\":\" │ \"},{\"color\":\"#FFF0C2\",\"text\":\"P13ogvveA\"}],\"text\":\"\"}",
+          "rank": "{\"color\":\"#E5B85C\",\"text\":\"Kurucu\"}",
+          "badge": "{\"color\":\"#E5B85C\",\"extra\":[{\"color\":\"#EBC984\",\"text\":\"✦ \"},{\"bold\":true,\"color\":\"#E5B85C\",\"text\":\"KURUCU\"}],\"text\":\"\"}"
+        }
+      },
+      "flight": {
+        "passed": true,
+        "checks": [
+          "A licensed player can select 8× flight speed; out-of-range 0/11 requests do not change the saved preference.",
+          "The actual speed menu selects 6×; leaving restores the original 0.13 network speed and re-entry reapplies the stored Skyblock preference.",
+          "A normal player without a flight entitlement cannot gain flight or change its speed through the speed command.",
+          "An OP can select maximum flight speed while editing the Skyblock town; changing the speed grants no unrelated player permissions."
+        ]
+      },
+      "flight-global": {
+        "passed": true,
+        "checks": [
+          "OP can change speed with /flyspeed in the network lobby and /sb ucus hiz in the separate Adanı Yap world; the choice survives world changes and the generic speed menu opens outside Skyblock.",
+          "Speed selection does not enable flight for a grounded OP and a non-OP cannot use the command to gain a global speed preference or flight."
+        ]
+      },
+      "city": {
+        "passed": true,
+        "checks": [
+          "Detailed original center includes the physical clock tower, gardens, market, windmill and balloon landing with a 384-block lobby border.",
+          "All eight unique interactive citizens respawn after restart; the task NPC opens actual deliveries and the lobby floor remains protected.",
+          "The visual overview is exported from actual world block faces."
+        ],
+        "center": {
+          "balloon": "WHITE_WOOL",
+          "fountain": "WATER",
+          "mill": "OXIDIZED_CUT_COPPER",
+          "clock": "LIGHTNING_ROD",
+          "npcs": [
+            "guide",
+            "island",
+            "shop",
+            "workshop",
+            "missions",
+            "seal",
+            "support",
+            "top"
+          ]
+        }
+      },
+      "restart": {
+        "passed": true,
+        "checks": [
+          "Final VIP Ultra expiry, Kredi and Mühür balances survive restart with no pending duplicate order and no administrator privilege.",
+          "Actual Paper process restart preserves island ownership, team members, wallet, shared bank, generator tier and minion records.",
+          "Skyblock inventory (2 netherite scraps), ender chest (11 emeralds), XP (level 7), Survival mode and the 100-block player border are restored after restart.",
+          "Flying to the public center clears flight and stays in the center; returning home restores the valid island capability.",
+          "A real airborne entitlement-loss test returns the player to the safe island spawn without changing money or inventory.",
+          "Partial weekly and monthly delivery progress survives the actual process restart.",
+          "Persisted member/visitor permissions and unexpired visitor access survive restart; the visitor keeps their original island and can return or leave safely.",
+          "Claiming an already completed shared quest after restart does not pay again; a normal exit clears the recovery record."
+        ],
+        "island": 1,
+        "wallet": 2286950,
+        "bank": 43000,
+        "generator": 2,
+        "minions": 1,
+        "members": 2,
+        "memberBreak": "true",
+        "visitorBreak": "false",
+        "credit": 79000,
+        "seals": 815,
+        "vipTier": "vipultra",
+        "vipUntil": 1795790705323
+      },
+      "restart-extra": {
+        "passed": true,
+        "checks": [
+          "Actual process restart preserves nine stored loot items and the summoned guide coordinates; repeated recovery cannot duplicate the items and the Skyblock HUD returns.",
+          "The v4 center marker preserves administrator block edits across restart; the synthetic edit is removed after verification."
+        ]
+      },
+      "upgrade": {
+        "passed": true,
+        "records": 47,
+        "checks": [
+          "All pre-upgrade island, wallet, inventory profile, delivery, generator, minion and ownership records are byte-for-byte unchanged after the 1.1.0 center upgrade."
+        ],
+        "center_backup_created": true
+      },
+      "artifacts": {
+        "KasabaRoles-1.6.1.jar": "808d0cad9cf49f6201ac9508b82484a33d4f81b7ca6c83466ebdd181b8152f3f",
+        "KasabaHub-1.12.0.jar": "6a806afe0536c624445441183adfe7bff2de88d45a9969999165238a1cd6c9cd",
+        "KasabaSkyblock-1.1.0.jar": "d8ffba16103a02cdc04e9669e890a526afedc2ddd48a5dcd1faad4384e7f6792",
+        "KasabaEvcil-1.2.0.jar": "62077e6ab7380f3927eb7b901afeb05ea4f29e80df558f3d930598ea5a07eef2"
+      }
+    },
+    "unit": {
+      "kasaba-roles": {
+        "tests": 33,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "kasaba-hub": {
+        "tests": 28,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "kasaba-evcil": {
+        "tests": 14,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "kasaba-skyblock": {
+        "tests": 12,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "kasaba-parkur": {
+        "tests": 24,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "kasaba-labirent": {
+        "tests": 5,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "artifacts": {
+      "KasabaRoles-1.6.1.jar": "808d0cad9cf49f6201ac9508b82484a33d4f81b7ca6c83466ebdd181b8152f3f",
+      "KasabaHub-1.12.0.jar": "6a806afe0536c624445441183adfe7bff2de88d45a9969999165238a1cd6c9cd",
+      "KasabaEvcil-1.2.0.jar": "62077e6ab7380f3927eb7b901afeb05ea4f29e80df558f3d930598ea5a07eef2",
+      "KasabaSkyblock-1.1.0.jar": "d8ffba16103a02cdc04e9669e890a526afedc2ddd48a5dcd1faad4384e7f6792",
+      "KasabaParkur-1.2.0.jar": "e97fa775f7bd3817664906a379eec7ca89192c416bea2d0073baf6bfe55c8edd",
+      "KasabaLabirent-1.0.0.jar": "3864ab4aaad221ca650ba68b05269567a7b12f93e36ce22d627b1b3f6dbf72f3"
+    },
+    "limits": [
+      "Not deployed to the live server.",
+      "Loopback private fixtures position players and accelerate test deadlines. Not a human playthrough of all 300 parkour stages or a concurrency load test.",
+      "Previews are generated from physical block audits, not game-client screenshots."
+    ],
+    "parkur-native": {
+      "started": "2026-10-28T16:20:44.779Z",
+      "scope": "Real loopback Paper 1.21.10 / Java21. Fixtures position authenticated synthetic clients; this is not a human playthrough of all 300 stages.",
+      "checks": [
+        {
+          "name": "All exported block states are accepted by the real Paper block registry",
+          "data": {
+            "states": 54
+          }
+        },
+        {
+          "name": "New version installs separate world; every difficulty starts at zero and leaves old world untouched"
+        },
+        {
+          "name": "Live sidebar and three lobby boards rank current furthest players with all five positions",
+          "data": [
+            {
+              "player": "41a239c4-6978-30da-a847-962d267f9b3b",
+              "name": "P13ogvveC",
+              "progress": 55
+            },
+            {
+              "player": "7dfad7c6-9612-3b7b-840d-8999ba1a7202",
+              "name": "P13ogvveA",
+              "progress": 35
+            },
+            {
+              "player": "6b47801a-f43c-3690-91d9-6aeb3d0d61ef",
+              "name": "P13ogvveB",
+              "progress": 20
+            }
+          ]
+        },
+        {
+          "name": "Administrator practice is excluded from live progress leaderboard"
+        },
+        {
+          "name": "Each difficulty has independent live top-five results"
+        },
+        {
+          "name": "Fastest completed time remains separate and completion records once",
+          "data": [
+            {
+              "player": "7dfad7c6-9612-3b7b-840d-8999ba1a7202",
+              "name": "P13ogvveA",
+              "difficulty": "KOLAY",
+              "millis": 125055,
+              "achieved": 1793204462386
+            }
+          ]
+        },
+        {
+          "name": "Externally teleported attempt cannot rank as unassisted progress"
+        },
+        {
+          "name": "Normal players cannot break/place, PvP or drop game tools",
+          "data": {
+            "drop": true,
+            "break": true,
+            "place": true,
+            "damage": true
+          }
+        },
+        {
+          "name": "Leaving restores the original inventory and sidebar"
+        }
+      ],
+      "passed": true
+    },
+    "parkur-five": {
+      "checks": [
+        {
+          "name": "All five live slots contain real players in descending course progress",
+          "live": [
+            {
+              "player": "17961150-6450-3f99-b524-8793c13acb74",
+              "name": "P10kwnqcD",
+              "progress": 70
+            },
+            {
+              "player": "3dd4f127-6136-3567-8914-bbf9c873b2b2",
+              "name": "P10kwnqcB",
+              "progress": 55
+            },
+            {
+              "player": "41a239c4-6978-30da-a847-962d267f9b3b",
+              "name": "P13ogvveC",
+              "progress": 40
+            },
+            {
+              "player": "6b47801a-f43c-3690-91d9-6aeb3d0d61ef",
+              "name": "P13ogvveB",
+              "progress": 25
+            },
+            {
+              "player": "7dfad7c6-9612-3b7b-840d-8999ba1a7202",
+              "name": "P13ogvveA",
+              "progress": 10
+            }
+          ],
+          "hud": {
+            "objective": "parkur_live",
+            "lines": [
+              "CANLI İLERLEME",
+              "Zor • Bölüm 11",
+              "İlerlemen: %10",
+              " ",
+              "1. P10kwnqcD %70",
+              "2. P10kwnqcB %55",
+              "3. P13ogvveC %40",
+              "4. P13ogvveB %25",
+              "5. P13ogvveA %10",
+              "  ",
+              "Saniyede yenilenir",
+              "/parkur süreler"
+            ]
+          }
+        }
+      ],
+      "scope": "Five concurrent authenticated synthetic clients in actual Paper.",
+      "passed": true
+    },
+    "maze-native": {
+      "started": "2026-10-28T16:32:51.289Z",
+      "scope": "Actual isolated Paper1.21.10/Java21 with authenticated synthetic protocol clients. Private fixtures accelerate deadlines and position players; no claim of human visual gameplay.",
+      "checks": [
+        {
+          "name": "Hub registers playable game, themed lobby, menu and Turkish first-help guide"
+        },
+        {
+          "name": "Solo creates actual connected 13×13 maze; 11664 wall/air blocks agree with generator",
+          "data": [
+            "###########################",
+            "#.#...#.......#.........#.#",
+            "#.#.#.#####.###.#.#####.#.#",
+            "#...#.#...#.#...#...#.....#",
+            "#####.#.#.#.#.#####.#####.#",
+            "#...#...#.#...#...#.#...#.#",
+            "#.#######.#.###.#.#.#.#.#.#",
+            "#.....#...#.#.#.#.#...#.#.#",
+            "#.###.#.###.#.#.#.#####.#.#",
+            "#.#...#.#.....#.#.......#.#",
+            "###.###.#.#####.#########.#",
+            "#...#...#...#...#.#.......#",
+            "#.###.#####.#.###.#.#######",
+            "#.....#.....#...#.........#",
+            "#.###########.#.###########",
+            "#.#.........#.#...........#",
+            "#.#.#######.#########.###.#",
+            "#...#.#...#...#.....#.#...#",
+            "#####.#.#.###.#.###.#.#.###",
+            "#...#...#...#...#...#.#...#",
+            "#.###.#####.#####.#####.#.#",
+            "#.....#.#.......#.....#.#.#",
+            "#.#####.#.#####.#####.###.#",
+            "#...#...#.#...#.#...#.....#",
+            "###.#.#.#.#.#.###.#.#####.#",
+            "#.....#.#...#.....#.......#",
+            "###########################"
+          ]
+        },
+        {
+          "name": "Exit remains locked until all three independent sigils are collected"
+        },
+        {
+          "name": "Collecting a sigil is automatic and idempotent"
+        },
+        {
+          "name": "Warned timed change rewrites real corridors, preserves sigil and leaves player head/feet clear",
+          "data": {
+            "before": [
+              "###########################",
+              "#.#...#.......#.........#.#",
+              "#.#.#.#####.###.#.#####.#.#",
+              "#...#.#...#.#...#...#.....#",
+              "#####.#.#.#.#.#####.#####.#",
+              "#...#...#.#...#...#.#...#.#",
+              "#.#######.#.###.#.#.#.#.#.#",
+              "#.....#...#.#.#.#.#...#.#.#",
+              "#.###.#.###.#.#.#.#####.#.#",
+              "#.#...#.#.....#.#.......#.#",
+              "###.###.#.#####.#########.#",
+              "#...#...#...#...#.#.......#",
+              "#.###.#####.#.###.#.#######",
+              "#.....#.....#...#.........#",
+              "#.###########.#.###########",
+              "#.#.........#.#...........#",
+              "#.#.#######.#########.###.#",
+              "#...#.#...#...#.....#.#...#",
+              "#####.#.#.###.#.###.#.#.###",
+              "#...#...#...#...#...#.#...#",
+              "#.###.#####.#####.#####.#.#",
+              "#.....#.#.......#.....#.#.#",
+              "#.#####.#.#####.#####.###.#",
+              "#...#...#.#...#.#...#.....#",
+              "###.#.#.#.#.#.###.#.#####.#",
+              "#.....#.#...#.....#.......#",
+              "###########################"
+            ],
+            "after": [
+              "###########################",
+              "#...#...#...#.......#.....#",
+              "###.#.#.#.#.#####.#.#.#...#",
+              "#.#...#.#.#.......#.#.#...#",
+              "#.#####.#.#########.#.###.#",
+              "#.....#...#.......#.#...#.#",
+              "#.#########.###.#.#.#.###.#",
+              "#.#.......#...#.#.#.#.#...#",
+              "#.#.#.###.###.#.###.#.#.#.#",
+              "#.#.#...#.#...#...#.#.#.#.#",
+              "#.#.###.###.#####.#.#.#.#.#",
+              "#.....#...#.#...#...#.#.#.#",
+              "#########.#.#.#.#####.#.#.#",
+              "#...#.....#.#.#.......#.#.#",
+              "#.#.#.###.#.###########.#.#",
+              "#.#...#...#.........#...#.#",
+              "#.#####.###########.#.#####",
+              "#.....#.....#.....#.#.....#",
+              "#.###.#.#####.#.#.#.#####.#",
+              "#.#...#.#.....#.#.#.....#.#",
+              "###.#.###.#####.#.#####.#.#",
+              "#...#.#...#...#.#.....#...#",
+              "#.###.#.###.###.#########.#",
+              "#...#.#...#.#...#.....#...#",
+              "#.#.#####.#.#.###.###.#.###",
+              "#.#.........#.......#.....#",
+              "###########################"
+            ]
+          }
+        },
+        {
+          "name": "All sigils unlock exit and finishing returns safely to game lobby"
+        },
+        {
+          "name": "Time expiry ends round without inventing a winner"
+        },
+        {
+          "name": "Public queue admits both players into same room; keys remain personal"
+        },
+        {
+          "name": "Arena protection cancels block breaking/placing, PvP and game-item drops",
+          "data": {
+            "damage": true,
+            "drop": true,
+            "break": true,
+            "place": true
+          }
+        },
+        {
+          "name": "Leaving does not discard the other player’s running match or force a fake victory"
+        },
+        {
+          "name": "Network exit restores original inventory and sidebar and releases room"
+        }
+      ],
+      "passed": true
+    },
+    "restart": {
+      "checks": [
+        {
+          "name": "Original personal items from both games are restored after disconnect and process restart; no stale match remains"
+        },
+        {
+          "name": "New maze can start again, new parkour world remains usable and its finish-time record survives actual restart"
+        }
+      ],
+      "scope": "Actual stop and restart of private Paper process after disconnects from both games.",
+      "passed": true
+    },
+    "parkur-layout": {
+      "routes": 3,
+      "stages_per_route": 100,
+      "total_stages": 300,
+      "checkpoints": 303,
+      "chunks": 1576,
+      "regions": 8,
+      "blocks": 1852078,
+      "geometry": {
+        "kolay": {
+          "turns": 52,
+          "distinct_section_footprints": 90,
+          "obstacle_families": 21
+        },
+        "orta": {
+          "turns": 50,
+          "distinct_section_footprints": 92,
+          "obstacle_families": 22
+        },
+        "zor": {
+          "turns": 53,
+          "distinct_section_footprints": 92,
+          "obstacle_families": 22
+        }
+      },
+      "patterns": {
+        "kolay/logs": 5,
+        "kolay/ribbon": 4,
+        "kolay/steps": 4,
+        "kolay/vines": 6,
+        "kolay/bridge": 10,
+        "kolay/ice": 5,
+        "kolay/zigzag": 5,
+        "kolay/crawl": 4,
+        "kolay/ruins": 4,
+        "kolay/ascent": 10,
+        "kolay/water": 4,
+        "kolay/roof": 4,
+        "kolay/islands": 3,
+        "kolay/spiral": 4,
+        "kolay/slime": 3,
+        "kolay/switchback": 4,
+        "kolay/fork": 5,
+        "kolay/ladder": 4,
+        "kolay/scaffold": 4,
+        "kolay/arc": 4,
+        "kolay/balance": 4,
+        "orta/logs": 5,
+        "orta/water": 4,
+        "orta/honey": 6,
+        "orta/islands": 5,
+        "orta/spiral": 5,
+        "orta/balance": 5,
+        "orta/slime": 4,
+        "orta/switchback": 4,
+        "orta/ascent": 10,
+        "orta/ladder": 4,
+        "orta/scaffold": 4,
+        "orta/arc": 5,
+        "orta/fork": 4,
+        "orta/ribbon": 3,
+        "orta/steps": 4,
+        "orta/bridge": 3,
+        "orta/ice": 4,
+        "orta/zigzag": 5,
+        "orta/crawl": 4,
+        "orta/ruins": 4,
+        "orta/roof": 4,
+        "orta/vines": 4,
+        "zor/logs": 4,
+        "zor/ladder": 4,
+        "zor/scaffold": 4,
+        "zor/arc": 6,
+        "zor/ribbon": 5,
+        "zor/steps": 5,
+        "zor/vines": 5,
+        "zor/bridge": 4,
+        "zor/ice": 4,
+        "zor/ascent": 10,
+        "zor/crawl": 4,
+        "zor/ruins": 4,
+        "zor/roof": 5,
+        "zor/zigzag": 4,
+        "zor/water": 4,
+        "zor/islands": 3,
+        "zor/spiral": 4,
+        "zor/balance": 5,
+        "zor/slime": 4,
+        "zor/switchback": 4,
+        "zor/fork": 4,
+        "zor/honey": 4
+      },
+      "world_zip_bytes": 1127353
+    },
+    "parkur-physical": {
+      "checkpoints_with_support_and_headroom": 303,
+      "ordered_gates_checked": 2158,
+      "ordinary_jump_transitions_checked": 1357,
+      "scope": "Actual exported Anvil blocks and conservative ordinary-jump dimensions. Special mechanics and all 300 stages still need a human playthrough."
+    }
+  }
+}
