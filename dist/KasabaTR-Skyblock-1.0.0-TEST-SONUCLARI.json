@@ -1,0 +1,240 @@
+{
+  "scope": "Local Paper 1.21.10 / Java 21, existing KasabaTR plugins and three synthetic Minecraft protocol clients. Not installed on the live server.",
+  "unit": {
+    "kasaba-roles": {
+      "tests": 30,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-hub": {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-skyblock": {
+      "tests": 6,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "limits": [
+    "No high-concurrency load test, visual game client recording or disk failure injection.",
+    "Normal Minecraft build height is -64 through 319; protection has no extra vertical limit.",
+    "Four readable user recordings were inspected through extracted frames; two uploads above 32 MiB could not be transferred. Research is not represented as ten watched YouTube videos."
+  ],
+  "native": {
+    "started": "2026-10-28T10:32:52.093Z",
+    "scope": "Isolated Paper 1.21.10 with three real Minecraft protocol clients. Private loopback fixture supplies observation, synthetic inventory, quest counters and shortened minion clock; natural water/lava flow and native block breaking are checked separately. No live server access.",
+    "checks": [
+      {
+        "name": "Automatic plugin startup succeeds with Paper SQLite; Skyblock and the progression guide are first in the real game menu"
+      },
+      {
+        "name": "100×100 starter island and contextual guide appear; lobby and Skyblock inventory, ender chest and XP persist separately",
+        "island": 1
+      },
+      {
+        "name": "Independent islands share exactly one world, are 2048 blocks apart, and reject outsider teleporting and block breaking"
+      },
+      {
+        "name": "Friend invitation shares protected building and team state; configured player invisibility also applies to the invited member"
+      },
+      {
+        "name": "Normal shop atomically buys and sells exact stacks; repeating a sale without items never credits money"
+      },
+      {
+        "name": "One shared quest pays the island bank exactly once across two members; only the owner can withdraw"
+      },
+      {
+        "name": "Player-market escrow transfers the exact item stack, price and 5% tax once; duplicate purchase cannot replay"
+      },
+      {
+        "name": "Minion setup consumes materials and island funds; one coal fuels bounded production, and collected output cannot be collected twice"
+      },
+      {
+        "name": "Island XP and common funds gate generator upgrades; the level-gated spawner market opens"
+      },
+      {
+        "name": "A real inventory-menu click is cancelled as an item move, purchases the spawner atomically and supports protected placement and return on breaking"
+      },
+      {
+        "name": "Actual vanilla water/lava flow creates a weighted generator block; native Survival block breaking advances mining exactly once",
+        "generated": "COBBLESTONE"
+      },
+      {
+        "name": "Progression guide remains accessible with detailed stages; /sor points to the in-game Skyblock First Aid guide"
+      },
+      {
+        "name": "Removing a member immediately evicts them to the safe entrance and removes island access; reinvitation works"
+      },
+      {
+        "name": "A solo island owner can explicitly archive their island, immediately join a friend and cannot farm fresh starter islands during the 24-hour cooldown"
+      },
+      {
+        "name": "Leaving Skyblock restores the lobby profile and permits normal entry to the existing Arena"
+      }
+    ],
+    "passed": true,
+    "island": 1,
+    "x": 2048,
+    "z": 2048
+  },
+  "access": {
+    "checks": [
+      {
+        "name": "Expanded market provides 9 working paged categories with unique products, positive prices and buy/sell separation",
+        "products": 586,
+        "categories": {
+          "0": 44,
+          "1": 128,
+          "2": 129,
+          "3": 186,
+          "4": 22,
+          "5": 40,
+          "6": 13,
+          "7": 11,
+          "8": 13
+        }
+      },
+      {
+        "name": "Owner toggles a real member block-break permission; member cannot change it and the owner keeps access"
+      },
+      {
+        "name": "Explicit visitor invitation enters only the host island with a 100-block border, preserves the visitor's own island and denies default building and bank withdrawal"
+      },
+      {
+        "name": "Visitor permission toggles are enforced immediately, independently of permanent member permissions"
+      },
+      {
+        "name": "Owner revocation ejects the visitor; temporary cooperative invitation permits work without changing permanent island membership"
+      },
+      {
+        "name": "Expiry removes temporary cooperative access and returns the player safely to their own island"
+      }
+    ],
+    "scope": "Actual local Paper protocol clients; GUI permission changes and access enforcement. Private fixture advances only the guest expiry clock.",
+    "passed": true,
+    "visitorIsland": 3
+  },
+  "economy": {
+    "passed": true,
+    "checks": [
+      "The final runtime pays exactly 10 Altın per emerald rather than the earlier unsafe 175-Altın villager-trade resale.",
+      "Buying a copper block costs 250 Altın, above the 54 Altın resale of its nine copper ingots. Exact wallet deltas are verified through real commands."
+    ]
+  },
+  "deliveries": {
+    "checks": [
+      "Daily delivery consumes exactly 128 of 130 supplied items, saves completion and credits the shared bank exactly once",
+      "A partial weekly delivery consumes 64 items and saves progress without paying the unfinished contract",
+      "A confirmed daily reroll charges exactly 100 Altın, chooses a different unfinished contract and preserves the completed one",
+      "Monthly contracts expose the 12,800-item target, save partial delivery and open the labelled monthly menu"
+    ],
+    "scope": "Local Paper commands and actual inventory GUI; the private fixture supplies synthetic material stacks.",
+    "passed": true
+  },
+  "premium": {
+    "checks": [
+      {
+        "name": "Original floating city, fountain, copper windmill and balloon are present; all eight unique NPCs load and open their real menus",
+        "npcs": [
+          "top",
+          "guide",
+          "island",
+          "shop",
+          "workshop",
+          "missions",
+          "seal",
+          "support"
+        ],
+        "mill": "OXIDIZED_CUT_COPPER",
+        "fountain": "WATER",
+        "balloon": "WHITE_WOOL"
+      },
+      {
+        "name": "Console credit fulfilment is idempotent by transaction ID; repeating a successful external order cannot add credit twice"
+      },
+      {
+        "name": "VIP provider failure preserves one paid pending order; retry activates the exact 30-day lease without charging or giving gifts twice"
+      },
+      {
+        "name": "Usta and Mimar purchases apply timed VIP+ and VIP Ultra ranks, reject a lower active tier and grant no administrator permission"
+      },
+      {
+        "name": "VIP flight requires an authorised island; real damaged equipment is repaired, and the tier-3 daily gift pays once"
+      },
+      {
+        "name": "Credit gift reception can be disabled; an accepted transfer conserves the exact balances and appears in the recipient history"
+      },
+      {
+        "name": "The Mühür merchant rejects a full inventory without debiting tokens and atomically delivers the selected original reward bundle"
+      }
+    ],
+    "scope": "Local Paper production APIs and real protocol clients; synthetic fixture grants test balances, fills inventory and temporarily fails the VIP provider.",
+    "passed": true
+  },
+  "vipguard": {
+    "passed": true,
+    "checks": [
+      "A permanent VIP Ultra assignment blocks buying the same package even when an older timed lease is also present and the wallet has enough credit.",
+      "Removing the temporary fixture assignment preserves the separately purchased VIP Ultra expiry and gives no administrator rights."
+    ]
+  },
+  "city": {
+    "passed": true,
+    "checks": [
+      "Detailed original center includes the physical clock tower, gardens, market, windmill and balloon landing with a 160-block lobby border.",
+      "All eight unique interactive citizens respawn after restart; the task NPC opens actual deliveries and the lobby floor remains protected.",
+      "The visual overview is exported from actual world block faces."
+    ],
+    "center": {
+      "balloon": "WHITE_WOOL",
+      "fountain": "WATER",
+      "mill": "OXIDIZED_CUT_COPPER",
+      "clock": "LIGHTNING_ROD",
+      "npcs": [
+        "guide",
+        "island",
+        "shop",
+        "missions",
+        "workshop",
+        "seal",
+        "support",
+        "top"
+      ]
+    }
+  },
+  "restart": {
+    "passed": true,
+    "checks": [
+      "Final VIP Ultra expiry, Kredi and Mühür balances survive restart with no pending duplicate order and no administrator privilege.",
+      "Actual Paper process restart preserves island ownership, team members, wallet, shared bank, generator tier and minion records.",
+      "Skyblock inventory (2 netherite scraps), ender chest (11 emeralds), XP (level 7), Survival mode and the 100-block player border are restored after restart.",
+      "Flying to the public center clears flight and stays in the center; returning home restores the valid island capability.",
+      "A real airborne entitlement-loss test returns the player to the safe island spawn without changing money or inventory.",
+      "Partial weekly and monthly delivery progress survives the actual process restart.",
+      "Persisted member/visitor permissions and unexpired visitor access survive restart; the visitor keeps their original island and can return or leave safely.",
+      "Claiming an already completed shared quest after restart does not pay again; a normal exit clears the recovery record."
+    ],
+    "island": 1,
+    "wallet": 678950,
+    "bank": 43000,
+    "generator": 2,
+    "minions": 1,
+    "members": 2,
+    "memberBreak": "true",
+    "visitorBreak": "false",
+    "credit": 79000,
+    "seals": 815,
+    "vipTier": "vipultra",
+    "vipUntil": 1795776631488
+  },
+  "artifacts": {
+    "KasabaRoles-1.6.0.jar": "207fc3f8bb3a749f1d8bb4f4ff516ef4065f03118f6084ec7a4c9c919b687692",
+    "KasabaHub-1.11.0.jar": "fd069a2c5ca56d6fc2aa140449a11a16512ea8f854ee2c1b12b1304f71651185",
+    "KasabaSkyblock-1.0.0.jar": "ef21de6359686fe80c34fda9d2e9ea4998fd5e4412865abba45b268d00a244e2"
+  }
+}
