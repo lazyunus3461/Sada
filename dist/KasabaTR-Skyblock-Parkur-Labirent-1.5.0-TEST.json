@@ -1,0 +1,2026 @@
+{
+  "scope": "Six current module unit suites; local Paper1.21.10 Java21 native integration suites. Final changed JARs are Skyblock1.4.0 and Roles1.7.0. No human graphical-client approval, live installation or measured player-capacity benchmark.",
+  "unit": {
+    "kasaba-skyblock": {
+      "tests": 50,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-roles": {
+      "tests": 36,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-hub": {
+      "tests": 28,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-evcil": {
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-parkur": {
+      "tests": 24,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "kasaba-labirent": {
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "native": {
+    "native": {
+      "scope": "Skyblock1.4.0/Roles1.7.0; Paper1.21.10 Java21 on private loopback. Actual commands, Bukkit events, native damage, menus and durable records. Accelerated renewal/cooldown fixtures are explicit. No graphical-client or load benchmark claim.",
+      "checks": [
+        {
+          "name": "Both real players enter the exact same town field, share all 154 crops and one fifteen-minute deadline",
+          "data": {
+            "at": [
+              43.5,
+              97,
+              -22.5
+            ],
+            "deadline": 1793303653853
+          }
+        },
+        {
+          "name": "Non-OP harvesting works despite lobby protection; wheat goes to its harvester and two players cannot claim the same crop twice"
+        },
+        {
+          "name": "Shared farming allows mature wheat while protecting soil, trampling and unearned natural regrowth",
+          "data": {
+            "soil": "FARMLAND",
+            "trampleProtected": true,
+            "soilProtected": true,
+            "growProtected": true
+          }
+        },
+        {
+          "name": "A full bag consumes no shared crop; leaving, reentering and another player do not restart the deadline or allocate private plots"
+        },
+        {
+          "name": "An explicitly accelerated renewal resets the common field once, not separate player copies"
+        },
+        {
+          "name": "The animal warp reaches one shared pasture with four adult cows, pigs and chickens each",
+          "data": {
+            "respawn": 30,
+            "animals": [
+              {
+                "type": "COW",
+                "slot": 0,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "PIG",
+                "slot": 1,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "CHICKEN",
+                "slot": 2,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "COW",
+                "slot": 3,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "PIG",
+                "slot": 4,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "CHICKEN",
+                "slot": 5,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "COW",
+                "slot": 6,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "PIG",
+                "slot": 7,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "CHICKEN",
+                "slot": 8,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "COW",
+                "slot": 9,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "PIG",
+                "slot": 10,
+                "inside": true,
+                "adult": true
+              },
+              {
+                "type": "CHICKEN",
+                "slot": 11,
+                "inside": true,
+                "adult": true
+              }
+            ],
+            "inside": true
+          }
+        },
+        {
+          "name": "A non-OP really kills a pasture animal, receives its native drops directly and cannot force an immediate respawn"
+        },
+        {
+          "name": "Explicit cooldown expiry replenishes one slot; environmental damage and attacks from outside remain blocked",
+          "data": {
+            "herd": {
+              "respawn": 30,
+              "animals": [
+                {
+                  "type": "COW",
+                  "slot": 0,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "PIG",
+                  "slot": 1,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "CHICKEN",
+                  "slot": 2,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "COW",
+                  "slot": 3,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "PIG",
+                  "slot": 4,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "CHICKEN",
+                  "slot": 5,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "COW",
+                  "slot": 6,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "PIG",
+                  "slot": 7,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "CHICKEN",
+                  "slot": 8,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "COW",
+                  "slot": 9,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "PIG",
+                  "slot": 10,
+                  "inside": true,
+                  "adult": true
+                },
+                {
+                  "type": "CHICKEN",
+                  "slot": 11,
+                  "inside": true,
+                  "adult": true
+                }
+              ],
+              "inside": true
+            },
+            "managedBefore": 12,
+            "managedAfter": 12,
+            "outsideBlocked": true,
+            "environmentBlocked": true
+          }
+        },
+        {
+          "name": "/market starts with plain buying and selling, without mixing premium or production goods into the material page"
+        },
+        {
+          "name": "All eight bottom tabs remain in exactly the same slots when changing market sections"
+        },
+        {
+          "name": "Material categories stay fixed; three product clicks select four items, and only confirmation charges the exact total"
+        },
+        {
+          "name": "Every purchasable spawner uses a real spawner icon and a separate final confirmation, with readable price and island-level requirements"
+        },
+        {
+          "name": "Island upgrades are three named actions with meaningful icons, clear common-bank payment source and a separate confirmation"
+        },
+        {
+          "name": "Bread and coal share one worker daily manual limit; an extra feed consumes no food or allowance"
+        },
+        {
+          "name": "A real temporary cooperative guest shares the owner’s manual-feeding allowance and cannot bypass it"
+        },
+        {
+          "name": "A real feeder accepts bulk bread and automatically supplies a worker after the manual limit, producing into the worker chest"
+        },
+        {
+          "name": "VIP, VIP+, MegaVIP and UltraVIP are actual stored roles; each receives existing network game rights and the correct chest pages without staff authority"
+        },
+        {
+          "name": "MegaVIP and UltraVIP timed leases activate through the real Roles API while older VIP storage stays compatible"
+        },
+        {
+          "name": "The four VIP purchase pages expose Skyblock limits, exact cooldowns, gift contents and a link to existing game privileges"
+        },
+        {
+          "name": "50 TRY loads exactly 100 credits under the configured bonus; a repeated receipt remains idempotent after a campaign change and ordinary players cannot mint credit"
+        },
+        {
+          "name": "The credit-rate screen presents all five supplied TRY offers and explicitly separates base credit, bonus and credited total"
+        },
+        {
+          "name": "Buying MegaVIP really debits the configured price, activates thirty days and delivers the advertised spawner, keys, resources and currency"
+        },
+        {
+          "name": "A real crate opening commits one key and one advertised reward with durable history; replay of the same opening cannot grant another reward"
+        },
+        {
+          "name": "Five original crates have physical town pedestals, complete percentage previews, separate key/open confirmations and personal history"
+        },
+        {
+          "name": "The referenced physical crate controls work: left click previews, right click asks confirmation and shows personal lifetime opening count without consuming a key"
+        },
+        {
+          "name": "One shared Yonca field renews its twenty-four plants with a clickable /warp yoncatarla announcement for both players"
+        },
+        {
+          "name": "First harvester wins the Yonca: one balance credit, one shared consumed plant, no second claim by another player"
+        },
+        {
+          "name": "Remote harvesting is denied and warp does not reset the clock; the preserved reward balance is labeled Yonca, while /market and its other-actions/reward pages offer no VIP sales"
+        }
+      ],
+      "restart": {
+        "b": {
+          "now": 1793302790427,
+          "spawnerHours": 6,
+          "productionHours": 6,
+          "x": 36864.5,
+          "y": 96,
+          "z": 2048.5,
+          "yaw": 0,
+          "pitch": 0,
+          "dead": false,
+          "op": false,
+          "staff": false,
+          "flySpeed": 0.1,
+          "allowFlight": false,
+          "bag": [
+            "BREAD:7",
+            "COAL:7",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cursor": null,
+          "level": 7,
+          "weather": "CLEAR",
+          "biome": "minecraft:river",
+          "worldRain": false,
+          "wallet": 14105750,
+          "test": false,
+          "testTier": 0,
+          "testEntry": false,
+          "farm": {
+            "now": 1793302790428,
+            "plot": 0,
+            "next": 1793303661809,
+            "remaining": 153,
+            "harvested": [
+              0
+            ],
+            "inside": false,
+            "firstCrop": "WHEAT",
+            "cropLocation": {
+              "z": -35,
+              "y": 97,
+              "x": 45,
+              "world": "kasabatr_skyblock"
+            }
+          },
+          "title": "Crafting",
+          "top": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "buttons": [],
+          "island": 18,
+          "cx": 36864,
+          "cz": 2048,
+          "bank": 0,
+          "xp": 0,
+          "mine": 0,
+          "phase": "oak-trapdoor-v4",
+          "core": "COAL_ORE",
+          "minions": [
+            {
+              "slot": 1,
+              "type": 0,
+              "level": 1,
+              "stored": 8,
+              "fuel": 1780877,
+              "credit": 3123,
+              "fed-total": 0,
+              "produced": 4,
+              "schema": 2,
+              "last": 1793302790245,
+              "status": "Çalışıyor",
+              "items": [
+                "COBBLESTONE:2",
+                "RAW_COPPER:5",
+                "COAL:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "chest": {
+                "z": 2048,
+                "y": 96,
+                "x": 36863,
+                "world": "kasabatr_skyblock"
+              },
+              "location": {
+                "z": 2048.5,
+                "y": 96,
+                "x": 36864.5,
+                "world": "kasabatr_skyblock"
+              },
+              "slots": 9
+            },
+            {
+              "slot": 2,
+              "type": 4,
+              "level": 1,
+              "stored": 7,
+              "fuel": 0,
+              "credit": 0,
+              "fed-total": 8,
+              "produced": 0,
+              "schema": 2,
+              "last": 1793302790245,
+              "status": null,
+              "items": [
+                "BREAD:7",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "chest": {
+                "z": 2060,
+                "y": 96,
+                "x": 36877,
+                "world": "kasabatr_skyblock"
+              },
+              "location": {
+                "z": 2060.5,
+                "y": 96,
+                "x": 36876.5,
+                "world": "kasabatr_skyblock"
+              },
+              "slots": 9
+            }
+          ],
+          "credit": null,
+          "seal": "3",
+          "privatePlots": 0,
+          "crateKeys": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "crateHistory": {},
+          "cells": []
+        },
+        "c": {
+          "now": 1793302790482,
+          "spawnerHours": 6,
+          "productionHours": 6,
+          "x": 43.5,
+          "y": 97,
+          "z": -22.5,
+          "yaw": -90,
+          "pitch": 0,
+          "dead": false,
+          "op": false,
+          "staff": false,
+          "flySpeed": 0.1,
+          "allowFlight": false,
+          "bag": [
+            "WHEAT:32",
+            null,
+            null,
+            null,
+            null,
+            "PLAYER_HEAD:1",
+            "LIME_DYE:1",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cursor": null,
+          "level": 0,
+          "weather": "null",
+          "biome": "minecraft:snowy_taiga",
+          "worldRain": false,
+          "wallet": 5004000,
+          "test": false,
+          "testTier": 0,
+          "testEntry": false,
+          "farm": {
+            "now": 1793302790485,
+            "plot": 0,
+            "next": 1793303661809,
+            "remaining": 153,
+            "harvested": [
+              0
+            ],
+            "inside": true,
+            "firstCrop": "WHEAT",
+            "cropLocation": {
+              "z": -35,
+              "y": 97,
+              "x": 45,
+              "world": "kasabatr_skyblock"
+            }
+          },
+          "title": "Crafting",
+          "top": [
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "buttons": [],
+          "island": 19,
+          "cx": 38912,
+          "cz": 2048,
+          "bank": 0,
+          "xp": 0,
+          "mine": 0,
+          "phase": "oak-trapdoor-v4",
+          "core": "COBBLESTONE",
+          "minions": [],
+          "credit": "297000",
+          "seal": "644",
+          "privatePlots": 0,
+          "crateKeys": [
+            4,
+            0,
+            8,
+            0,
+            0
+          ],
+          "crateHistory": {
+            "crate-open:41a239c4-6978-30da-a847-962d267f9b3b:sky150-paid-1793297987267-crate": "crate: Hasat\nreward: 1 Gün VIP\ntime: 1793297989020\n",
+            "crate-open:41a239c4-6978-30da-a847-962d267f9b3b:sky150-paid-1793301845193-crate": "crate: Hasat\nreward: 32 Buğday\ntime: 1793301847287\n",
+            "crate-open:41a239c4-6978-30da-a847-962d267f9b3b:sky150-paid-1793302203855-crate": "crate: Hasat\nreward: 32 Buğday\ntime: 1793302205643\n",
+            "crate-open:41a239c4-6978-30da-a847-962d267f9b3b:sky150-paid-1793302778093-crate": "crate: Hasat\nreward: 32 Buğday\ntime: 1793302780524\n"
+          },
+          "cells": []
+        }
+      },
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "generator": {
+      "scope": "Final Skyblock1.4.0 small surface oak-trapdoor generator; real block breaks and Bukkit safety events. Migration and ore inputs are explicit private fixtures, never shipped.",
+      "checks": [
+        {
+          "name": "The confirmed video layout is a compact three-block surface lava/ore/water row, with seven oak sides and three usable lids",
+          "data": {
+            "materials": {
+              "AIR": 17,
+              "BEDROCK": 1,
+              "COBBLESTONE": 1,
+              "DIRT": 1,
+              "GRASS_BLOCK": 13,
+              "LAVA": 1,
+              "OAK_TRAPDOOR": 10,
+              "WATER": 1
+            },
+            "water": "WATER",
+            "core": "COBBLESTONE",
+            "lava": "LAVA",
+            "phase": "oak-trapdoor-v4",
+            "registered": true,
+            "y": 96
+          }
+        },
+        {
+          "name": "Exact owned legacy generator migrates safely; a custom chest and player marker block replacement, and interrupted old/new builds resume",
+          "data": {
+            "oldCoreY95": true,
+            "preserveCustomStructure": true,
+            "preservePlayerMarker": true,
+            "migrateExactOwnedTemplate": true,
+            "resumeInterruptedMigration": true,
+            "resumeNewBuild": true
+          }
+        },
+        {
+          "name": "Owner can open upper lids; side frames, fluids, bucket theft, pistons and redstone are guarded and lava contact rescues inventory",
+          "data": {
+            "lidOpens": true,
+            "sidesFixed": true,
+            "frameProtected": true,
+            "fluidContained": true,
+            "piston": true,
+            "stickyPiston": true,
+            "redstone": true,
+            "sourceCannotBeStolen": true,
+            "lavaRescue": true
+          }
+        },
+        {
+          "name": "A normal player really breaks the core and receives a regenerated ore exactly one server tick later",
+          "data": {
+            "mineDelta": 1,
+            "ticks": 1,
+            "block": "COBBLESTONE",
+            "ok": true
+          }
+        },
+        {
+          "name": "The existing stone worker mines all nine possible real generator outputs into its own chest without granting player mining/XP credit",
+          "data": [
+            {
+              "ore": "COBBLESTONE",
+              "items": [
+                "COBBLESTONE:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55999,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "COAL_ORE",
+              "items": [
+                "COAL:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55999,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "IRON_ORE",
+              "items": [
+                "RAW_IRON:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55998,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "COPPER_ORE",
+              "items": [
+                "RAW_COPPER:4",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55997,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "LAPIS_ORE",
+              "items": [
+                "LAPIS_LAZULI:9",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55999,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "LAPIS_ORE"
+            },
+            {
+              "ore": "REDSTONE_ORE",
+              "items": [
+                "REDSTONE:4",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55998,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "GOLD_ORE",
+              "items": [
+                "RAW_GOLD:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55999,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "DIAMOND_ORE",
+              "items": [
+                "DIAMOND:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55997,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            },
+            {
+              "ore": "EMERALD_ORE",
+              "items": [
+                "EMERALD:1",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+              ],
+              "fuelAfterWork": 55999,
+              "producedDelta": 1,
+              "mineDelta": 0,
+              "xpDelta": 0,
+              "coreAfter": "COBBLESTONE"
+            }
+          ]
+        },
+        {
+          "name": "Installing another minion presents the actual common-bank cost and materials for confirmation while keeping the fixed market tabs"
+        },
+        {
+          "name": "Worker upgrade quotes the exact gold/iron cost and waits for a separate confirmation"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "production": {
+      "scope": "Current Skyblock production systems on local Paper1.21.10. Real item placement/menus/events and bounded synthetic elapsed-clock/crop fixtures; no player-load benchmark or graphical-client approval.",
+      "checks": [
+        {
+          "name": "An actual special spawner item places as an empty owned product depot without consuming test-mode currency",
+          "data": {
+            "pos": "36887:96:2060",
+            "id": "e1a0d59f-0bc5-45a1-8f55-b1d22266520b",
+            "size": 0,
+            "counts": {
+              "BLAZE_ROD": 0
+            },
+            "last": 1793302819991
+          }
+        },
+        {
+          "name": "All twelve animal/monster types produce the correct allowed drop set; the forty-five-second clock starts only once",
+          "data": [
+            {
+              "type": "PIG",
+              "counts": {
+                "PORKCHOP": 2
+              }
+            },
+            {
+              "type": "COW",
+              "counts": {
+                "BEEF": 2,
+                "LEATHER": 1
+              }
+            },
+            {
+              "type": "SHEEP",
+              "counts": {
+                "MUTTON": 2,
+                "WHITE_WOOL": 1
+              }
+            },
+            {
+              "type": "CHICKEN",
+              "counts": {
+                "CHICKEN": 2,
+                "FEATHER": 1
+              }
+            },
+            {
+              "type": "ZOMBIE",
+              "counts": {
+                "ROTTEN_FLESH": 2
+              }
+            },
+            {
+              "type": "SKELETON",
+              "counts": {
+                "BONE": 2,
+                "ARROW": 1
+              }
+            },
+            {
+              "type": "SPIDER",
+              "counts": {
+                "STRING": 2,
+                "SPIDER_EYE": 1
+              }
+            },
+            {
+              "type": "BLAZE",
+              "counts": {
+                "BLAZE_ROD": 2
+              }
+            },
+            {
+              "type": "ENDERMAN",
+              "counts": {
+                "ENDER_PEARL": 2
+              }
+            },
+            {
+              "type": "WITCH",
+              "counts": {
+                "REDSTONE": 2,
+                "GLOWSTONE_DUST": 1
+              }
+            },
+            {
+              "type": "GUARDIAN",
+              "counts": {
+                "PRISMARINE_SHARD": 2,
+                "PRISMARINE_CRYSTALS": 1
+              }
+            },
+            {
+              "type": "IRON_GOLEM",
+              "counts": {
+                "IRON_INGOT": 2,
+                "POPPY": 1
+              }
+            }
+          ]
+        },
+        {
+          "name": "The spawner never spawns a real creature, cannot be broken while stocked, and rejects another island owner",
+          "data": {
+            "blockPreserved": true,
+            "mobSpawnCancelled": true,
+            "breakCancelled": true
+          }
+        },
+        {
+          "name": "A day away produces at most six hours of goods without loading its chunk or requiring the owner on the island",
+          "data": {
+            "pos": "36887:96:2060",
+            "id": "e1a0d59f-0bc5-45a1-8f55-b1d22266520b",
+            "size": 962,
+            "counts": {
+              "BLAZE_ROD": 962
+            },
+            "last": 1793302832965,
+            "loadedBefore": false,
+            "loadedAfter": false
+          }
+        },
+        {
+          "name": "Full inventory leaves the whole spawner depot intact; taking sixty-four transfers exactly sixty-four goods"
+        },
+        {
+          "name": "Spawner sale pays the exact normal market amount once; empty and stale-generation requests cannot pay twice"
+        },
+        {
+          "name": "A full spawner stops at its capacity and does not bank elapsed production to refill instantly after withdrawal"
+        },
+        {
+          "name": "The real piston harvests ripe crops and tall plants into its own depot, replants crops, leaves stems and immature wheat, and checkpoints the journal",
+          "data": {
+            "size": 17,
+            "counts": {
+              "CARROT": 2,
+              "MELON_SLICE": 5,
+              "WHEAT_SEEDS": 2,
+              "BAMBOO": 2,
+              "CACTUS": 2,
+              "PUMPKIN": 1,
+              "SUGAR_CANE": 2,
+              "WHEAT": 1
+            },
+            "pos": "36884:96:2068",
+            "pending": false,
+            "id": "15ab7716-5371-4eff-b69f-b954b6935e8e",
+            "wheatAge": 0,
+            "immatureAge": 1,
+            "caneBottom": "SUGAR_CANE",
+            "caneTop": "AIR",
+            "cactusBottom": "CACTUS",
+            "pumpkin": "AIR"
+          }
+        },
+        {
+          "name": "Piston stock is protected against full bags, another island owner, destructive breaking and redstone movement",
+          "data": {
+            "redstoneMovementCancelled": true,
+            "blockPreserved": true,
+            "breakCancelled": true
+          }
+        },
+        {
+          "name": "A full piston depot leaves mature crops standing; withdrawing and selling transfer stock and currency once"
+        },
+        {
+          "name": "Pending crop journals reject water flow, bucket placement and player breaking until the disk-flushed checkpoint finalizes",
+          "data": {
+            "wasPending": true,
+            "bucketDenied": true,
+            "finalized": true,
+            "flowDenied": true,
+            "breakDenied": true
+          }
+        },
+        {
+          "name": "Woodcutter physically plants and grows its own tree, cuts three trunks one by one and replants without touching player structures",
+          "data": {
+            "foreignStructurePreserved": true,
+            "placeDenied": true,
+            "nativePropertiesPreserved": true,
+            "breakDenied": true,
+            "trunkCounts": [
+              0,
+              3,
+              2,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "name": "Community-market GUI lists only the selected seven of ten items, clearly prices the entire offer and keeps ownership rules"
+        },
+        {
+          "name": "A real market purchase gives the exact escrowed stack, debits buyer once and credits seller after five-percent tax; full bags roll back and replay is rejected"
+        },
+        {
+          "name": "Changing the held item before publish creates no listing; expired goods cannot be bought and remain safely returnable to their owner"
+        }
+      ],
+      "spawner": {
+        "pos": "36887:96:2060",
+        "id": "e1a0d59f-0bc5-45a1-8f55-b1d22266520b",
+        "size": 3456,
+        "counts": {
+          "BLAZE_ROD": 3456
+        },
+        "last": 1793302837475
+      },
+      "piston": {
+        "size": 0,
+        "counts": {},
+        "pos": "36884:96:2068",
+        "pending": false,
+        "id": "15ab7716-5371-4eff-b69f-b954b6935e8e"
+      },
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "regressions": {
+      "scope": "Re-run maintenance/role access and independent island weather against the current Skyblock JAR; ordinary Paper server state and actual commands.",
+      "checks": [
+        {
+          "name": "Maintenance still blocks ordinary accounts"
+        },
+        {
+          "name": "Öncü grants maintenance testing, revocation removes it, and the role does not grant OP testing or maintenance management"
+        },
+        {
+          "name": "The additive beta/Öncü badge also grants and revokes only the maintenance-entry permission"
+        },
+        {
+          "name": "The refactored shared-storage engine still preserves personal chest shift/split/reopen transfers and the player’s existing diamonds"
+        },
+        {
+          "name": "Global Skyblock rain and thunder are blocked while island weather stays player-local"
+        },
+        {
+          "name": "Snow still affects only the chosen island while a second occupied island stays clear and the global world remains dry"
+        },
+        {
+          "name": "Rain and clear weather still switch locally and a town warp removes the personal weather override"
+        },
+        {
+          "name": "Thrown eggs do not hatch, adult egg laying is not cancelled, and spawn eggs are allowed only in the private island rather than a protected harvest garden"
+        },
+        {
+          "name": "A player can pick up a normal dropped item in their shared town field without changing its crop allowance or clock"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "admin-timber": {
+      "scope": "Actual staff command dispatch, native read-only inventory events, live/offline Skyblock snapshots and guarded island entry; actual tree breaks with explicit deterministic probability fixtures.",
+      "checks": [
+        {
+          "name": "Ordinary players cannot inspect inventories/chests or enter another private island through staff commands"
+        },
+        {
+          "name": "OP inventory view updates live; click/shift/hotbar/drop/double-click/drag/offhand operations cannot extract or insert copied items",
+          "data": {
+            "drag": true,
+            "swap": true
+          }
+        },
+        {
+          "name": "Removing OP immediately closes an inspection view and removes its access"
+        },
+        {
+          "name": "From the network lobby OP can inspect another player’s VIP chest page without granting that VIP or moving its contents"
+        },
+        {
+          "name": "An offline known player’s saved Skyblock inventory remains inspectable without loading or editing the player"
+        },
+        {
+          "name": "The staff island command enters Skyblock from the lobby and visits an offline owner’s island without transferring membership or granting normal build permissions",
+          "data": {
+            "breakCancelled": true,
+            "role": "inspector",
+            "context": 19,
+            "own": 18
+          }
+        },
+        {
+          "name": "Both island-command forms work; /sb ev returns home and OP revocation returns a visiting inspector to their own island"
+        },
+        {
+          "name": "A normal player’s successful seventy-five-percent tree roll fells all six real logs, animates the fall, deposits exactly six logs and cleans up the displays"
+        },
+        {
+          "name": "The twenty-five-percent failure branch, sneaking and player-built trunks break only one log"
+        },
+        {
+          "name": "Creative building remains deliberate; explicit OP test mode now also tests the full falling-tree behavior and real output"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "admin-crossgame": {
+      "scope": "Actual preprocessed staff commands from an active Parkur run, cross-game safe transition and snapshot isolation.",
+      "checks": [
+        "Staff can inspect a saved player inventory from an actual running Parkur game without changing the game inventory",
+        "Staff can inspect another player’s personal Skyblock chest from a different game without mixing inventories",
+        "The island command safely leaves the active game, restores the separate Skyblock inventory, visits and returns home"
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "parkur": {
+      "started": "2026-10-29T19:48:48.445Z",
+      "scope": "Real loopback Paper 1.21.10 / Java21. Fixtures position authenticated synthetic clients; this is not a human playthrough of all 300 stages.",
+      "checks": [
+        {
+          "name": "All exported block states are accepted by the real Paper block registry",
+          "data": {
+            "states": 54
+          }
+        },
+        {
+          "name": "New version installs separate world; every difficulty starts at zero and leaves old world untouched"
+        },
+        {
+          "name": "Live sidebar and three lobby boards rank current furthest players with all five positions",
+          "data": [
+            {
+              "player": "41a239c4-6978-30da-a847-962d267f9b3b",
+              "name": "P13ogvveC",
+              "progress": 55
+            },
+            {
+              "player": "7dfad7c6-9612-3b7b-840d-8999ba1a7202",
+              "name": "P13ogvveA",
+              "progress": 35
+            },
+            {
+              "player": "6b47801a-f43c-3690-91d9-6aeb3d0d61ef",
+              "name": "P13ogvveB",
+              "progress": 20
+            }
+          ]
+        },
+        {
+          "name": "Administrator practice is excluded from live progress leaderboard"
+        },
+        {
+          "name": "Each difficulty has independent live top-five results"
+        },
+        {
+          "name": "Fastest completed time remains separate and completion records once",
+          "data": [
+            {
+              "player": "7dfad7c6-9612-3b7b-840d-8999ba1a7202",
+              "name": "P13ogvveA",
+              "difficulty": "KOLAY",
+              "millis": 125057,
+              "achieved": 1793303347211
+            }
+          ]
+        },
+        {
+          "name": "Externally teleported attempt cannot rank as unassisted progress"
+        },
+        {
+          "name": "Normal players cannot break/place, PvP or drop game tools",
+          "data": {
+            "drop": true,
+            "damage": true,
+            "place": true,
+            "break": true
+          }
+        },
+        {
+          "name": "Leaving restores the original inventory and sidebar"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "labirent": {
+      "started": "2026-10-29T19:49:11.679Z",
+      "scope": "Actual isolated Paper1.21.10/Java21 with authenticated synthetic protocol clients. Private fixtures accelerate deadlines and position players; no claim of human visual gameplay.",
+      "checks": [
+        {
+          "name": "Hub registers playable game, themed lobby, menu and Turkish first-help guide"
+        },
+        {
+          "name": "Solo creates actual connected 13×13 maze; 11664 wall/air blocks agree with generator",
+          "data": [
+            "###########################",
+            "#.#.............#.........#",
+            "#.#.###########.#.#.#####.#",
+            "#...#.........#.#.#...#...#",
+            "#####.#.#####.#.###.#.#.###",
+            "#...#.#.#.....#...#.#.#...#",
+            "###.#.#.###.#####.###.###.#",
+            "#...#.#...#.#...#.#...#...#",
+            "#.#.#.###.###.#.#.#.###.###",
+            "#.#.#.#.#.....#...#.#.#.#.#",
+            "#.#.#.#.###########.#.#.#.#",
+            "#.#.#.#.............#.#.#.#",
+            "#.#.#.#.#.###########.#.#.#",
+            "#.#.#.#.#.......#.#...#.#.#",
+            "#.###.#####.###.#.#.#.#.#.#",
+            "#...#.....#.#.#.#...#.#.#.#",
+            "#.#.#####.#.#.#.#.###.#.#.#",
+            "#.#.....#.#...#.#...#.....#",
+            "#.#####.#.#.###.###########",
+            "#.#...#...#.#...#.........#",
+            "#.#.#.#####.#.###.#######.#",
+            "#...#.....#.#.#.........#.#",
+            "#########.#.#.#.#######.#.#",
+            "#...#...#.#.#.....#...#.#.#",
+            "#.#.#.#.#.#########.#.###.#",
+            "#.#...#.............#.....#",
+            "###########################"
+          ]
+        },
+        {
+          "name": "Exit remains locked until all three independent sigils are collected"
+        },
+        {
+          "name": "Collecting a sigil is automatic and idempotent"
+        },
+        {
+          "name": "Warned timed change rewrites real corridors, preserves sigil and leaves player head/feet clear",
+          "data": {
+            "before": [
+              "###########################",
+              "#.#.............#.........#",
+              "#.#.###########.#.#.#####.#",
+              "#...#.........#.#.#...#...#",
+              "#####.#.#####.#.###.#.#.###",
+              "#...#.#.#.....#...#.#.#...#",
+              "###.#.#.###.#####.###.###.#",
+              "#...#.#...#.#...#.#...#...#",
+              "#.#.#.###.###.#.#.#.###.###",
+              "#.#.#.#.#.....#...#.#.#.#.#",
+              "#.#.#.#.###########.#.#.#.#",
+              "#.#.#.#.............#.#.#.#",
+              "#.#.#.#.#.###########.#.#.#",
+              "#.#.#.#.#.......#.#...#.#.#",
+              "#.###.#####.###.#.#.#.#.#.#",
+              "#...#.....#.#.#.#...#.#.#.#",
+              "#.#.#####.#.#.#.#.###.#.#.#",
+              "#.#.....#.#...#.#...#.....#",
+              "#.#####.#.#.###.###########",
+              "#.#...#...#.#...#.........#",
+              "#.#.#.#####.#.###.#######.#",
+              "#...#.....#.#.#.........#.#",
+              "#########.#.#.#.#######.#.#",
+              "#...#...#.#.#.....#...#.#.#",
+              "#.#.#.#.#.#########.#.###.#",
+              "#.#...#.............#.....#",
+              "###########################"
+            ],
+            "after": [
+              "###########################",
+              "#.#.......#...............#",
+              "#.#.#####.#.#.##########..#",
+              "#.#.....#...#...........#.#",
+              "#.#########.###########.#.#",
+              "#...#.....#.........#...#.#",
+              "###.#.###.###########.#####",
+              "#.#...#...#.........#.....#",
+              "#.#####.###.#######.#.###.#",
+              "#.....#.#.....#.....#...#.#",
+              "#.###.#.#.###.#.#######.#.#",
+              "#.#.#...#...#.#.......#.#.#",
+              "#.#.#######.#.#######.#.#.#",
+              "#.#...#.....#...#.....#.#.#",
+              "#.#.#.#########.#####.###.#",
+              "#...#.....#...#.....#...#.#",
+              "#########.#.#.#.###.###.#.#",
+              "#.......#...#.#.#.#.#.....#",
+              "#.#####.#####.#.#.#.#######",
+              "#.#.#.....#...#...#.......#",
+              "#.#.#.#####.###.#########.#",
+              "#.#...#...#.#...#.......#.#",
+              "#.#####.#.#.#####.#####.#.#",
+              "#.....#.#...#.....#.....#.#",
+              "#.###.#.#####.#####.#####.#",
+              "#...#.........#...........#",
+              "###########################"
+            ]
+          }
+        },
+        {
+          "name": "All sigils unlock exit and finishing returns safely to game lobby"
+        },
+        {
+          "name": "Time expiry ends round without inventing a winner"
+        },
+        {
+          "name": "Public queue admits both players into same room; keys remain personal"
+        },
+        {
+          "name": "Arena protection cancels block breaking/placing, PvP and game-item drops",
+          "data": {
+            "drop": true,
+            "damage": true,
+            "place": true,
+            "break": true
+          }
+        },
+        {
+          "name": "Leaving does not discard the other player’s running match or force a fake victory"
+        },
+        {
+          "name": "Network exit restores original inventory and sidebar and releases room"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "storage": {
+      "scope": "Final production JARs; real linked chest and cooperative inventory events, native lava death and pet entities. Legacy/offline ore state is explicitly synthetic.",
+      "checks": [
+        {
+          "name": "Actual produced goods refresh inside an open worker chest and normal cursor transfers move exactly two iron without a collect button"
+        },
+        {
+          "name": "Locked slots reject deposits and an unrelated island owner cannot open or take from the chest"
+        },
+        {
+          "name": "An explicitly invited cooperative member takes real goods once and the owner’s open view refreshes immediately"
+        },
+        {
+          "name": "Full worker storage pauses production and energy rather than producing overflow"
+        },
+        {
+          "name": "Thirty-seven legacy numeric goods migrate into the real chest once without duplication"
+        },
+        {
+          "name": "Feeder chest accepts actual bread and rejects dirt without consuming the player item"
+        },
+        {
+          "name": "A full day of woodcutter elapsed time yields only six productive hours with exactly charged fuel and real capacity"
+        },
+        {
+          "name": "The three real workers have original display bodies, job tools and interaction targets instead of decorative armor stands",
+          "data": {
+            "BLOCK_DISPLAY": 45,
+            "INTERACTION": 3,
+            "ITEM_DISPLAY": 3,
+            "TEXT_DISPLAY": 3
+          }
+        },
+        {
+          "name": "Real lethal lava damage and respawn preserve all seven diamonds and experience level seven"
+        },
+        {
+          "name": "Owned nightmare pet hides, returns without repurchase and has both client/server collision disabled"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    },
+    "restart": {
+      "scope": "Controlled stop/start of final Skyblock1.4.0/Roles1.7.0 JARs; temporary minion/spawner clock0 isolates exact stock persistence from elapsed offline production and is restored to6. Shared field clocks are not disabled.",
+      "checks": [
+        {
+          "name": "Private island, safe return position, viewing direction, complete inventory and XP survive restart"
+        },
+        {
+          "name": "Every minion chest slot and the feeder’s real bread persist exactly under the isolated production clock"
+        },
+        {
+          "name": "Shared wheat deadline and depleted crop set survive restart and reconstruct actual crop blocks without resetting on warp"
+        },
+        {
+          "name": "Shared Yonca stock, exact timer and claimed bits persist; an already collected plant still cannot pay again after reboot"
+        },
+        {
+          "name": "Credit, preserved Yonca balance, all five key counts and complete crate reward history survive restart"
+        },
+        {
+          "name": "The actual timed MegaVIP lease, network privileges and four chest pages survive restart without staff permissions"
+        },
+        {
+          "name": "Spawner generations and exact depot goods persist; every journaled piston product remains available"
+        },
+        {
+          "name": "The small oak generator and both contained fluid sources remain intact after restart"
+        },
+        {
+          "name": "The explicit restart-clock fixture is removed and both original six-hour production limits are restored"
+        }
+      ],
+      "passed": true,
+      "tested_artifacts": {
+        "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+        "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3"
+      }
+    }
+  },
+  "artifacts": {
+    "KasabaSkyblock-1.4.0.jar": "e996fc542400c484def7f7c90c4d842ab1d296a7f418f59a423e993c2087bea5",
+    "KasabaRoles-1.7.0.jar": "ff5af2bcc7cb5fbf37d479fe565fbdb503ca31efedfa02d62ac5fd73c2bb63b3",
+    "KasabaHub-1.12.2.jar": "9df97824154e4a4b94fb3be66c9f486f453a4025cbe3ac4aafaa53dd5f92d799",
+    "KasabaEvcil-1.2.1.jar": "ab13de039670ef83b84b33e7e88113f2784b161d6dd6e226cc36c720475bfcd5",
+    "KasabaParkur-1.2.1.jar": "19efbe6b347049c310e68f92858c5950bdaafa69f0e4415fc120d3d46e3268ae",
+    "KasabaLabirent-1.0.0.jar": "3864ab4aaad221ca650ba68b05269567a7b12f93e36ce22d627b1b3f6dbf72f3"
+  },
+  "unchanged_companion_jars": [
+    "KasabaHub-1.12.2.jar",
+    "KasabaEvcil-1.2.1.jar",
+    "KasabaParkur-1.2.1.jar",
+    "KasabaLabirent-1.0.0.jar"
+  ],
+  "durable_record_check": {
+    "passed": true,
+    "scope": "Read-only SQLite comparison around controlled restart; only shared fields and synthetic account/receipt records selected. Personal profiles and elapsed production excluded.",
+    "records": 17,
+    "classes": [
+      "shared wheat deadline and harvested set",
+      "shared Yonca deadline and harvested set",
+      "manual feeding day ledger",
+      "idempotent paid credit receipts",
+      "synthetic credit/Yonca balances",
+      "five crate key counts",
+      "crate reward nonces and history"
+    ],
+    "sha256": "f50155b15fc01156495ad35c6e7fc4a34258e98ae4659a95a4f8abb5ac7ff064"
+  },
+  "cleanup": {
+    "passed": true,
+    "baseline_files_restored_and_sha_verified": 30,
+    "original_worlds_restored": true,
+    "temporary_adapter_removed": true,
+    "new_production_jars_retained": true,
+    "root_git_index_unchanged": "aabf6b64df863e8797278b7535d61d1d9162f82ace500b33a0055d588eaa88af"
+  }
+}
